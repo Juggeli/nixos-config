@@ -15,6 +15,7 @@
       browsers = {
         default = "firefox";
         firefox.enable = true;
+        chrome.enable = true;
       };
       media = {
         mpv.enable = true;
@@ -37,7 +38,7 @@
     services = {
       ssh.enable = true;
     };
-    theme.active = "alucard";
+    theme.enable = true;
   };
 
   systemd.mounts = [{
@@ -57,4 +58,9 @@
   # here. Per-interface useDHCP will be mandatory in the future, so this
   # generated config replicates the default behaviour.
   networking.useDHCP = false;
+
+  hardware.logitech.wireless = {
+    enable = true;
+    enableGraphical = true;
+  };
 }

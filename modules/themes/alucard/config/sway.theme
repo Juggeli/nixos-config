@@ -1,9 +1,0 @@
-{ colors, fonts, ... }:
-''
-output * bg ${colors.base0} solid_color
-default_border pixel 3
-default_floating_border pixel 3
-client.focused ${colors.green} ${colors.green} ${colors.white} ${colors.red}
-client.unfocused ${colors.base4} ${colors.base4} ${colors.white} ${colors.red}
-client.focused_inactive ${colors.base4} ${colors.base4} ${colors.white} ${colors.red}
-''

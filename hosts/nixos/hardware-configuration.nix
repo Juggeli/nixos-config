@@ -7,15 +7,16 @@
 
   boot = {
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "virtio_pci" "nvme" "usbhid" "sr_mod" "virtio_blk" ];
-    initrd.kernelModules = [];
-    extraModulePackages = [];
+#    initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+#    #extraModulePackages = [ pkgs.linuxKernel.packages.linux_5_19.nvidia_x11 ];
+#    blacklistedKernelModules = [ "noveau" ];
     kernelModules = [ "kvm-amd" ];
     kernelParams = [
       # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
       #      vulnerabilities. Don't copy this blindly! And especially not for
       #      mission critical or server/headless builds exposed to the world.
       "mitigations=off"
-      "amdgpu.ppfeaturemask=0xffffffff"
+#      "nvidia-drm.modeset=1"
     ];
 
     # Refuse ICMP echo requests on my desktop/laptop; nobody has any business
@@ -60,22 +61,9 @@
   swapDevices = [];
 
   hardware.enableAllFirmware = true;
-  
-  ## Gpu underclocking
-  systemd = {
-    timers.underClocker = {
-      wantedBy = [ "timers.target" ];
-      partOf = [ "underClocker.service" ];
-      timerConfig.OnCalendar = "minutely";
-    };
-    services.underClocker = {
-      serviceConfig.Type = "oneshot";
-      serviceConfig.User = "root";
-      script = ''
-        echo "manual" > /sys/class/drm/card0/device/power_dpm_force_performance_level
-        echo "0" > /sys/class/drm/card0/device/pp_dpm_mclk
-        echo "2" > /sys/class/drm/card0/device/pp_dpm_sclk
-      '';
-    };
-  };
+
+#  services.xserver.videoDrivers = [ "nvidia" ];
+  # hardware.opengl.enable = true;
+#  hardware.nvidia.nvidiaSettings = true;
+  boot.loader.systemd-boot.consoleMode = "max";
 }

@@ -18,7 +18,7 @@ in {
     '';
 
     user.packages = with pkgs; [
-      alacritty  # st + nice-to-have extensions
+      alacritty
     ];
   };
 }

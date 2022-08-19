@@ -22,7 +22,10 @@ with lib.my;
       file       = mkOpt' attrs {} "Files to place directly in $HOME";
       configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
       dataFile   = mkOpt' attrs {} "Files to place in $XDG_DATA_HOME";
+      systemDirs = mkOpt' attrs {} "Files to plaec in system dir";
       gtk        = mkOpt' attrs {} "GTK theme";
+      sway       = mkOpt' attrs {} "Sway config";
+      programs   = mkOpt' attrs {} "Home-manager programs";
     };
 
     env = mkOption {
@@ -74,7 +77,10 @@ with lib.my;
         xdg = {
           configFile = mkAliasDefinitions options.home.configFile;
           dataFile   = mkAliasDefinitions options.home.dataFile;
+          systemDirs = mkAliasDefinitions options.home.systemDirs;
         };
+        wayland.windowManager.sway = mkAliasDefinitions options.home.sway;
+        programs = mkAliasDefinitions options.home.programs;
       };
     };
 

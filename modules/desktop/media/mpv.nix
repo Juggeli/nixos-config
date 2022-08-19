@@ -12,5 +12,13 @@ in {
     user.packages = with pkgs; [
       mpv-with-scripts
     ];
+
+    home.file.".config/mpv/mpv.conf".text = ''
+      volume=60
+      osd-on-seek=msg
+      autofit=1600x900
+      profile=gpu-hq 
+      deband=no 
+    '';
   };
 }
