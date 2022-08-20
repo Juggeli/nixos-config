@@ -1,6 +1,3 @@
-# modules/desktop/term/alacritty.nix
-#
-
 { options, config, lib, pkgs, ... }:
 
 with lib;
@@ -12,11 +9,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # xst-256color isn't supported over ssh, so revert to a known one
-    modules.shell.zsh.rcInit = ''
-      [ "$TERM" = xst-256color ] && export TERM=xterm-256color
-    '';
-
     user.packages = with pkgs; [
       alacritty
     ];

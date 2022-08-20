@@ -21,8 +21,8 @@
 
       mkPkgs = pkgs: extraOverlays: import pkgs {
         inherit system;
-        config.allowUnfree = true;  # forgive me Stallman senpai
-        overlays = extraOverlays ++ (lib.attrValues self.overlays);
+        config.allowUnfree = true;
+        overlays = extraOverlays;
       };
       pkgs  = mkPkgs nixpkgs [ self.overlay ];
       pkgs' = mkPkgs nixpkgs-unstable [];
@@ -38,9 +38,6 @@
           my = self.packages."${system}";
         };
 
-      overlays =
-        mapModules ./overlays import;
-
       packages."${system}" =
         mapModules ./packages (p: pkgs.callPackage p {});
 
@@ -49,10 +46,5 @@
 
       nixosConfigurations =
         mapHosts ./hosts {};
-
-      defaultApp."${system}" = {
-        type = "app";
-        program = ./bin/hey;
-      };
     };
 }

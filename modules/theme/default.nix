@@ -99,13 +99,6 @@ in {
         monospace = [ cfg.fonts.mono.name ];
       };
 
-      modules.shell.zsh.rcFiles  = [ ./config/zsh/prompt.zsh ];
-      modules.desktop.browsers = {
-        firefox.userChrome = concatMapStringsSep "\n" readFile [
-          ./config/firefox/userChrome.css
-        ];
-      };
-
       # Other dotfiles
       home.configFile = with config.modules; mkMerge [
         (mkIf desktop.apps.rofi.enable {
