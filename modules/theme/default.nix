@@ -38,7 +38,7 @@ in {
 
     fonts = {
       mono = {
-        name = mkOpt str "Fira Code";
+        name = mkOpt str "ComicCodeLigatures Nerd Font";
         size = mkOpt int 12;
       };
       sans = {
@@ -92,6 +92,7 @@ in {
         jetbrains-mono
         siji
         font-awesome
+        my.comic-code
       ];
 
       fonts.fontconfig.defaultFonts = {
