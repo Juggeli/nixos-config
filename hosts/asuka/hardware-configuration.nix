@@ -17,12 +17,12 @@
 
   boot.initrd.luks.devices."luks-537add52-44df-479d-a75e-3014e84dab79".device = "/dev/disk/by-uuid/537add52-44df-479d-a75e-3014e84dab79";
 
-  fileSystems."/boot/efi" =
+  fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/D3B6-4D8F";
       fsType = "vfat";
     };
 
-  fileSystems."/data" =
+  fileSystems."/mnt/cache" =
     { device = "/dev/disk/by-uuid/0527a5d8-9379-4edf-a6fc-409ed0da5562";
       fsType = "btrfs";
     };
