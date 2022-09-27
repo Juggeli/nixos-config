@@ -36,7 +36,7 @@
 
   boot.initrd = {
     network.enable = true;
-    preLVMCommands = lib.mkBefore 400 "sleep 1";
+    preLVMCommands = lib.mkOrder 400 "sleep 1";
     network.ssh = {
       enable = true;
       port = 22;
