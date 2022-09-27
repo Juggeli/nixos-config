@@ -34,19 +34,6 @@ with lib.my;
       configFile = mkOpt' attrs {} "Home-manager xdg conf file";
     };
 
-    # systemd = {
-    #   user = {
-    #     extraConfig = mkOpt' attrs {} "";
-    #     paths = mkOpt' attrs {} "";
-    #     services = mkOpt' attrs {} "";
-    #     slices = mkOpt' attrs {} "";
-    #     sockets = mkOpt' attrs {} "";
-    #     targets = mkOpt' attrs {} "";
-    #     timers = mkOpt' attrs {} "";
-    #     units = mkOpt' attrs {} "";
-    #   };
-    # };
-
     env = mkOption {
       type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
       apply = mapAttrs
@@ -102,18 +89,6 @@ with lib.my;
         };
         wayland.windowManager.sway = mkAliasDefinitions options.home.sway;
         programs = mkAliasDefinitions options.home.programs;
-        # systemd = {
-        #   user = {
-        #     extraConfig = mkAliasDefinitions options.systemd.user.extraConfig;
-        #     paths = mkAliasDefinitions options.systemd.user.paths;
-        #     services = mkAliasDefinitions options.systemd.user.services;
-        #     slices = mkAliasDefinitions options.systemd.user.slices;
-        #     sockets = mkAliasDefinitions options.systemd.user.sockets;
-        #     targets = mkAliasDefinitions options.systemd.user.targets;
-        #     timers = mkAliasDefinitions options.systemd.user.timers;
-        #     units = mkAliasDefinitions options.systemd.user.units;
-        #   };
-        # };
       };
     };
 
