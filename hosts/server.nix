@@ -14,6 +14,8 @@
     options = "--delete-older-than 30d";
   };
 
+  programs.dconf.enable = true;
+
   systemd = {
     services.clear-log = {
       description = "Clear >1 month-old logs every week";
