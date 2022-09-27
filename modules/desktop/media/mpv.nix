@@ -10,7 +10,7 @@ in {
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      mpv-with-scripts
+      mpv
     ];
 
     home.file.".config/mpv/mpv.conf".text = ''
@@ -19,6 +19,8 @@ in {
       autofit=1600x900
       profile=gpu-hq 
       deband=no 
+      gpu-api=vulkan
+      gpu-context=wayland
     '';
   };
 }

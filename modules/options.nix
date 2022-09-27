@@ -20,13 +20,32 @@ with lib.my;
 
     home = {
       file       = mkOpt' attrs {} "Files to place directly in $HOME";
-      configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
+      # configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
       dataFile   = mkOpt' attrs {} "Files to place in $XDG_DATA_HOME";
       systemDirs = mkOpt' attrs {} "Files to plaec in system dir";
       gtk        = mkOpt' attrs {} "GTK theme";
       sway       = mkOpt' attrs {} "Sway config";
       programs   = mkOpt' attrs {} "Home-manager programs";
+      packages   = mkOpt' attrs [] "Home-manager packages";
+      sessionVariables = mkOpt' attrs {} "Home-manager session variables";
     };
+
+    xdg = {
+      configFile = mkOpt' attrs {} "Home-manager xdg conf file";
+    };
+
+    # systemd = {
+    #   user = {
+    #     extraConfig = mkOpt' attrs {} "";
+    #     paths = mkOpt' attrs {} "";
+    #     services = mkOpt' attrs {} "";
+    #     slices = mkOpt' attrs {} "";
+    #     sockets = mkOpt' attrs {} "";
+    #     targets = mkOpt' attrs {} "";
+    #     timers = mkOpt' attrs {} "";
+    #     units = mkOpt' attrs {} "";
+    #   };
+    # };
 
     env = mkOption {
       type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
@@ -72,15 +91,29 @@ with lib.my;
           # Necessary for home-manager to work with flakes, otherwise it will
           # look for a nixpkgs channel.
           stateVersion = config.system.stateVersion;
+          packages = mkAliasDefinitions options.home.packages;
+          sessionVariables = mkAliasDefinitions options.home.sessionVariables;
         };
         gtk = mkAliasDefinitions options.home.gtk;
         xdg = {
-          configFile = mkAliasDefinitions options.home.configFile;
+          configFile = mkAliasDefinitions options.xdg.configFile;
           dataFile   = mkAliasDefinitions options.home.dataFile;
           systemDirs = mkAliasDefinitions options.home.systemDirs;
         };
         wayland.windowManager.sway = mkAliasDefinitions options.home.sway;
         programs = mkAliasDefinitions options.home.programs;
+        # systemd = {
+        #   user = {
+        #     extraConfig = mkAliasDefinitions options.systemd.user.extraConfig;
+        #     paths = mkAliasDefinitions options.systemd.user.paths;
+        #     services = mkAliasDefinitions options.systemd.user.services;
+        #     slices = mkAliasDefinitions options.systemd.user.slices;
+        #     sockets = mkAliasDefinitions options.systemd.user.sockets;
+        #     targets = mkAliasDefinitions options.systemd.user.targets;
+        #     timers = mkAliasDefinitions options.systemd.user.timers;
+        #     units = mkAliasDefinitions options.systemd.user.units;
+        #   };
+        # };
       };
     };
 

@@ -41,14 +41,24 @@ let cfg = config.modules.desktop.sway;
           '';
     };
 
+    my-python-packages = python-packages: with python-packages; [
+        i3ipc
+    ];
+    python-with-packages = pkgs.python3.withPackages my-python-packages;
+
 in {
   options.modules.desktop.sway = {
     enable = mkBoolOpt false;
+    # wallpaper = mkOpt' (types.either types.str types.path) "";
+    # wallpaper = mkOpt types.path ./config/bg1.jpg;
   };
 
   config = mkIf cfg.enable {
     programs.sway = {
       enable = true;
+      extraOptions = [
+        "--unsupported-gpu"
+      ];
       extraPackages = with pkgs; [ 
         swayidle
         swaylock
@@ -56,7 +66,7 @@ in {
         rofi-wayland
         my.stacki3
         glib
-        gnome3.adwaita-icon-theme # Default gnome cursors
+        gnome.adwaita-icon-theme # Default gnome cursors
         dbus-sway-environment
         configure-gtk
         grim
@@ -65,20 +75,22 @@ in {
         mako
         vulkan-tools
         vulkan-validation-layers
-        xorg.xeyes
+        swaybg
+        wl-gammactl
+        python-with-packages
       ];
       wrapperFeatures.gtk = true;
     };
     environment.variables = {
       XDG_SESSION_TYPE = "wayland";
       XDG_CURRENT_DESKTOP = "sway";
+      GDK_BACKEND = "wayland";
       GTK_THEME = "Dracula";
-      WLR_NO_HARDWARE_CURSORS = "1";
       SDL_VIDEODRIVER = "wayland";
       QT_QPA_PLATFORM = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       _JAVA_AWT_WM_NONREPARENTING = "1";
-#      WLR_RENDERER = "vulkan";
+      NIXOS_OZONE_WL = "1";
     };
 
     # xdg-desktop-portal works by exposing a series of D-Bus interfaces
@@ -145,13 +157,23 @@ in {
           { command = "${pkgs.swayidle}/bin/swayidle -w timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -c 000000'";}
           { command = "${pkgs.waybar}/bin/waybar"; }
           { command = "${pkgs.my.stacki3}/bin/stacki3"; }
+          { command = "${python-with-packages}/bin/python ~/.config/dotfiles/config/autodim.py"; }
+          { command = "~/koodi/slurp/asbl.sh"; }
         ];
+        output = {
+            DP-1 = {
+                mode = "3840x2160@120hz";
+                # bg = "#000000 solid_color";
+            };
+        };
       };
       extraConfig = ''
-          include sway.theme
           exec dbus-sway-environment
           exec configure-gtk
-        '';
+          include sway.theme
+          output HDMI-A-1 disable
+          output DP-1 bg ~/.config/dotfiles/config/bg1.jpg fill
+      '';
     };
 
     home.file = let mod = "Mod4"; in {

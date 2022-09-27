@@ -15,7 +15,7 @@ in {
       git
     ];
 
-    home.configFile = {
+    xdg.configFile = {
       "git/config".source = "${configDir}/git/config";
       "git/ignore".source = "${configDir}/git/ignore";
     };

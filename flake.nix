@@ -4,13 +4,24 @@
   inputs = 
     {
       # Core dependencies.
-      nixpkgs.url = "nixpkgs/nixos-unstable";             # primary nixpkgs
-      nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";  # for packages on the edge
-      home-manager.url = "github:nix-community/home-manager";
-      home-manager.inputs.nixpkgs.follows = "nixpkgs";
+      nixpkgs.url = "github:Juggeli/nixpkgs/nixpkgs-unstable";
+
+      home-manager = {
+        url = "github:nix-community/home-manager";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
 
       # Extras
       emacs-overlay.url  = "github:nix-community/emacs-overlay";
+      webcord-overlay = {
+        url = "github:fufexan/webcord-flake";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      hyprland = {
+        url = "github:hyprwm/Hyprland";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
     };
 
   outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, ... }:
@@ -25,7 +36,6 @@
         overlays = extraOverlays;
       };
       pkgs  = mkPkgs nixpkgs [ self.overlay ];
-      pkgs' = mkPkgs nixpkgs-unstable [];
 
       lib = nixpkgs.lib.extend
         (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
@@ -34,7 +44,6 @@
 
       overlay =
         final: prev: {
-          unstable = pkgs';
           my = self.packages."${system}";
         };
 

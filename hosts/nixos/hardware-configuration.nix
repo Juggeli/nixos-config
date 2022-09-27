@@ -7,16 +7,12 @@
 
   boot = {
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "virtio_pci" "nvme" "usbhid" "sr_mod" "virtio_blk" ];
-#    initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
-#    #extraModulePackages = [ pkgs.linuxKernel.packages.linux_5_19.nvidia_x11 ];
-#    blacklistedKernelModules = [ "noveau" ];
     kernelModules = [ "kvm-amd" ];
     kernelParams = [
       # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
       #      vulnerabilities. Don't copy this blindly! And especially not for
       #      mission critical or server/headless builds exposed to the world.
       "mitigations=off"
-#      "nvidia-drm.modeset=1"
     ];
 
     # Refuse ICMP echo requests on my desktop/laptop; nobody has any business
@@ -31,6 +27,8 @@
       enable = true;
       ssd.enable = true;
     };
+    logitech.enable = true;
+    nvidia.enable = true;
   };
 
   # CPU
@@ -61,9 +59,4 @@
   swapDevices = [];
 
   hardware.enableAllFirmware = true;
-
-#  services.xserver.videoDrivers = [ "nvidia" ];
-  # hardware.opengl.enable = true;
-#  hardware.nvidia.nvidiaSettings = true;
-  boot.loader.systemd-boot.consoleMode = "max";
 }

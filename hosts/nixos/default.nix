@@ -10,11 +10,9 @@
     desktop = {
       apps = {
         rofi.enable = true;
-        # godot.enable = true;
       };
       browsers = {
-        default = "firefox";
-        firefox.enable = true;
+        default = "google-chrome-stable";
         chrome.enable = true;
       };
       media = {
@@ -24,7 +22,11 @@
         default = "alacritty";
         alacritty.enable = true;
       };
-      sway.enable = true;
+      sway = {
+        enable = true;
+        # wallpaper = ./config/bg1.jpg; 
+      };
+      hyprland.enable = false;
     };
     editors = {
       default = "nvim";
@@ -58,9 +60,4 @@
   # here. Per-interface useDHCP will be mandatory in the future, so this
   # generated config replicates the default behaviour.
   networking.useDHCP = false;
-
-  hardware.logitech.wireless = {
-    enable = true;
-    enableGraphical = true;
-  };
 }

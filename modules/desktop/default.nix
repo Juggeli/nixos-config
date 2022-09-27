@@ -1,31 +1,25 @@
-{ config, options, lib, pkgs, ... }:
+{ config, options, inputs, lib, pkgs, ... }:
 
 with lib;
 with lib.my;
-let
+let 
+  inherit (inputs) webcord-overlay;
   cfg = config.modules.desktop;
-
-  my-python-packages = python-packages: with python-packages; [
-    pyserial
-    intelhex
-  ];
-  python-with-my-packages = pkgs.python3.withPackages my-python-packages;
 in {
   config = {
     user.packages = with pkgs; [
-      qgnomeplatform        # QPlatformTheme for a better Qt application inclusion in GNOME
-      libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
-      vscode
       killall
-      discord
       pcmanfm
-      nnn
       xdg-utils
       hydrus
       vifm
       neovim
       trash-cli
-      python-with-my-packages
+      webcord-overlay.packages.${pkgs.system}.default
+      btop
+      ffmpeg
+      ventoy-bin
+      bashmount
     ];
 
     fonts = {
@@ -49,6 +43,13 @@ in {
         };
       };
     };
+
+    # services.xserver.enable = true;
+    # services.xserver.displayManager.sddm = {
+      # enable = true;
+    # };
+    
+    user.extraGroups = [ "audio" "video" ];
 
     # Resolve .local domains
     services.avahi = {

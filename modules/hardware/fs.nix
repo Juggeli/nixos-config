@@ -2,13 +2,13 @@
 
 with lib;
 with lib.my;
-let cfg = config.modules.hardware.fs;
+let 
+  cfg = config.modules.hardware.fs;
 in {
   options.modules.hardware.fs = {
     enable = mkBoolOpt false;
     zfs.enable = mkBoolOpt false;
     ssd.enable = mkBoolOpt false;
-    # TODO automount.enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable (mkMerge [

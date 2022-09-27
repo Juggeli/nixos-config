@@ -24,7 +24,6 @@ in {
         cp = "cp -i";
         mv = "mv -i";
         mkdir = "mkdir -pv";
-        wget = "wget -c";
         ports = "netstat -tulanp";
         shutdown = "sudo shutdown";
         reboot = "sudo reboot";
@@ -33,6 +32,7 @@ in {
         ssc = "sudo systemctl";
         exa = "exa --group-directories-first --git";
         l = "exa -blF";
+        ls = "l";
         ll = "exa -abghilmu";
         llm = "ll --sort=modified";
         la = "LC_COLLATE=C exa -ablF";

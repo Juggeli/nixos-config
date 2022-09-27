@@ -101,7 +101,7 @@ in {
       };
 
       # Other dotfiles
-      home.configFile = with config.modules; mkMerge [
+      xdg.configFile = with config.modules; mkMerge [
         (mkIf desktop.apps.rofi.enable {
           "rofi/theme" = { source = ./config/rofi; recursive = true; };
         })

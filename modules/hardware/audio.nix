@@ -1,9 +1,9 @@
-
 { options, config, lib, pkgs, ... }:
 
 with lib;
 with lib.my;
-let cfg = config.modules.hardware.audio;
+let 
+  cfg = config.modules.hardware.audio;
   configDir = config.dotfiles.configDir;
 in {
   options.modules.hardware.audio = {
@@ -28,8 +28,6 @@ in {
       pavucontrol
       pulseaudio
     ];
-
-    user.extraGroups = [ "audio" ];
 
     environment.etc = {
       "wireplumber" = { source = "${configDir}/wireplumber"; };
