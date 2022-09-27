@@ -34,11 +34,25 @@
 
   virtualisation.docker.enable = true;
 
-  boot.initrd.network.enable = true;
-  boot.initrd.network.ssh = {
-    enable = true;
-    port = 22;
-    authorizedKeys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com" ];
-    hostKeys = [ "/etc/secrets/initrd/ssh_host_ed25519_key" ];
+  boot.initrd = {
+    network.enable = true;
+    preLVMCommands = lib.mkBefore 400 "sleep 1";
+    network.ssh = {
+      enable = true;
+      port = 22;
+      authorizedKeys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com" ];
+      hostKeys = [ "/etc/secrets/initrd/ssh_host_ed25519_key" ];
+    };
+    # network.postCommands = let
+    #   disk = "/dev/disk/by-label/crypt";
+    # in ''
+    #   echo 'cryptsetup open ${disk} root --type luks && echo > /tmp/continue' >> /root/.profile
+    #   echo 'starting sshd...'
+    #   '';
+    # postDeviceCommands = ''
+    #   echo 'waiting for root device to be opened...'
+    #   mkfifo /tmp/continue
+    #   cat /tmp/continue
+    #   '';
   };
 }
