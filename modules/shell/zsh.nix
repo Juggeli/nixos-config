@@ -74,6 +74,7 @@ in {
       exa
       fd
       tldr
+      pciutils
     ];
   };
 }
