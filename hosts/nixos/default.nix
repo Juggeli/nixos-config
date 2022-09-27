@@ -8,6 +8,7 @@
   ## Modules
   modules = {
     desktop = {
+      generic.enable = true;
       apps = {
         rofi.enable = true;
       };

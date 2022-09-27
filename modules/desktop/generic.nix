@@ -3,10 +3,14 @@
 with lib;
 with lib.my;
 let 
+  cfg = config.modules.desktop.generic;
   inherit (inputs) webcord-overlay;
-  cfg = config.modules.desktop;
 in {
-  config = {
+  options.modules.desktop.generic = {
+    enable = mkBoolOpt false;
+  };
+
+  config = mkIf cfg.enable {
     user.packages = with pkgs; [
       killall
       pcmanfm
