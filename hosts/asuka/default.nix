@@ -30,9 +30,11 @@
   # The global useDHCP flag is deprecated, therefore explicitly set to false
   # here. Per-interface useDHCP will be mandatory in the future, so this
   # generated config replicates the default behaviour.
-  networking.useDHCP = true;
+  networking.useDHCP = false;
 
   virtualisation.docker.enable = true;
+
+  boot.kernelParams = [ "ip=10.11.11.7::10.11.11.1:255.255.255.0:asuka:enp3s0:off" ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
