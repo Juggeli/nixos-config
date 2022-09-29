@@ -34,7 +34,9 @@
 
   virtualisation.docker.enable = true;
 
+  boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
+    luks.forceLuksSupportInInitrd = true;
     network.enable = true;
     preLVMCommands = lib.mkOrder 400 "sleep 1";
     network.ssh = {
@@ -43,6 +45,12 @@
       authorizedKeys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com" ];
       hostKeys = [ "/etc/secrets/initrd/ssh_host_ed25519_key" ];
     };
+    secrets = {
+      "/etc/secrets/initrd/ssh_host_ed25519_key" = "/etc/secrets/initrd/ssh_host_ed25519_key";
+    };
+    network.postCommands = ''
+      echo 'cryptsetup-askpass' >> /root/.profile
+    '';
     # network.postCommands = let
     #   disk = "/dev/disk/by-label/crypt";
     # in ''
