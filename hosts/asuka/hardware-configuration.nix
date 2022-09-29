@@ -15,8 +15,6 @@
       fsType = "xfs";
     };
 
-  # boot.initrd.luks.devices."luks-537add52-44df-479d-a75e-3014e84dab79".device = "/dev/disk/by-uuid/537add52-44df-479d-a75e-3014e84dab79";
-
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/D3B6-4D8F";
       fsType = "vfat";
@@ -27,7 +25,18 @@
       fsType = "btrfs";
     };
 
-  # boot.initrd.luks.devices."luks-5a26866b-fdc7-4bd7-9340-18d70b5d577b".device = "/dev/disk/by-uuid/5a26866b-fdc7-4bd7-9340-18d70b5d577b";
+  boot.initrd.luks.devices = {
+    root = {
+      preLVM = true;
+      device = "/dev/disk/by-uuid/537add52-44df-479d-a75e-3014e84dab79";
+      allowDiscards = true;
+    };
+    data = {
+      preLVM = true;
+      device = "/dev/disk/by-uuid/5a26866b-fdc7-4bd7-9340-18d70b5d577b";
+      allowDiscards = true;
+    };
+  };
 
   swapDevices = [ ];
 
