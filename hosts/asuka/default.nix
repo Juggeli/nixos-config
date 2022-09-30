@@ -4,6 +4,7 @@
     ../home.nix
     ../server.nix
     ./hardware-configuration.nix
+    ./pool.nix
   ];
 
   ## Modules
