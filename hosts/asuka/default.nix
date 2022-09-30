@@ -18,6 +18,7 @@
     };
     services = {
       ssh.enable = true;
+      smb.enable = true;
     };
     theme.enable = true;
   };
@@ -53,16 +54,17 @@
     network.postCommands = ''
       echo 'cryptsetup-askpass' >> /root/.profile
     '';
-    # network.postCommands = let
-    #   disk = "/dev/disk/by-label/crypt";
-    # in ''
-    #   echo 'cryptsetup open ${disk} root --type luks && echo > /tmp/continue' >> /root/.profile
-    #   echo 'starting sshd...'
-    #   '';
-    # postDeviceCommands = ''
-    #   echo 'waiting for root device to be opened...'
-    #   mkfifo /tmp/continue
-    #   cat /tmp/continue
-    #   '';
+  };
+
+  services.samba = {
+    shares = {
+      pool = {
+        path = "/mnt/pool";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "force user" = "juggeli";
+      };
+    };
   };
 }

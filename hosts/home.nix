@@ -22,5 +22,9 @@ with lib;
       extraHostNames = [ "10.11.11.95"];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com";
     };
+    asukaboot = {
+      extraHostNames = [ "10.11.11.7" ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAnb9wSgTP0FbDHeSmIdKqWaxMvJKJ7sLXefJ4QG+4RD root@asuka";
+    };
   };
 }

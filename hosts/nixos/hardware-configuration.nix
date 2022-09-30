@@ -32,16 +32,16 @@
   };
 
   # CPU
-  nix.settings.max-jobs = lib.mkDefault 10;
+  nix.settings.max-jobs = lib.mkDefault 12;
 
-  boot.initrd.postDeviceCommands = pkgs.lib.mkBefore ''
-    mkdir -m 0755 -p /key
-    mount -n -t xfs -o ro `findfs LABEL=KEY` /key
-  '';
+  #boot.initrd.postDeviceCommands = pkgs.lib.mkBefore ''
+  #  mkdir -m 0755 -p /key
+  #  mount -n -t xfs -o ro `findfs LABEL=KEY` /key
+  #'';
 
   boot.initrd.luks.devices."root" = {
     device = "/dev/disk/by-uuid/e5f04527-d5a0-4656-9627-c58f0b115bdf";
-    keyFile = "/key/keyFile";
+    #keyFile = "/key/keyFile";
     preLVM = false;
   };
 

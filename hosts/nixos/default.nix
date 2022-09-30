@@ -45,9 +45,9 @@
   };
 
   systemd.mounts = [{
-    what = "Shares";
+    what = "//10.11.11.55/pool";
     where = "/mnt/shares";
-    type = "virtiofs";
+    type = "samba";
     wantedBy = ["multi-user.target"];
     enable = true;
   }];
