@@ -44,13 +44,26 @@
     theme.enable = true;
   };
 
-  systemd.mounts = [{
-    what = "//10.11.11.55/pool";
-    where = "/mnt/shares";
-    type = "samba";
-    wantedBy = ["multi-user.target"];
-    enable = true;
-  }];
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+
+  # systemd.mounts = [{
+  #   what = "Shares";
+  #   where = "/mnt/shares";
+  #   type = "virtiofs";
+  #   wantedBy = ["multi-user.target"];
+  #   enable = true;
+  # }];
+
+  environment.systemPackages = [ pkgs.cifs-utils ];
+  fileSystems."/mnt/shares" = {
+    device = "//10.11.11.55/pool";
+    fsType = "cifs";
+    options = let
+        # this line prevents hanging on network split
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+
+      in ["${automount_opts},credentials=/etc/nixos/smb-secrets,uid=1000,gid=100"];
+  };
 
   ## Local config
   programs.ssh.startAgent = true;

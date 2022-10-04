@@ -17,7 +17,7 @@ in {
         package = nvidiaPackage;
         nvidiaSettings = true;
         modesetting.enable = true;
-        open = true;
+        open = false;
         powerManagement.enable = false;
       };
       opengl = {

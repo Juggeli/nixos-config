@@ -4,7 +4,8 @@
   inputs = 
     {
       # Core dependencies.
-      nixpkgs.url = "github:Juggeli/nixpkgs/nixpkgs-unstable";
+      # nixpkgs.url = "github:Juggeli/nixpkgs/nixpkgs-unstable";
+      nixpkgs.url = "nixpkgs/nixos-unstable";
 
       home-manager = {
         url = "github:nix-community/home-manager";

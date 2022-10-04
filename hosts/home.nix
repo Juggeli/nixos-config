@@ -4,7 +4,8 @@ with lib;
 {
   networking.hosts =
     let hostConfig = {
-          "10.11.11.3"  = [ "rei" ];
+          "10.11.11.2"  = [ "asuka" ];
+          "10.11.11.3"  = [ "nixos" ];
         };
         hosts = flatten (attrValues hostConfig);
         hostName = config.networking.hostName;
@@ -16,12 +17,12 @@ with lib;
   services.openssh.knownHosts = {
     asuka = {
       extraHostNames = [ "10.11.11.2" ];
-      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMEFJt9V3nuMuU0BrWrDZT85SeTXQw9v4KWz664FCD7K juggeli@gmail.com";
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOKNNi9y7KLAOJIJdUNAQaiEvzZWevYhxMo5RplDCnQ";
     };
-    nixos = {
-      extraHostNames = [ "10.11.11.3"];
-      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com";
-    };
+    # nixos = {
+    #   extraHostNames = [ "10.11.11.3"];
+    #   publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com";
+    # };
   };
 
   users.users.juggeli.openssh.authorizedKeys.keys = [

@@ -2,11 +2,11 @@
 
 { 
   imports =
-    [ (modulesPath + "/profiles/qemu-guest.nix")
+    [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot = {
-    initrd.availableKernelModules = [ "xhci_pci" "ahci" "virtio_pci" "nvme" "usbhid" "sr_mod" "virtio_blk" ];
+    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" ];
     kernelModules = [ "kvm-amd" ];
     kernelParams = [
       # HACK Disables fixes for spectre, meltdown, L1TF and a number of CPU
