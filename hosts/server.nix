@@ -8,6 +8,12 @@
 {
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_5_19;
 
+  environment.systemPackages = with pkgs; [
+    btop
+    hddtemp
+    screen
+  ];
+
   nix.gc = {
     automatic = true;
     dates = "weekly";

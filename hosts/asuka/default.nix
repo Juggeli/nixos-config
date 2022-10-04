@@ -14,12 +14,14 @@
       vim.enable = true;
     };
     shell = {
-      git.enable    = true;
-      zsh.enable    = true;
+      git.enable = true;
+      zsh.enable = true;
     };
     services = {
       ssh.enable = true;
       smb.enable = true;
+      grafana.enable = true;
+      prometheus.enable = true;
     };
     theme.enable = true;
   };
@@ -28,15 +30,18 @@
   programs.ssh.startAgent = true;
   services.openssh.startWhenNeeded = true;
 
-  networking.networkmanager.enable = true;
-  # The global useDHCP flag is deprecated, therefore explicitly set to false
-  # here. Per-interface useDHCP will be mandatory in the future, so this
-  # generated config replicates the default behaviour.
-  networking.useDHCP = false;
+  networking.interfaces.enp3s0.ipv4.addresses = [{
+    address = "10.11.11.2";
+    prefixLength = 24;
+  }];
+  networking.defaultGateway = "10.11.11.1";
+  networking.nameservers = [ "1.1.1.1" ];
 
   virtualisation.docker.enable = true;
 
-  boot.kernelParams = [ "ip=10.11.11.7::10.11.11.1:255.255.255.0:asuka:enp3s0:off" ];
+  swapDevices = [{device = "/swapfile"; size = 10000;}];
+
+  boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:asuka:enp3s0:off" ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
@@ -62,6 +67,7 @@
       pool = {
         path = "/mnt/pool";
         browseable = "yes";
+        writeable = "yes";
         "read only" = "no";
         "guest ok" = "no";
         "force user" = "juggeli";

@@ -14,5 +14,7 @@ in {
       #kbdInteractiveAuthentication = false;
       #passwordAuthentication = false;
     };
+
+    networking.firewall.allowedTCPPorts = [ 22 ];
   };
 }
