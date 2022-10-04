@@ -12,6 +12,7 @@
     btop
     hddtemp
     screen
+    hdparm
   ];
 
   nix.gc = {
