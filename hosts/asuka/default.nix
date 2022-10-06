@@ -22,6 +22,7 @@
       smb.enable = true;
       grafana.enable = true;
       prometheus.enable = true;
+      plex.enable = true;
     };
     theme.enable = true;
   };

@@ -13,6 +13,7 @@
     hddtemp
     screen
     hdparm
+    vifm
   ];
 
   nix.gc = {
