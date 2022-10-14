@@ -2,10 +2,11 @@
 
 with lib;
 with lib.my;
-let 
+let
   cfg = config.modules.shell.zsh;
   configDir = config.dotfiles.configDir;
-in {
+in
+{
   options.modules.shell.zsh = with types; {
     enable = mkBoolOpt false;
   };
@@ -38,6 +39,8 @@ in {
         la = "LC_COLLATE=C exa -ablF";
         tree = "exa --tree";
         cat = "bat";
+        nixsw = "sudo nixos-rebuild switch --flake .#";
+        nixup = "sudo nixos-rebuild switch --flake .# --recreate-lock-file";
       };
       history = {
         size = 100000;
@@ -66,7 +69,7 @@ in {
     home.programs.fzf = {
       enable = true;
       enableZshIntegration = true;
-      historyWidgetOptions = ["--reverse"];
+      historyWidgetOptions = [ "--reverse" ];
     };
 
     user.packages = with pkgs; [
