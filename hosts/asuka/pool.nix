@@ -1,35 +1,34 @@
 { config, pkgs, ... }:
 let
-  # mover = pkgs.writeTextFile {
-  #   name = "mover";
-  #   destination = "/bin/mover";
-  #   executable = true;
-  #
-  #   text = ''
-  #     #!/bin/sh
-  #
-  #     if [ $# != 3 ]; then
-  #       echo "usage: $0 <cache-drive> <backing-pool> <percentage>"
-  #       exit 1
-  #     fi
-  #
-  #     CACHE="${1}"
-  #     BACKING="${2}"
-  #     PERCENTAGE=${3}
-  #
-  #     set -o errexit
-  #     while [ $(df --output=pcent "${CACHE}" | grep -v Use | cut -d'%' -f1) -gt ${PERCENTAGE} ]
-  #     do
-  #       FILE=$(find "${CACHE}" -type f -printf '%A@ %P\n' | \
-  #             sort | \
-  #             head -n 1 | \
-  #             cut -d' ' -f2-)
-  #       test -n "${FILE}"
-  #       rsync -axqHAXWESR --preallocate --remove-source-files "${CACHE}/./${FILE}" "${BACKING}/"
-  #       done
-  #   '';
-  # };
-in {
+  mover = writeShellApplication {
+    name = "mover";
+    runtimeInputs = [ rsync ];
+    text = ''
+      #!/bin/sh
+
+      if [ $# != 3 ]; then
+        echo "usage: $0 <cache-drive> <backing-pool> <percentage>"
+        exit 1
+      fi
+
+      CACHE="''${1}"
+      BACKING="''${2}"
+      PERCENTAGE=''${3}
+
+      set -o errexit
+      while [ $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1) -gt ''${PERCENTAGE} ]
+      do
+        FILE=$(find "''${CACHE}" -type f -printf '%A@ %P\n' | \
+              sort | \
+              head -n 1 | \
+              cut -d' ' -f2-)
+        test -n "''${FILE}"
+        rsync -axqHAXWESR --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
+        done
+    '';
+  };
+in
+{
   environment.systemPackages = with pkgs; [
     cryptsetup
     fuse3 # for nofail option on mergerfs (fuse defaults to fuse2)
@@ -38,6 +37,8 @@ in {
     snapraid
   ];
 
+  # /etc/crypttab: decrypt drives
+  # NOTE: keys need to be copied over manually
   environment.etc.crypttab.text = ''
     disk1 UUID=06be6db9-b208-4c7a-a276-acf0b1dc4aff /pool.key nofail,timeout=5m
     disk2 UUID=16797d20-6514-45a1-8c93-6cb5545469ef /pool.key nofail,timeout=5m
@@ -131,7 +132,7 @@ in {
     script = ''
       ${pkgs.snapraid}/bin/snapraid sync
       ${pkgs.snapraid}/bin/snapraid scrub
-      '';
+    '';
   };
   systemd.timers.snapraidMaintenance = {
     wantedBy = [ "timers.target" ];
