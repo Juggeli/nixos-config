@@ -2,51 +2,54 @@
 
 with lib;
 with lib.my;
-let cfg = config.modules.desktop.sway;
-    configDir = config.dotfiles.configDir;
+let
+  cfg = config.modules.desktop.sway;
+  configDir = config.dotfiles.configDir;
 
-    # bash script to let dbus know about important env variables and
-    # propogate them to relevent services run at the end of sway config
-    # see
-    # https://github.com/emersion/xdg-desktop-portal-wlr/wiki/"It-doesn't-work"-Troubleshooting-Checklist
-    dbus-sway-environment = pkgs.writeTextFile {
-      name = "dbus-sway-environment";
-      destination = "/bin/dbus-sway-environment";
-      executable = true;
+  # bash script to let dbus know about important env variables and
+  # propogate them to relevent services run at the end of sway config
+  # see
+  # https://github.com/emersion/xdg-desktop-portal-wlr/wiki/"It-doesn't-work"-Troubleshooting-Checklist
+  dbus-sway-environment = pkgs.writeTextFile {
+    name = "dbus-sway-environment";
+    destination = "/bin/dbus-sway-environment";
+    executable = true;
 
-      text = ''
-    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-    systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
-    systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
-        '';
-    };
+    text = ''
+      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+      systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+      systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+    '';
+  };
 
-    # currently, there is some friction between sway and gtk:
-    # https://github.com/swaywm/sway/wiki/GTK-3-settings-on-Wayland
-    # the suggested way to set gtk settings is with gsettings
-    # for gsettings to work, we need to tell it where the schemas are
-    # using the XDG_DATA_DIR environment variable
-    # run at the end of sway config
-    configure-gtk = pkgs.writeTextFile {
-        name = "configure-gtk";
-        destination = "/bin/configure-gtk";
-        executable = true;
-        text = let
-          schema = pkgs.gsettings-desktop-schemas;
-          datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-        in ''
-          export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-          gnome_schema=org.gnome.desktop.interface
-          gsettings set $gnome_schema gtk-theme 'Dracula'
-          '';
-    };
+  # currently, there is some friction between sway and gtk:
+  # https://github.com/swaywm/sway/wiki/GTK-3-settings-on-Wayland
+  # the suggested way to set gtk settings is with gsettings
+  # for gsettings to work, we need to tell it where the schemas are
+  # using the XDG_DATA_DIR environment variable
+  # run at the end of sway config
+  configure-gtk = pkgs.writeTextFile {
+    name = "configure-gtk";
+    destination = "/bin/configure-gtk";
+    executable = true;
+    text =
+      let
+        schema = pkgs.gsettings-desktop-schemas;
+        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+      in
+      ''
+        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+        gnome_schema=org.gnome.desktop.interface
+        gsettings set $gnome_schema gtk-theme 'Dracula'
+      '';
+  };
 
-    my-python-packages = python-packages: with python-packages; [
-        i3ipc
-    ];
-    python-with-packages = pkgs.python3.withPackages my-python-packages;
-
-in {
+  my-python-packages = python-packages: with python-packages; [
+    i3ipc
+  ];
+  python-with-packages = pkgs.python3.withPackages my-python-packages;
+in
+{
   options.modules.desktop.sway = {
     enable = mkBoolOpt false;
     # wallpaper = mkOpt' (types.either types.str types.path) "";
@@ -54,33 +57,26 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.sway = {
-      enable = true;
-      extraOptions = [
-        "--unsupported-gpu"
-      ];
-      extraPackages = with pkgs; [ 
-        swayidle
-        swaylock
-        waybar
-        rofi-wayland
-        my.stacki3
-        glib
-        gnome.adwaita-icon-theme # Default gnome cursors
-        dbus-sway-environment
-        configure-gtk
-        grim
-        slurp
-        wl-clipboard
-        mako
-        vulkan-tools
-        vulkan-validation-layers
-        swaybg
-        wl-gammactl
-        python-with-packages
-      ];
-      wrapperFeatures.gtk = true;
-    };
+    home.packages = with pkgs; [
+      swayidle
+      swaylock
+      waybar
+      rofi-wayland
+      my.stacki3
+      glib
+      gnome.adwaita-icon-theme # Default gnome cursors
+      dbus-sway-environment
+      configure-gtk
+      grim
+      slurp
+      wl-clipboard
+      mako
+      vulkan-tools
+      vulkan-validation-layers
+      swaybg
+      wl-gammactl
+      python-with-packages
+    ];
     environment.variables = {
       XDG_SESSION_TYPE = "wayland";
       XDG_CURRENT_DESKTOP = "sway";
@@ -103,9 +99,6 @@ in {
     xdg.portal = {
       enable = true;
       wlr.enable = true;
-      # gtk portal needed to make gtk apps happy
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-      gtkUsePortal = true;
     };
 
     home.programs.mako = {
@@ -126,8 +119,21 @@ in {
       '';
     };
 
+    security.pam.services.swaylock = {
+      text = ''
+        auth include login
+      '';
+    };
+
     home.sway = {
       enable = true;
+      extraOptions = [
+        "--unsupported-gpu"
+      ];
+      wrapperFeatures = {
+        base = true;
+        gtk = true;
+      };
       config = rec {
         modifier = "Mod4";
         left = "h";
@@ -139,7 +145,7 @@ in {
         input = {
           "type:keyboard" = { xkb_layout = "us,fi"; xkb_options = "grp:caps_toggle"; };
         };
-        bars = [];
+        bars = [ ];
         gaps = { top = 450; left = 500; right = 500; inner = 6; };
         window.commands = [
           { command = "floating enable"; criteria = { app_id = "pavucontrol"; }; }
@@ -154,29 +160,30 @@ in {
           '';
         };
         startup = [
-          { command = "${pkgs.swayidle}/bin/swayidle -w timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -c 000000'";}
+          { command = "${pkgs.swayidle}/bin/swayidle -w timeout 300 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
           { command = "${pkgs.waybar}/bin/waybar"; }
           { command = "${pkgs.my.stacki3}/bin/stacki3"; }
           { command = "${python-with-packages}/bin/python ~/.config/dotfiles/config/autodim.py"; }
           { command = "~/koodi/slurp/asbl.sh"; }
         ];
         output = {
-            DP-1 = {
-                mode = "3840x2160@120hz";
-                # bg = "#000000 solid_color";
-            };
+          DP-1 = {
+            mode = "3840x2160@120hz";
+            # bg = "#000000 solid_color";
+          };
         };
       };
       extraConfig = ''
-          exec dbus-sway-environment
-          exec configure-gtk
-          include sway.theme
-          output HDMI-A-1 disable
-          output DP-1 bg ~/.config/dotfiles/config/bg1.jpg fill
+        exec dbus-sway-environment
+        exec configure-gtk
+        include sway.theme
+        output HDMI-A-1 disable
+        output DP-1 bg ~/.config/dotfiles/config/bg1.jpg fill
       '';
     };
 
-    home.file = let mod = "Mod4"; in {
+    home.file = let mod = "Mod4"; in
+      {
         ".config/waybar/config".text = ''
           {
             "layer": "top",
@@ -190,6 +197,6 @@ in {
             "modules-right": ["pulseaudio", "tray", "clock"],
           }
         '';
-    };
+      };
   };
 }

@@ -2,10 +2,11 @@
 
 with lib;
 with lib.my;
-let 
+let
   cfg = config.modules.desktop.generic;
   inherit (inputs) webcord-overlay;
-in {
+in
+{
   options.modules.desktop.generic = {
     enable = mkBoolOpt false;
   };
@@ -24,6 +25,7 @@ in {
       ffmpeg
       ventoy-bin
       bashmount
+      neovide
     ];
 
     fonts = {
@@ -41,7 +43,7 @@ in {
       settings = {
         default_session = {
           command = ''
-	     ${pkgs.greetd.tuigreet}/bin/tuigreet -r -t --cmd "${pkgs.sway}/bin/.sway-wrapped --unsupported-gpu"
+            	     ${pkgs.greetd.tuigreet}/bin/tuigreet -r -t --cmd "${pkgs.sway}/bin/.sway-wrapped --unsupported-gpu"
           '';
           user = "greeter";
         };
@@ -50,23 +52,23 @@ in {
 
     # services.xserver.enable = true;
     # services.xserver.displayManager.sddm = {
-      # enable = true;
+    # enable = true;
     # };
-    
+
     user.extraGroups = [ "audio" "video" ];
 
     # Resolve .local domains
     services.avahi = {
+      enable = true;
+      nssmdns = true;
+      publish = {
         enable = true;
-        nssmdns = true;
-        publish = {
-          enable = true;
-          addresses = true;
-          domain = true;
-          hinfo = true;
-          userServices = true;
-          workstation = true;
-        };
+        addresses = true;
+        domain = true;
+        hinfo = true;
+        userServices = true;
+        workstation = true;
+      };
     };
 
     # Try really hard to get QT to respect my GTK theme.

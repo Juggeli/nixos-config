@@ -2,9 +2,10 @@
 
 with lib;
 with lib.my;
-let 
+let
   cfg = config.modules.editors.vim;
-in {
+in
+{
   options.modules.editors.vim = {
     enable = mkBoolOpt false;
   };
@@ -16,11 +17,13 @@ in {
       gcc
       nodejs
       gnumake
+      lazygit
+      ripgrep
     ];
 
     home.programs.zsh.shellAliases = {
       vim = "nvim";
-      v   = "nvim";
+      v = "nvim";
     };
   };
 }
