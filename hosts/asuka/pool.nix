@@ -38,15 +38,6 @@ in {
     snapraid
   ];
 
-  # boot.initrd.luks.devices = {
-  #   disk1.device = "/dev/disk/by-uuid/06be6db9-b208-4c7a-a276-acf0b1dc4aff";
-  #   disk2.device = "/dev/disk/by-uuid/16797d20-6514-45a1-8c93-6cb5545469ef";
-  #   disk3.device = "/dev/disk/by-uuid/62eb66ea-9239-4784-8d33-7a1ba4d4faa0";
-  #   parity.device = "/dev/disk/by-uuid/62e6dad0-7f95-45ff-adaf-598a75ffcb40";
-  # };
-
-  # /etc/crypttab: decrypt drives
-  # NOTE: keys need to be copied over manually
   environment.etc.crypttab.text = ''
     disk1 UUID=06be6db9-b208-4c7a-a276-acf0b1dc4aff /pool.key nofail,timeout=5m
     disk2 UUID=16797d20-6514-45a1-8c93-6cb5545469ef /pool.key nofail,timeout=5m
@@ -107,7 +98,7 @@ in {
         "use_ino"
         "cache.files=partial"
         "dropcacheonclose=true"
-        "category.create=lfs"
+        "category.create=epmfs"
         "moveonenospc=true"
       ];
     };
@@ -131,23 +122,23 @@ in {
     data disk3 /mnt/disk3
   '';
 
-  # systemd.services.snapraidMaintenance = {
-  #   description = "sync and scrub snapraid";
-  #   serviceConfig = {
-  #     User = "juggeli";
-  #     Type = "oneshot";
-  #   };
-  #   script = ''
-  #     ${pkgs.snapraid}/bin/snapraid sync
-  #     ${pkgs.snapraid}/bin/snapraid scrub
-  #     '';
-  # };
-  # systemd.timers.snapraidMaintenance = {
-  #   wantedBy = [ "timers.target" ];
-  #   partOf = [ "snapraidMaintenance.service" ];
-  #   timerConfig = {
-  #     OnCalendar = "*-*-* 6:00:00";
-  #     Unit = "snapraidMaintenance.service";
-  #   };
-  # };
+  systemd.services.snapraidMaintenance = {
+    description = "sync and scrub snapraid";
+    serviceConfig = {
+      User = "juggeli";
+      Type = "oneshot";
+    };
+    script = ''
+      ${pkgs.snapraid}/bin/snapraid sync
+      ${pkgs.snapraid}/bin/snapraid scrub
+      '';
+  };
+  systemd.timers.snapraidMaintenance = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "snapraidMaintenance.service" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 6:00:00";
+      Unit = "snapraidMaintenance.service";
+    };
+  };
 }

@@ -23,6 +23,7 @@
       grafana.enable = true;
       prometheus.enable = true;
       plex.enable = true;
+      qbittorrent.enable = true;
     };
     theme.enable = true;
   };
