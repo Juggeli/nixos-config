@@ -1,8 +1,9 @@
 { config, lib, pkgs, modulesPath, ... }:
 
-{ 
+{
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot = {
@@ -29,6 +30,7 @@
     };
     logitech.enable = true;
     nvidia.enable = true;
+    liquidctl.enable = true;
   };
 
   # CPU
@@ -56,7 +58,7 @@
       fsType = "vfat";
     };
   };
-  swapDevices = [];
+  swapDevices = [ ];
 
   hardware.enableAllFirmware = true;
 }
