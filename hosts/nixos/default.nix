@@ -31,12 +31,15 @@
     };
     editors = {
       default = "nvim";
-      emacs.enable = true;
+      emacs = {
+        enable = true;
+        doom.enable = true;
+      };
       vim.enable = true;
     };
     shell = {
-      git.enable    = true;
-      zsh.enable    = true;
+      git.enable = true;
+      zsh.enable = true;
     };
     services = {
       ssh.enable = true;
@@ -50,11 +53,13 @@
   fileSystems."/mnt/shares" = {
     device = "//asuka/pool";
     fsType = "cifs";
-    options = let
+    options =
+      let
         # this line prevents hanging on network split
         automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
 
-      in ["${automount_opts},credentials=/etc/nixos/smb-secrets,uid=1001,gid=100"];
+      in
+      [ "${automount_opts},credentials=/etc/nixos/smb-secrets,uid=1001,gid=100" ];
   };
 
   ## Local config

@@ -1,7 +1,7 @@
 {
   description = "Jukka's Nixos config";
 
-  inputs = 
+  inputs =
     {
       # Core dependencies.
       # nixpkgs.url = "github:Juggeli/nixpkgs/nixpkgs-unstable";
@@ -13,7 +13,7 @@
       };
 
       # Extras
-      emacs-overlay.url  = "github:nix-community/emacs-overlay";
+      emacs-overlay.url = "github:nix-community/emacs-overlay";
       webcord-overlay = {
         url = "github:fufexan/webcord-flake";
         inputs.nixpkgs.follows = "nixpkgs";
@@ -36,11 +36,12 @@
         config.allowUnfree = true;
         overlays = extraOverlays;
       };
-      pkgs  = mkPkgs nixpkgs [ self.overlay ];
+      pkgs = mkPkgs nixpkgs [ self.overlay ];
 
       lib = nixpkgs.lib.extend
         (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
-    in {
+    in
+    {
       lib = lib.my;
 
       overlay =
@@ -49,12 +50,12 @@
         };
 
       packages."${system}" =
-        mapModules ./packages (p: pkgs.callPackage p {});
+        mapModules ./packages (p: pkgs.callPackage p { });
 
       nixosModules =
         { dotfiles = import ./.; } // mapModulesRec ./modules import;
 
       nixosConfigurations =
-        mapHosts ./hosts {};
+        mapHosts ./hosts { };
     };
 }
