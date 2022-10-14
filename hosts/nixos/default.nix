@@ -50,7 +50,7 @@
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
 
   environment.systemPackages = [ pkgs.cifs-utils ];
-  fileSystems."/mnt/shares" = {
+  fileSystems."/mnt/pool" = {
     device = "//asuka/pool";
     fsType = "cifs";
     options =
