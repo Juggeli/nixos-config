@@ -1,11 +1,10 @@
 { config, pkgs, ... }:
 let
-  mover = writeShellApplication {
+  mover = pkgs.writeShellApplication {
     name = "mover";
-    runtimeInputs = [ rsync ];
+    runtimeInputs = [ pkgs.rsync ];
+    checkPhase = "";
     text = ''
-      #!/bin/sh
-
       if [ $# != 3 ]; then
         echo "usage: $0 <cache-drive> <backing-pool> <percentage>"
         exit 1
@@ -15,15 +14,23 @@ let
       BACKING="''${2}"
       PERCENTAGE=''${3}
 
-      set -o errexit
+      echo "cache percentage $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1)"
+      echo "target ''${PERCENTAGE}"
+
       while [ $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1) -gt ''${PERCENTAGE} ]
       do
-        FILE=$(find "''${CACHE}" -type f -printf '%A@ %P\n' | \
+        echo "yee"
+        FILE=$(find "''${CACHE}" -type f \
+              -not -path "*/appdata/*" \
+              -not -path "*/.snapraid*" \
+              -not -path "*/.vifm*" \
+              -printf '%A@ %P\n' | \
               sort | \
               head -n 1 | \
               cut -d' ' -f2-)
+        echo "got file ''${FILE}"
         test -n "''${FILE}"
-        rsync -axqHAXWESR --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
+        rsync -axvHAXWESR --dry-run --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
         done
     '';
   };
@@ -35,6 +42,7 @@ in
     mergerfs
     mergerfs-tools
     snapraid
+    mover
   ];
 
   # /etc/crypttab: decrypt drives

@@ -24,6 +24,8 @@
       prometheus.enable = true;
       plex.enable = true;
       qbittorrent.enable = true;
+      jackett.enable = true;
+      sonarr.enable = true;
     };
     theme.enable = true;
   };
@@ -41,7 +43,7 @@
 
   virtualisation.docker.enable = true;
 
-  swapDevices = [{device = "/swapfile"; size = 10000;}];
+  swapDevices = [{ device = "/swapfile"; size = 10000; }];
 
   boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:asuka:enp3s0:off" ];
 
