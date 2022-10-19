@@ -19,6 +19,8 @@ in
       gnumake
       lazygit
       ripgrep
+      rust-analyzer
+      rustc
     ];
 
     home.programs.zsh.shellAliases = {

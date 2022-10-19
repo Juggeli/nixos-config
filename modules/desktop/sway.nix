@@ -43,17 +43,10 @@ let
         gsettings set $gnome_schema gtk-theme 'Dracula'
       '';
   };
-
-  my-python-packages = python-packages: with python-packages; [
-    i3ipc
-  ];
-  python-with-packages = pkgs.python3.withPackages my-python-packages;
 in
 {
   options.modules.desktop.sway = {
     enable = mkBoolOpt false;
-    # wallpaper = mkOpt' (types.either types.str types.path) "";
-    # wallpaper = mkOpt types.path ./config/bg1.jpg;
   };
 
   config = mkIf cfg.enable {
@@ -62,7 +55,6 @@ in
       swaylock
       waybar
       rofi-wayland
-      my.stacki3
       glib
       gnome.adwaita-icon-theme # Default gnome cursors
       dbus-sway-environment
@@ -74,8 +66,7 @@ in
       vulkan-tools
       vulkan-validation-layers
       swaybg
-      wl-gammactl
-      python-with-packages
+      autotiling-rs
     ];
     environment.variables = {
       XDG_SESSION_TYPE = "wayland";
@@ -160,11 +151,9 @@ in
           '';
         };
         startup = [
-          { command = "${pkgs.swayidle}/bin/swayidle -w timeout 300 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
+          { command = "${pkgs.swayidle}/bin/swayidle -w timeout 600 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
           { command = "${pkgs.waybar}/bin/waybar"; }
-          { command = "${pkgs.my.stacki3}/bin/stacki3"; }
-          { command = "${python-with-packages}/bin/python ~/.config/dotfiles/config/autodim.py"; }
-          { command = "~/koodi/slurp/asbl.sh"; }
+          { command = "${pkgs.autotiling-rs}/bin/autotiling-rs"; }
         ];
         output = {
           DP-1 = {

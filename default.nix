@@ -18,10 +18,12 @@ with lib.my;
   nixpkgs.config.allowUnfree = true;
   environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
   nix =
-    let filteredInputs = filterAttrs (n: _: n != "self") inputs;
-        nixPathInputs  = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
-        registryInputs = mapAttrs (_: v: { flake = v; }) filteredInputs;
-    in {
+    let
+      filteredInputs = filterAttrs (n: _: n != "self") inputs;
+      nixPathInputs = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
+      registryInputs = mapAttrs (_: v: { flake = v; }) filteredInputs;
+    in
+    {
       package = pkgs.nixVersions.stable;
       extraOptions = "experimental-features = nix-command flakes recursive-nix";
       nixPath = nixPathInputs ++ [
@@ -48,14 +50,14 @@ with lib.my;
 
   # Use the latest kernel
   boot = {
-    kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_5_19;
+    kernelPackages = mkDefault pkgs.linuxKernel.packages.linux_6_0;
     loader = {
       efi.canTouchEfiVariables = mkDefault true;
       systemd-boot.configurationLimit = 10;
       systemd-boot.enable = mkDefault true;
     };
   };
-  
+
   documentation = {
     enable = false;
     doc.enable = false;
@@ -65,13 +67,9 @@ with lib.my;
 
   # Just the bear necessities...
   environment.systemPackages = with pkgs; [
-    bind
-    cached-nix-shell
     git
-    vim
     wget
-    gnumake
     unzip
-    nix-prefetch-scripts
+    # nix-prefetch-scripts
   ];
 }

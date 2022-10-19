@@ -4,7 +4,6 @@
   inputs =
     {
       # Core dependencies.
-      # nixpkgs.url = "github:Juggeli/nixpkgs/nixpkgs-unstable";
       nixpkgs.url = "nixpkgs/nixos-unstable";
 
       home-manager = {
@@ -16,11 +15,6 @@
       emacs-overlay.url = "github:nix-community/emacs-overlay";
       webcord-overlay = {
         url = "github:fufexan/webcord-flake";
-        inputs.nixpkgs.follows = "nixpkgs";
-      };
-
-      hyprland = {
-        url = "github:hyprwm/Hyprland";
         inputs.nixpkgs.follows = "nixpkgs";
       };
     };

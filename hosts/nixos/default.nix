@@ -18,6 +18,7 @@
       };
       media = {
         mpv.enable = true;
+        ffmpeg.enable = true;
       };
       term = {
         default = "alacritty";
@@ -25,9 +26,7 @@
       };
       sway = {
         enable = true;
-        # wallpaper = ./config/bg1.jpg; 
       };
-      hyprland.enable = false;
     };
     editors = {
       default = "nvim";
@@ -48,6 +47,8 @@
   };
 
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+
+  virtualisation.docker.enable = true;
 
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/pool" = {

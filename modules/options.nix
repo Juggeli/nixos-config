@@ -4,7 +4,7 @@ with lib;
 with lib.my;
 {
   options = with types; {
-    user = mkOpt attrs {};
+    user = mkOpt attrs { };
 
     dotfiles = {
       dir = mkOpt path
@@ -12,44 +12,47 @@ with lib.my;
           "${config.user.home}/.config/dotfiles"
           "/etc/dotfiles"
         ]);
-      binDir     = mkOpt path "${config.dotfiles.dir}/bin";
-      configDir  = mkOpt path "${config.dotfiles.dir}/config";
+      binDir = mkOpt path "${config.dotfiles.dir}/bin";
+      configDir = mkOpt path "${config.dotfiles.dir}/config";
       modulesDir = mkOpt path "${config.dotfiles.dir}/modules";
-      themesDir  = mkOpt path "${config.dotfiles.modulesDir}/themes";
+      themesDir = mkOpt path "${config.dotfiles.modulesDir}/themes";
     };
 
     home = {
-      file       = mkOpt' attrs {} "Files to place directly in $HOME";
+      file = mkOpt' attrs { } "Files to place directly in $HOME";
       # configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
-      dataFile   = mkOpt' attrs {} "Files to place in $XDG_DATA_HOME";
-      systemDirs = mkOpt' attrs {} "Files to plaec in system dir";
-      gtk        = mkOpt' attrs {} "GTK theme";
-      sway       = mkOpt' attrs {} "Sway config";
-      programs   = mkOpt' attrs {} "Home-manager programs";
-      packages   = mkOpt' attrs [] "Home-manager packages";
-      sessionVariables = mkOpt' attrs {} "Home-manager session variables";
+      dataFile = mkOpt' attrs { } "Files to place in $XDG_DATA_HOME";
+      systemDirs = mkOpt' attrs { } "Files to plaec in system dir";
+      gtk = mkOpt' attrs { } "GTK theme";
+      sway = mkOpt' attrs { } "Sway config";
+      programs = mkOpt' attrs { } "Home-manager programs";
+      packages = mkOpt' attrs [ ] "Home-manager packages";
+      sessionVariables = mkOpt' attrs { } "Home-manager session variables";
     };
 
     xdg = {
-      configFile = mkOpt' attrs {} "Home-manager xdg conf file";
+      configFile = mkOpt' attrs { } "Home-manager xdg conf file";
     };
 
     env = mkOption {
       type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
       apply = mapAttrs
-        (n: v: if isList v
-               then concatMapStringsSep ":" (x: toString x) v
-               else (toString v));
-      default = {};
+        (n: v:
+          if isList v
+          then concatMapStringsSep ":" (x: toString x) v
+          else (toString v));
+      default = { };
       description = "TODO";
     };
   };
 
   config = {
     user =
-      let user = builtins.getEnv "USER";
-          name = if elem user [ "" "root" ] then "juggeli" else user;
-      in {
+      let
+        user = builtins.getEnv "USER";
+        name = if elem user [ "" "root" ] then "juggeli" else user;
+      in
+      {
         inherit name;
         description = "The primary user account";
         extraGroups = [ "wheel" ];
@@ -84,20 +87,22 @@ with lib.my;
         gtk = mkAliasDefinitions options.home.gtk;
         xdg = {
           configFile = mkAliasDefinitions options.xdg.configFile;
-          dataFile   = mkAliasDefinitions options.home.dataFile;
+          dataFile = mkAliasDefinitions options.home.dataFile;
           systemDirs = mkAliasDefinitions options.home.systemDirs;
         };
         wayland.windowManager.sway = mkAliasDefinitions options.home.sway;
         programs = mkAliasDefinitions options.home.programs;
+        manual.manpages.enable = false;
       };
     };
 
     users.users.${config.user.name} = mkAliasDefinitions options.user;
 
-    nix.settings = let users = [ "root" config.user.name ]; in {
-      trusted-users = users;
-      allowed-users = users;
-    };
+    nix.settings = let users = [ "root" config.user.name ]; in
+      {
+        trusted-users = users;
+        allowed-users = users;
+      };
 
     # must already begin with pre-existing PATH. Also, can't use binDir here,
     # because it contains a nix store path.

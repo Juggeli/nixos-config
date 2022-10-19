@@ -18,14 +18,8 @@ in
       xdg-utils
       hydrus
       vifm
-      neovim
-      trash-cli
       webcord-overlay.packages.${pkgs.system}.default
       btop
-      ffmpeg
-      ventoy-bin
-      bashmount
-      neovide
     ];
 
     fonts = {
@@ -50,12 +44,7 @@ in
       };
     };
 
-    # services.xserver.enable = true;
-    # services.xserver.displayManager.sddm = {
-    # enable = true;
-    # };
-
-    user.extraGroups = [ "audio" "video" ];
+    user.extraGroups = [ "audio" "video" "docker" ];
 
     # Resolve .local domains
     services.avahi = {
@@ -79,6 +68,9 @@ in
     xdg.mime = {
       enable = true;
     };
+
+    # For rust packages 
+    env.PATH = [ "$HOME/.cargo/bin" ];
 
     # Clean up leftovers, as much as we can
     system.userActivationScripts.cleanupHome = ''
