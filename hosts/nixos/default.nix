@@ -50,6 +50,8 @@
 
   virtualisation.docker.enable = true;
 
+  boot.loader.systemd-boot.memtest86.enable = true;
+
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/pool" = {
     device = "//asuka/pool";

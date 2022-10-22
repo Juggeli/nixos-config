@@ -20,7 +20,10 @@ in
       vifm
       webcord-overlay.packages.${pkgs.system}.default
       btop
+      obsidian
     ];
+
+    services.flatpak.enable = true;
 
     fonts = {
       fontDir.enable = true;
