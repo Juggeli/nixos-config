@@ -2,10 +2,11 @@
 
 with lib;
 with lib.my;
-let 
-cfg = config.modules.hardware.nvidia;
-nvidiaPackage = config.boot.kernelPackages.nvidiaPackages.beta;
-in {
+let
+  cfg = config.modules.hardware.nvidia;
+  nvidiaPackage = config.boot.kernelPackages.nvidiaPackages.beta;
+in
+{
   options.modules.hardware.nvidia = {
     enable = mkBoolOpt false;
   };
@@ -28,14 +29,14 @@ in {
       };
     };
 
-    environment.variables = {
-      GBM_BACKEND = "nvidia-drm";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      WLR_RENDERER = "vulkan";
-      WLR_NO_HARDWARE_CURSORS = "1";
-      # WLR_DRM_NO_ATOMIC = "1";
-      LIBVA_DRIVER_NAME = "nvidia";
-      EGL_PLATFORM = "wayland";
-    };
+    # environment.variables = {
+    #   GBM_BACKEND = "nvidia-drm";
+    #   __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    #   WLR_RENDERER = "vulkan";
+    #   WLR_NO_HARDWARE_CURSORS = "1";
+    #   # WLR_DRM_NO_ATOMIC = "1";
+    #   LIBVA_DRIVER_NAME = "nvidia";
+    #   EGL_PLATFORM = "wayland";
+    # };
   };
 }

@@ -21,6 +21,7 @@ in
       webcord-overlay.packages.${pkgs.system}.default
       btop
       obsidian
+      go
     ];
 
     services.flatpak.enable = true;
@@ -33,18 +34,6 @@ in
         dejavu_fonts
         symbola
       ];
-    };
-
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = ''
-            	     ${pkgs.greetd.tuigreet}/bin/tuigreet -r -t --cmd "${pkgs.sway}/bin/.sway-wrapped --unsupported-gpu"
-          '';
-          user = "greeter";
-        };
-      };
     };
 
     user.extraGroups = [ "audio" "video" "docker" ];

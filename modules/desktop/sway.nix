@@ -68,17 +68,28 @@ in
       swaybg
       autotiling-rs
     ];
-    environment.variables = {
-      XDG_SESSION_TYPE = "wayland";
-      XDG_CURRENT_DESKTOP = "sway";
-      GDK_BACKEND = "wayland";
-      GTK_THEME = "Dracula";
-      SDL_VIDEODRIVER = "wayland";
-      QT_QPA_PLATFORM = "wayland";
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      _JAVA_AWT_WM_NONREPARENTING = "1";
-      NIXOS_OZONE_WL = "1";
-    };
+    # environment.variables = {
+    #   XDG_SESSION_TYPE = "wayland";
+    #   XDG_CURRENT_DESKTOP = "sway";
+    #   GDK_BACKEND = "wayland";
+    #   SDL_VIDEODRIVER = "wayland";
+    #   QT_QPA_PLATFORM = "wayland";
+    #   QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    #   _JAVA_AWT_WM_NONREPARENTING = "1";
+    #   NIXOS_OZONE_WL = "1";
+    # };
+
+    # services.greetd = {
+    #   enable = true;
+    #   settings = {
+    #     default_session = {
+    #       command = ''
+    #         	     ${pkgs.greetd.tuigreet}/bin/tuigreet -r -t --cmd "${pkgs.sway}/bin/.sway-wrapped --unsupported-gpu"
+    #       '';
+    #       user = "greeter";
+    #     };
+    #   };
+    # };
 
     # xdg-desktop-portal works by exposing a series of D-Bus interfaces
     # known as portals under a well-known name
@@ -90,7 +101,7 @@ in
     xdg.portal = {
       enable = true;
       wlr.enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
 
     home.programs.mako = {
@@ -122,6 +133,23 @@ in
       extraOptions = [
         "--unsupported-gpu"
       ];
+      extraSessionCommands = ''
+        export XDG_SESSION_TYPE=wayland
+        export XDG_CURRENT_DESKTOP=sway
+        export GDK_BACKEND=wayland
+        export SDL_VIDEODRIVER=wayland
+        export QT_QPA_PLATFORM=wayland
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+        export _JAVA_AWT_WM_NONREPARENTING=1
+        export NIXOS_OZONE_WL=1
+        export GBM_BACKEND=nvidia-drm
+        export __GLX_VENDOR_LIBRARY_NAME=nvidia
+        export WLR_RENDERER=vulkan
+        export WLR_NO_HARDWARE_CURSORS=1
+        # export WLR_DRM_NO_ATOMIC=1
+        export LIBVA_DRIVER_NAME=nvidia
+        export EGL_PLATFORM=wayland
+      '';
       wrapperFeatures = {
         base = true;
         gtk = true;
@@ -159,7 +187,6 @@ in
         output = {
           DP-1 = {
             mode = "3840x2160@120hz";
-            # bg = "#000000 solid_color";
           };
         };
       };
@@ -169,24 +196,85 @@ in
         include sway.theme
         output HDMI-A-1 disable
         output DP-1 bg ~/.config/dotfiles/config/bg1.jpg fill
+        default_border pixel 3
+        default_floating_border pixel 3
+        client.focused #98be65 #98be65 #bbc2cf #ff6c6b
+        client.unfocused #3f444a #3f444a #bbc2cf #ff6c6b
+        client.focused_inactive #3f444a #3f444a #bbc2cf #ff6c6b
       '';
     };
 
-    home.file = let mod = "Mod4"; in
+    home.file.".config/waybar/config".text = ''
       {
-        ".config/waybar/config".text = ''
-          {
-            "layer": "top",
-            "position": "bottom",
-            "margin-top": 6,
-            "margin-left": 1200,
-            "margin-right": 1200,
-            "margin-bottom": 50,
-            "modules-left": ["sway/workspaces"],
-            "modules-center": ["sway/window"],
-            "modules-right": ["pulseaudio", "tray", "clock"],
-          }
-        '';
-      };
+        "layer": "top",
+        "position": "bottom",
+        "margin-top": 6,
+        "margin-left": 1200,
+        "margin-right": 1200,
+        "margin-bottom": 50,
+        "modules-left": ["sway/workspaces"],
+        "modules-center": ["sway/window"],
+        "modules-right": ["pulseaudio", "tray", "clock"],
+      }
+    '';
+    home.file.".config/waybar/style.css".text = ''
+      * {
+        transition: none;
+        box-shadow: none;
+      }
+
+      #waybar {
+        color: #bbc2cf;
+        background: #282c34;
+      }
+
+      #workspaces {
+        margin: 0 4px;
+      }
+
+      #workspaces button {
+        margin: 4px 0;
+        padding: 0 6px;
+        color: #bbc2cf;
+        border: none;
+        border-radius: 0;
+      }
+
+      #workspaces button:hover {
+        background: #5B6268;
+      }
+
+      #workspaces button.visible {
+      }
+
+      #workspaces button.focused {
+        border-radius: 4px;
+        background-color: #3f444a;
+      }
+
+      #tray {
+        margin: 4px 16px 4px 4px;
+        border-radius: 4px;
+        background-color: #3f444a;
+      }
+
+      #tray *:first-child {
+        border-left: none;
+      }
+
+      #mode, #battery, #cpu, #memory, #network, #pulseaudio, #idle_inhibitor, #backlight, #custom-storage, #custom-spotify, #custom-weather, #custom-mail, #clock, #temperature {
+        margin: 4px 2px;
+        padding: 0 6px;
+        background-color: #3f444a;
+        border-radius: 4px;
+        min-width: 20px;
+      }
+
+      #clock {
+        margin-left: 12px;
+        margin-right: 4px;
+        background-color: transparent;
+      }
+    '';
   };
 }

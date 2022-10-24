@@ -9,6 +9,7 @@
   modules = {
     desktop = {
       generic.enable = true;
+      fonts.enable = true;
       apps = {
         rofi.enable = true;
       };
@@ -24,9 +25,8 @@
         default = "alacritty";
         alacritty.enable = true;
       };
-      sway = {
-        enable = true;
-      };
+      sway.enable = true;
+      gnome.enable = true;
     };
     editors = {
       default = "nvim";
@@ -43,7 +43,6 @@
     services = {
       ssh.enable = true;
     };
-    theme.enable = true;
   };
 
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
