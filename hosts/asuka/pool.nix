@@ -1,39 +1,5 @@
 { config, pkgs, ... }:
 let
-  mover = pkgs.writeShellApplication {
-    name = "mover";
-    runtimeInputs = [ pkgs.rsync ];
-    checkPhase = "";
-    text = ''
-      if [ $# != 3 ]; then
-        echo "usage: $0 <cache-drive> <backing-pool> <percentage>"
-        exit 1
-      fi
-
-      CACHE="''${1}"
-      BACKING="''${2}"
-      PERCENTAGE=''${3}
-
-      echo "cache percentage $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1)"
-      echo "target ''${PERCENTAGE}"
-
-      while [ $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1) -gt ''${PERCENTAGE} ]
-      do
-        echo "yee"
-        FILE=$(find "''${CACHE}" -type f \
-              -not -path "*/appdata/*" \
-              -not -path "*/.snapraid*" \
-              -not -path "*/.vifm*" \
-              -printf '%A@ %P\n' | \
-              sort | \
-              head -n 1 | \
-              cut -d' ' -f2-)
-        echo "got file ''${FILE}"
-        test -n "''${FILE}"
-        rsync -axvHAXWESR --dry-run --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
-        done
-    '';
-  };
 in
 {
   environment.systemPackages = with pkgs; [
@@ -42,7 +8,7 @@ in
     mergerfs
     mergerfs-tools
     snapraid
-    mover
+    python3 # to run mover script
   ];
 
   # /etc/crypttab: decrypt drives
@@ -59,28 +25,28 @@ in
       device = "/dev/mapper/disk1";
       fsType = "btrfs";
       options =
-        [ "defaults" "noatime" "compress-force=zstd" "nofail" "autodefrag" ];
+        [ "defaults" "compress-force=zstd" "nofail" "autodefrag" ];
     };
 
     "/mnt/disk2" = {
       device = "/dev/mapper/disk2";
       fsType = "btrfs";
       options =
-        [ "defaults" "noatime" "compress-force=zstd" "nofail" "autodefrag" ];
+        [ "defaults" "compress-force=zstd" "nofail" "autodefrag" ];
     };
 
     "/mnt/disk3" = {
       device = "/dev/mapper/disk3";
       fsType = "btrfs";
       options =
-        [ "defaults" "noatime" "compress-force=zstd" "nofail" "autodefrag" ];
+        [ "defaults" "compress-force=zstd" "nofail" "autodefrag" ];
     };
 
     "/mnt/parity" = {
       device = "/dev/mapper/parity";
       fsType = "btrfs";
       options =
-        [ "defaults" "noatime" "compress-force=zstd" "nofail" "autodefrag" ];
+        [ "defaults" "compress-force=zstd" "nofail" "autodefrag" ];
     };
 
     "/mnt/slowpool" = {
