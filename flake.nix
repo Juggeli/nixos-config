@@ -19,7 +19,7 @@
       };
     };
 
-  outputs = inputs @ { self, nixpkgs, nixpkgs-unstable, ... }:
+  outputs = inputs @ { self, nixpkgs, ... }:
     let
       inherit (lib.my) mapModules mapModulesRec mapHosts;
 
