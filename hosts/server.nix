@@ -6,7 +6,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_5_19;
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_0;
 
   environment.systemPackages = with pkgs; [
     btop
@@ -14,6 +14,8 @@
     screen
     hdparm
     vifm
+    powertop
+    smartmontools
   ];
 
   nix.gc = {
