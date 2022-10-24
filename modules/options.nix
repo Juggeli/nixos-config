@@ -18,32 +18,7 @@ with lib.my;
       themesDir = mkOpt path "${config.dotfiles.modulesDir}/themes";
     };
 
-    home = {
-      file = mkOpt' attrs { } "Files to place directly in $HOME";
-      # configFile = mkOpt' attrs {} "Files to place in $XDG_CONFIG_HOME";
-      dataFile = mkOpt' attrs { } "Files to place in $XDG_DATA_HOME";
-      systemDirs = mkOpt' attrs { } "Files to plaec in system dir";
-      gtk = mkOpt' attrs { } "GTK theme";
-      sway = mkOpt' attrs { } "Sway config";
-      programs = mkOpt' attrs { } "Home-manager programs";
-      packages = mkOpt' attrs [ ] "Home-manager packages";
-      sessionVariables = mkOpt' attrs { } "Home-manager session variables";
-    };
-
-    xdg = {
-      configFile = mkOpt' attrs { } "Home-manager xdg conf file";
-    };
-
-    env = mkOption {
-      type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
-      apply = mapAttrs
-        (n: v:
-          if isList v
-          then concatMapStringsSep ":" (x: toString x) v
-          else (toString v));
-      default = { };
-      description = "TODO";
-    };
+    hm = mkOpt' attrs { } "Home manager";
   };
 
   config = {
@@ -66,35 +41,10 @@ with lib.my;
     # nixos-rebuild build-vm to work.
     home-manager = {
       useUserPackages = true;
-
-      # I only need a subset of home-manager's capabilities. That is, access to
-      # its home.file, home.xdg.configFile and home.xdg.dataFile so I can deploy
-      # files easily to my $HOME, but 'home-manager.users.hlissner.home.file.*'
-      # is much too long and harder to maintain, so I've made aliases in:
-      #
-      #   home.file        ->  home-manager.users.hlissner.home.file
-      #   home.configFile  ->  home-manager.users.hlissner.home.xdg.configFile
-      #   home.dataFile    ->  home-manager.users.hlissner.home.xdg.dataFile
-      users.${config.user.name} = {
-        home = {
-          file = mkAliasDefinitions options.home.file;
-          # Necessary for home-manager to work with flakes, otherwise it will
-          # look for a nixpkgs channel.
-          stateVersion = config.system.stateVersion;
-          packages = mkAliasDefinitions options.home.packages;
-          sessionVariables = mkAliasDefinitions options.home.sessionVariables;
-        };
-        gtk = mkAliasDefinitions options.home.gtk;
-        xdg = {
-          configFile = mkAliasDefinitions options.xdg.configFile;
-          dataFile = mkAliasDefinitions options.home.dataFile;
-          systemDirs = mkAliasDefinitions options.home.systemDirs;
-        };
-        wayland.windowManager.sway = mkAliasDefinitions options.home.sway;
-        programs = mkAliasDefinitions options.home.programs;
-        manual.manpages.enable = false;
-      };
+      users.${config.user.name} = mkAliasDefinitions options.hm;
     };
+
+    hm.home.stateVersion = config.system.stateVersion;
 
     users.users.${config.user.name} = mkAliasDefinitions options.user;
 
@@ -103,13 +53,5 @@ with lib.my;
         trusted-users = users;
         allowed-users = users;
       };
-
-    # must already begin with pre-existing PATH. Also, can't use binDir here,
-    # because it contains a nix store path.
-    env.PATH = [ "$DOTFILES_BIN" "$XDG_BIN_HOME" "$PATH" ];
-
-    environment.extraInit =
-      concatStringsSep "\n"
-        (mapAttrsToList (n: v: "export ${n}=\"${v}\"") config.env);
   };
 }

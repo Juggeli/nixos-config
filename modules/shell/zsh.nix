@@ -14,7 +14,7 @@ in
   config = mkIf cfg.enable {
     users.defaultUserShell = pkgs.zsh;
 
-    home.programs.zsh = {
+    hm.programs.zsh = {
       enable = true;
       shellAliases = {
         ".." = "cd ..";
@@ -44,6 +44,7 @@ in
       };
       history = {
         size = 100000;
+        path = "~/.config/zsh/hist";
       };
       enableCompletion = true;
       enableSyntaxHighlighting = true;
@@ -59,20 +60,21 @@ in
           };
         }
       ];
+      dotDir = ".config/zsh";
     };
 
-    home.programs.starship = {
+    hm.programs.starship = {
       enable = true;
       enableZshIntegration = true;
     };
 
-    home.programs.fzf = {
+    hm.programs.fzf = {
       enable = true;
       enableZshIntegration = true;
       historyWidgetOptions = [ "--reverse" ];
     };
 
-    user.packages = with pkgs; [
+    hm.home.packages = with pkgs; [
       bat
       exa
       fd

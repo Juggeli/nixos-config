@@ -13,17 +13,14 @@ in
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       neovim
-      cargo # to install nix lsp
       gcc
       nodejs
       gnumake
       lazygit
       ripgrep
-      rust-analyzer
-      rustc
     ];
 
-    home.programs.zsh.shellAliases = {
+    hm.programs.zsh.shellAliases = {
       vim = "nvim";
       v = "nvim";
     };

@@ -3,22 +3,22 @@
 with lib;
 with lib.my;
 let
-  cfg = config.modules.shell.git;
+  cfg = config.modules.shell.rust;
   configDir = config.dotfiles.configDir;
 in
 {
-  options.modules.shell.git = {
+  options.modules.shell.rust = {
     enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      git
+      cargo
+      rust-analyzer
+      rustc
     ];
 
-    hm.xdg.configFile = {
-      "git/config".source = "${configDir}/git/config";
-      "git/ignore".source = "${configDir}/git/ignore";
-    };
+    hm.home.sessionPath = [ "$HOME/.cargo/bin" ];
   };
 }
+

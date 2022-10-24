@@ -50,7 +50,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
+    hm.home.packages = with pkgs; [
       swayidle
       swaylock
       waybar
@@ -68,28 +68,6 @@ in
       swaybg
       autotiling-rs
     ];
-    # environment.variables = {
-    #   XDG_SESSION_TYPE = "wayland";
-    #   XDG_CURRENT_DESKTOP = "sway";
-    #   GDK_BACKEND = "wayland";
-    #   SDL_VIDEODRIVER = "wayland";
-    #   QT_QPA_PLATFORM = "wayland";
-    #   QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    #   _JAVA_AWT_WM_NONREPARENTING = "1";
-    #   NIXOS_OZONE_WL = "1";
-    # };
-
-    # services.greetd = {
-    #   enable = true;
-    #   settings = {
-    #     default_session = {
-    #       command = ''
-    #         	     ${pkgs.greetd.tuigreet}/bin/tuigreet -r -t --cmd "${pkgs.sway}/bin/.sway-wrapped --unsupported-gpu"
-    #       '';
-    #       user = "greeter";
-    #     };
-    #   };
-    # };
 
     # xdg-desktop-portal works by exposing a series of D-Bus interfaces
     # known as portals under a well-known name
@@ -101,10 +79,9 @@ in
     xdg.portal = {
       enable = true;
       wlr.enable = true;
-      # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
 
-    home.programs.mako = {
+    hm.programs.mako = {
       enable = true;
       anchor = "bottom-center";
       backgroundColor = "#282a36";
@@ -128,7 +105,7 @@ in
       '';
     };
 
-    home.sway = {
+    hm.wayland.windowManager.sway = {
       enable = true;
       extraOptions = [
         "--unsupported-gpu"
@@ -204,7 +181,7 @@ in
       '';
     };
 
-    home.file.".config/waybar/config".text = ''
+    hm.xdg.configFile."waybar/config".text = ''
       {
         "layer": "top",
         "position": "bottom",
@@ -217,7 +194,7 @@ in
         "modules-right": ["pulseaudio", "tray", "clock"],
       }
     '';
-    home.file.".config/waybar/style.css".text = ''
+    hm.xdg.configFile."waybar/style.css".text = ''
       * {
         transition: none;
         box-shadow: none;

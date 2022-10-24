@@ -10,11 +10,7 @@
     desktop = {
       generic.enable = true;
       fonts.enable = true;
-      apps = {
-        rofi.enable = true;
-      };
       browsers = {
-        default = "google-chrome-stable";
         chrome.enable = true;
       };
       media = {
@@ -22,14 +18,12 @@
         ffmpeg.enable = true;
       };
       term = {
-        default = "alacritty";
         alacritty.enable = true;
       };
       sway.enable = true;
       gnome.enable = true;
     };
     editors = {
-      default = "nvim";
       emacs = {
         enable = true;
         doom.enable = true;
@@ -39,6 +33,7 @@
     shell = {
       git.enable = true;
       zsh.enable = true;
+      rust.enable = true;
     };
     services = {
       ssh.enable = true;

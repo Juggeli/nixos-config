@@ -56,8 +56,6 @@ in
       # unstable.fava # HACK Momentarily broken on nixos-unstable
     ];
 
-    env.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
-
     fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
 
     system.userActivationScripts = mkIf cfg.doom.enable {
