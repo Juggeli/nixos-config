@@ -10,6 +10,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [
+      pkgs.my.prometheus-smartctl
+    ];
+
     services.prometheus = {
       enable = true;
 
@@ -22,10 +26,6 @@ in
           enable = true;
           hosts = [ "1.1.1.1" "google.com" ];
         };
-
-        smartctl = {
-          enable = true;
-        };
       };
 
       scrapeConfigs = [{
@@ -34,21 +34,27 @@ in
           targets = [
             "127.0.0.1:${toString config.services.prometheus.exporters.node.port}"
             "127.0.0.1:${toString config.services.prometheus.exporters.smokeping.port}"
-            "127.0.0.1:${toString config.services.prometheus.exporters.smartctl.port}"
+            "127.0.0.1:9902"
           ];
         }];
       }];
     };
-    systemd.services."prometheus-smartctl-exporter".serviceConfig = {
-      DeviceAllow = lib.mkOverride 10 [
-        "block-blkext rw"
-        "block-sd rw"
-        "char-nvme rw"
-      ];
-      ExecStart = lib.mkForce "${pkgs.prometheus-smartctl-exporter}/bin/smartctl_exporter --smartctl.path=${pkgs.smartmontools}/bin/smartctl --web.listen-address=0.0.0.0:9633";
+    systemd.services."smartprom" = {
+      description = "monitor smart devices";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+      serviceConfig = {
+        DeviceAllow = lib.mkOverride 10 [
+          "block-blkext rw"
+          "block-sd rw"
+          "char-nvme rw"
+        ];
+        ExecStart = "${pkgs.my.prometheus-smartctl}/bin/smartprom";
+      };
     };
+
     networking.firewall = {
-      allowedTCPPorts = [ 9633 9090 ];
+      allowedTCPPorts = [ 9633 9090 9902 ];
     };
   };
 }

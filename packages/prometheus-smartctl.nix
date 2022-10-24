@@ -11,6 +11,10 @@ stdenv.mkDerivation {
     sha256 = "sha256-GwNSrKNbwuPc65BN7rXLg/lUNqLgthu9SZPJphXAByg=";
   };
 
+  nativeBuildInputs = [
+    pkgs.makeWrapper
+  ];
+
   buildInputs = [
     (pkgs.python3.withPackages (p: with p; [
       prometheus_client
@@ -21,6 +25,13 @@ stdenv.mkDerivation {
     mkdir -p $out/bin
     cp $src/smartprom.py $out/bin/smartprom
     chmod +x $out/bin/smartprom
+  '';
+
+  postFixup = ''
+    wrapProgram $out/bin/smartprom \
+      --set PATH ${lib.makeBinPath [
+        pkgs.smartmontools
+      ]}
   '';
 
   meta = {

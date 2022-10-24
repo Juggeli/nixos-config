@@ -10,7 +10,6 @@
   ## Modules
   modules = {
     editors = {
-      default = "nvim";
       vim.enable = true;
     };
     shell = {
@@ -27,7 +26,6 @@
       jackett.enable = true;
       sonarr.enable = true;
     };
-    theme.enable = true;
   };
 
   ## Local config
