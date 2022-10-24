@@ -20,8 +20,6 @@ in
       vifm
       webcord-overlay.packages.${pkgs.system}.default
       btop
-      obsidian
-      go
       (writeShellScriptBin "encode" ''    
 shopt -s nullglob
 shopt -s globstar
