@@ -2,7 +2,8 @@
 with lib;
 with lib.my;
 let cfg = config.modules.services.qbittorrent;
-in {
+in
+{
   options.modules.services.qbittorrent = {
     enable = mkBoolOpt false;
   };
@@ -24,7 +25,7 @@ in {
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ 8080 ];
+    networking.firewall.allowedTCPPorts = [ 8080 17637 ];
   };
 }
 
