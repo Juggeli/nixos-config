@@ -95,6 +95,8 @@ in
     data disk1 /mnt/disk1
     data disk2 /mnt/disk2
     data disk3 /mnt/disk3
+
+    exclude *.log
   '';
 
   systemd.services.snapraidMaintenance = {
