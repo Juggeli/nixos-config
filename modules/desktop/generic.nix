@@ -17,7 +17,6 @@ in
       pcmanfm
       xdg-utils
       hydrus
-      vifm
       webcord-overlay.packages.${pkgs.system}.default
       btop
       (writeShellScriptBin "encode" ''    

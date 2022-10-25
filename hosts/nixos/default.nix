@@ -19,6 +19,7 @@
       };
       term = {
         alacritty.enable = true;
+        kitty.enable = true;
       };
       sway.enable = true;
       gnome.enable = true;
@@ -29,6 +30,7 @@
         doom.enable = true;
       };
       vim.enable = true;
+      vifm.enable = true;
     };
     shell = {
       git.enable = true;

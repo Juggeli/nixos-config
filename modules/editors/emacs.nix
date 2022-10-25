@@ -27,7 +27,7 @@ in
       ## Emacs itself
       binutils # native-comp needs 'as', provided by this
       # 28.2 + native-comp
-      ((emacsPackagesFor emacsPgtkNativeComp).emacsWithPackages
+      ((emacsPackagesFor emacsUnstable).emacsWithPackages
         (epkgs: [ epkgs.vterm ]))
 
       ## Doom dependencies
@@ -57,15 +57,6 @@ in
     ];
 
     fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
-
-    system.userActivationScripts = mkIf cfg.doom.enable {
-      installDoomEmacs = ''
-        if [ ! -d "$XDG_CONFIG_HOME/.emacs.d" ]; then
-           ${pkgs.git}/bin/git clone --depth=1 --single-branch "${cfg.doom.repoUrl}" "$XDG_CONFIG_HOME/.emacs.d"
-           ${pkgs.git}/bin/git clone "${cfg.doom.configRepoUrl}" "$XDG_CONFIG_HOME/.doom.d"
-        fi
-      '';
-    };
   };
 }
 
