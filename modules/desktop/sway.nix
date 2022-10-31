@@ -168,6 +168,7 @@ in
         };
       };
       extraConfig = ''
+        exec gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
         exec dbus-sway-environment
         exec configure-gtk
         include sway.theme
