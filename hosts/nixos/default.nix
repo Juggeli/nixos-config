@@ -42,7 +42,7 @@
     };
   };
 
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_testing;
 
   virtualisation.docker.enable = true;
 
