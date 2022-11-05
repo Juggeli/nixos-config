@@ -13,6 +13,7 @@ in
     user.packages = with pkgs; [
       ffmpeg_5-full
       svt-av1
+      mkvtoolnix
     ];
 
     # pkgs.writeTextFile {
