@@ -40,7 +40,7 @@ let
       ''
         export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
         gnome_schema=org.gnome.desktop.interface
-        gsettings set $gnome_schema gtk-theme 'Dracula'
+        gsettings set $gnome_schema gtk-theme 'Adwaita-dark'
       '';
   };
 in
@@ -119,12 +119,6 @@ in
         export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
         export _JAVA_AWT_WM_NONREPARENTING=1
         export NIXOS_OZONE_WL=1
-        export GBM_BACKEND=nvidia-drm
-        export __GLX_VENDOR_LIBRARY_NAME=nvidia
-        export WLR_RENDERER=vulkan
-        export WLR_NO_HARDWARE_CURSORS=1
-        # export WLR_DRM_NO_ATOMIC=1
-        export LIBVA_DRIVER_NAME=nvidia
         export EGL_PLATFORM=wayland
       '';
       wrapperFeatures = {
@@ -143,7 +137,7 @@ in
           "type:keyboard" = { xkb_layout = "us,fi"; xkb_options = "grp:caps_toggle"; };
         };
         bars = [ ];
-        gaps = { top = 450; left = 500; right = 500; inner = 6; };
+        gaps = { top = 250; left = 450; right = 450; inner = 6; };
         window.commands = [
           { command = "floating enable"; criteria = { app_id = "pavucontrol"; }; }
           { command = "floating enable"; criteria = { app_id = "mpv"; }; }
@@ -157,7 +151,7 @@ in
           '';
         };
         startup = [
-          { command = "${pkgs.swayidle}/bin/swayidle -w timeout 600 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
+          # { command = "${pkgs.swayidle}/bin/swayidle -w timeout 600 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
           { command = "${pkgs.waybar}/bin/waybar"; }
           { command = "${pkgs.autotiling-rs}/bin/autotiling-rs"; }
         ];
@@ -168,7 +162,6 @@ in
         };
       };
       extraConfig = ''
-        exec gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
         exec dbus-sway-environment
         exec configure-gtk
         include sway.theme
@@ -176,9 +169,9 @@ in
         output DP-1 bg ~/.config/dotfiles/config/bg1.jpg fill
         default_border pixel 3
         default_floating_border pixel 3
-        client.focused #98be65 #98be65 #bbc2cf #ff6c6b
-        client.unfocused #3f444a #3f444a #bbc2cf #ff6c6b
-        client.focused_inactive #3f444a #3f444a #bbc2cf #ff6c6b
+        client.focused #98be65 #98be65 #98be65 #98be65 
+        client.unfocused #3f444a #3f444a #3f444a #3f444a 
+        client.focused_inactive #3f444a #3f444a #3f444a #3f444a 
       '';
     };
 
