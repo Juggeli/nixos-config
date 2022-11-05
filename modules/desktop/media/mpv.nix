@@ -20,7 +20,6 @@ in
       autofit=1600x900
       profile=gpu-hq 
       deband=no 
-      gpu-api=vulkan
       gpu-context=wayland
     '';
   };
