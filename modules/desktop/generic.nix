@@ -19,6 +19,7 @@ in
       hydrus
       webcord-overlay.packages.${pkgs.system}.default
       btop
+      powertop
       (writeShellScriptBin "encode" ''    
 shopt -s nullglob
 shopt -s globstar
@@ -34,6 +35,7 @@ done
     ];
 
     services.flatpak.enable = true;
+    services.fwupd.enable = true;
 
     fonts = {
       fontDir.enable = true;
