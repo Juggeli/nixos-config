@@ -20,7 +20,6 @@ in
         ${pkgs.liquidctl}/bin/liquidctl initialize all
         ${pkgs.liquidctl}/bin/liquidctl --match kraken set pump speed 70
         ${pkgs.liquidctl}/bin/liquidctl --match kraken set ring color spectrum-wave
-        ${pkgs.liquidctl}/bin/liquidctl --match asus set sync color rainbow
       '';
       wantedBy = [ "multi-user.target" ];
     };
