@@ -2,7 +2,6 @@
 import argparse
 import shutil
 import subprocess
-import syslog
 import time
 from pathlib import Path
 
@@ -44,28 +43,11 @@ if __name__ == "__main__":
         help="Path to exclude"
     )
     parser.add_argument(
-        "--num-files",
-        dest="num_files",
-        default=-1,
-        type=int,
-        help="Maximum number of files moved away from cache.",
-    )
-    parser.add_argument(
-        "--time-limit",
-        dest="time_limit",
-        default=-1,
-        type=int,
-        help="Time limit for the whole process (in seconds). Once reached program exits.",
-    )
-    parser.add_argument(
         "-t",
         "--target",
         dest="target",
         type=float,
         help="Desired max cache usage, in percentage (e.g. 70).",
-    )
-    parser.add_argument(
-        "-v", "--verbose", help="Increase output verbosity.", action="store_true"
     )
     args = parser.parse_args()
 
@@ -80,9 +62,6 @@ if __name__ == "__main__":
     if not exclude_path.is_dir():
         raise NotADirectoryError(f"{exclude_path} is not a valid directory.")
 
-    last_id = args.num_files
-    time_limit = args.time_limit
-
     target = float(args.target)
     if target <= 1 or target >= 100:
         raise ValueError(
@@ -92,35 +71,29 @@ if __name__ == "__main__":
     cache_stats = shutil.disk_usage(cache_path)
 
     usage_percentage = 100 * cache_stats.used / cache_stats.total
-    syslog.syslog(
-        syslog.LOG_INFO,
-        f"Uncaching from {cache_path} ({usage_percentage:.2f}% used) to {slow_path}.",
-    )
+    print(f"Uncaching from {cache_path} ({usage_percentage:.2f}% used) to {slow_path}.",)
     if usage_percentage <= target:
-        syslog.syslog(
-            syslog.LOG_INFO,
-            f"Target of {target}% of used capacity already reached. Exiting.",
-        )
+        print(f"Target of {target}% of used capacity already reached. Exiting.",)
         exit(0)
 
-    syslog.syslog(syslog.LOG_INFO, "Computing candidates...")
+    print("Computing candidates...")
     candidates = sorted(
         [(c, c.stat()) for c in cache_path.glob("**/*") if c.is_file() and not c.is_relative_to(exclude_path)],
         key=lambda p: p[1].st_atime,
     )
 
     t_start = time.monotonic()
-    syslog.syslog(syslog.LOG_INFO, "Processing candidates...")
+    print("Processing candidates...")
     cache_used = cache_stats.used
     for c_id, (c_path, c_stat) in enumerate(candidates):
-        syslog.syslog(syslog.LOG_DEBUG, f"{c_path}")
+        print(f"{c_path}")
 
         if not c_path.exists():
             # Since rsync moves also other hard links it might be that
             # some files are not existing anymore. However, invoking rsync
             # for each file (instead of directories) does not preserve
             # hard links.
-            syslog.syslog(syslog.LOG_WARNING, f"{c_path} does not exist.")
+            print(f"{c_path} does not exist.")
             continue
 
         # Rsync options
@@ -136,12 +109,13 @@ if __name__ == "__main__":
         # -R, --relative              use relative path names
         # --preallocate               allocate dest files before writing them
         # --remove-source-files       sender removes synchronized files (non-dirs)
-        subprocess.call(
+        subprocess.run(
             [
                 "rsync",
-                "-axqHAXWESR",
+                "-axHAXWESR",
                 "--preallocate",
                 "--remove-source-files",
+                "--progress",
                 f"{cache_path}/./{c_path.relative_to(cache_path)}",
                 f"{slow_path}/",
             ]
@@ -149,25 +123,10 @@ if __name__ == "__main__":
         cache_used -= c_stat.st_size
 
         # Evaluate early breaking conditions
-        if last_id >= 0 and c_id >= last_id - 1:
-            syslog.syslog(
-                syslog.LOG_INFO, f"Maximum number of moved files reached ({last_id})."
-            )
-            break
-        if time_limit >= 0 and time.monotonic() - t_start > time_limit:
-            syslog.syslog(
-                syslog.LOG_INFO, f"Time limit reached ({time_limit} seconds)."
-            )
-            break
         if (100 * cache_used / cache_stats.total) <= target:
-            syslog.syslog(
-                syslog.LOG_INFO, f"Target of maximum used capacity reached ({target})."
-            )
+            print(f"Target of maximum used capacity reached ({target}).")
             break
 
     cache_stats = shutil.disk_usage(cache_path)
     usage_percentage = 100 * cache_stats.used / cache_stats.total
-    syslog.syslog(
-        syslog.LOG_INFO,
-        f"Process completed in {round(time.monotonic() - t_start)} seconds. Current usage percentage is {usage_percentage:.2f}%.",
-    )
+    print(f"Process completed in {round(time.monotonic() - t_start)} seconds. Current usage percentage is {usage_percentage:.2f}%.",)
