@@ -9,8 +9,10 @@
 
   ## Modules
   modules = {
+    desktop.term.kitty.enable = true;
     editors = {
       vim.enable = true;
+      vifm.enable = true;
     };
     shell = {
       git.enable = true;
