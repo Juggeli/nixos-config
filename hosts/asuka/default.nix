@@ -28,6 +28,7 @@
       qbittorrent.enable = true;
       jackett.enable = true;
       sonarr.enable = true;
+      homeassistant.enable = true;
     };
   };
 
