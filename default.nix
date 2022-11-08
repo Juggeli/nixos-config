@@ -70,6 +70,5 @@ with lib.my;
     git
     wget
     unzip
-    # nix-prefetch-scripts
   ];
 }
