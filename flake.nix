@@ -17,6 +17,7 @@
         url = "github:fufexan/webcord-flake";
         inputs.nixpkgs.follows = "nixpkgs";
       };
+      nur.url = "github:nix-community/NUR";
     };
 
   outputs = inputs @ { self, nixpkgs, ... }:
