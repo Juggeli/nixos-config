@@ -28,7 +28,7 @@ do
   CODEC=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 "''${FILE}");
   if [[ $CODEC != "av1" ]]; then
     echo "File ''${FILE} is not av1";
-    ab-av1 auto-encode -i "''${FILE}"
+    ab-av1 auto-encode --preset 10 -i "''${FILE}"
   fi
 done
       '')
