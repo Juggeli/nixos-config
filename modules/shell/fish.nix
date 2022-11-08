@@ -3,20 +3,19 @@
 with lib;
 with lib.my;
 let
-  cfg = config.modules.shell.zsh;
-  configDir = config.dotfiles.configDir;
+  cfg = config.modules.shell.fish;
 in
 {
-  options.modules.shell.zsh = with types; {
+  options.modules.shell.fish = with types; {
     enable = mkBoolOpt false;
   };
 
   config = mkIf cfg.enable {
-    users.defaultUserShell = pkgs.zsh;
+    users.defaultUserShell = pkgs.fish;
 
-    hm.programs.zsh = {
+    hm.programs.fish = {
       enable = true;
-      shellAliases = {
+      shellAbbrs = {
         ".." = "cd ..";
         "..." = "cd ../..";
         "...." = "cd ../../..";
@@ -33,7 +32,7 @@ in
         ssc = "sudo systemctl";
         exa = "exa --group-directories-first --git";
         l = "exa -blF";
-        ls = "l";
+        ls = "exa -blF";
         ll = "exa -abghilmu";
         llm = "ll --sort=modified";
         la = "LC_COLLATE=C exa -ablF";
@@ -42,30 +41,20 @@ in
         nixsw = "sudo nixos-rebuild switch --flake .#";
         nixup = "sudo nixos-rebuild switch --flake .# --recreate-lock-file";
       };
-      history = {
-        size = 100000;
-        path = "~/.config/zsh/hist";
-      };
-      enableCompletion = true;
-      enableSyntaxHighlighting = true;
       plugins = [
+        { name = "grc"; src = pkgs.fishPlugins.grc.src; }
+        { name = "autopair-fish"; src = pkgs.fishPlugins.autopair-fish.src; }
+        { name = "pure"; src = pkgs.fishPlugins.pure.src; }
         {
-          # will source zsh-autosuggestions.plugin.zsh
-          name = "zsh-autosuggestions";
+          name = "z";
           src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-autosuggestions";
-            rev = "v0.7.0";
-            sha256 = "0z6i9wjjklb4lvr7zjhbphibsyx51psv50gm07mbb0kj9058j6kc";
+            owner = "jethrokuan";
+            repo = "z";
+            rev = "e0e1b9dfdba362f8ab1ae8c1afc7ccf62b89f7eb";
+            sha256 = "0dbnir6jbwjpjalz14snzd3cgdysgcs3raznsijd6savad3qhijc";
           };
         }
       ];
-      dotDir = ".config/zsh";
-    };
-
-    hm.programs.starship = {
-      enable = true;
-      enableZshIntegration = true;
     };
   };
 }
