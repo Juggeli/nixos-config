@@ -102,7 +102,7 @@ in
   systemd.services.snapraidMaintenance = {
     description = "sync and scrub snapraid";
     serviceConfig = {
-      User = "juggeli";
+      User = "root";
       Type = "oneshot";
     };
     script = ''
