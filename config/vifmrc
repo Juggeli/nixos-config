@@ -368,7 +368,7 @@ set viewcolumns=-{name}..,6{}.
 " ------------------------------------------------------------------------------
 
 " Start shell in current directory
-nnoremap s :shell<cr>
+nnoremap s :!fish<cr>
 
 " Display sorting dialog
 nnoremap S :sort<cr>
@@ -430,7 +430,7 @@ nnoremap <space>s :sync<cr>
 nnoremap <space>1 :only<cr>
 nnoremap <space>2 :vsplit<cr>
 
-:com loop for f in %f; do %a "$f"; done
+:com loop for f in %f; %a "$f"; end
 
 " ------------------------------------------------------------------------------
 " Various customization examples
@@ -455,7 +455,7 @@ nnoremap <space>2 :vsplit<cr>
 " let $VIFM_SERVER_NAME = v:servername
 
 " Activate screen/tmux support
-" screen!
+screen!
 
 " ------------------------------------------------------------------------------
 " Icon decorations example

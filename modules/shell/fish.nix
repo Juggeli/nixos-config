@@ -15,10 +15,18 @@ in
 
     hm.programs.fish = {
       enable = true;
-      shellAbbrs = {
+      shellAliases = {
         ".." = "cd ..";
         "..." = "cd ../..";
         "...." = "cd ../../..";
+        l = "exa -blF";
+        ls = "exa -blF";
+        ll = "exa -abghilmu";
+        llm = "ll --sort=modified";
+        la = "LC_COLLATE=C exa -ablF";
+        cat = "bat";
+      };
+      shellAbbrs = {
         clr = "clear";
         rm = "rm -i";
         cp = "cp -i";
@@ -31,16 +39,13 @@ in
         sc = "systemctl";
         ssc = "sudo systemctl";
         exa = "exa --group-directories-first --git";
-        l = "exa -blF";
-        ls = "exa -blF";
-        ll = "exa -abghilmu";
-        llm = "ll --sort=modified";
-        la = "LC_COLLATE=C exa -ablF";
         tree = "exa --tree";
-        cat = "bat";
         nixsw = "sudo nixos-rebuild switch --flake .#";
         nixup = "sudo nixos-rebuild switch --flake .# --recreate-lock-file";
       };
+      shellInit = ''
+        source ~/.config/dotfiles/config/fish/functions.fish
+      '';
       plugins = [
         { name = "grc"; src = pkgs.fishPlugins.grc.src; }
         { name = "autopair-fish"; src = pkgs.fishPlugins.autopair-fish.src; }

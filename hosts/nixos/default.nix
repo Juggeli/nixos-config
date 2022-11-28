@@ -34,7 +34,8 @@
     };
     shell = {
       git.enable = true;
-      zsh.enable = true;
+      fish.enable = true;
+      util.enable = true;
       rust.enable = true;
     };
     services = {
