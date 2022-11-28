@@ -149,6 +149,10 @@ in
           "Print" = ''
             exec ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | wl-copy
           '';
+          "F1" = "workspace number 1";
+          "F2" = "workspace number 2";
+          "F3" = "workspace number 3";
+          "F4" = "workspace number 4";
         };
         startup = [
           # { command = "${pkgs.swayidle}/bin/swayidle -w timeout 600 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
