@@ -9,6 +9,7 @@ in
     mergerfs-tools
     snapraid
     python3 # to run mover script
+    hdparm
   ];
 
   # /etc/crypttab: decrypt drives
@@ -20,6 +21,14 @@ in
     parity UUID=62e6dad0-7f95-45ff-adaf-598a75ffcb40 /pool.key nofail,timeout=5m
   '';
 
+  powerManagement.powerUpCommands = with pkgs;''
+    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sda
+    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sdb
+    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sdc
+    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sdd
+    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sde
+  '';
+  
   fileSystems = {
     "/mnt/disk1" = {
       device = "/dev/mapper/disk1";

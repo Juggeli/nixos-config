@@ -12,7 +12,6 @@
     btop
     hddtemp
     screen
-    hdparm
     powertop
     smartmontools
   ];
@@ -24,14 +23,6 @@
   };
 
   programs.dconf.enable = true;
-
-  powerManagement.powerUpCommands = with pkgs;''
-    ${hdparm}/bin/hdparm -S 60 -B 128 /dev/sda
-    ${hdparm}/bin/hdparm -S 60 -B 128 /dev/sdb
-    ${hdparm}/bin/hdparm -S 60 -B 128 /dev/sdc
-    ${hdparm}/bin/hdparm -S 60 -B 128 /dev/sdd
-    ${hdparm}/bin/hdparm -S 60 -B 128 /dev/sde
-  '';
 
   systemd = {
     services.clear-log = {
