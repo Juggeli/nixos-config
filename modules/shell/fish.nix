@@ -4,6 +4,7 @@ with lib;
 with lib.my;
 let
   cfg = config.modules.shell.fish;
+  configDir = config.dotfiles.configDir;
 in
 {
   options.modules.shell.fish = with types; {
@@ -12,6 +13,10 @@ in
 
   config = mkIf cfg.enable {
     users.defaultUserShell = pkgs.fish;
+
+    hm.xdg.configFile = {
+      "fish/functions/".source = "${configDir}/fish/";
+    };
 
     hm.programs.fish = {
       enable = true;
@@ -44,7 +49,27 @@ in
         nixup = "sudo nixos-rebuild switch --flake .# --recreate-lock-file";
       };
       shellInit = ''
-        source ~/.config/dotfiles/config/fish/functions.fish
+        function __history_previous_command
+          switch (commandline -t)
+          case "!"
+            commandline -t $history[1]; commandline -f repaint
+          case "*"
+            commandline -i !
+          end
+        end
+
+        function __history_previous_command_arguments
+          switch (commandline -t)
+          case "!"
+            commandline -t ""
+            commandline -f history-token-search-backward
+          case "*"
+            commandline -i '$'
+          end
+        end
+
+        bind ! __history_previous_command
+        bind '$' __history_previous_command_arguments
       '';
       plugins = [
         { name = "grc"; src = pkgs.fishPlugins.grc.src; }
