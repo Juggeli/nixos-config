@@ -4,6 +4,7 @@ with lib;
 with lib.my;
 let
   cfg = config.modules.editors.vim;
+  configDir = config.dotfiles.configDir;
 in
 {
   options.modules.editors.vim = {
@@ -12,17 +13,30 @@ in
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      neovim
-      gcc
-      nodejs
-      gnumake
       lazygit
       ripgrep
+      tree-sitter
+      rnix-lsp
     ];
 
-    hm.programs.zsh.shellAliases = {
-      vim = "nvim";
-      v = "nvim";
+    programs.neovim.defaultEditor = true;
+
+    hm.programs.neovim = {
+      enable = true;
+      vimAlias = true;
+      viAlias = true;
+      vimdiffAlias = true;
+      plugins = with pkgs.vimPlugins; [
+        telescope-nvim
+        telescope-symbols-nvim
+        nvim-treesitter
+        nvim-lspconfig
+        cmp-nvim-lsp
+        nvim-cmp
+        gitsigns-nvim
+        nvim-autopairs
+      ];
+      extraConfig = "lua << EOF\n" + builtins.readFile "${configDir}/nvim/init.lua" + "\nEOF";
     };
   };
 }
