@@ -20,6 +20,9 @@ opt.smartcase = true -- if you include mixed case in your search, assumes you wa
 -- cursor line
 opt.cursorline = true -- highlight the current cursor line
 
+-- keep some lines above and below
+opt.scrolloff = 5
+
 -- appearance
 
 -- turn on termguicolors for nightfly colorscheme to work
@@ -100,6 +103,18 @@ keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<cr>") -- list current c
 
 -- restart lsp server (not on youtube nvim video)
 keymap.set("n", "<leader>rs", ":LspRestart<CR>") -- mapping to restart lsp if necessary
+
+-- bufferline
+keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>")
+keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>")
+
+-- bufdelete
+keymap.set("n", "<leader>c", function()
+	require("bufdelete").bufdelete(0, false)
+end)
+keymap.set("n", "<leader>C", function()
+	require("bufdelete").bufdelete(0, true)
+end)
 
 ----------------------
 -- Color scheme

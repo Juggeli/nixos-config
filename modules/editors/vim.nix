@@ -59,6 +59,7 @@ in
         nvim-web-devicons
         bufferline-nvim
         nvim-lastplace
+        bufdelete-nvim
       ] ++ [
         pkgs.vimExtraPlugins.vim-nightfly-colors
       ];
