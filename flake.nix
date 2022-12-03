@@ -18,6 +18,7 @@
         inputs.nixpkgs.follows = "nixpkgs";
       };
       nur.url = "github:nix-community/NUR";
+      vim-extra-plugins.url = "github:adgai19/nixpkgs-vim-extra-plugins";
     };
 
   outputs = inputs @ { self, nixpkgs, ... }:

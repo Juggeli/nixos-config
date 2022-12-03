@@ -100,3 +100,314 @@ keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<cr>") -- list current c
 
 -- restart lsp server (not on youtube nvim video)
 keymap.set("n", "<leader>rs", ":LspRestart<CR>") -- mapping to restart lsp if necessary
+
+----------------------
+-- Color scheme
+----------------------
+vim.cmd([[colorscheme nightfly]])
+
+----------------------
+-- Autopairs
+----------------------
+require("nvim-autopairs").setup({
+	check_ts = true, -- enable treesitter
+	ts_config = {
+		lua = { "string" }, -- don't add pairs in lua string treesitter nodes
+		javascript = { "template_string" }, -- don't add pairs in javscript template_string treesitter nodes
+		java = false, -- don't check treesitter on java
+	},
+})
+local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+local cmp = require("cmp")
+cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+
+----------------------
+-- Comment
+----------------------
+require("Comment").setup()
+
+----------------------
+-- Gitsigns
+----------------------
+require("gitsigns").setup()
+
+----------------------
+-- Lualine
+----------------------
+-- get lualine nightfly theme
+local lualine_nightfly = require("lualine.themes.nightfly")
+
+-- new colors for theme
+local new_colors = {
+	blue = "#65D1FF",
+	green = "#3EFFDC",
+	violet = "#FF61EF",
+	yellow = "#FFDA7B",
+	black = "#000000",
+}
+
+-- change nightlfy theme colors
+lualine_nightfly.normal.a.bg = new_colors.blue
+lualine_nightfly.insert.a.bg = new_colors.green
+lualine_nightfly.visual.a.bg = new_colors.violet
+lualine_nightfly.command = {
+	a = {
+		gui = "bold",
+		bg = new_colors.yellow,
+		fg = new_colors.black, -- black
+	},
+}
+require("lualine").setup({
+	options = {
+		theme = lualine_nightfly,
+	},
+})
+
+----------------------
+-- Cmp
+----------------------
+-- load vs-code like snippets from plugins (e.g. friendly-snippets)
+require("luasnip/loaders/from_vscode").lazy_load()
+
+vim.opt.completeopt = "menu,menuone,noselect"
+
+local lspkind = require("lspkind")
+local luasnip = require("luasnip")
+cmp.setup({
+	snippet = {
+		expand = function(args)
+			luasnip.lsp_expand(args.body)
+		end,
+	},
+	mapping = cmp.mapping.preset.insert({
+		["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
+		["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
+		["<C-b>"] = cmp.mapping.scroll_docs(-4),
+		["<C-f>"] = cmp.mapping.scroll_docs(4),
+		["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
+		["<C-e>"] = cmp.mapping.abort(), -- close completion window
+		["<CR>"] = cmp.mapping.confirm({ select = false }),
+	}),
+	-- sources for autocompletion
+	sources = cmp.config.sources({
+		{ name = "nvim_lsp" }, -- lsp
+		{ name = "luasnip" }, -- snippets
+		{ name = "buffer" }, -- text within current buffer
+		{ name = "path" }, -- file system paths
+	}),
+	-- configure lspkind for vs-code like icons
+	formatting = {
+		format = lspkind.cmp_format({
+			maxwidth = 50,
+			ellipsis_char = "...",
+		}),
+	},
+})
+
+----------------------
+-- Tree
+----------------------
+local nvimtree = require("nvim-tree")
+
+-- recommended settings from nvim-tree documentation
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- change color for arrows in tree to light blue
+vim.cmd([[ highlight NvimTreeIndentMarker guifg=#3FC5FF ]])
+
+-- configure nvim-tree
+nvimtree.setup({
+	-- change folder arrow icons
+	renderer = {
+		icons = {
+			glyphs = {
+				folder = {
+					arrow_closed = "", -- arrow when folder is closed
+					arrow_open = "", -- arrow when folder is open
+				},
+			},
+		},
+	},
+	-- disable window_picker for
+	-- explorer to work well with
+	-- window splits
+	actions = {
+		open_file = {
+			window_picker = {
+				enable = false,
+			},
+		},
+	},
+	-- 	git = {
+	-- 		ignore = false,
+	-- 	},
+})
+
+----------------------
+-- Telescope
+----------------------
+local telescope = require("telescope")
+local actions = require("telescope.actions")
+-- configure telescope
+telescope.setup({
+	-- configure custom mappings
+	defaults = {
+		mappings = {
+			i = {
+				["<C-k>"] = actions.move_selection_previous, -- move to prev result
+				["<C-j>"] = actions.move_selection_next, -- move to next result
+				["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist, -- send selected to quickfixlist
+			},
+		},
+	},
+})
+
+telescope.load_extension("fzf")
+
+----------------------
+-- Treesitter
+----------------------
+require("nvim-treesitter.configs").setup({
+	-- enable syntax highlighting
+	highlight = {
+		enable = true,
+	},
+	-- enable indentation
+	indent = { enable = true },
+})
+
+----------------------
+-- Lsp
+----------------------
+local lspconfig = require("lspconfig")
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
+
+-- enable keybinds only for when lsp server available
+local on_attach = function(client, bufnr)
+	-- keybind options
+	local opts = { noremap = true, silent = true, buffer = bufnr }
+
+	-- set keybinds
+	keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", opts) -- show definition, references
+	keymap.set("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts) -- got to declaration
+	keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts) -- see definition and make edits in window
+	keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts) -- go to implementation
+	keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opts) -- see available code actions
+	keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opts) -- smart rename
+	keymap.set("n", "<leader>D", "<cmd>Lspsaga show_line_diagnostics<CR>", opts) -- show  diagnostics for line
+	keymap.set("n", "<leader>d", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts) -- show diagnostics for cursor
+	keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts) -- jump to previous diagnostic in buffer
+	keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts) -- jump to next diagnostic in buffer
+	keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts) -- show documentation for what is under cursor
+	keymap.set("n", "<leader>o", "<cmd>LSoutlineToggle<CR>", opts) -- see outline on right hand side
+
+	-- typescript specific keymaps (e.g. rename file and update imports)
+	if client.name == "tsserver" then
+		keymap.set("n", "<leader>rf", ":TypescriptRenameFile<CR>") -- rename file and update imports
+		keymap.set("n", "<leader>oi", ":TypescriptOrganizeImports<CR>") -- organize imports (not in youtube nvim video)
+		keymap.set("n", "<leader>ru", ":TypescriptRemoveUnused<CR>") -- remove unused variables (not in youtube nvim video)
+	end
+end
+
+-- used to enable autocompletion (assign to every lsp server config)
+local capabilities = cmp_nvim_lsp.default_capabilities()
+
+-- Change the Diagnostic symbols in the sign column (gutter)
+-- (not in youtube nvim video)
+local signs = { Error = " ", Warn = " ", Hint = "ﴞ ", Info = " " }
+for type, icon in pairs(signs) do
+	local hl = "DiagnosticSign" .. type
+	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+end
+
+-- configure lua server (with special settings)
+lspconfig["sumneko_lua"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+	settings = { -- custom settings for lua
+		Lua = {
+			-- make the language server recognize "vim" global
+			diagnostics = {
+				globals = { "vim" },
+			},
+			workspace = {
+				-- make language server aware of runtime files
+				library = {
+					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
+					[vim.fn.stdpath("config") .. "/lua"] = true,
+				},
+			},
+		},
+	},
+})
+require("lspconfig").rnix.setup({})
+
+require("lspsaga").init_lsp_saga({
+	-- keybinds for navigation in lspsaga window
+	-- move_in_saga = { prev = "<C-k>", next = "<C-j>" },
+	-- use enter to open file with finder
+	finder_action_keys = {
+		open = "<CR>",
+	},
+	-- use enter to open file with definition preview
+	-- definition_action_keys = {
+	--   edit = "<CR>",
+	-- },
+})
+
+local null_ls = require("null-ls")
+
+-- for conciseness
+local formatting = null_ls.builtins.formatting -- to setup formatters
+local diagnostics = null_ls.builtins.diagnostics -- to setup linters
+
+-- to setup format on save
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+-- configure null_ls
+null_ls.setup({
+	-- setup formatters & linters
+	sources = {
+		--  to disable file types use
+		--  "formatting.prettier.with({disabled_filetypes: {}})" (see null-ls docs)
+		formatting.prettier, -- js/ts formatter
+		formatting.stylua, -- lua formatter
+		diagnostics.eslint_d.with({ -- js/ts linter
+			-- only enable eslint if root has .eslintrc.js (not in youtube nvim video)
+			condition = function(utils)
+				return utils.root_has_file(".eslintrc.js") -- change file extension if you use something else
+			end,
+		}),
+	},
+	-- configure format on save
+	on_attach = function(current_client, bufnr)
+		if current_client.supports_method("textDocument/formatting") then
+			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+			vim.api.nvim_create_autocmd("BufWritePre", {
+				group = augroup,
+				buffer = bufnr,
+				callback = function()
+					vim.lsp.buf.format({
+						filter = function(client)
+							--  only use null-ls for formatting instead of lsp server
+							return client.name == "null-ls"
+						end,
+						bufnr = bufnr,
+					})
+				end,
+			})
+		end
+	end,
+})
+
+----------------------
+-- Bufferline
+----------------------
+vim.opt.termguicolors = true
+require("bufferline").setup({})
+
+----------------------
+-- Lastplace
+----------------------
+require("nvim-lastplace").setup({})
