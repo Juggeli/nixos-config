@@ -26,10 +26,10 @@ opt.scrolloff = 5
 -- appearance
 
 -- turn on termguicolors for nightfly colorscheme to work
--- (have to use iterm2 or any other true color terminal)
 opt.termguicolors = true
 opt.background = "dark" -- colorschemes that can be light or dark will be made dark
 opt.signcolumn = "yes" -- show sign column so that text doesn't shift
+vim.wo.fillchars = "eob: " -- dont show tildes on empty lines
 
 -- backspace
 opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
@@ -75,8 +75,8 @@ keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close current tab
 keymap.set("n", "<leader>tn", ":tabn<CR>") --  go to next tab
 keymap.set("n", "<leader>tp", ":tabp<CR>") --  go to previous tab
 
-keymap.set("n", "<leader>w", ":w<CR>") -- save file
-keymap.set("n", "<leader>q", ":q<CR>") -- quit
+keymap.set("n", "<leader>w", "<cmd>w<CR>") -- save file
+keymap.set("n", "<leader>q", "<cmd>q<CR>") -- quit
 
 ----------------------
 -- Plugin Keybinds
@@ -94,6 +94,9 @@ keymap.set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>") -- find string in 
 keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>") -- find string under cursor in current working directory
 keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>") -- list open buffers in current neovim instance
 keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>") -- list available help tags
+keymap.set("n", "<leader>fo", function()
+	require("telescope.builtin").oldfiles()
+end)
 
 -- telescope git commands (not on youtube nvim video)
 keymap.set("n", "<leader>gc", "<cmd>Telescope git_commits<cr>") -- list all git commits (use <cr> to checkout) ["gc" for git commits]
@@ -105,8 +108,8 @@ keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<cr>") -- list current c
 keymap.set("n", "<leader>rs", ":LspRestart<CR>") -- mapping to restart lsp if necessary
 
 -- bufferline
-keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>")
-keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>")
+keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<CR>")
+keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<CR>")
 
 -- bufdelete
 keymap.set("n", "<leader>c", function()
@@ -233,17 +236,6 @@ vim.cmd([[ highlight NvimTreeIndentMarker guifg=#3FC5FF ]])
 
 -- configure nvim-tree
 nvimtree.setup({
-	-- change folder arrow icons
-	renderer = {
-		icons = {
-			glyphs = {
-				folder = {
-					arrow_closed = "", -- arrow when folder is closed
-					arrow_open = "", -- arrow when folder is open
-				},
-			},
-		},
-	},
 	-- disable window_picker for
 	-- explorer to work well with
 	-- window splits
@@ -254,9 +246,6 @@ nvimtree.setup({
 			},
 		},
 	},
-	-- 	git = {
-	-- 		ignore = false,
-	-- 	},
 })
 
 ----------------------
@@ -426,3 +415,8 @@ require("bufferline").setup({})
 -- Lastplace
 ----------------------
 require("nvim-lastplace").setup({})
+
+----------------------
+-- Whichkey
+----------------------
+require("which-key").setup({})

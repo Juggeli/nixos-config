@@ -60,6 +60,8 @@ in
         bufferline-nvim
         nvim-lastplace
         bufdelete-nvim
+        which-key-nvim
+        vim-hexokinase
       ] ++ [
         pkgs.vimExtraPlugins.vim-nightfly-colors
       ];
