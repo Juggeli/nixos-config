@@ -10,16 +10,15 @@ in
 
   config = mkIf cfg.enable {
     fonts.fonts = with pkgs; [
-      fira-code
-      fira-code-symbols
-      fira
+      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+      ubuntu_font_family
       font-awesome
       my.comic-code
     ];
 
     fonts.fontconfig.defaultFonts = {
-      sansSerif = [ "Fira Sans" ];
-      monospace = [ "ComicCodeLigatures Nerd Font" ];
+      sansSerif = [ "Ubuntu" ];
+      monospace = [ "Comic Code Ligatures" ];
     };
   };
 }
