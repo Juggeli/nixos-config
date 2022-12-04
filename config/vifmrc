@@ -408,14 +408,6 @@ nnoremap ,c :write | edit $MYVIFMRC | restart full<cr>
 " Toggle wrap setting on ,w key
 nnoremap ,w :set wrap!<cr>
 
-" Example of standard two-panel file managers mappings
-nnoremap <f3> :!less %f<cr>
-nnoremap <f4> :edit<cr>
-nnoremap <f5> :copy<cr>
-nnoremap <f6> :move<cr>
-nnoremap <f7> :mkdir<space>
-nnoremap <f8> :delete<cr>
-
 " Midnight commander alike mappings
 " Open current directory in the other pane
 nnoremap <a-i> :sync<cr>
@@ -455,7 +447,7 @@ nnoremap <space>2 :vsplit<cr>
 " let $VIFM_SERVER_NAME = v:servername
 
 " Activate screen/tmux support
-screen!
+" screen!
 
 " ------------------------------------------------------------------------------
 " Icon decorations example
@@ -523,7 +515,7 @@ set classify+=' ::*.ai::'
 set classify+=' ::*.psb,,*.psd::'
 set classify+=' ::*.jsx::'
 set classify+=' ::*.aac,,*.anx,,*.asf,,*.au,,*.axa,,*.flac,,*.m2a,,*.m4a,,*.mid,,*.midi,,*.mp3,,*.mpc,,*.oga,,*.ogg,,*.ogx,,*.ra,,*.ram,,*.rm,,*.spx,,*.wav,,*.wma,,*.ac3::'
-set classify+=' ::*.avi,,*.flv,,*.mkv,,*.mov,,*.mp4,,*.mpeg,,*.mpg,,*.webm,,*.av1::'
+set classify+=' ::*.avi,,*.flv,,*.mkv,,*.mov,,*.mp4,,*.mpeg,,*.mpg,,*.webm,,*.av1,,*.wmv::'
 set classify+=' ::*.epub,,*.pdf,,*.fb2,,*.djvu::'
 set classify+=' ::*.7z,,*.apk,,*.bz2,,*.cab,,*.cpio,,*.deb,,*.gem,,*.gz,,*.gzip,,*.lh,,*.lzh,,*.lzma,,*.rar,,*.rpm,,*.tar,,*.tgz,,*.xz,,*.zip,,*.zst::'
 set classify+=' ::*.cbr,,*.cbz::'
@@ -532,33 +524,27 @@ set classify+=' ::*.doc,,*.docx,,*.adoc::'
 set classify+=' ::*.xls,,*.xlsmx::'
 set classify+=' ::*.pptx,,*.ppt::'
 
-
-" gruvbox color scheme approximation for vifm
-
 " Reset all styles first
 highlight clear
 
-highlight Border	cterm=none	ctermfg=235	ctermbg=default
+highlight Win             cterm=none ctermfg=default    ctermbg=none
 
-highlight TopLine	cterm=none	ctermfg=214	ctermbg=235
-highlight TopLineSel	cterm=bold	ctermfg=214	ctermbg=237
+highlight TopLine         cterm=none ctermfg=blue       ctermbg=none
+highlight TopLineSel      cterm=none ctermfg=magenta    ctermbg=none
+highlight StatusLine      cterm=none ctermfg=blue       ctermbg=none
+highlight Border          cterm=none ctermfg=blue       ctermbg=none
 
-highlight Win		cterm=none	ctermfg=223	ctermbg=default
-highlight OtherWin  cterm=none	ctermfg=223	ctermbg=236
-highlight Directory	cterm=bold	ctermfg=109	ctermbg=default
-highlight CurrLine	cterm=bold,inverse	ctermfg=default	ctermbg=default
-highlight OtherLine	cterm=bold	ctermfg=default	ctermbg=235
-highlight Selected	cterm=none	ctermfg=223	ctermbg=237
+highlight Selected        cterm=bold ctermfg=magenta    ctermbg=default
+highlight CurrLine        cterm=bold ctermfg=236    ctermbg=blue
 
-highlight JobLine	cterm=bold	ctermfg=116	ctermbg=238
-highlight StatusLine	cterm=bold	ctermfg=144	ctermbg=236
-highlight ErrorMsg	cterm=bold	ctermfg=167	ctermbg=default
-highlight WildMenu	cterm=bold	ctermfg=235	ctermbg=144
-highlight CmdLine	cterm=none	ctermfg=223	ctermbg=default
+highlight WildMenu        cterm=none,reverse ctermfg=blue ctermbg=236
+highlight CmdLine         cterm=none ctermfg=255 ctermbg=236
+highlight ErrorMsg        cterm=none ctermfg=red ctermbg=black
 
-highlight Executable	cterm=bold	ctermfg=142	ctermbg=default
-highlight Link		cterm=none	ctermfg=132	ctermbg=default
-highlight BrokenLink	cterm=bold	ctermfg=167	ctermbg=default
-highlight Device	cterm=none,standout	ctermfg=214	ctermbg=default
-highlight Fifo		cterm=none	ctermfg=172	ctermbg=default
-highlight Socket	cterm=bold	ctermfg=223	ctermbg=default
+highlight Directory       cterm=none ctermfg=blue ctermbg=default
+highlight Link            cterm=none ctermfg=cyan ctermbg=default
+highlight BrokenLink      cterm=none ctermfg=red ctermbg=default
+highlight Socket          cterm=none ctermfg=magenta ctermbg=black
+highlight Device          cterm=none ctermfg=red ctermbg=default
+highlight Fifo            cterm=none ctermfg=yellow ctermbg=black
+highlight Executable      cterm=none ctermfg=green ctermbg=default
