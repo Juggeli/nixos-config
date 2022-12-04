@@ -30,6 +30,7 @@ in
         llm = "ll --sort=modified";
         la = "LC_COLLATE=C exa -ablF";
         cat = "bat";
+        lg = "lazygit";
       };
       shellAbbrs = {
         clr = "clear";
