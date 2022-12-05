@@ -12,8 +12,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    nixpkgs.overlays = [ inputs.vim-extra-plugins.overlays.default ];
-
     user.packages = with pkgs; [
       lazygit
       ripgrep
@@ -23,6 +21,7 @@ in
       nodePackages.prettier
       stylua
       nodePackages.eslint
+      lolcat
     ];
 
     programs.neovim.defaultEditor = true;
@@ -62,8 +61,8 @@ in
         bufdelete-nvim
         which-key-nvim
         vim-hexokinase
-      ] ++ [
-        pkgs.vimExtraPlugins.vim-nightfly-colors
+        material-nvim
+        dashboard-nvim
       ];
       extraConfig = "lua << EOF\n" + builtins.readFile "${configDir}/nvim/init.lua" + "\nEOF";
     };
