@@ -71,6 +71,8 @@ in
 
         bind ! __history_previous_command
         bind '$' __history_previous_command_arguments
+
+        set fish_vi_key_bindings
       '';
       plugins = [
         { name = "grc"; src = pkgs.fishPlugins.grc.src; }
