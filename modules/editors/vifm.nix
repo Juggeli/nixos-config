@@ -18,7 +18,7 @@ in
       }))
     ];
 
-    hm.xdg.configFile."vifm/vifmrc".source = "${configDir}/vifmrc";
+    hm.xdg.configFile."vifm/".source = "${configDir}/vifm/";
   };
 }
 

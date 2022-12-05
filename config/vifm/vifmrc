@@ -54,7 +54,7 @@ set vimhelp
 set norunexec
 
 " List of color schemes to try (picks the first one supported by the terminal)
-" colorscheme Default
+colorscheme material
 
 " Format for displaying time in file list. For example:
 " TIME_STAMP_FORMAT=%m/%d-%H:%M
@@ -524,27 +524,26 @@ set classify+=' ::*.doc,,*.docx,,*.adoc::'
 set classify+=' ::*.xls,,*.xlsmx::'
 set classify+=' ::*.pptx,,*.ppt::'
 
-" Reset all styles first
-highlight clear
+" change status line depending on the windows width size
+highlight User1 ctermbg=6 ctermfg=black
+highlight User2 ctermbg=none ctermfg=6
+highlight User3 ctermbg=none
+if &columns > 160
+    vsplit | view!
+    "set viewcolumns=-{name}..,7{size},21{mtime},12{perms},7{uname}..,-7{gname}..
+    set viewcolumns=-{name}..,7{size},12{perms},7{uname}..,-7{gname}..
+    set statusline="%1* %t %2*%3* %{filetype('.')} %T %= %a / %c  %d %2*%1* %E "
+    ""
+elseif &columns > 80
+    view | only
+    set viewcolumns=-{name}..,7{size},12{perms},7{uname}..,-7{gname}..
+    set statusline="%1* %t %2*%3* %{filetype('.')} %T %N%= %a / %c  %d %2*%1* %E "
+else
+    view | only
+    set viewcolumns=-{name}..,
+    set statusline=" "
+    set rulerformat=" "
+endif
 
-highlight Win             cterm=none ctermfg=default    ctermbg=none
-
-highlight TopLine         cterm=none ctermfg=blue       ctermbg=none
-highlight TopLineSel      cterm=none ctermfg=magenta    ctermbg=none
-highlight StatusLine      cterm=none ctermfg=blue       ctermbg=none
-highlight Border          cterm=none ctermfg=blue       ctermbg=none
-
-highlight Selected        cterm=bold ctermfg=magenta    ctermbg=default
-highlight CurrLine        cterm=bold ctermfg=236    ctermbg=blue
-
-highlight WildMenu        cterm=none,reverse ctermfg=blue ctermbg=236
-highlight CmdLine         cterm=none ctermfg=255 ctermbg=236
-highlight ErrorMsg        cterm=none ctermfg=red ctermbg=black
-
-highlight Directory       cterm=none ctermfg=blue ctermbg=default
-highlight Link            cterm=none ctermfg=cyan ctermbg=default
-highlight BrokenLink      cterm=none ctermfg=red ctermbg=default
-highlight Socket          cterm=none ctermfg=magenta ctermbg=black
-highlight Device          cterm=none ctermfg=red ctermbg=default
-highlight Fifo            cterm=none ctermfg=yellow ctermbg=black
-highlight Executable      cterm=none ctermfg=green ctermbg=default
+" remove previous directory double dot indication
+set dotdirs=""
