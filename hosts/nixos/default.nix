@@ -43,7 +43,7 @@
     };
   };
 
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_testing;
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
 
   virtualisation.docker.enable = true;
 
