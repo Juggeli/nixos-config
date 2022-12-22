@@ -29,6 +29,7 @@
       jackett.enable = true;
       sonarr.enable = true;
       homeassistant.enable = true;
+      tailscale.enable = true;
     };
   };
 

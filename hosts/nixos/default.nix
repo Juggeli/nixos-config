@@ -41,6 +41,7 @@
     };
     services = {
       ssh.enable = true;
+      tailscale.enable = true;
     };
   };
 
