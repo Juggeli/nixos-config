@@ -21,6 +21,7 @@ in
       btop
       powertop
       via
+      moreutils
     ];
 
     services.flatpak.enable = true;
