@@ -22,7 +22,8 @@
         kitty.enable = true;
       };
       sway.enable = true;
-      gnome.enable = true;
+      gnome.enable = false;
+      kde.enable = true;
     };
     editors = {
       emacs = {
