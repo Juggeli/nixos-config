@@ -11,7 +11,12 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       user.packages = with pkgs; [
-        google-chrome
+        (google-chrome.override {
+          commandLineArgs = [
+            "--enable-features=WebUIDarkMode"
+            "--force-dark-mode"
+          ];
+        })
       ];
     }
   ]);
