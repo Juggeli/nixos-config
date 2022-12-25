@@ -9,7 +9,10 @@
 
   ## Modules
   modules = {
-    desktop.term.kitty.enable = true;
+    desktop = {
+      term.kitty.enable = true;
+      media.ffmpeg.enable = true;
+    };
     editors = {
       vim.enable = true;
       vifm.enable = true;

@@ -15,13 +15,6 @@ in
       svt-av1
       mkvtoolnix
     ];
-
-    # pkgs.writeTextFile {
-    #   
-    # }
-    #
-    # "/usr/local/share/model/vmaf_v0.6.1.json".text = ./vmaf_v0.6.1.json;
-    # "/usr/local/share/model/vmaf_4k_v0.6.1.json".text = ./vmaf_4k_v0.6.1.json;
   };
 }
 
