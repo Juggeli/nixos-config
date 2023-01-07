@@ -82,6 +82,30 @@
         "guest ok" = "no";
         "force user" = "juggeli";
       };
+      disk1 = {
+        path = "/mnt/disk1";
+        browseable = "yes";
+        writeable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "force user" = "juggeli";
+      };
+      disk2 = {
+        path = "/mnt/disk2";
+        browseable = "yes";
+        writeable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "force user" = "juggeli";
+      };
+      disk3 = {
+        path = "/mnt/disk3";
+        browseable = "yes";
+        writeable = "yes";
+        "read only" = "no";
+        "guest ok" = "no";
+        "force user" = "juggeli";
+      };
     };
   };
 }
