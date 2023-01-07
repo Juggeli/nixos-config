@@ -18,9 +18,7 @@ in
       volume=60
       osd-on-seek=msg
       autofit=1600x900
-      profile=gpu-hq 
       deband=no 
-      gpu-context=wayland
     '';
   };
 }
