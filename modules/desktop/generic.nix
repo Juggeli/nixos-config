@@ -22,6 +22,7 @@ in
       powertop
       via
       moreutils
+      screen
     ];
 
     services.flatpak.enable = true;
