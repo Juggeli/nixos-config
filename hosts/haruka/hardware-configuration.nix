@@ -13,7 +13,7 @@
     "sd_mod"
     "sdhci_pci"
     "rtsx_usb_sdmmc"
-    "igb"
+    "r8169"
     "aesni_intel"
     "cryptd"
   ];
