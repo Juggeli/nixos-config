@@ -16,6 +16,7 @@
     "igb"
     "aesni_intel"
     "cryptd"
+    "nvme"
   ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
