@@ -12,7 +12,6 @@ in
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       ffmpeg_5-full
-      svt-av1
       mkvtoolnix
     ];
   };
