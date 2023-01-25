@@ -170,6 +170,7 @@ in
         exec configure-gtk
         include sway.theme
         output HDMI-A-1 disable
+        output HDMI-A-5 disable
         output DP-1 bg ~/.config/dotfiles/config/bg1.jpg fill
         default_border pixel 3
         default_floating_border pixel 3
