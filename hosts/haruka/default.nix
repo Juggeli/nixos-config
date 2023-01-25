@@ -4,7 +4,7 @@
     ../home.nix
     ../server.nix
     ./hardware-configuration.nix
-    # ./pool.nix
+    ./pool.nix
   ];
 
   ## Modules
@@ -36,9 +36,13 @@
     };
   };
 
-  ## Local config
-  programs.ssh.startAgent = true;
-  services.openssh.startWhenNeeded = true;
+  services.openssh = {
+    enable = true;
+    hostKeys = [{
+      path = "/etc/ssh/ssh_host_ed25519_key";
+      type = "ed25519";
+    }];
+  };
 
   networking.interfaces.enp3s0.ipv4.addresses = [{
     address = "10.11.11.3";
@@ -61,10 +65,10 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEWARTI4cg5EtRCbzZHwsBscipQGful/DkpJDQ8CASRQ juggeli@gmail.com"
       ];
-      hostKeys = [ "/etc/secrets/initrd/ssh_host_ed25519_key" ];
+      hostKeys = [ /etc/ssh/ssh_host_ed25519_key ];
     };
     secrets = {
-      "/etc/secrets/initrd/ssh_host_ed25519_key" = "/etc/secrets/initrd/ssh_host_ed25519_key";
+      "/etc/ssh/ssh_host_ed25519_key" = /etc/ssh/ssh_host_ed25519_key;
     };
     network.postCommands = ''
       echo 'cryptsetup-askpass' >> /root/.profile

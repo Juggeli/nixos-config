@@ -23,7 +23,7 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/ed75df82-8e87-4d1d-9256-d360b3eaaf3a";
+    { device = "/dev/disk/by-uuid/c5de15d7-1543-485e-b480-a429ebdb9c57";
       fsType = "xfs";
     };
 
@@ -32,10 +32,10 @@
       fsType = "vfat";
     };
 
-  # fileSystems."/mnt/cache" =
-  #   { device = "/dev/disk/by-uuid/0527a5d8-9379-4edf-a6fc-409ed0da5562";
-  #     fsType = "btrfs";
-  #   };
+  fileSystems."/mnt/appdata" =
+    { device = "/dev/disk/by-uuid/78cab7c2-db29-4b6f-9668-6c6519d51b9c";
+      fsType = "btrfs";
+    };
 
   boot.initrd.luks.devices = {
     root = {
@@ -43,11 +43,11 @@
       device = "/dev/disk/by-uuid/e62e2d61-7a84-48a6-b130-3b0b8f8bc365";
       allowDiscards = true;
     };
-    # data = {
-    #   preLVM = true;
-    #   device = "/dev/disk/by-uuid/5a26866b-fdc7-4bd7-9340-18d70b5d577b";
-    #   allowDiscards = true;
-    # };
+    appdata = {
+      preLVM = true;
+      device = "/dev/disk/by-uuid/5f527a43-bef3-4a80-9465-9dfb13be9831";
+      allowDiscards = true;
+    };
   };
 
   swapDevices = [ ];
