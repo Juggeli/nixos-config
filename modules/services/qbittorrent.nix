@@ -11,6 +11,11 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ qbittorrent-nox ];
 
+    hm = { config, pkgs, ... }: {
+      home.file.".local/share/qBittorrent".source = config.lib.file.mkOutOfStoreSymlink "/mnt/appdata/qbittorrent";
+      home.file.".config/qBittorrent".source = config.lib.file.mkOutOfStoreSymlink "/mnt/appdata/qbittorrent";
+    };
+
     systemd = {
       packages = [ pkgs.qbittorrent-nox ];
 

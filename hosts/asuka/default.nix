@@ -28,7 +28,7 @@
       grafana.enable = true;
       prometheus.enable = true;
       plex.enable = true;
-      qbittorrent.enable = true;
+      qbittorrent.enable = false;
       jackett.enable = true;
       sonarr.enable = true;
       homeassistant.enable = true;
