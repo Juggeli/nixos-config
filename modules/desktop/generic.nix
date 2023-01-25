@@ -23,6 +23,7 @@ in
       via
       moreutils
       screen
+      memtester
     ];
 
     services.flatpak.enable = true;
