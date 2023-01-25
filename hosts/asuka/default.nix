@@ -24,15 +24,15 @@
     };
     services = {
       ssh.enable = true;
-      smb.enable = true;
-      grafana.enable = true;
-      prometheus.enable = true;
-      plex.enable = true;
+      smb.enable = false;
+      grafana.enable = false;
+      prometheus.enable = false;
+      plex.enable = false;
       qbittorrent.enable = false;
-      jackett.enable = true;
-      sonarr.enable = true;
-      homeassistant.enable = true;
-      tailscale.enable = true;
+      jackett.enable = false;
+      sonarr.enable = false;
+      homeassistant.enable = false;
+      tailscale.enable = false;
     };
   };
 
@@ -41,7 +41,7 @@
   services.openssh.startWhenNeeded = true;
 
   networking.interfaces.enp3s0.ipv4.addresses = [{
-    address = "10.11.11.2";
+    address = "10.11.11.5";
     prefixLength = 24;
   }];
   networking.defaultGateway = "10.11.11.1";
@@ -51,7 +51,7 @@
 
   swapDevices = [{ device = "/swapfile"; size = 10000; }];
 
-  boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:asuka:enp3s0:off" ];
+  boot.kernelParams = [ "ip=10.11.11.5::10.11.11.1:255.255.255.0:asuka:enp3s0:off" ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {

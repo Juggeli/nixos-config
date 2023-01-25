@@ -4,8 +4,8 @@ with lib;
 {
   networking.hosts =
     let hostConfig = {
-          "10.11.11.2"  = [ "asuka" ];
-          "10.11.11.3"  = [ "nixos" ];
+          "10.11.11.5"  = [ "asuka" ];
+          "10.11.11.2"  = [ "haruka" ];
         };
         hosts = flatten (attrValues hostConfig);
         hostName = config.networking.hostName;
@@ -16,7 +16,7 @@ with lib;
 
   services.openssh.knownHosts = {
     asuka = {
-      extraHostNames = [ "10.11.11.2" ];
+      extraHostNames = [ "10.11.11.5" ];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOKNNi9y7KLAOJIJdUNAQaiEvzZWevYhxMo5RplDCnQ";
     };
     # nixos = {
