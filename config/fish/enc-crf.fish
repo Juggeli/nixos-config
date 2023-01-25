@@ -3,5 +3,7 @@ function enc-crf
     --acodec libopus --enc b:a=48k --enc vbr=on \
     --enc compression_level=10 --enc frame_duration=60 \
     --enc application=audio --crf 30 \
-    --pix-format yuv420p10le -i $argv
+    --pix-format yuv420p10le \
+    -o $(path change-extension '' $argv).av1.mkv \
+    -i $argv
 end
