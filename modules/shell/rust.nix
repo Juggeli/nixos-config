@@ -13,9 +13,9 @@ in
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      cargo
+      rustup
       rust-analyzer
-      rustc
+      clang
     ];
 
     hm.home.sessionPath = [ "$HOME/.cargo/bin" ];
