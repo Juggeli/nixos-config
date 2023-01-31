@@ -6,7 +6,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_0;
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
 
   environment.systemPackages = with pkgs; [
     btop
@@ -23,6 +23,8 @@
   };
 
   programs.dconf.enable = true;
+
+  security.acme.defaults.email = "juggeli@gmail.com";
 
   systemd = {
     services.clear-log = {

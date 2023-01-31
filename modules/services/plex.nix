@@ -12,7 +12,7 @@ in {
     services.plex = {
       enable = true;
       openFirewall = true;
-      dataDir = "/mnt/pool/appdata/plex";
+      dataDir = "/mnt/appdata/plex";
       extraScanners = [
         (pkgs.fetchFromGitHub {
           owner = "ZeroQI";

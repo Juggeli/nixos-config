@@ -17,10 +17,6 @@ in
   config = mkIf cfg.enable {
     nixpkgs.overlays = [ inputs.nur.overlay ];
 
-    environment.systemPackages = [
-      pkgs.cloudflared
-    ];
-
     services.home-assistant = {
       enable = true;
       package = (pkgs.home-assistant.override {
@@ -91,7 +87,6 @@ in
         };
       };
     };
-    security.acme.defaults.email = "juggeli@gmail.com";
 
     services.postgresql = {
       enable = true;
@@ -129,24 +124,7 @@ in
     };
 
     networking.firewall = {
-      allowedTCPPorts = [ config.services.home-assistant.config.http.server_port 8090 ];
-    };
-
-    users.users.cloudflared = {
-      group = "cloudflared";
-      isSystemUser = true;
-    };
-    users.groups.cloudflared = { };
-
-    systemd.services.cloudflare-tunnel = {
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.target" "systemd-resolved.service" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token=eyJhIjoiMTMyMjkxYzEyNmQ1MTBjZDg1N2VkZGMzNjdhMmM3N2EiLCJ0IjoiMmM0NDc1ZTEtNzdlNC00NmJkLWFhYmUtNDJhMjY1Y2VjNWZkIiwicyI6Ik1ETmpNMkptWmpndE5EQmtZUzAwWXpNMExXRXpaVEF0TURjM01HRTNORFEzTXpSbSJ9";
-        Restart = "always";
-        User = "cloudflared";
-        Group = "cloudflared";
-      };
+      allowedTCPPorts = [ 80 443 config.services.home-assistant.config.http.server_port 8090 ];
     };
   };
 }

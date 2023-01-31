@@ -25,14 +25,15 @@
     services = {
       ssh.enable = true;
       smb.enable = true;
-      grafana.enable = false;
-      prometheus.enable = false;
-      plex.enable = false;
+      grafana.enable = true;
+      prometheus.enable = true;
+      plex.enable = true;
       qbittorrent.enable = true;
-      jackett.enable = false;
-      sonarr.enable = false;
-      homeassistant.enable = false;
+      jackett.enable = true;
+      sonarr.enable = true;
+      homeassistant.enable = true;
       tailscale.enable = false;
+      cloudflared.enable = true;
     };
   };
 

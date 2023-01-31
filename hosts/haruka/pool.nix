@@ -18,13 +18,13 @@ set -o errexit
 while [ $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1) -gt ''${PERCENTAGE} ]
 do
     set +o pipefail
-    FILE=$(find "''${CACHE}" -type f -printf '%A@ %P\n' | \
+    FILE=$(find "''${CACHE}" -type f -not -iname "*.!qB" -not -iname ".snapraid.content" -printf '%A@ %P\n' | \
                   sort | \
                   head -n 1 | \
                   cut -d' ' -f2-)
     echo ''${FILE}
     test -n "''${FILE}"
-    rsync -axvHAXWESR --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
+    rsync -axqHAXWESR --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
 done
     '';
   };
@@ -52,9 +52,9 @@ in
   '';
 
   powerManagement.powerUpCommands = with pkgs;''
-    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sda
-    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sdb
-    ${hdparm}/bin/hdparm -S 60 -B 127 /dev/sdc
+    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sda
+    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdb
+    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdc
   '';
   
   fileSystems = {
@@ -129,6 +129,7 @@ in
     data disk2 /mnt/disks/disk2
 
     exclude *.log
+    exclude *.!qB
   '';
 
   # systemd.services.snapraidMaintenance = {

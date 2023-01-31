@@ -12,6 +12,7 @@ in
   config = mkIf cfg.enable {
     services.grafana = {
       enable = true;
+      dataDir = "/mnt/appdata/grafana/";
       settings.server = {
         http_port = 3000;
         http_addr = "10.11.11.2";

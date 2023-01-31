@@ -12,7 +12,7 @@ in
     services.jackett = {
       enable = true;
       openFirewall = true;
-      dataDir = "/mnt/pool/appdata/jackett";
+      dataDir = "/mnt/appdata/jackett";
     };
   };
 }

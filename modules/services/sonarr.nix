@@ -12,7 +12,7 @@ in
     services.sonarr = {
       enable = true;
       openFirewall = true;
-      dataDir = "/mnt/pool/appdata/sonarr";
+      dataDir = "/mnt/appdata/sonarr";
     };
 
     services.nginx = {
