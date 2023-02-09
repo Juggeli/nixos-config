@@ -24,9 +24,10 @@ in
       moreutils
       screen
       memtester
+      obsidian
+      speedtest-cli
     ];
 
-    services.flatpak.enable = true;
     services.fwupd.enable = true;
 
     services.udev.extraRules = ''
