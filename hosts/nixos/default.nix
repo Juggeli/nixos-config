@@ -53,7 +53,7 @@
 
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/pool" = {
-    device = "//haruka/pool";
+    device = "//10.11.11.2/pool";
     fsType = "cifs";
     options =
       let
