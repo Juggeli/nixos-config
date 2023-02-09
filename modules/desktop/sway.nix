@@ -40,7 +40,7 @@ let
       ''
         export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
         gnome_schema=org.gnome.desktop.interface
-        gsettings set $gnome_schema gtk-theme 'Adwaita-dark'
+        gsettings set $gnome_schema gtk-theme 'Yaru-purple-dark'
       '';
   };
 in
@@ -67,6 +67,7 @@ in
       vulkan-validation-layers
       swaybg
       autotiling-rs
+      yaru-theme
     ];
 
     # xdg-desktop-portal works by exposing a series of D-Bus interfaces
