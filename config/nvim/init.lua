@@ -54,8 +54,8 @@ local keymap = vim.keymap -- for conciseness
 keymap.set("i", "jk", "<ESC>")
 
 -- quicker movement
-keymap.set("n", "<C-d>", "<C-d>zz")
-keymap.set("n", "<C-u>", "<C-u>zz")
+keymap.set("n", "J", "<C-d>zz")
+keymap.set("n", "K", "<C-u>zz")
 
 -- clear search highlights
 keymap.set("n", "<leader>nh", ":nohl<CR>")
@@ -295,7 +295,7 @@ local on_attach = function(client, bufnr)
 	keymap.set("n", "<leader>d", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts) -- show diagnostics for cursor
 	keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts) -- jump to previous diagnostic in buffer
 	keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts) -- jump to next diagnostic in buffer
-	keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts) -- show documentation for what is under cursor
+	keymap.set("n", "D", "<cmd>Lspsaga hover_doc<CR>", opts) -- show documentation for what is under cursor
 	keymap.set("n", "<leader>o", "<cmd>LSoutlineToggle<CR>", opts) -- see outline on right hand side
 
 	-- typescript specific keymaps (e.g. rename file and update imports)
@@ -416,9 +416,7 @@ require("which-key").setup({})
 ----------------------
 -- Dashboard
 ----------------------
-local home = os.getenv("HOME")
-local db = require("dashboard")
-db.custom_header = {
+local header = {
 	"",
 	"        ⢀⣴⡾⠃⠄⠄⠄⠄⠄⠈⠺⠟⠛⠛⠛⠛⠻⢿⣿⣿⣿⣿⣶⣤⡀  ",
 	"      ⢀⣴⣿⡿⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣸⣿⣿⣿⣿⣿⣿⣿⣷ ",
@@ -437,23 +435,8 @@ db.custom_header = {
 	" ⠜⠋⢠⣷⢻⣿⣿⣶⣾⣿⣿⣿⣿⠿⣛⣥⣾⣿⠿⠟⠛⠉            ",
 	"",
 }
-db.custom_center = {
-	{
-		icon = "  ",
-		desc = "Recently opened files                  ",
-		action = "Telescope oldfiles",
-		shortcut = "SPC f o",
-	},
-	{
-		icon = "  ",
-		desc = "Find File                              ",
-		action = "Telescope find_files find_command=rg,--hidden,--files",
-		shortcut = "SPC f f",
-	},
-	{
-		icon = "  ",
-		desc = "Find word                              ",
-		action = "Telescope live_grep",
-		shortcut = "SPC f w",
-	},
-}
+
+local alpha = require("alpha")
+local dashboard = require("alpha.themes.dashboard")
+dashboard.section.header.val = header
+alpha.setup(dashboard.config)

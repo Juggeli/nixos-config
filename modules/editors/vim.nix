@@ -21,7 +21,6 @@ in
       nodePackages.prettier
       stylua
       nodePackages.eslint
-      lolcat
     ];
 
     programs.neovim.defaultEditor = true;
@@ -62,7 +61,7 @@ in
         which-key-nvim
         vim-hexokinase
         material-nvim
-        dashboard-nvim
+        alpha-nvim
       ];
       extraConfig = "lua << EOF\n" + builtins.readFile "${configDir}/nvim/init.lua" + "\nEOF";
     };
