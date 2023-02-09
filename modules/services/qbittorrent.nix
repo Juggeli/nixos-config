@@ -30,7 +30,7 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ 8080 17637 ];
+    networking.firewall.allowedTCPPorts = [ 8081 17637 ];
   };
 }
 
