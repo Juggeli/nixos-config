@@ -23,7 +23,7 @@
       };
       sway.enable = true;
       gnome.enable = false;
-      kde.enable = true;
+      kde.enable = false;
     };
     editors = {
       emacs = {
