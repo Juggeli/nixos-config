@@ -30,4 +30,8 @@ with lib;
   users.users.juggeli.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com"
   ];
+
+  systemd.extraConfig = ''
+    DefaultTimeoutStopSec=10s
+  '';
 }
