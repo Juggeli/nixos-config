@@ -34,6 +34,7 @@
       homeassistant.enable = true;
       tailscale.enable = false;
       cloudflared.enable = true;
+      unifi.enable = true;
     };
   };
 
