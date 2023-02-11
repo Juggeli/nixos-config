@@ -13,9 +13,7 @@ in
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      (vifm.overrideAttrs (attrs: {
-        patches = [ ./vifm.patch ];
-      }))
+      vifm
     ];
 
     hm.xdg.configFile."vifm/vifmrc".source = "${configDir}/vifm/vifmrc";
