@@ -1,56 +1,94 @@
 {
-  description = "Jukka's Nixos config";
+  description = "Juggeli's NixOS system";
 
-  inputs =
-    {
-      # Core dependencies.
-      nixpkgs.url = "nixpkgs/nixos-unstable";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
+    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-      home-manager = {
-        url = "github:nix-community/home-manager";
-        inputs.nixpkgs.follows = "nixpkgs";
-      };
-
-      # Extras
-      emacs-overlay.url = "github:nix-community/emacs-overlay";
-      webcord-overlay = {
-        url = "github:fufexan/webcord-flake";
-        inputs.nixpkgs.follows = "nixpkgs";
-      };
-      nur.url = "github:nix-community/NUR";
+    snowfall-lib = {
+      url = "github:snowfallorg/lib/dev";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
-  outputs = inputs @ { self, nixpkgs, ... }:
+    flake = {
+      url = "github:snowfallorg/flake";
+      inputs.nixpkgs.follows = "unstable";
+    };
+
+    darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-hardware.url = "github:nixos/nixos-hardware";
+
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-22.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    nur = {
+      url = "github:nix-community/NUR";
+    };
+
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "unstable";
+    };
+
+    # Discord Replugged
+    replugged = {
+      url = "github:LunNova/replugged-nix-flake";
+      inputs.nixpkgs.follows = "unstable";
+    };
+
+    # Discord Replugged plugins / themes
+    discord-tweaks = {
+      url = "github:NurMarvin/discord-tweaks";
+      flake = false;
+    };
+    discord-nord-theme = {
+      url = "github:DapperCore/NordCord";
+      flake = false;
+    };
+
+    neovim = {
+      url = "github:jakehamilton/neovim";
+      inputs.nixpkgs.follows = "unstable";
+    };
+  };
+  outputs = inputs:
     let
-      inherit (lib.my) mapModules mapModulesRec mapHosts;
-
-      system = "x86_64-linux";
-
-      mkPkgs = pkgs: extraOverlays: import pkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = extraOverlays;
+      lib = inputs.snowfall-lib.mkLib {
+        inherit inputs;
+        src = ./.;
       };
-      pkgs = mkPkgs nixpkgs [ self.overlay ];
-
-      lib = nixpkgs.lib.extend
-        (self: super: { my = import ./lib { inherit pkgs inputs; lib = self; }; });
     in
-    {
-      lib = lib.my;
+    lib.mkFlake {
+      package-namespace = "plusultra";
 
-      overlay =
-        final: prev: {
-          my = self.packages."${system}";
-        };
+      channels-config.allowUnfree = true;
 
-      packages."${system}" =
-        mapModules ./packages (p: pkgs.callPackage p { });
+      overlays = with inputs; [
+        flake.overlay
+        neovim.overlay
+      ];
 
-      nixosModules =
-        { dotfiles = import ./.; } // mapModulesRec ./modules import;
+      systems.modules = with inputs; [
+        home-manager.nixosModules.home-manager
+      ];
 
-      nixosConfigurations =
-        mapHosts ./hosts { };
+      deploy = lib.mkDeploy { inherit (inputs) self; };
+
+      checks =
+        builtins.mapAttrs
+          (system: deploy-lib:
+            deploy-lib.deployChecks inputs.self.deploy)
+          inputs.deploy-rs.lib;
     };
 }

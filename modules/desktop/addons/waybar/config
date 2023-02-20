@@ -1,0 +1,11 @@
+{
+  "layer": "top",
+    "position": "bottom",
+    "margin-top": 6,
+    "margin-left": 1200,
+    "margin-right": 1200,
+    "margin-bottom": 50,
+    "modules-left": ["sway/workspaces"],
+    "modules-center": ["sway/window"],
+    "modules-right": ["pulseaudio", "tray", "clock"],
+}
