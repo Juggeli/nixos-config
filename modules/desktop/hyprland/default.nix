@@ -29,6 +29,10 @@ in
       electron-support = enabled;
     };
 
+    environment.systemPackages = with pkgs; [
+      hyprpaper
+    ];
+
     programs.hyprland = {
       enable = true;
     };
@@ -36,6 +40,8 @@ in
     plusultra.home.configFile = {
       "hypr/hyprland.conf".source = ./hyprland.conf;
       "hypr/catppuccin-mocha.conf".source = ./catppuccin-mocha.conf;
+      "hypr/hyprpaper.conf".source = ./hyprpaper.conf;
+      "hypr/background.png".source = ./background.png;
     };
   };
 }
