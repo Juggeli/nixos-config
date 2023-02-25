@@ -31,7 +31,7 @@
       url = "github:nix-community/home-manager/release-22.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
     nur = {
       url = "github:nix-community/NUR";
     };
@@ -58,7 +58,7 @@
     };
 
     neovim = {
-      url = "github:jakehamilton/neovim";
+      url = "github:Juggeli/nix-neovim";
       inputs.nixpkgs.follows = "unstable";
     };
   };
