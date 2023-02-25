@@ -15,6 +15,7 @@ in
     plusultra = {
       desktop = {
         sway = enabled;
+        hyprland = enabled;
       };
 
       services = {

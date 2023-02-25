@@ -61,6 +61,11 @@
       url = "github:Juggeli/nix-neovim";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "unstable";
+    };
   };
   outputs = inputs:
     let
@@ -81,6 +86,7 @@
 
       systems.modules = with inputs; [
         home-manager.nixosModules.home-manager
+        hyprland.nixosModules.default
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
