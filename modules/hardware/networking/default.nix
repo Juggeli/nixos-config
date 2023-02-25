@@ -23,6 +23,8 @@ in
         enable = true;
         dhcp = "internal";
       };
+
+      nameservers = [ "1.1.1.1" ];
     };
 
     # Fixes an issue that normally causes nixos-rebuild to fail.
