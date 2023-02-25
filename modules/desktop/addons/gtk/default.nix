@@ -33,19 +33,28 @@ in
       gtk = {
         enable = true;
 
+        # theme = {
+        #   name = cfg.theme.name;
+        #   package = cfg.theme.pkg;
+        # };
         theme = {
-          name = cfg.theme.name;
-          package = cfg.theme.pkg;
+          name = "Catppuccin-Mocha-Compact-Pink-Dark";
+          package = pkgs.catppuccin-gtk.override {
+            accents = [ "pink" ];
+            size = "compact";
+            tweaks = [ "rimless" "black" ];
+            variant = "mocha";
+          };
         };
 
         cursorTheme = {
-          name = cfg.cursor.name;
-          package = cfg.cursor.pkg;
+          name = "Catppuccin-Mocha-Pink-Cursors";
+          package = pkgs.catppuccin-cursors.mochaPink;
         };
 
         iconTheme = {
-          name = cfg.icon.name;
-          package = cfg.icon.pkg;
+          name = "Papirus";
+          package = pkgs.papirus-icon-theme;
         };
       };
     };
