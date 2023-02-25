@@ -11,8 +11,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ rofi ];
+    environment.systemPackages = with pkgs; [
+      rofi
+    ];
 
-    plusultra.home.configFile."rofi/config.rasi".source = ./config.rasi;
+    plusultra.home.configFile = {
+      "rofi/config.rasi".source = ./config.rasi;
+      "rofi/catppuccin-mocha.rasi".source = ./catppuccin-mocha.rasi;
+    };
   };
 }

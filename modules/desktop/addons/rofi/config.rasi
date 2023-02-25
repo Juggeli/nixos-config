@@ -1,41 +1,17 @@
-/*
-vim: filetype=css
- */
-
-configuration {
-  fullscreen: false;
-  show-icons: false;
-  sidebar-mode: false;
+configuration{
+    modi: "run,drun,window";
+    icon-theme: "Oranchelo";
+    show-icons: true;
+    terminal: "alacritty";
+    drun-display-format: "{icon} {name}";
+    location: 0;
+    disable-history: false;
+    hide-scrollbar: true;
+    display-drun: "   Apps ";
+    display-run: "   Run ";
+    display-window: " 﩯  Window";
+    display-Network: " 󰤨  Network";
+    sidebar-mode: true;
 }
 
-* {
-    // Default bg is transparent.
-    background-color: transparent;
-    // Default text is white
-    text-color:       white;
-    spacing:          30;
-}
-
-#window {
-    // Default font
-    font: "Nerd Font Hack 18";
-    fullscreen: true;
-    transparency: "background";
-
-    background-color: #282a36BA;
-   
-    // Add dummy widgets on top and bottom so the sizing
-    // nicely centers hdum, independent of resolution. 
-    children: [ dummy1, hdum, dummy2 ];
-}
-
-#hdum {
-    orientation: horizontal;
-    // Add dummy widgets on left and right so the sizing
-    // nicely centers mainbox, independent of resolution. 
-    children: [ dummy3, mainbox, dummy4 ];
-}
-
-#element selected {
-    text-color: #caa9fa;
-}
+@theme "catppuccin-mocha"
