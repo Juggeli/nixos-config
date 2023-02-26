@@ -1,8 +1,8 @@
 { pkgs, ... }:
 
 {
-  environment.systemPackages = [ 
-    pkgs.cifs-utils 
+  environment.systemPackages = [
+    pkgs.cifs-utils
     (pkgs.writeShellScriptBin "lock" ''
       if [[ "$1" == this ]]
         then args="-s"
@@ -16,16 +16,7 @@
     if test (tty) = /dev/tty1
       exec sway
     else
-      sudo /run/current-system/sw/bin/lock this
+      doas /run/current-system/sw/bin/lock this
     end
   '';
-  /* security.sudo = { */
-  /*   enable = true; */
-  /*   extraConfig = '' */
-  /*     juggeli ALL = (root) NOPASSWD: /run/current-system/sw/bin/lock */
-  /*     juggeli ALL = (root) NOPASSWD: /run/current-system/sw/bin/lock this */
-  /*     juggeli ALL = (root) NOPASSWD: /run/current-system/sw/bin/reboot */
-  /*     juggeli ALL = (root) NOPASSWD: /run/current-system/sw/bin/shutdown */
-  /*   ''; */
-  /* }; */
 }
