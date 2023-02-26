@@ -35,5 +35,7 @@ in
       lib.optional cfg.enable discord
       ++ lib.optional cfg.canary.enable pkgs.plusultra.discord
       ++ lib.optional cfg.native.enable pkgs.discord;
+
+    plusultra.home.configFile."discord/settings.json".source = ./settings.json;
   };
 }
