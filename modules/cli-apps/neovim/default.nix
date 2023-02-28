@@ -12,29 +12,11 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      /* neovim */
-      /* gcc */
-      /* rustc */
-      /* nodejs */
-      /* lazygit */
-      /* ripgrep */
-      /* tree-sitter */
-      /* stylua */
-      /* sumneko-lua-language-server */
       plusultra.neovim
     ];
 
     environment.variables = {
       EDITOR = "nvim";
     };
-
-    /* plusultra.home = { */
-    /*   configFile = { */
-    /*     "nvim/" = { */
-    /*       source = ./nvim; */
-    /*       recursive = true; */
-    /*     }; */
-    /*   }; */
-    /* }; */
   };
 }
