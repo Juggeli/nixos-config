@@ -26,7 +26,7 @@ in
 
     plusultra.home = {
       file = {
-        "Downloads/.keep".text = "";
+        "downloads/.keep".text = "";
         "code/.keep".text = "";
       };
     };
