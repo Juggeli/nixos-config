@@ -350,11 +350,11 @@
         "snowfall-lib": "snowfall-lib_2"
       },
       "locked": {
-        "lastModified": 1677439220,
-        "narHash": "sha256-7vfWQ6PepqXmef9+0z2qMzzdGXsA3awWjIP6eUSLWOQ=",
+        "lastModified": 1677450026,
+        "narHash": "sha256-skZJ4i/BYcZe2MI7BADeLcRxtYotZbjzA7gPjJvuv+c=",
         "owner": "Juggeli",
         "repo": "nix-neovim",
-        "rev": "ae96576044789cf36ab342993b5c077d496bfeec",
+        "rev": "114f18829ca74e9054e18750010c585dbe003a12",
         "type": "github"
       },
       "original": {
@@ -401,11 +401,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1677438522,
-        "narHash": "sha256-Zrvu7wDCShTjuBLw1RnJDQnTrhxKyUJRvJTzF5dss0k=",
+        "lastModified": 1677440795,
+        "narHash": "sha256-Kmjr95L42iioTItuA6nKCaObAXQvgRTPmj+62dx5OZg=",
         "owner": "nixos",
         "repo": "nixos-hardware",
-        "rev": "c8e047a2333e40e678c90c6e50334af2b4ca7655",
+        "rev": "2a483ad9cd2d931ab52cd5f897c447beb8328bed",
         "type": "github"
       },
       "original": {
@@ -432,11 +432,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1677435906,
-        "narHash": "sha256-gtrVYmj8vRxBQbRqb9hLlC9P+cqSeULXHTscJD1X0R0=",
+        "lastModified": 1677444387,
+        "narHash": "sha256-1BqEJH0RvsrgmIqEXgrj730I1/yo80y0/CJUsH7ZyJo=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "cf478084dfacb6fed849690f1ee00ebf63de0889",
+        "rev": "495702b4207b66536365e4296bbac896074354ef",
         "type": "github"
       },
       "original": {
@@ -558,17 +558,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1677030094,
-        "narHash": "sha256-OqcOKVsAW23+Wi2kkrFPhX7+t6n22fSLzt/Oe5PesvI=",
+        "lastModified": 1676275963,
+        "narHash": "sha256-HLQRZ0yrs5naideduX1vy10NH3EwQdlZrDK2Deutwpc=",
         "owner": "snowfallorg",
         "repo": "lib",
-        "rev": "b428b981b96114612414313fa62f3ed14cc8f168",
+        "rev": "af06876391103ccfb3553b73d64797e765b88105",
         "type": "github"
       },
       "original": {
         "owner": "snowfallorg",
-        "ref": "dev",
         "repo": "lib",
+        "rev": "af06876391103ccfb3553b73d64797e765b88105",
         "type": "github"
       }
     },
