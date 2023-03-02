@@ -12,6 +12,7 @@ in
   config = mkIf cfg.enable { 
     services.unifi = {
       enable = true;
+      unifiPackage = pkgs.unifi;
       openFirewall = true;
     };
 
