@@ -13,6 +13,8 @@ with lib.internal;
       server = enabled;
     };
 
+    apps.kitty = enabled;
+
     security = {
       acme = enabled;
     };
@@ -27,7 +29,7 @@ with lib.internal;
       qbittorrent = enabled;
       sonarr = enabled;
       unifi = enabled;
-      
+
       samba = {
         enable = true;
         shares = {
