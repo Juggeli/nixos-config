@@ -18,7 +18,7 @@ with lib.internal;
   };
 
   fileSystems."/mnt/pool" = {
-    device = "//10.11.11.2/pool";
+    device = "//haruka/pool";
     fsType = "cifs";
     options =
       let
