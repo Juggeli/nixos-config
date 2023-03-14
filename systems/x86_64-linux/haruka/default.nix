@@ -32,7 +32,7 @@ with lib.internal;
       prometheus = enabled;
       qbittorrent = enabled;
       sonarr = enabled;
-      unifi = enabled;
+      unifi = disabled;
 
       samba = {
         enable = true;
