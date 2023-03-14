@@ -14,11 +14,9 @@ in
   config = mkIf cfg.enable {
     plusultra = {
       suites = {
-        common = enabled;
+        common-slim = enabled;
       };
-      services = {
-
-      };
+      services = { };
     };
   };
 }
