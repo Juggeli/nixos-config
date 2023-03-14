@@ -2,30 +2,30 @@
 let
   mover = pkgs.writeShellApplication {
     name = "mover";
-    runtimeInputs = [pkgs.rsync];
+    runtimeInputs = [ pkgs.rsync ];
     text = ''
-if [ $# != 3 ]; then
-  echo "usage: $0 <cache-drive> <backing-pool> <percentage>"
-  exit 1
-fi
+      if [ $# != 3 ]; then
+        echo "usage: $0 <cache-drive> <backing-pool> <percentage>"
+        exit 1
+      fi
 
-CACHE="''${1}"
-BACKING="''${2}"
-PERCENTAGE=''${3}
+      CACHE="''${1}"
+      BACKING="''${2}"
+      PERCENTAGE=''${3}
 
-set -o errexit
-# shellcheck disable=SC2046,SC2086
-while [ $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1) -gt ''${PERCENTAGE} ]
-do
-    set +o pipefail
-    FILE=$(find "''${CACHE}" -type f -not -iname "*.!qB" -not -iname ".snapraid.content" -printf '%A@ %P\n' | \
-                  sort | \
-                  head -n 1 | \
-                  cut -d' ' -f2-)
-    echo ''${FILE}
-    test -n "''${FILE}"
-    rsync -axqHAXWESR --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
-done
+      set -o errexit
+      # shellcheck disable=SC2046,SC2086
+      while [ $(df --output=pcent "''${CACHE}" | grep -v Use | cut -d'%' -f1) -gt ''${PERCENTAGE} ]
+      do
+          set +o pipefail
+          FILE=$(find "''${CACHE}" -type f -not -iname "*.!qB" -not -iname ".snapraid.content" -printf '%A@ %P\n' | \
+                        sort | \
+                        head -n 1 | \
+                        cut -d' ' -f2-)
+          echo ''${FILE}
+          test -n "''${FILE}"
+          rsync -axqHAXWESR --preallocate --remove-source-files "''${CACHE}/./''${FILE}" "''${BACKING}/"
+      done
     '';
   };
 in
@@ -56,7 +56,7 @@ in
     ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdb
     ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdc
   '';
-  
+
   fileSystems = {
     "/mnt/disks/disk1" = {
       device = "/dev/mapper/disk1";
@@ -132,24 +132,25 @@ in
     exclude *.!qB
   '';
 
-  # systemd.services.snapraidMaintenance = {
-  #   description = "sync and scrub snapraid";
-  #   serviceConfig = {
-  #     User = "root";
-  #     Type = "oneshot";
-  #   };
-  #   script = ''
-  #     ${pkgs.snapraid}/bin/snapraid sync
-  #     ${pkgs.snapraid}/bin/snapraid scrub
-  #   '';
-  # };
-  # systemd.timers.snapraidMaintenance = {
-  #   wantedBy = [ "timers.target" ];
-  #   partOf = [ "snapraidMaintenance.service" ];
-  #   timerConfig = {
-  #     OnCalendar = "*-*-* 6:00:00";
-  #     Unit = "snapraidMaintenance.service";
-  #   };
-  # };
+  systemd.services.snapraidMaintenance = {
+    description = "sync and scrub snapraid";
+    serviceConfig = {
+      User = "root";
+      Type = "oneshot";
+    };
+    script = ''
+      ${mover}/bin/mover /mnt/disks/cache/ /mnt/disks/slowpool/ 50
+      ${pkgs.snapraid}/bin/snapraid  sync
+      ${pkgs.snapraid}/bin/snapraid scrub
+    '';
+  };
+  systemd.timers.snapraidMaintenance = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "snapraidMaintenance.service" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 6:00:00";
+      Unit = "snapraidMaintenance.service";
+    };
+  };
 }
 
