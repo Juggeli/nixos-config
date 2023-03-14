@@ -15,6 +15,10 @@ with lib.internal;
 
     apps.kitty = enabled;
 
+    cli-apps = {
+      rclone = enabled;
+    };
+
     security = {
       acme = enabled;
     };
