@@ -47,6 +47,14 @@ with lib.internal;
     };
   };
 
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+      defaultNetwork.dnsname.enable = true;
+    };
+  };
+
   services.openssh = {
     enable = true;
     hostKeys = [{
