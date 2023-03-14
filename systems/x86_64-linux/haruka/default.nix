@@ -68,7 +68,6 @@ with lib.internal;
     prefixLength = 24;
   }];
   networking.defaultGateway = "10.11.11.1";
-  networking.nameservers = [ "1.1.1.1" ];
 
   boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp3s0:off" ];
 
