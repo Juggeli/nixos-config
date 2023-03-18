@@ -81,7 +81,7 @@
 
       overlays = with inputs; [
         flake.overlay
-        neovim.overlay
+        neovim.overlays.default
       ];
 
       systems.modules = with inputs; [
