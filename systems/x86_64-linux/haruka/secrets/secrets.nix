@@ -4,5 +4,6 @@ let
 in
 {
   "borg-passkey.age".publicKeys = [ key key2 ];
+  "cloudflared.age".publicKeys = [ key key2 ];
 }
 
