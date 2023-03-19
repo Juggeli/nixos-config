@@ -14,8 +14,7 @@ in
     environment.systemPackages = with pkgs; [
       plusultra.neovim
     ];
-
-    environment.variables = {
+    plusultra.home.extraOptions.home.sessionVariables = {
       EDITOR = "nvim";
     };
   };
