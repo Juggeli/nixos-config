@@ -12,9 +12,18 @@ with lib.internal;
     archetypes = {
       workstation = enabled;
     };
+    tools.agenix = enabled;
     hardware.networking.hosts = {
       "10.11.11.2" = [ "haruka" ];
     };
+  };
+
+  services.borgbackup.jobs.homeRemote = mkBorgBackup {
+    inherit config;
+    paths = [
+      "/home/juggeli/code/"
+      "/home/juggeli/documents/"
+    ];
   };
 
   fileSystems."/mnt/pool" = {

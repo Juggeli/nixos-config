@@ -1,6 +1,49 @@
 {
   "nodes": {
+    "agenix": {
+      "inputs": {
+        "darwin": "darwin",
+        "nixpkgs": [
+          "unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1677969766,
+        "narHash": "sha256-AIp/ZYZMNLDZR/H7iiAlaGpu4lcXsVt9JQpBlf43HRY=",
+        "owner": "ryantm",
+        "repo": "agenix",
+        "rev": "03b51fe8e459a946c4b88dcfb6446e45efb2c24e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryantm",
+        "repo": "agenix",
+        "type": "github"
+      }
+    },
     "darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "agenix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1673295039,
+        "narHash": "sha256-AsdYgE8/GPwcelGgrntlijMg4t3hLFJFCRF3tL5WVjA=",
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "rev": "87b9d090ad39b25b2400029c64825fc2a8868943",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lnl7",
+        "ref": "master",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "darwin_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -308,11 +351,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1679157029,
-        "narHash": "sha256-5JvQRGIuTRFpfNgwhHpnPKHeg8uLE0DGDHoESonLaeo=",
+        "lastModified": 1679166084,
+        "narHash": "sha256-yr+alTr1eGjEKpMiD06FTTMP6vaoNwYEZT6mW6dQ5rM=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "2ba5238b8e985bb5944b16ac657bf3653a812c00",
+        "rev": "06244555915339967864292dd0b83cd9732516d8",
         "type": "github"
       },
       "original": {
@@ -350,11 +393,11 @@
         "snowfall-lib": "snowfall-lib_2"
       },
       "locked": {
-        "lastModified": 1678996095,
-        "narHash": "sha256-cp85jPUoeYrIy2iUlkkXrPM4fR6Q3sfizoe1dULnTAw=",
+        "lastModified": 1679179978,
+        "narHash": "sha256-cUCGxhkNlJmvQaTM6hbwW5k/xhqC/HZz0VNRSEtgVig=",
         "owner": "Juggeli",
         "repo": "nix-neovim",
-        "rev": "5cb89b954b34278dc8abf3760dbf780d4c76d410",
+        "rev": "535f39bd7a071f5821821d71f7891c406258d9cd",
         "type": "github"
       },
       "original": {
@@ -432,11 +475,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1679152739,
-        "narHash": "sha256-95gKWTXDCvI3vJiENdYXGWUcGUwlqifmJ9khtGaS74c=",
+        "lastModified": 1679168785,
+        "narHash": "sha256-DQ79Ih7qhXdoePmLtf1pXVc+JZwpm+SVBkpsPkY8Y9k=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "23289b0eef35567ccd3d951d40440524a05dd0a7",
+        "rev": "04277085ab26a094f5eee2c0303e473bd1bc2ee0",
         "type": "github"
       },
       "original": {
@@ -484,7 +527,8 @@
     },
     "root": {
       "inputs": {
-        "darwin": "darwin",
+        "agenix": "agenix",
+        "darwin": "darwin_2",
         "deploy-rs": "deploy-rs",
         "discord-nord-theme": "discord-nord-theme",
         "discord-tweaks": "discord-tweaks",

@@ -22,6 +22,7 @@ with lib.internal;
     security = {
       acme = enabled;
     };
+    tools.agenix = enabled;
 
     services = {
       cloudflared = enabled;
@@ -89,6 +90,19 @@ with lib.internal;
     network.postCommands = ''
       echo 'cryptsetup-askpass' >> /root/.profile
     '';
+  };
+
+  services.borgbackup.jobs.appdata = mkBorgBackup {
+    inherit config;
+    paths = [
+      "/mnt/appdata"
+    ];
+    exclude = [
+      "/mnt/appdata/plex/Plex\ Media\ Server/Cache"
+      "/mnt/appdata/plex/Plex\ Media\ Server/Media"
+      "/mnt/appdata/plex/Plex\ Media\ Server/Metadata"
+      "/mnt/appdata/plex/Plex\ Media\ Server/Drivers"
+    ];
   };
 
   # This value determines the NixOS release from which the default

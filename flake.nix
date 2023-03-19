@@ -66,6 +66,11 @@
       url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "unstable";
+    };
   };
   outputs = inputs:
     let
@@ -87,6 +92,7 @@
       systems.modules = with inputs; [
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
+        agenix.nixosModules.default
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
