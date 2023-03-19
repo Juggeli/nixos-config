@@ -22,6 +22,7 @@ in
         flake = enabled;
         neovim = enabled;
         vifm = enabled;
+        speedtestpp = enabled;
       };
 
       tools = {
