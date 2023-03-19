@@ -140,7 +140,7 @@ in
     };
     script = ''
       ${mover}/bin/mover /mnt/disks/cache/ /mnt/disks/slowpool/ 50
-      ${pkgs.snapraid}/bin/snapraid  sync
+      ${pkgs.snapraid}/bin/snapraid --force-empty sync
       ${pkgs.snapraid}/bin/snapraid scrub
     '';
   };
