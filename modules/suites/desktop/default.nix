@@ -21,6 +21,7 @@ in
       services = {
         avahi = enabled;
         printing = enabled;
+        tailscale = enabled;
       };
 
       apps = {

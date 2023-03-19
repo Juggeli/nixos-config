@@ -16,7 +16,9 @@ in
       suites = {
         common-slim = enabled;
       };
-      services = { };
+      services = {
+        tailscale = enabled;
+      };
     };
   };
 }
