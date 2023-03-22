@@ -9,7 +9,7 @@ in
     enable = mkBoolOpt false "Whether or not to enable sonarr service.";
   };
 
-  config = mkIf cfg.enable { 
+  config = mkIf cfg.enable {
     services.sonarr = {
       enable = true;
       openFirewall = true;
@@ -22,7 +22,7 @@ in
       virtualHosts."sonarr.jugi.cc" = {
         forceSSL = true;
         enableACME = true;
-        basicAuth = { sonarr = "4.Y3iiu6CZxrdgyCaFd349Cy"; };
+        # basicAuth = { sonarr = "4.Y3iiu6CZxrdgyCaFd349Cy"; };
         extraConfig = ''
           proxy_buffering off;
         '';
