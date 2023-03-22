@@ -14,5 +14,12 @@ in
     environment.systemPackages = with pkgs; [
       kitty
     ];
+
+    plusultra.home = {
+      configFile = {
+        "kitty/kitty.conf".source = ./kitty.conf;
+        "kitty/catppuccin.conf".source = ./catppuccin.conf;
+      };
+    };
   };
 }
