@@ -38,51 +38,33 @@ with lib.internal;
       nixsw = "doas nixos-rebuild switch --flake .#";
       nixup = "doas nixos-rebuild switch --flake .# --recreate-lock-file";
     };
-    interactiveShellInit =
-      # Open command buffer in vim when alt+e is pressed
-      ''
-        bind \ee edit_command_buffer
-      '' +
-      # kitty integration
-      ''
-        set --global KITTY_INSTALLATION_DIR "${pkgs.kitty}/lib/kitty"
-        set --global KITTY_SHELL_INTEGRATION enabled
-        source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
-        set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
-      '' +
-      # Use vim bindings and cursors
-      ''
-        fish_vi_key_bindings
-        set fish_cursor_default     block      blink
-        set fish_cursor_insert      line       blink
-        set fish_cursor_replace_one underscore blink
-        set fish_cursor_visual      block
-      '';
-    shellInit = ''
-        function __history_previous_command
+    interactiveShellInit = ''
+      set --global KITTY_INSTALLATION_DIR "${pkgs.kitty}/lib/kitty"
+      set --global KITTY_SHELL_INTEGRATION enabled
+      source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
+      set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
+
+      fish_vi_key_bindings
+      set fish_cursor_default     block      blink
+      set fish_cursor_insert      line       blink
+      set fish_cursor_replace_one underscore blink
+      set fish_cursor_visual      block
+
+      function bind_bang
         switch (commandline -t)
-      case "!"
-          commandline -t $history[1]; commandline -f repaint
-      case "*"
-            commandline -i !
-              end
-              end
+        case "!"
+          commandline -t -- $history[1]
+          commandline -f repaint
+        case "*"
+          commandline -i !
+        end
+      end
 
-              function __history_previous_command_arguments
-              switch (commandline -t)
-      case "!"
-                commandline -t ""
-                  commandline -f history-token-search-backward
-      case "*"
-                  commandline -i '$'
-                    end
-                    end
-
-                    bind ! __history_previous_command
-                    bind '$' __history_previous_command_arguments
-
-                    set fish_vi_key_bindings
-    '';
+      function fish_user_key_bindings
+        bind -M insert ! bind_bang
+      end
+    '' +
+    readFile ./catpuccin.fish;
     plugins = [
       { name = "grc"; src = pkgs.fishPlugins.grc.src; }
       { name = "autopair-fish"; src = pkgs.fishPlugins.autopair-fish.src; }
@@ -96,6 +78,7 @@ with lib.internal;
           sha256 = "0dbnir6jbwjpjalz14snzd3cgdysgcs3raznsijd6savad3qhijc";
         };
       }
+      { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
     ];
   };
 }
