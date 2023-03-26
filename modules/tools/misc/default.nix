@@ -19,7 +19,6 @@ in
       file
       jq
       wget
-      btop
       bat
       exa
       fd

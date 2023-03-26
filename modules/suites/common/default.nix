@@ -23,6 +23,7 @@ in
         neovim = enabled;
         vifm = enabled;
         speedtestpp = enabled;
+        btop = enabled;
       };
 
       tools = {
