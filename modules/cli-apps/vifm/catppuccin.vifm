@@ -1,0 +1,28 @@
+" Catppuccin Mocha colorscheme for Vifm
+
+" Reset all styles first
+highlight clear
+
+highlight Border     	guifg=#89b4fa guibg=None
+
+highlight TopLine    	guifg=#6c7086 guibg=#1e1e2e
+highlight TopLineSel 	guifg=#bac2de guibg=#313244
+
+highlight Win        	guifg=#cdd6f4 guibg=None
+highlight Directory		guifg=#f9e2af guibg=None
+highlight CurrLine		gui=bold guifg=None guibg=#313244
+highlight OtherLine		gui=bold guifg=None guibg=#181825
+highlight Selected		guifg=None guibg=#585b70
+
+highlight JobLine			guifg=#89b4fa guibg=#444444
+highlight StatusLine	guifg=#c6c6c6 guibg=#1e1e2e
+highlight ErrorMsg		guifg=#87d7af guibg=#3a3a3a
+highlight WildMenu		guifg=#262626 guibg=#afafff
+highlight CmdLine			guifg=#d0d0d0 guibg=None
+
+highlight Executable	guifg=#94e2d5 guibg=None
+highlight Link				guifg=#f2cdcd guibg=None
+highlight BrokenLink	guifg=#f38ba8 guibg=None
+highlight Device			guifg=#eba0ac guibg=None
+highlight Fifo				guifg=#a6e3a1 guibg=None
+highlight Socket			guifg=#f2cdcd guibg=None

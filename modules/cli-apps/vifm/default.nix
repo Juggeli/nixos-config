@@ -18,7 +18,9 @@ in
     plusultra.home = {
       configFile = {
         "vifm/vifmrc".source = ./vifmrc;
+        "vifm/icons.vifm".source = ./icons.vifm;
         "vifm/colors/material.vifm".source = ./material.vifm;
+        "vifm/colors/catppuccin.vifm".source = ./catppuccin.vifm;
       };
     };
   };
