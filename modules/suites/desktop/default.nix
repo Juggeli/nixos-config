@@ -24,6 +24,10 @@ in
         tailscale = enabled;
       };
 
+      cli-apps = {
+        imv = enabled;
+      };
+
       apps = {
         _1password = enabled;
         firefox = enabled;
@@ -31,6 +35,7 @@ in
         kitty = enabled;
         mpv = enabled;
         via = enabled;
+        pdf = enabled;
       };
     };
   };
