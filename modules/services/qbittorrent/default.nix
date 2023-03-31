@@ -17,7 +17,7 @@ in
         autoStart = true;
         ports = [ "8080:8080" ];
         volumes = [
-          "/mnt/appdata/qbittorrent2:/config"
+          "/mnt/appdata/qbittorrent:/config"
           "/mnt/pool/downloads/:/mnt/pool/downloads/"
           "/mnt/pool/media/:/mnt/pool/media/"
           "${pkgs.plusultra.qbittorrent-dracula}/webui/:/webui"
