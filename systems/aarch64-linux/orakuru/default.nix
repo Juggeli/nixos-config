@@ -11,6 +11,11 @@ with lib.internal;
     archetypes = {
       server = enabled;
     };
+    services = {
+      openssh.authorizedKeys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMMRlC0Hzv2D+8e0m1/XT27b7RaMLm9wX16bz6TJPKdt jukka"
+      ];
+    };
   };
   
   # This value determines the NixOS release from which the default
@@ -20,4 +25,4 @@ with lib.internal;
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.05"; # Did you read the comment?
-};
+}
