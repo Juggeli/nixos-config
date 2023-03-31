@@ -20,6 +20,7 @@ in
           "/mnt/appdata/qbittorrent2:/config"
           "/mnt/pool/downloads/:/mnt/pool/downloads/"
           "/mnt/pool/media/:/mnt/pool/media/"
+          "${pkgs.plusultra.qbittorrent-dracula}/webui/:/webui"
         ];
         environment = {
           VPN_ENABLED = "yes";
@@ -33,28 +34,5 @@ in
         ];
       };
     };
-
-    # environment.systemPackages = with pkgs; [ qbittorrent-nox ];
-    #
-    # plusultra.home.extraOptions = { config, pkgs, ... }: {
-    #   home.file.".local/share/qBittorrent".source = config.lib.file.mkOutOfStoreSymlink "/mnt/appdata/qbittorrent";
-    #   home.file.".config/qBittorrent".source = config.lib.file.mkOutOfStoreSymlink "/mnt/appdata/qbittorrent";
-    # };
-    #
-    # systemd = {
-    #   packages = [ pkgs.qbittorrent-nox ];
-    #
-    #   services."qbittorrent-nox@juggeli" = {
-    #     enable = true;
-    #     serviceConfig = {
-    #       Type = "simple";
-    #       User = "juggeli";
-    #       ExecStart = "${pkgs.qbittorrent-nox}/bin/qbittorrent-nox";
-    #     };
-    #     wantedBy = [ "multi-user.target" ];
-    #   };
-    # };
-
-    networking.firewall.allowedTCPPorts = [ 8081 ];
   };
 }
