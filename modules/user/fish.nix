@@ -20,6 +20,9 @@ with lib.internal;
       la = "LC_COLLATE=C exa -ablF";
       cat = "bat";
       lg = "lazygit";
+      s = "kitty +kitten ssh";
+      ssh = "kitty +kitten ssh";
+      vifm = "env TERM=kitty-direct vifm";
     };
     shellAbbrs = {
       clr = "clear";
@@ -37,6 +40,8 @@ with lib.internal;
       tree = "exa --tree";
       nixsw = "doas nixos-rebuild switch --flake .#";
       nixup = "doas nixos-rebuild switch --flake .# --recreate-lock-file";
+      fs = "flake switch";
+      fu = "flake update";
     };
     interactiveShellInit = ''
       set --global KITTY_INSTALLATION_DIR "${pkgs.kitty}/lib/kitty"
