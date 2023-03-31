@@ -29,13 +29,7 @@ in
         misc = enabled;
       };
 
-      hardware = {
-        audio = enabled;
-        storage = enabled;
-      };
-
       services = {
-        printing = enabled;
         openssh = enabled;
         tailscale = enabled;
       };
