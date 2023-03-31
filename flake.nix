@@ -71,6 +71,8 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    nix-colors.url = "github:misterio77/nix-colors";
   };
   outputs = inputs:
     let
@@ -78,6 +80,7 @@
         inherit inputs;
         src = ./.;
       };
+      nix-colors = inputs.nix-colors;
     in
     lib.mkFlake {
       package-namespace = "plusultra";
@@ -94,6 +97,10 @@
         hyprland.nixosModules.default
         agenix.nixosModules.default
       ];
+
+      systems.specialArgs = {
+        inherit nix-colors;
+      };
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
 
