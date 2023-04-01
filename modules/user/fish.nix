@@ -21,7 +21,6 @@ with lib.internal;
       cat = "bat";
       lg = "lazygit";
       s = "kitty +kitten ssh";
-      ssh = "kitty +kitten ssh";
       vifm = "env TERM=kitty-direct vifm";
       haruka-unlock = "ssh root@haruka -p 22";
     };
