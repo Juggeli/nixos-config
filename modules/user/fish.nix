@@ -50,6 +50,8 @@ with lib.internal;
       source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
       set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
 
+      bind \cy accept-autosuggestion execute
+
       fish_vi_key_bindings
       set fish_cursor_default     block      blink
       set fish_cursor_insert      line       blink
