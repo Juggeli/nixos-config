@@ -20,7 +20,7 @@ in
         "mpv/mpv.conf".text = ''
           volume=60
           osd-on-seek=msg
-          autofit=1600x900
+          autofit=60%
           deband=no
         '';
       };
