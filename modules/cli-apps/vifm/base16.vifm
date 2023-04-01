@@ -29,4 +29,8 @@ highlight BrokenLink  gui=bold guifg=${colors.base08} guibg=default
 highlight Device      gui=none,standout guifg=${colors.base0A} guibg=default
 highlight Fifo        gui=none guifg=${colors.base09} guibg=default
 highlight Socket      gui=bold guifg=${colors.base06} guibg=default
+
+highlight User1 guifg=${colors.base00} guibg=${colors.base0D}
+highlight User2 guifg=${colors.base0D} guibg=None
+highlight User3 guibg=None
 ''

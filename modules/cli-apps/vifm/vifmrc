@@ -22,7 +22,6 @@ set smartcase
 set incsearch
 set scrolloff=4
 set slowfs=curlftpfs
-set confirm-=delete
 colorscheme catppuccin
 
 " Icons
@@ -186,9 +185,6 @@ command! FZFfind :set noquickview | :execute 'goto' fnameescape(term('fd -H | fz
 let &syncregs = $USER
 
 " change status line depending on the windows width size
-highlight User1 guifg=#1e1e2e guibg=#89b4fa
-highlight User2 guifg=#89b4fa guibg=None
-highlight User3 guibg=None
 set statusline="%1* %u:%g %A %2*%3* %T %= %a / %c  %d %2*%1* %E "
 
 " remove previous directory double dot indication
