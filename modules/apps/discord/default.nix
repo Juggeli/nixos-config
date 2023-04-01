@@ -14,9 +14,9 @@ let
       inherit (inputs) discord-tweaks;
     };
 
-    themes = {
-      inherit (inputs) discord-nord-theme;
-    };
+    # themes = {
+    #   inherit (inputs) discord-nord-theme;
+    # };
   };
 in
 {
