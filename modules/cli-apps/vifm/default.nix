@@ -19,8 +19,7 @@ in
       configFile = {
         "vifm/vifmrc".source = ./vifmrc;
         "vifm/icons.vifm".source = ./icons.vifm;
-        "vifm/colors/material.vifm".source = ./material.vifm;
-        "vifm/colors/catppuccin.vifm".source = ./catppuccin.vifm;
+        "vifm/colors/catppuccin.vifm".text = import ./base16.vifm config.plusultra;
       };
     };
   };
