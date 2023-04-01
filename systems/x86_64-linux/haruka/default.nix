@@ -26,7 +26,7 @@ with lib.internal;
 
     services = {
       cloudflared = enabled;
-      grafana = enabled;
+      grafana = disabled;
       homeassistant = enabled;
       jackett = enabled;
       plex = enabled;
@@ -34,6 +34,7 @@ with lib.internal;
       qbittorrent = enabled;
       sonarr = enabled;
       unifi = disabled;
+      homepage = enabled;
 
       samba = {
         enable = true;
@@ -46,13 +47,8 @@ with lib.internal;
         };
       };
     };
-  };
-
-  virtualisation = {
-    podman = {
-      enable = true;
-      dockerCompat = true;
-      defaultNetwork.dnsname.enable = true;
+    virtualisation = {
+      docker = enabled;
     };
   };
 
@@ -64,12 +60,19 @@ with lib.internal;
     }];
   };
 
-  networking.interfaces.enp3s0.ipv4.addresses = [{
-    address = "10.11.11.2";
-    prefixLength = 24;
-  }];
-  networking.defaultGateway = "10.11.11.1";
-  networking.nameservers = [ "10.11.11.1" ];
+  networking = {
+    interfaces.enp3s0.ipv4.addresses = [{
+      address = "10.11.11.2";
+      prefixLength = 24;
+    }];
+    defaultGateway = "10.11.11.1";
+    nameservers = [ "10.11.11.1" ];
+    nat = {
+      enable = true;
+      internalInterfaces = [ "ve-+" ];
+      externalInterface = "enp3s0";
+    };
+  };
 
   boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp3s0:off" ];
 
