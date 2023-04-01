@@ -50,7 +50,6 @@ in
 {
   options.plusultra.desktop.sway = with types; {
     enable = mkBoolOpt false "Whether or not to enable Sway.";
-    wallpaper = mkOpt (nullOr package) null "The wallpaper to display.";
     extraConfig =
       mkOpt str "" "Additional configuration for the Sway config file.";
   };
@@ -121,7 +120,7 @@ in
           "type:keyboard" = { xkb_layout = "us,fi"; xkb_options = "grp:caps_toggle"; };
         };
         bars = [ ];
-        gaps = { top = 250; left = 450; right = 450; inner = 6; };
+        gaps = { top = 200; left = 300; right = 300; inner = 6; };
         window.commands = [
           { command = "floating enable"; criteria = { app_id = "pavucontrol"; }; }
           { command = "floating enable"; criteria = { app_id = "mpv"; }; }
@@ -146,21 +145,21 @@ in
         output = {
           DP-1 = {
             mode = "3840x2160@120hz";
+            scale = "1.2";
+            bg = "${./background.png} fill";
           };
         };
       };
-      extraConfig = ''
+      extraConfig = with config.plusultra.colors; ''
         exec dbus-sway-environment
         exec configure-gtk
-        include sway.theme
         output HDMI-A-1 disable
         output HDMI-A-5 disable
-        output DP-1 bg ~/.config/dotfiles/config/bg1.jpg fill
         default_border pixel 3
         default_floating_border pixel 3
-        client.focused #98be65 #98be65 #98be65 #98be65 
-        client.unfocused #3f444a #3f444a #3f444a #3f444a 
-        client.focused_inactive #3f444a #3f444a #3f444a #3f444a 
+        client.focused ${base0B} ${base0B} ${base0B} ${base0B} 
+        client.unfocused ${base03} ${base03} ${base03} ${base03} 
+        client.focused_inactive ${base03} ${base03} ${base03} ${base03} 
       '';
     };
 

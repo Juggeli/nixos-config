@@ -18,10 +18,10 @@ in
         mainBar = {
           layer = "top";
           position = "bottom";
-          margin-top = 6;
+          margin-top = 0;
           margin-left = 1200;
           margin-right = 1200;
-          margin-bottom = 60;
+          margin-bottom = 6;
           modules-left = [ "wlr/workspaces" ];
           modules-center = [ "sway/window" ];
           modules-right = [ "pulseaudio" "network" "clock" "tray" ];
