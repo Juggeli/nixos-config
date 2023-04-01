@@ -16,8 +16,6 @@ in
       tools = {
         rust = enabled;
       };
-
-      /* virtualisation = { podman = enabled; }; */
     };
   };
 }

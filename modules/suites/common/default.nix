@@ -53,6 +53,10 @@ in
         locale = enabled;
         time = enabled;
       };
+
+      virtualisation = {
+        docker = enabled;
+      };
     };
   };
 }

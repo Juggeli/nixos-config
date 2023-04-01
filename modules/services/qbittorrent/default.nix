@@ -10,29 +10,27 @@ in
   };
 
   config = mkIf cfg.enable {
-    virtualisation.oci-containers.backend = "podman";
-    virtualisation.oci-containers.containers = {
-      qbittorrent = {
-        image = "dyonr/qbittorrentvpn:latest";
-        autoStart = true;
-        ports = [ "8080:8080" ];
-        volumes = [
-          "/mnt/appdata/qbittorrent:/config"
-          "/mnt/pool/downloads/:/mnt/pool/downloads/"
-          "/mnt/pool/media/:/mnt/pool/media/"
-          "${pkgs.plusultra.qbittorrent-dracula}/webui/:/webui"
-        ];
-        environment = {
-          VPN_ENABLED = "yes";
-          VPN_TYPE = "wireguard";
-          LAN_NETWORK = "10.11.11.0/24";
-          PUID = "1000";
-          PGID = "100";
-        };
-        extraOptions = [
-          "--cap-add=NET_ADMIN"
-        ];
+    virtualisation.oci-containers.containers.qbittorrent = {
+      image = "dyonr/qbittorrentvpn:latest";
+      autoStart = true;
+      ports = [ "8080:8080" ];
+      volumes = [
+        "/mnt/appdata/qbittorrent:/config"
+        "/mnt/pool/downloads/:/mnt/pool/downloads/"
+        "/mnt/pool/media/:/mnt/pool/media/"
+        "${pkgs.plusultra.vuetorrent}/:/vuetorrent/"
+      ];
+      environment = {
+        VPN_ENABLED = "yes";
+        VPN_TYPE = "wireguard";
+        LAN_NETWORK = "10.11.11.0/24,172.20.0.0/16";
+        PUID = "1000";
+        PGID = "100";
       };
+      extraOptions = [
+        "--cap-add=NET_ADMIN"
+        "--network=docker-net"
+      ];
     };
   };
 }
