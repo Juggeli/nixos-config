@@ -33,6 +33,7 @@ in
         firefox = enabled;
         chrome = enabled;
         kitty = enabled;
+        wezterm = enabled;
         mpv = enabled;
         via = enabled;
         pdf = enabled;

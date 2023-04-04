@@ -13,8 +13,6 @@ with lib.internal;
       server = enabled;
     };
 
-    apps.kitty = enabled;
-
     cli-apps = {
       rclone = enabled;
     };

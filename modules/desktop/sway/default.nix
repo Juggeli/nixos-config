@@ -114,7 +114,7 @@ in
         down = "j";
         up = "k";
         right = "l";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.wezterm}/bin/wezterm";
         menu = "'${pkgs.rofi-wayland}/bin/rofi -modi run, drun, window  -show drun'";
         input = {
           "type:keyboard" = { xkb_layout = "us,fi"; xkb_options = "grp:caps_toggle"; };
