@@ -12,8 +12,26 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      plusultra.neovim
+      neovim
+      wl-clipboard
+      tree-sitter
+      ripgrep
+      lazygit
+      bottom
+      nodejs
+      gdu
+      python311
+      stylua
+      lua-language-server
+      rnix-lsp
+      alejandra
+      deadnix
+      statix
+      rust-analyzer
     ];
+
+    environment.localBinInPath = true;
+
     plusultra.home.extraOptions.home.sessionVariables = {
       EDITOR = "nvim";
     };
