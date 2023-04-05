@@ -46,7 +46,7 @@ with lib.internal;
       };
     };
     virtualisation = {
-      docker = enabled;
+      podman = enabled;
     };
   };
 

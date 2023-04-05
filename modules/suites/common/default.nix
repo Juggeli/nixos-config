@@ -55,7 +55,7 @@ in
       };
 
       virtualisation = {
-        docker = enabled;
+        podman = enabled;
       };
     };
   };

@@ -16,13 +16,8 @@ in
       ports = [ "3000:3000" ];
       volumes = [
         "/mnt/appdata/homepage:/app/config"
-        "/var/run/docker.sock:/var/run/docker.sock"
+        "/run/podman/podman.sock:/var/run/docker.sock"
       ];
-      environment = {
-        PUID = "1000";
-        PGID = "100";
-      };
-      extraOptions = [ "--network=docker-net" ];
     };
   };
 }

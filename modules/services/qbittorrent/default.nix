@@ -29,7 +29,6 @@ in
       };
       extraOptions = [
         "--cap-add=NET_ADMIN"
-        "--network=docker-net"
       ];
     };
   };
