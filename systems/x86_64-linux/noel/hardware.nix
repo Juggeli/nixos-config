@@ -21,10 +21,11 @@ in
         preLVM = false;
       };
     };
-    
+
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
       "mitigations=off"
+      "intel_iommu=on"
     ];
   };
 

@@ -6,6 +6,7 @@ with lib.internal;
   imports = [
     ./hardware.nix
     ./autologin.nix
+    ./virt.nix
   ];
 
   plusultra = {
