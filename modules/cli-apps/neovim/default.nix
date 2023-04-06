@@ -35,5 +35,16 @@ in
     plusultra.home.extraOptions.home.sessionVariables = {
       EDITOR = "nvim";
     };
+
+    plusultra.home.configFile = {
+      "nvim/lua/user" = {
+        source = ./user;
+        recursive = true;
+      };
+      "nvim" = {
+        source = "${pkgs.plusultra.astronvim}";
+        recursive = true;
+      };
+    };
   };
 }
