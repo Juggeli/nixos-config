@@ -15,12 +15,10 @@ in
       vifm
     ];
 
-    plusultra.home = {
-      configFile = {
-        "vifm/vifmrc".source = ./vifmrc;
-        "vifm/icons.vifm".source = ./icons.vifm;
-        "vifm/colors/catppuccin.vifm".text = import ./base16.vifm config.plusultra;
-      };
+    plusultra.home.configFile = {
+      "vifm/vifmrc".source = ./vifmrc;
+      "vifm/icons.vifm".source = ./icons.vifm;
+      "vifm/colors/catppuccin.vifm".text = import ./base16.vifm config.plusultra;
     };
   };
 }
