@@ -33,6 +33,7 @@ with lib.internal;
       sonarr = enabled;
       unifi = disabled;
       homepage = enabled;
+      radarr = enabled;
 
       samba = {
         enable = true;
