@@ -9,11 +9,14 @@ in
     enable = mkBoolOpt false "Whether or not to jackett service.";
   };
 
-  config = mkIf cfg.enable { 
-    services.jackett = {
-      enable = true;
-      openFirewall = true;
-      dataDir = "/mnt/appdata/jackett";
+  config = mkIf cfg.enable {
+    virtualisation.oci-containers.containers.jackett = {
+      image = "cr.hotio.dev/hotio/jackett";
+      autoStart = true;
+      ports = [ "9117:9117" ];
+      volumes = [
+        "/mnt/appdata/jackett/:/config"
+      ];
     };
   };
 }
