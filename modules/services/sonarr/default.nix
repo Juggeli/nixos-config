@@ -10,10 +10,19 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.sonarr = {
-      enable = true;
-      openFirewall = true;
-      dataDir = "/mnt/appdata/sonarr";
+    virtualisation.oci-containers.containers.sonarr = {
+      image = "cr.hotio.dev/hotio/sonarr";
+      autoStart = true;
+      ports = [ "8989:8989" ];
+      volumes = [
+        "/mnt/appdata/sonarr/:/config"
+        "/mnt/pool/downloads/:/mnt/pool/downloads/"
+        "/mnt/pool/media/:/mnt/pool/media/"
+      ];
+      environment = {
+        PUID = "1000";
+        PGID = "100";
+      };
     };
   };
 }
