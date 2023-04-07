@@ -145,7 +145,6 @@ in
         output = {
           DP-1 = {
             mode = "3840x2160@120hz";
-            scale = "1.2";
             bg = "${./background.png} fill";
           };
         };

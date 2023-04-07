@@ -23,7 +23,7 @@ config.window_close_confirmation = "NeverPrompt"
 config.window_decorations = "NONE"
 -- config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
-config.font_size = 11.0
+config.font_size = 13.0
 
 -- then finally apply the plugin
 -- these are currently the defaults:
@@ -47,7 +47,7 @@ wezterm.plugin.require("https://github.com/nekowinston/wezterm-bar").apply_to_co
 		},
 	},
 	tabs = {
-		numerals = "arabic",      -- or "roman"
+		numerals = "arabic", -- or "roman"
 		pane_count = "superscript", -- or "subscript", false
 		brackets = {
 			active = { "", ":" },
