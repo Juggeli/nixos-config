@@ -14,13 +14,11 @@ in
     environment.systemPackages = with pkgs; [
       neovim
       wl-clipboard
-      tree-sitter
       ripgrep
       lazygit
       bottom
       nodejs
       gdu
-      python311
       stylua
       lua-language-server
       rnix-lsp
@@ -28,6 +26,7 @@ in
       deadnix
       statix
       rust-analyzer
+      clang
     ];
 
     environment.localBinInPath = true;
