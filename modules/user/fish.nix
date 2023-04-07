@@ -20,7 +20,7 @@ with lib.internal;
       la = "LC_COLLATE=C exa -ablF";
       cat = "bat";
       lg = "lazygit";
-      s = "kitty +kitten ssh";
+      s = "wezterm ssh";
       vifm = "env TERM=kitty-direct vifm";
       haruka-unlock = "ssh root@haruka -p 22";
     };
@@ -44,19 +44,6 @@ with lib.internal;
       fu = "flake update";
     };
     interactiveShellInit = ''
-      set --global KITTY_INSTALLATION_DIR "${pkgs.kitty}/lib/kitty"
-      set --global KITTY_SHELL_INTEGRATION enabled
-      source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
-      set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
-
-      bind \cy accept-autosuggestion execute
-
-      fish_vi_key_bindings
-      set fish_cursor_default     block      blink
-      set fish_cursor_insert      line       blink
-      set fish_cursor_replace_one underscore blink
-      set fish_cursor_visual      block
-
       function bind_bang
         switch (commandline -t)
         case "!"
@@ -68,7 +55,8 @@ with lib.internal;
       end
 
       function fish_user_key_bindings
-        bind -M insert ! bind_bang
+        bind ! bind_bang
+        bind \cY accept-autosuggestion execute
       end
     '' +
     readFile ./catpuccin.fish;
