@@ -27,6 +27,7 @@ in
       statix
       rust-analyzer
       clang
+      cargo
     ];
 
     environment.localBinInPath = true;
