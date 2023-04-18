@@ -9,6 +9,7 @@ in
     common-cpu-intel
     common-pc
     common-pc-ssd
+    common-gpu-nvidia-disable
   ];
 
   boot = {
