@@ -6,7 +6,7 @@ let
   cfg = config.plusultra.user;
 in
 {
-  imports = [ ./fish.nix ];
+  imports = [ ./fish.nix ./nushell.nix ];
 
   options.plusultra.user = with types; {
     name = mkOpt str "juggeli" "The name to use for the user account.";
