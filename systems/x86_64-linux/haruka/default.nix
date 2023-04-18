@@ -30,6 +30,7 @@ with lib.internal;
       plex = enabled;
       prometheus = enabled;
       qbittorrent = enabled;
+      qbit-manage = enabled;
       sonarr = enabled;
       unifi = disabled;
       homepage = enabled;
