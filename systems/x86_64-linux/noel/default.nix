@@ -17,6 +17,7 @@ with lib.internal;
     hardware.networking.hosts = {
       "10.11.11.2" = [ "haruka" ];
     };
+    services.syncthing.enable = true;
   };
 
   services.borgbackup.jobs.homeRemote = mkBorgBackup {
