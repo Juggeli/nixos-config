@@ -37,6 +37,8 @@ in
         mpv = enabled;
         via = enabled;
         pdf = enabled;
+        obsidian = enabled;
+        crypto = enabled;
       };
     };
   };
