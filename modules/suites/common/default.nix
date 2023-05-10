@@ -24,6 +24,7 @@ in
         vifm = enabled;
         speedtestpp = enabled;
         btop = enabled;
+        tmux = enabled;
       };
 
       tools = {
