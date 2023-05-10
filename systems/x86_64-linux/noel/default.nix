@@ -17,7 +17,10 @@ with lib.internal;
     hardware.networking.hosts = {
       "10.11.11.2" = [ "haruka" ];
     };
-    services.syncthing.enable = true;
+    services.syncthing = {
+      enable = true;
+      dataDir = "/home/juggeli";
+    };
   };
 
   services.borgbackup.jobs.homeRemote = mkBorgBackup {

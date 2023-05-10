@@ -35,6 +35,7 @@ with lib.internal;
       unifi = disabled;
       homepage = enabled;
       radarr = enabled;
+      syncthing = enabled;
 
       samba = {
         enable = true;
