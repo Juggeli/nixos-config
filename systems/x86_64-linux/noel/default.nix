@@ -26,8 +26,9 @@ with lib.internal;
   services.borgbackup.jobs.homeRemote = mkBorgBackup {
     inherit config;
     paths = [
-      "/home/juggeli/code/"
+      "/home/juggeli/src/"
       "/home/juggeli/documents/"
+      "/home/juggeli/hydrus/"
     ];
   };
 
