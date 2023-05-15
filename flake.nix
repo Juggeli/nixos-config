@@ -8,6 +8,7 @@
     snowfall-lib = {
       url = "github:snowfallorg/lib?rev=af06876391103ccfb3553b73d64797e765b88105";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils-plus.url = "github:ravensiris/flake-utils-plus/ravensiris/fix-devshell-legacy-packages";
     };
 
     flake = {
