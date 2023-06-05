@@ -18,9 +18,9 @@ in
     plusultra.home = {
       configFile = {
         "mpv/mpv.conf".text = ''
-          volume=60
+          volume=40
           osd-on-seek=msg
-          autofit=60%
+          autofit=1920x1080
           deband=no
         '';
       };
