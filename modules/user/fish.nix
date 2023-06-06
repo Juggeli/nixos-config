@@ -7,6 +7,8 @@ with lib.internal;
     "fish/functions/".source = ./fish;
   };
 
+  programs.fish.enable = true;
+
   plusultra.home.extraOptions.programs.fish = {
     enable = true;
     shellAliases = {
