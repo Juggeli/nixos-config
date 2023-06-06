@@ -13,7 +13,7 @@ in
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_2;
+    kernelPackages = pkgs.linuxPackages_testing;
 
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "aesni_intel" ];
@@ -45,6 +45,5 @@ in
 
   hardware.enableRedistributableFirmware = true;
 
-  hardware.cpu.intel.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = true;
 }
