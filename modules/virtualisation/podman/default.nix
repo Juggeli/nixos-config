@@ -18,7 +18,7 @@ in
       podman = {
         enable = cfg.enable;
         dockerSocket.enable = true;
-        defaultNetwork.dnsname.enable = true;
+        defaultNetwork.settings.dns_enabled = true;
       };
     };
   };
