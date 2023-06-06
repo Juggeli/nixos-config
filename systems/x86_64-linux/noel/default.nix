@@ -28,7 +28,7 @@ with lib.internal;
     paths = [
       "/home/juggeli/src/"
       "/home/juggeli/documents/"
-      "/home/juggeli/hydrus/"
+      "/home/juggeli/Hydrus/"
     ];
   };
 
