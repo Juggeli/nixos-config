@@ -28,6 +28,26 @@ let
       done
     '';
   };
+  downloader = pkgs.writeShellApplication {
+    name = "downloader";
+    runtimeInputs = [ pkgs.rclone ];
+    text = ''
+      SOURCE="''${1}"
+      DEST="''${2}"
+
+      rclone lsf --files-only -R "''${SOURCE}" > "''${DEST}/source_files.txt"
+
+      while read -r file; do
+        if grep -F -q "''${file}" "''${DEST}/.downloaded_files.txt"; then
+          echo "''${file} has already been downloaded. Skipping."
+        else
+          rclone copyto -P "''${SOURCE}/''${file}" "''${DEST}/''${file}"
+          echo "''${file}" >> "''${DEST}/.downloaded_files.txt"
+        fi
+      done < "''${DEST}/source_files.txt"
+      rm "''${DEST}/source_files.txt"
+    '';
+  };
 in
 {
   environment.systemPackages = with pkgs; [
@@ -40,6 +60,7 @@ in
     python3 # to run mover script
     hdparm
     mover
+    downloader
   ];
 
   # /etc/crypttab: decrypt drives
@@ -150,6 +171,27 @@ in
     timerConfig = {
       OnCalendar = "*-*-* 6:00:00";
       Unit = "snapraidMaintenance.service";
+    };
+  };
+
+  systemd.services.downloadStuff = {
+    description = "download all stuff from server";
+    serviceConfig = {
+      User = "juggeli";
+      Type = "oneshot";
+    };
+    script = ''
+      ${downloader}/bin/downloader ultra.cc:downloads/qbittorrent/tv-sonarr-dl /mnt/pool/downloads/tv-sonarr-dl
+      ${downloader}/bin/downloader ultra.cc:downloads/qbittorrent/done /mnt/pool/downloads/random
+    '';
+  };
+  systemd.timers.downloadStuff = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "downloadStuff.service" ];
+    timerConfig = {
+      OnUnitActiveSec = "120s";
+      OnBootSec = "120s";
+      Unit = "downloadStuff.service";
     };
   };
 }
