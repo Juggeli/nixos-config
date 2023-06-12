@@ -15,6 +15,7 @@ with lib.internal;
 
     cli-apps = {
       rclone = enabled;
+      btop = enabled;
     };
 
     security = {
@@ -29,8 +30,8 @@ with lib.internal;
       jackett = enabled;
       plex = enabled;
       prometheus = enabled;
-      qbittorrent = enabled;
-      qbit-manage = enabled;
+      qbittorrent = disabled;
+      qbit-manage = disabled;
       sonarr = enabled;
       unifi = disabled;
       homepage = enabled;
