@@ -13,6 +13,7 @@ in
     virtualisation.oci-containers.backend = "podman";
 
     plusultra.user.extraGroups = [ "podman" ];
+    networking.firewall.trustedInterfaces = [ "podman0" ];
 
     virtualisation = {
       podman = {
