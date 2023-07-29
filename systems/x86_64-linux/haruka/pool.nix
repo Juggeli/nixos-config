@@ -38,11 +38,12 @@ let
       rclone lsf --files-only -R "''${SOURCE}" > "''${DEST}/source_files.txt"
 
       while read -r file; do
-        if grep -F -q "''${file}" "''${DEST}/.downloaded_files.txt"; then
+        if grep -Fxq "''${file}" "''${DEST}/.downloaded_files.txt"; then
           echo "''${file} has already been downloaded. Skipping."
         else
-          rclone copyto -P "''${SOURCE}/''${file}" "''${DEST}/''${file}"
-          echo "''${file}" >> "''${DEST}/.downloaded_files.txt"
+          if rclone copyto -P "''${SOURCE}/''${file}" "''${DEST}/''${file}"; then
+            echo "''${file}" >> "''${DEST}/.downloaded_files.txt"
+          fi
         fi
       done < "''${DEST}/source_files.txt"
       rm "''${DEST}/source_files.txt"
@@ -189,8 +190,8 @@ in
     wantedBy = [ "timers.target" ];
     partOf = [ "downloadStuff.service" ];
     timerConfig = {
-      OnUnitActiveSec = "120s";
-      OnBootSec = "120s";
+      OnUnitActiveSec = "300s";
+      OnBootSec = "300s";
       Unit = "downloadStuff.service";
     };
   };
