@@ -27,6 +27,8 @@ in
     kernelParams = [
       "mitigations=off"
     ];
+
+    loader.systemd-boot.memtest86.enable = true;
   };
 
   fileSystems = {
