@@ -14,6 +14,7 @@ in
     environment.systemPackages = with pkgs; [
       ffmpeg_5-full
       mkvtoolnix
+      makemkv
     ];
   };
 }
