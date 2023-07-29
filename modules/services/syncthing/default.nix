@@ -35,10 +35,6 @@ in
             path = "${cfg.dataDir}/downloads";
             devices = [ "air" "haruka" "noel" ];
           };
-          "obsidian" = {
-            path = "${cfg.dataDir}/obsidian";
-            devices = [ "air" "haruka" "noel" "iphone" ];
-          };
         };
       };
     };
