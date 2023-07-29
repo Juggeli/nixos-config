@@ -26,6 +26,7 @@ in
 
       cli-apps = {
         imv = enabled;
+        sshfs = enabled;
       };
 
       apps = {
