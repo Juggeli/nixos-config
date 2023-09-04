@@ -1,0 +1,32 @@
+{ lib, pkgs, config, osConfig ? { }, format ? "unknown", ... }:
+
+with lib.plusultra;
+{
+  plusultra = {
+    user = {
+      enable = true;
+      name = config.snowfallorg.user.name;
+    };
+
+    apps = {
+      wezterm = enabled;
+    };
+
+    cli-apps = {
+      fish = enabled;
+      # neovim = enabled;
+      home-manager = enabled;
+    };
+
+    tools = {
+      git = enabled;
+      # direnv = enabled;
+    };
+  };
+
+  home.sessionPath = [
+    "$HOME/bin"
+  ];
+
+  home.stateVersion = "23.05";
+}

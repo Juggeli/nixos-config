@@ -6,9 +6,8 @@
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     snowfall-lib = {
-      url = "github:snowfallorg/lib?rev=af06876391103ccfb3553b73d64797e765b88105";
+      url = "github:snowfallorg/lib/dev";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils-plus.url = "github:ravensiris/flake-utils-plus/ravensiris/fix-devshell-legacy-packages";
     };
 
     darwin = {
@@ -64,26 +63,36 @@
       inputs.nixpkgs.follows = "unstable";
     };
   };
-  outputs = inputs: let
-    lib = inputs.snowfall-lib.mkLib {
-      inherit inputs;
-      src = ./.;
-    };
-  in
-    lib.mkFlake {
-      package-namespace = "plusultra";
 
+  outputs = inputs:
+    let
+      lib = inputs.snowfall-lib.mkLib {
+        inherit inputs;
+        src = ./.;
+
+        snowfall = {
+          meta = {
+            name = "plusultra";
+            title = "Plus Ultra";
+          };
+
+          namespace = "plusultra";
+        };
+      };
+    in
+    lib.mkFlake {      
       channels-config = {
         allowUnfree = true;
         permittedInsecurePackages = [
           "electron-25.9.0"
         ];
       };
+
       overlays = with inputs; [
         neovim.overlays.default
       ];
 
-      systems.modules = with inputs; [
+      systems.modules.nixos = with inputs; [
         home-manager.nixosModules.home-manager
         # hyprland.nixosModules.default
         agenix.nixosModules.default

@@ -1,7 +1,7 @@
 inputs@{ options, config, lib, pkgs, ... }:
 
 with lib;
-with lib.internal;
+with lib.plusultra;
 let
   cfg = config.plusultra.apps.wezterm;
 in
@@ -11,14 +11,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      wezterm
-    ];
-
-    plusultra.home = {
-      configFile = {
-        "wezterm/wezterm.lua".source = ./wezterm.lua;
-      };
+    home = {
+      packages = with pkgs; [
+        wezterm
+      ];
+    };
+    xdg.configFile = {
+      "wezterm/wezterm.lua".source = ./wezterm.lua;
     };
   };
 }

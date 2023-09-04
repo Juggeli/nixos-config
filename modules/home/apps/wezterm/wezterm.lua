@@ -18,7 +18,7 @@ config.font = wezterm.font_with_fallback({
 	"Comic Code Ligatures",
 	{ family = "Symbols Nerd Font Mono", scale = 0.8 },
 })
-config.default_prog = { "fish" }
+config.default_prog = { "/run/current-system/sw/bin/fish" }
 config.window_close_confirmation = "NeverPrompt"
 config.window_decorations = "NONE"
 -- config.use_fancy_tab_bar = false
