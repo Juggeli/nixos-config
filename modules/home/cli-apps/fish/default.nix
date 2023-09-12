@@ -13,6 +13,9 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       grc
+      exa
+      bat
+      lazygit
     ];
     programs.fish = {
       enable = true;

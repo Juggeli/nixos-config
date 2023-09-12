@@ -19,7 +19,7 @@ in
       };
 
       NSGlobalDomain = {
-        _HIHideMenuBar = true;
+        _HIHideMenuBar = false;
         AppleShowScrollBars = "Always";
       };
     };
