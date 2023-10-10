@@ -6,6 +6,8 @@ with lib.plusultra;
     suites = {
       common = enabled;
     };
+
+    desktop.yabai = enabled;
   };
   
   environment.systemPath = [

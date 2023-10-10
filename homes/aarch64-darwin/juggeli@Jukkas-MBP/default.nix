@@ -14,18 +14,19 @@ with lib.plusultra;
 
     cli-apps = {
       fish = enabled;
-      # neovim = enabled;
+      neovim = enabled;
       home-manager = enabled;
     };
 
     tools = {
       git = enabled;
-      # direnv = enabled;
+      direnv = enabled;
     };
   };
 
   home.sessionPath = [
     "$HOME/src/flutter/bin"
+    "$HOME/.pub-cache/bin"
   ];
 
   home.stateVersion = "23.05";

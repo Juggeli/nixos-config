@@ -25,7 +25,7 @@ in
           noto-fonts-cjk-sans
           noto-fonts-cjk-serif
           noto-fonts-emoji
-          (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "FantasqueSansMono" ]; })
+          (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "FantasqueSansMono" "Hack" ]; })
           plusultra.comic-code
         ] ++ cfg.fonts;
     };

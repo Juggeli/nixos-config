@@ -16,6 +16,7 @@ in
       exa
       bat
       lazygit
+      fzf
     ];
     programs.fish = {
       enable = true;

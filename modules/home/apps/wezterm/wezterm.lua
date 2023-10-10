@@ -20,10 +20,10 @@ config.font = wezterm.font_with_fallback({
 })
 config.default_prog = { "/run/current-system/sw/bin/fish" }
 config.window_close_confirmation = "NeverPrompt"
-config.window_decorations = "NONE"
+-- config.window_decorations = "NONE"
 -- config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
-config.font_size = 13.0
+config.font_size = 14.0
 
 -- then finally apply the plugin
 -- these are currently the defaults:
