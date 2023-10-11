@@ -1,7 +1,9 @@
-{ lib, pkgs, ... }:
-
-with lib.plusultra;
 {
+  lib,
+  pkgs,
+  ...
+}:
+with lib.plusultra; {
   plusultra = {
     suites = {
       common = enabled;
@@ -9,7 +11,7 @@ with lib.plusultra;
 
     desktop.yabai = enabled;
   };
-  
+
   environment.systemPath = [
     "/opt/homebrew/bin"
   ];
