@@ -174,7 +174,7 @@ in
     wantedBy = [ "timers.target" ];
     partOf = [ "snapraidMaintenance.service" ];
     timerConfig = {
-      OnCalendar = "*-*-* 6:00:00";
+      OnCalendar = "*-*-* 12:00:00";
       Unit = "snapraidMaintenance.service";
     };
   };
