@@ -34,15 +34,19 @@ let
     text = ''
       SOURCE="''${1}"
       DEST="''${2}"
+      TEMP="/mnt/pool/downloads/temp"
 
       rclone lsf --files-only -R "''${SOURCE}" > "''${DEST}/source_files.txt"
 
       while read -r file; do
-        if grep -Fxq "''${file}" "''${DEST}/.downloaded_files.txt"; then
-          echo "''${file} has already been downloaded. Skipping."
-        else
-          if rclone copyto -P "''${SOURCE}/''${file}" "''${DEST}/''${file}"; then
+        if ! grep -Fxq "''${file}" "''${DEST}/.downloaded_files.txt"; then
+          if rclone copyto "''${SOURCE}/''${file}" "''${TEMP}/''${file}"; then
+            mkdir -p "''$(dirname "''${DEST}/''${file}")"
+            mv "''${TEMP}/''${file}" "''${DEST}/''${file}"
             echo "''${file}" >> "''${DEST}/.downloaded_files.txt"
+            echo "Download success ''${file}"
+          else
+            echo "Download failed ''${file}"
           fi
         fi
       done < "''${DEST}/source_files.txt"
