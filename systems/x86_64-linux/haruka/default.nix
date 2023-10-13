@@ -26,7 +26,7 @@ with lib.internal;
     services = {
       cloudflared = enabled;
       grafana = disabled;
-      homeassistant = enabled;
+      homeassistant = disabled;
       jackett = enabled;
       plex = enabled;
       prometheus = enabled;
