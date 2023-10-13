@@ -19,7 +19,6 @@ in
       nix = enabled;
 
       cli-apps = {
-        flake = enabled;
         neovim = enabled;
         vifm = enabled;
         speedtestpp = enabled;

@@ -11,11 +11,6 @@
       inputs.flake-utils-plus.url = "github:ravensiris/flake-utils-plus/ravensiris/fix-devshell-legacy-packages";
     };
 
-    flake = {
-      url = "github:snowfallorg/flake";
-      inputs.nixpkgs.follows = "unstable";
-    };
-
     darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -55,7 +50,7 @@
     };
 
     neovim = {
-      url = "github:Juggeli/nix-neovim";
+      url = "github:Juggeli/neovim";
       inputs.nixpkgs.follows = "unstable";
     };
 
@@ -82,7 +77,6 @@
       channels-config.allowUnfree = true;
 
       overlays = with inputs; [
-        flake.overlay
         neovim.overlays.default
       ];
 
