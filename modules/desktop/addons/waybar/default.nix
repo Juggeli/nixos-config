@@ -13,7 +13,6 @@ in
   config = mkIf cfg.enable {
     plusultra.home.extraOptions.programs.waybar = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.waybar-hyprland;
       settings = {
         mainBar = {
           layer = "top";
