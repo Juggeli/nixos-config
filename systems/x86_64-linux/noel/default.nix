@@ -17,6 +17,7 @@ with lib.internal;
     hardware.networking.hosts = {
       "10.11.11.2" = [ "haruka" ];
     };
+    hardware.logitech = enabled;
     services.syncthing = {
       enable = true;
       dataDir = "/home/juggeli";
@@ -33,7 +34,7 @@ with lib.internal;
   };
 
   fileSystems."/mnt/pool" = {
-    device = "//haruka/pool";
+    device = "//10.11.11.2/pool";
     fsType = "cifs";
     options =
       let
