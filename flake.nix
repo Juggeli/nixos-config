@@ -8,7 +8,6 @@
     snowfall-lib = {
       url = "github:snowfallorg/lib/dev";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils-plus.url = "github:ravensiris/flake-utils-plus/ravensiris/fix-devshell-legacy-packages";
     };
 
     darwin = {
@@ -50,7 +49,7 @@
     };
 
     neovim = {
-      url = "github:Juggeli/neovim";
+      url = "github:Juggeli/neovim/custom";
       inputs.nixpkgs.follows = "unstable";
     };
 
@@ -65,23 +64,22 @@
     };
   };
 
-  outputs = inputs:
-    let
-      lib = inputs.snowfall-lib.mkLib {
-        inherit inputs;
-        src = ./.;
+  outputs = inputs: let
+    lib = inputs.snowfall-lib.mkLib {
+      inherit inputs;
+      src = ./.;
 
-        snowfall = {
-          meta = {
-            name = "plusultra";
-            title = "Plus Ultra";
-          };
-
-          namespace = "plusultra";
+      snowfall = {
+        meta = {
+          name = "plusultra";
+          title = "Plus Ultra";
         };
+
+        namespace = "plusultra";
       };
-    in
-    lib.mkFlake {      
+    };
+  in
+    lib.mkFlake {
       channels-config = {
         allowUnfree = true;
         permittedInsecurePackages = [
