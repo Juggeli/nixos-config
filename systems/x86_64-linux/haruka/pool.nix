@@ -158,8 +158,8 @@ in
     exclude *.!qB
   '';
 
-  systemd.services.snapraidMaintenance = {
-    description = "sync and scrub snapraid";
+  systemd.services.snapraidSync = {
+    description = "sync snapraid";
     serviceConfig = {
       User = "root";
       Type = "oneshot";
@@ -167,15 +167,32 @@ in
     script = ''
       ${mover}/bin/mover /mnt/disks/cache/ /mnt/disks/slowpool/ 50
       ${pkgs.snapraid}/bin/snapraid --force-empty sync
-      ${pkgs.snapraid}/bin/snapraid scrub
     '';
   };
-  systemd.timers.snapraidMaintenance = {
+  systemd.timers.snapraidSync = {
     wantedBy = [ "timers.target" ];
-    partOf = [ "snapraidMaintenance.service" ];
+    partOf = [ "snapraidSync.service" ];
     timerConfig = {
       OnCalendar = "*-*-* 12:00:00";
-      Unit = "snapraidMaintenance.service";
+      Unit = "snapraidSync.service";
+    };
+  };
+  systemd.services.snapraidScrub = {
+    description = "scrub snapraid";
+    serviceConfig = {
+      User = "root";
+      Type = "oneshot";
+    };
+    script = ''
+      ${pkgs.snapraid}/bin/snapraid -p full scrub
+    '';
+  };
+  systemd.timers.snapraidScrub = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "snapraidScrub.service" ];
+    timerConfig = {
+      OnCalendar = "*-*-01 12:00:00";
+      Unit = "snapraidScrub.service";
     };
   };
 
