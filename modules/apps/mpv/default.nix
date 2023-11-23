@@ -12,7 +12,7 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      mpv
+      (mpv.override { scripts = [ mpvScripts.autoload ]; })
     ];
 
     plusultra.home = {
@@ -23,6 +23,7 @@ in
           autofit=1920x1080
           deband=no
         '';
+        "mpv/scripts/delete_file.lua".source = ./delete_file.lua;
       };
     };
   };
