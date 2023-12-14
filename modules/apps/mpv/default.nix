@@ -12,7 +12,7 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      (mpv.override { scripts = [ mpvScripts.autoload ]; })
+      (mpv.override { scripts = [ ]; })
     ];
 
     plusultra.home = {
