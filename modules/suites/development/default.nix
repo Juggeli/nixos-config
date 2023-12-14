@@ -13,6 +13,9 @@ in
 
   config = mkIf cfg.enable {
     plusultra = {
+      apps = {
+        vscode = enabled;
+      };
       tools = {
         rust = enabled;
       };
