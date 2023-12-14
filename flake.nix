@@ -54,44 +54,47 @@
       inputs.nixpkgs.follows = "unstable";
     };
 
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "unstable";
-    };
+    # hyprland = {
+    #   url = "github:hyprwm/Hyprland";
+    #   inputs.nixpkgs.follows = "unstable";
+    # };
 
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "unstable";
     };
   };
-  outputs = inputs:
-    let
-      lib = inputs.snowfall-lib.mkLib {
-        inherit inputs;
-        src = ./.;
-      };
-    in
+  outputs = inputs: let
+    lib = inputs.snowfall-lib.mkLib {
+      inherit inputs;
+      src = ./.;
+    };
+  in
     lib.mkFlake {
       package-namespace = "plusultra";
 
-      channels-config.allowUnfree = true;
-
+      channels-config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [
+          "electron-25.9.0"
+        ];
+      };
       overlays = with inputs; [
         neovim.overlays.default
       ];
 
       systems.modules = with inputs; [
         home-manager.nixosModules.home-manager
-        hyprland.nixosModules.default
+        # hyprland.nixosModules.default
         agenix.nixosModules.default
       ];
 
-      deploy = lib.mkDeploy { inherit (inputs) self; };
+      deploy = lib.mkDeploy {inherit (inputs) self;};
 
       checks =
         builtins.mapAttrs
-          (system: deploy-lib:
-            deploy-lib.deployChecks inputs.self.deploy)
-          inputs.deploy-rs.lib;
+        (system: deploy-lib:
+          deploy-lib.deployChecks inputs.self.deploy)
+        inputs.deploy-rs.lib;
     };
 }
