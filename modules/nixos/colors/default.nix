@@ -1,11 +1,14 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let
-  cfg = config.plusultra.colors;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.colors;
+in {
   options.plusultra.colors = with types; {
     base00 = mkOpt str "#1e1e2e" "base";
     base01 = mkOpt str "#181825" "mantle";

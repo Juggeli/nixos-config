@@ -1,8 +1,12 @@
-{ options, config, lib, pkgs, ... }:
-
+{
+  options,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.internal;
-let
+with lib.plusultra; let
   cfg = config.plusultra.desktop.sway;
   term = config.plusultra.desktop.addons.term;
   substitutedConfig = pkgs.substituteAll {
@@ -35,19 +39,16 @@ let
     name = "configure-gtk";
     destination = "/bin/configure-gtk";
     executable = true;
-    text =
-      let
-        schema = pkgs.gsettings-desktop-schemas;
-        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-      in
-      ''
-        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-        gnome_schema=org.gnome.desktop.interface
-        gsettings set $gnome_schema gtk-theme 'Yaru-purple-dark'
-      '';
+    text = let
+      schema = pkgs.gsettings-desktop-schemas;
+      datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+    in ''
+      export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+      gnome_schema=org.gnome.desktop.interface
+      gsettings set $gnome_schema gtk-theme 'Yaru-purple-dark'
+    '';
   };
-in
-{
+in {
   options.plusultra.desktop.sway = with types; {
     enable = mkBoolOpt false "Whether or not to enable Sway.";
     extraConfig =
@@ -117,13 +118,27 @@ in
         terminal = "${pkgs.wezterm}/bin/wezterm";
         menu = "'${pkgs.rofi-wayland}/bin/rofi -modi run, drun, window  -show drun'";
         input = {
-          "type:keyboard" = { xkb_layout = "us,fi"; xkb_options = "grp:caps_toggle"; };
+          "type:keyboard" = {
+            xkb_layout = "us,fi";
+            xkb_options = "grp:caps_toggle";
+          };
         };
-        bars = [ ];
-        gaps = { top = 200; left = 300; right = 300; inner = 6; };
+        bars = [];
+        gaps = {
+          top = 200;
+          left = 300;
+          right = 300;
+          inner = 6;
+        };
         window.commands = [
-          { command = "floating enable"; criteria = { app_id = "pavucontrol"; }; }
-          { command = "floating enable"; criteria = { app_id = "mpv"; }; }
+          {
+            command = "floating enable";
+            criteria = {app_id = "pavucontrol";};
+          }
+          {
+            command = "floating enable";
+            criteria = {app_id = "mpv";};
+          }
         ];
         keybindings = lib.mkOptionDefault {
           "${modifier}+w" = "kill";
@@ -139,8 +154,8 @@ in
         };
         startup = [
           # { command = "${pkgs.swayidle}/bin/swayidle -w timeout 600 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
-          { command = "${pkgs.waybar}/bin/waybar"; }
-          { command = "${pkgs.autotiling-rs}/bin/autotiling-rs"; }
+          {command = "${pkgs.waybar}/bin/waybar";}
+          {command = "${pkgs.autotiling-rs}/bin/autotiling-rs";}
         ];
         output = {
           DP-1 = {
@@ -156,11 +171,10 @@ in
         output HDMI-A-5 disable
         default_border pixel 3
         default_floating_border pixel 3
-        client.focused ${base0B} ${base0B} ${base0B} ${base0B} 
-        client.unfocused ${base03} ${base03} ${base03} ${base03} 
-        client.focused_inactive ${base03} ${base03} ${base03} ${base03} 
+        client.focused ${base0B} ${base0B} ${base0B} ${base0B}
+        client.unfocused ${base03} ${base03} ${base03} ${base03}
+        client.focused_inactive ${base03} ${base03} ${base03} ${base03}
       '';
     };
-
   };
 }

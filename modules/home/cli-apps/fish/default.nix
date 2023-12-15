@@ -1,11 +1,13 @@
-{ lib, config, pkgs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkEnableOption mkIf;
 
   cfg = config.plusultra.cli-apps.fish;
-in
-{
+in {
   options.plusultra.cli-apps.fish = {
     enable = mkEnableOption "fish";
   };
@@ -36,30 +38,38 @@ in
       shellAbbrs = {
         exa = "exa --group-directories-first --git";
         tree = "exa --tree";
-        nixsw = "darwin-rebuild switch --flake .#";
-        nixup = "darwin-rebuild switch --flake .# --recreate-lock-file";
       };
-      interactiveShellInit = ''
-        function bind_bang
-          switch (commandline -t)
-          case "!"
-            commandline -t -- $history[1]
-            commandline -f repaint
-          case "*"
-            commandline -i !
+      interactiveShellInit =
+        ''
+          function bind_bang
+            switch (commandline -t)
+            case "!"
+              commandline -t -- $history[1]
+              commandline -f repaint
+            case "*"
+              commandline -i !
+            end
           end
-        end
 
-        function fish_user_key_bindings
-          bind ! bind_bang
-          bind \cY accept-autosuggestion execute
-        end
-      '' +
-      builtins.readFile ./catpuccin.fish;
+          function fish_user_key_bindings
+            bind ! bind_bang
+            bind \cY accept-autosuggestion execute
+          end
+        ''
+        + builtins.readFile ./catpuccin.fish;
       plugins = [
-        { name = "grc"; src = pkgs.fishPlugins.grc.src; }
-        { name = "autopair-fish"; src = pkgs.fishPlugins.autopair-fish.src; }
-        { name = "pure"; src = pkgs.fishPlugins.pure.src; }
+        {
+          name = "grc";
+          src = pkgs.fishPlugins.grc.src;
+        }
+        {
+          name = "autopair-fish";
+          src = pkgs.fishPlugins.autopair-fish.src;
+        }
+        {
+          name = "pure";
+          src = pkgs.fishPlugins.pure.src;
+        }
         {
           name = "z";
           src = pkgs.fetchFromGitHub {
@@ -69,9 +79,11 @@ in
             sha256 = "0dbnir6jbwjpjalz14snzd3cgdysgcs3raznsijd6savad3qhijc";
           };
         }
-        { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
+        {
+          name = "fzf-fish";
+          src = pkgs.fishPlugins.fzf-fish.src;
+        }
       ];
     };
   };
 }
-

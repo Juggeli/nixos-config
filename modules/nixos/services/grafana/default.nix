@@ -1,15 +1,19 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let cfg = config.plusultra.services.grafana;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.services.grafana;
+in {
   options.plusultra.services.grafana = with types; {
     enable = mkBoolOpt false "Whether or not to enable grafana service.";
   };
 
-  config = mkIf cfg.enable { 
+  config = mkIf cfg.enable {
     services.grafana = {
       enable = true;
       dataDir = "/mnt/appdata/grafana/";
@@ -20,8 +24,7 @@ in
     };
 
     networking.firewall = {
-      allowedTCPPorts = [ config.services.grafana.settings.server.http_port ];
+      allowedTCPPorts = [config.services.grafana.settings.server.http_port];
     };
   };
 }
-

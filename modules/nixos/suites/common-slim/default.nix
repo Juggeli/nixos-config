@@ -1,11 +1,14 @@
-{ options, config, lib, pkgs, ... }:
-
-with lib;
-with lib.internal;
-let
-  cfg = config.plusultra.suites.common-slim;
-in
 {
+  options,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.suites.common-slim;
+in {
   options.plusultra.suites.common-slim = with types; {
     enable = mkBoolOpt false "Whether or not to enable common configuration.";
   };
@@ -18,13 +21,7 @@ in
     plusultra = {
       nix = enabled;
 
-      cli-apps = {
-        neovim = enabled;
-        vifm = enabled;
-      };
-
       tools = {
-        git = enabled;
         misc = enabled;
       };
 
@@ -46,4 +43,3 @@ in
     };
   };
 }
-

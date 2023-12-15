@@ -1,15 +1,19 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let cfg = config.plusultra.services.prometheus;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.services.prometheus;
+in {
   options.plusultra.services.prometheus = with types; {
     enable = mkBoolOpt false "Whether or not to enable prometheus service.";
   };
 
-  config = mkIf cfg.enable { 
+  config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       plusultra.prometheus-smartctl
     ];
@@ -24,25 +28,29 @@ in
 
         smokeping = {
           enable = true;
-          hosts = [ "1.1.1.1" "google.com" ];
+          hosts = ["1.1.1.1" "google.com"];
         };
       };
 
-      scrapeConfigs = [{
-        job_name = "prometheus";
-        static_configs = [{
-          targets = [
-            "127.0.0.1:${toString config.services.prometheus.exporters.node.port}"
-            "127.0.0.1:${toString config.services.prometheus.exporters.smokeping.port}"
-            "127.0.0.1:9902"
+      scrapeConfigs = [
+        {
+          job_name = "prometheus";
+          static_configs = [
+            {
+              targets = [
+                "127.0.0.1:${toString config.services.prometheus.exporters.node.port}"
+                "127.0.0.1:${toString config.services.prometheus.exporters.smokeping.port}"
+                "127.0.0.1:9902"
+              ];
+            }
           ];
-        }];
-      }];
+        }
+      ];
     };
     systemd.services."smartprom" = {
       description = "monitor smart devices";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
+      wantedBy = ["multi-user.target"];
+      after = ["network.target"];
       serviceConfig = {
         DeviceAllow = lib.mkOverride 10 [
           "block-blkext rw"
@@ -54,7 +62,7 @@ in
     };
 
     networking.firewall = {
-      allowedTCPPorts = [ 9633 9090 9902 ];
+      allowedTCPPorts = [9633 9090 9902];
     };
   };
 }

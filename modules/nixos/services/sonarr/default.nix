@@ -1,10 +1,14 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let cfg = config.plusultra.services.sonarr;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.services.sonarr;
+in {
   options.plusultra.services.sonarr = with types; {
     enable = mkBoolOpt false "Whether or not to enable sonarr service.";
   };
@@ -13,7 +17,7 @@ in
     virtualisation.oci-containers.containers.sonarr = {
       image = "cr.hotio.dev/hotio/sonarr";
       autoStart = true;
-      ports = [ "8989:8989" ];
+      ports = ["8989:8989"];
       volumes = [
         "/mnt/appdata/sonarr/:/config"
         "/mnt/pool/downloads/:/mnt/pool/downloads/"

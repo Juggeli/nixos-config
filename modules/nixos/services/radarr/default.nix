@@ -1,10 +1,14 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let cfg = config.plusultra.services.radarr;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.services.radarr;
+in {
   options.plusultra.services.radarr = with types; {
     enable = mkBoolOpt false "Whether or not to enable radarr service.";
   };
@@ -13,7 +17,7 @@ in
     virtualisation.oci-containers.containers.radarr = {
       image = "cr.hotio.dev/hotio/radarr";
       autoStart = true;
-      ports = [ "7878:7878" ];
+      ports = ["7878:7878"];
       volumes = [
         "/mnt/appdata/radarr/:/config"
         "/mnt/pool/downloads/:/mnt/pool/downloads/"
@@ -26,4 +30,3 @@ in
     };
   };
 }
-

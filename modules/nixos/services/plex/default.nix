@@ -1,15 +1,19 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let cfg = config.plusultra.services.plex;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.services.plex;
+in {
   options.plusultra.services.plex = with types; {
     enable = mkBoolOpt false "Whether or not to enable plex service.";
   };
 
-  config = mkIf cfg.enable { 
+  config = mkIf cfg.enable {
     services.plex = {
       enable = true;
       openFirewall = true;

@@ -1,29 +1,37 @@
-{ options, config, pkgs, lib, inputs, ... }:
-
-with lib;
-with lib.internal;
-let
-  cfg = config.plusultra.services.homeassistant;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.services.homeassistant;
+in {
   options.plusultra.services.homeassistant = with types; {
     enable = mkBoolOpt false "Whether or not to enable homeassistant service.";
   };
 
   config = mkIf cfg.enable {
-    nixpkgs.overlays = [ inputs.nur.overlay ];
+    nixpkgs.overlays = [inputs.nur.overlay];
 
     services.home-assistant = {
       enable = true;
       configDir = "/mnt/appdata/home-assistant";
-      package = (pkgs.home-assistant.override {
-        extraPackages = py: with py; [ psycopg2 ];
-      }).overrideAttrs (old: {
-        doInstallCheck = false;
-        patches = (old.patches or [ ]) ++ [
-          ./static-symlinks.patch
-        ];
-      });
+      package =
+        (pkgs.home-assistant.override {
+          extraPackages = py: with py; [psycopg2];
+        })
+        .overrideAttrs (old: {
+          doInstallCheck = false;
+          patches =
+            (old.patches or [])
+            ++ [
+              ./static-symlinks.patch
+            ];
+        });
       config.recorder.db_url = "postgresql://@/hass";
       extraComponents = [
         # Components required to complete the onboarding
@@ -50,7 +58,7 @@ in
         "google_translate"
       ];
       config = {
-        default_config = { };
+        default_config = {};
         homeassistant = {
           name = "Home";
           latitude = "!secret latitude";
@@ -62,11 +70,11 @@ in
         };
         http = {
           server_host = "10.11.11.2";
-          trusted_proxies = [ "10.11.11.2" ];
+          trusted_proxies = ["10.11.11.2"];
           use_x_forwarded_for = true;
         };
-        mqtt = { };
-        yeelight = { };
+        mqtt = {};
+        yeelight = {};
       };
     };
 
@@ -77,29 +85,39 @@ in
     ];
 
     services.home-assistant.config.lovelace.resources = [
-      { url = "local/apexcharts-card.js"; type = "module"; }
-      { url = "local/mushroom.js"; type = "module"; }
+      {
+        url = "local/apexcharts-card.js";
+        type = "module";
+      }
+      {
+        url = "local/mushroom.js";
+        type = "module";
+      }
     ];
 
     services.postgresql = {
       enable = true;
       dataDir = "/mnt/appdata/postgresql";
-      ensureDatabases = [ "hass" ];
-      ensureUsers = [{
-        name = "hass";
-        ensurePermissions = {
-          "DATABASE hass" = "ALL PRIVILEGES";
-        };
-      }];
+      ensureDatabases = ["hass"];
+      ensureUsers = [
+        {
+          name = "hass";
+          ensurePermissions = {
+            "DATABASE hass" = "ALL PRIVILEGES";
+          };
+        }
+      ];
     };
 
     services.mosquitto = {
       enable = true;
-      listeners = [{
-        acl = [ "pattern readwrite #" ];
-        omitPasswordAuth = true;
-        settings.allow_anonymous = true;
-      }];
+      listeners = [
+        {
+          acl = ["pattern readwrite #"];
+          omitPasswordAuth = true;
+          settings.allow_anonymous = true;
+        }
+      ];
     };
 
     services.zigbee2mqtt = {
@@ -126,8 +144,8 @@ in
     };
 
     networking.firewall = {
-      allowedTCPPorts = [ 8123 8090 1400 ];
-      allowedUDPPorts = [ 5353 ];
+      allowedTCPPorts = [8123 8090 1400];
+      allowedUDPPorts = [5353];
     };
   };
 }

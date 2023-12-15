@@ -1,10 +1,14 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let cfg = config.plusultra.services.qbit-manage;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.services.qbit-manage;
+in {
   options.plusultra.services.qbit-manage = with types; {
     enable = mkBoolOpt false "Whether or not to enable qbit-manage service.";
   };
@@ -23,4 +27,3 @@ in
     };
   };
 }
-

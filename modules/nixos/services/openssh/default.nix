@@ -1,51 +1,76 @@
-{ options, config, pkgs, lib, systems, name, format, inputs, ... }:
-
+{
+  options,
+  config,
+  pkgs,
+  lib,
+  host ? "",
+  format ? "",
+  inputs ? {},
+  ...
+}:
 with lib;
-with lib.internal;
-let
+with lib.plusultra; let
   cfg = config.plusultra.services.openssh;
 
   user = config.users.users.${config.plusultra.user.name};
   user-id = builtins.toString user.uid;
 
-  default-key =
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com";
+  # TODO: This is a hold-over from an earlier Snowfall Lib version which used
+  # the specialArg `name` to provide the host name.
+  name = host;
 
-  other-hosts = lib.filterAttrs
+  default-key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO juggeli@gmail.com";
+
+  other-hosts =
+    lib.filterAttrs
     (key: host:
       key != name && (host.config.plusultra.user.name or null) != null)
-    ((inputs.self.nixosConfigurations or { }) // (inputs.self.darwinConfigurations or { }));
+    ((inputs.self.nixosConfigurations or {}) // (inputs.self.darwinConfigurations or {}));
 
-  other-hosts-config = lib.concatMapStringsSep
+  other-hosts-config =
+    lib.concatMapStringsSep
     "\n"
-    (name:
-      let
+    (
+      name: let
         remote = other-hosts.${name};
         remote-user-name = remote.config.plusultra.user.name;
         remote-user-id = builtins.toString remote.config.users.users.${remote-user-name}.uid;
-      in
-      ''
+
+        forward-gpg =
+          optionalString (config.programs.gnupg.agent.enable && remote.config.programs.gnupg.agent.enable)
+          ''
+            RemoteForward /run/user/${remote-user-id}/gnupg/S.gpg-agent /run/user/${user-id}/gnupg/S.gpg-agent.extra
+            RemoteForward /run/user/${remote-user-id}/gnupg/S.gpg-agent.ssh /run/user/${user-id}/gnupg/S.gpg-agent.ssh
+          '';
+      in ''
         Host ${name}
           User ${remote-user-name}
           ForwardAgent yes
           Port ${builtins.toString cfg.port}
+          ${forward-gpg}
       ''
     )
     (builtins.attrNames other-hosts);
-in
-{
+in {
   options.plusultra.services.openssh = with types; {
     enable = mkBoolOpt false "Whether or not to configure OpenSSH support.";
     authorizedKeys =
-      mkOpt (listOf str) [ default-key ] "The public keys to apply.";
+      mkOpt (listOf str) [default-key] "The public keys to apply.";
     port = mkOpt port 2222 "The port to listen on (in addition to 22).";
+    manage-other-hosts = mkOpt bool true "Whether or not to add other host configurations to SSH config.";
   };
 
   config = mkIf cfg.enable {
     services.openssh = {
       enable = true;
-      passwordAuthentication = false;
-      permitRootLogin = if format == "install-iso" then "yes" else "no";
+
+      settings = {
+        PermitRootLogin =
+          if format == "install-iso"
+          then "yes"
+          else "no";
+        PasswordAuthentication = false;
+      };
 
       extraConfig = ''
         StreamLocalBindUnlink yes
@@ -60,10 +85,23 @@ in
     programs.ssh.extraConfig = ''
       Host *
         HostKeyAlgorithms +ssh-rsa
-      ${other-hosts-config}
+
+      ${optionalString cfg.manage-other-hosts other-hosts-config}
     '';
 
     plusultra.user.extraOptions.openssh.authorizedKeys.keys =
       cfg.authorizedKeys;
+
+    plusultra.home.extraOptions = {
+      programs.zsh.shellAliases =
+        foldl
+        (aliases: system:
+          aliases
+          // {
+            "ssh-${system}" = "ssh ${system} -t tmux a";
+          })
+        {}
+        (builtins.attrNames other-hosts);
+    };
   };
 }

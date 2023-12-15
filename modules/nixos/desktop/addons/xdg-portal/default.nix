@@ -6,7 +6,7 @@
   ...
 }:
 with lib;
-with lib.internal; let
+with lib.plusultra; let
   cfg = config.plusultra.desktop.addons.xdg-portal;
 in {
   options.plusultra.desktop.addons.xdg-portal = with types; {

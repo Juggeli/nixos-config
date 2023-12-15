@@ -1,16 +1,22 @@
-inputs@{ options, config, pkgs, lib, home-manager, ... }:
-
+inputs @ {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
-with lib.internal;
-let cfg = config.plusultra.home;
-in
-{
+with lib.plusultra; let
+  cfg = config.plusultra.home;
+in {
   options.plusultra.home = with types; {
-    file = mkOpt attrs { }
+    file =
+      mkOpt attrs {}
       "A set of files to be managed by home-manager's <option>home.file</option>.";
-    configFile = mkOpt attrs { }
+    configFile =
+      mkOpt attrs {}
       "A set of files to be managed by home-manager's <option>xdg.configFile</option>.";
-    extraOptions = mkOpt attrs { } "Options to pass directly to home-manager.";
+    extraOptions = mkOpt attrs {} "Options to pass directly to home-manager.";
   };
 
   config = {
@@ -23,6 +29,7 @@ in
 
     home-manager = {
       useUserPackages = true;
+      useGlobalPkgs = true;
 
       users.${config.plusultra.user.name} =
         mkAliasDefinitions options.plusultra.home.extraOptions;

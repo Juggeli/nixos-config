@@ -6,7 +6,7 @@
   ...
 }:
 with lib;
-with lib.internal; let
+with lib.plusultra; let
   cfg = config.plusultra.desktop.hyprland;
   term = config.plusultra.desktop.addons.term;
   substitutedConfig = pkgs.substituteAll {

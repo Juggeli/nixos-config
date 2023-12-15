@@ -1,11 +1,14 @@
-{ options, config, pkgs, lib, ... }:
-
-with lib;
-with lib.internal;
-let
-  cfg = config.plusultra.tools.rust;
-in
 {
+  options,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+with lib.plusultra; let
+  cfg = config.plusultra.tools.rust;
+in {
   options.plusultra.tools.rust = with types; {
     enable = mkBoolOpt false "Whether or not to install and configure rust env.";
   };
@@ -18,8 +21,7 @@ in
     ];
 
     plusultra.home.extraOptions = {
-      home.sessionPath = [ "$HOME/.cargo/bin" ];
+      home.sessionPath = ["$HOME/.cargo/bin"];
     };
   };
 }
-

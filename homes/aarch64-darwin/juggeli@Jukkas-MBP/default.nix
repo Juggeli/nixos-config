@@ -1,7 +1,12 @@
-{ lib, pkgs, config, osConfig ? { }, format ? "unknown", ... }:
-
-with lib.plusultra;
 {
+  lib,
+  pkgs,
+  config,
+  osConfig ? {},
+  format ? "unknown",
+  ...
+}:
+with lib.plusultra; {
   plusultra = {
     user = {
       enable = true;
@@ -19,9 +24,18 @@ with lib.plusultra;
     };
 
     tools = {
-      git = enabled;
+      git = {
+        enable = true;
+        userName = "jukka.alavesa";
+        userEmail = "jukka.alavesa@codemate.com";
+      };
       direnv = enabled;
     };
+  };
+
+  programs.fish.shellAbbrs = {
+    nixsw = "darwin-rebuild switch --flake .#";
+    nixup = "darwin-rebuild switch --flake .# --recreate-lock-file";
   };
 
   home.sessionPath = [
