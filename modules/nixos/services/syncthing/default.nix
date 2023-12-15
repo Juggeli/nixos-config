@@ -19,7 +19,7 @@ in {
       syncthing = {
         enable = true;
         user = "juggeli";
-        dataDir = cfg.datadir;
+        dataDir = cfg.dataDir;
         configDir = "${cfg.dataDir}/.config/syncthing";
         guiAddress = "0.0.0.0:8384";
         overrideDevices = true;
