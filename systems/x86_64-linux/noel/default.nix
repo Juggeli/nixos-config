@@ -28,7 +28,6 @@ with lib.plusultra; {
     };
   };
 
-  # age.secrets.borg-passkey.file = "secrets/borg-passkey.age";
   services.borgbackup.jobs.homeRemote = mkBorgBackup {
     inherit config;
     paths = [
@@ -62,5 +61,5 @@ with lib.plusultra; {
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "21.11"; # Did you read the comment?
+  system.stateVersion = "23.11"; # Did you read the comment?
 }
