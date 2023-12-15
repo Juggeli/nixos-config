@@ -34,8 +34,8 @@ mark s /mnt/pool/sorted
 mark d /mnt/pool/downloads
 
 " Dirs
-fileviewer */ exa --tree --level=2 --color=always --icons
-fileviewer .*/ exa --tree --level=2 --color=always --icons
+fileviewer */ eza --tree --level=2 --color=always --icons
+fileviewer .*/ eza --tree --level=2 --color=always --icons
 
 " Text files
 fileviewer {*.[1-8]},<text/plain> env -uCOLORTERM bat --color always --wrap never --pager never %c -p

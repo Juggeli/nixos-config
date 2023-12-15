@@ -15,7 +15,7 @@ in {
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       grc
-      exa
+      eza
       bat
       lazygit
       fzf
@@ -26,18 +26,18 @@ in {
         ".." = "cd ..";
         "..." = "cd ../..";
         "...." = "cd ../../..";
-        l = "exa -blF";
-        ls = "exa -blF";
-        ll = "exa -abghilmu";
+        l = "eza -blF";
+        ls = "eza -blF";
+        ll = "eza -abghilmu";
         llm = "ll --sort=modified";
-        la = "LC_COLLATE=C exa -ablF";
+        la = "LC_COLLATE=C eza -ablF";
         cat = "bat";
         lg = "lazygit";
         s = "wezterm ssh";
       };
       shellAbbrs = {
-        exa = "exa --group-directories-first --git";
-        tree = "exa --tree";
+        eza = "eza --group-directories-first --git";
+        tree = "eza --tree";
       };
       interactiveShellInit =
         ''

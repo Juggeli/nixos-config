@@ -24,7 +24,7 @@ in {
       jq
       wget
       bat
-      exa
+      eza
       fd
       tldr
       pciutils
