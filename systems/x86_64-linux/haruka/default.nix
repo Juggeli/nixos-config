@@ -1,8 +1,12 @@
-{ pkgs, config, lib, channel, ... }:
-
-with lib;
-with lib.internal;
 {
+  pkgs,
+  config,
+  lib,
+  channel,
+  ...
+}:
+with lib;
+with lib.plusultra; {
   imports = [
     ./hardware.nix
     ./pool.nix
@@ -11,11 +15,6 @@ with lib.internal;
   plusultra = {
     archetypes = {
       server = enabled;
-    };
-
-    cli-apps = {
-      rclone = enabled;
-      btop = enabled;
     };
 
     security = {
@@ -56,27 +55,31 @@ with lib.internal;
 
   services.openssh = {
     enable = true;
-    hostKeys = [{
-      path = "/etc/ssh/ssh_host_ed25519_key";
-      type = "ed25519";
-    }];
+    hostKeys = [
+      {
+        path = "/etc/ssh/ssh_host_ed25519_key";
+        type = "ed25519";
+      }
+    ];
   };
 
   networking = {
-    interfaces.enp3s0.ipv4.addresses = [{
-      address = "10.11.11.2";
-      prefixLength = 24;
-    }];
+    interfaces.enp3s0.ipv4.addresses = [
+      {
+        address = "10.11.11.2";
+        prefixLength = 24;
+      }
+    ];
     defaultGateway = "10.11.11.1";
-    nameservers = [ "10.11.11.1" ];
+    nameservers = ["10.11.11.1"];
     nat = {
       enable = true;
-      internalInterfaces = [ "ve-+" ];
+      internalInterfaces = ["ve-+"];
       externalInterface = "enp3s0";
     };
   };
 
-  boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp3s0:off" ];
+  boot.kernelParams = ["ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp3s0:off"];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
@@ -87,7 +90,7 @@ with lib.internal;
       enable = true;
       port = 22;
       authorizedKeys = config.plusultra.services.openssh.authorizedKeys;
-      hostKeys = [ /etc/ssh/ssh_host_ed25519_key ];
+      hostKeys = [/etc/ssh/ssh_host_ed25519_key];
     };
     secrets = {
       "/etc/ssh/ssh_host_ed25519_key" = /etc/ssh/ssh_host_ed25519_key;
@@ -118,4 +121,3 @@ with lib.internal;
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.05"; # Did you read the comment?
 }
-

@@ -1,8 +1,12 @@
-{ pkgs, config, lib, channel, ... }:
-
-with lib;
-with lib.internal;
 {
+  pkgs,
+  config,
+  lib,
+  channel,
+  ...
+}:
+with lib;
+with lib.plusultra; {
   imports = [
     ./hardware.nix
   ];
