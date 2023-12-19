@@ -5,6 +5,9 @@ let
   inherit (lib.plusultra) mkOpt enabled;
 
   cfg = config.plusultra.services.nix-daemon;
+
+
+
 in
 {
   options.plusultra.services.nix-daemon = {

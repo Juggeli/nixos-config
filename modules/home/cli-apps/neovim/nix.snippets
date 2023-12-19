@@ -1,0 +1,16 @@
+snippet mod Nix module
+	{ config, lib, pkgs, ... }:
+
+	let
+		inherit (lib) mkEnableOption mkIf;
+		cfg = config.plusultra.${1};
+	in
+	{
+		options.plusultra.${1} = {
+			enable = mkEnableOption "${1}";
+		};
+
+		config = mkIf cfg.enable {
+			${2}
+		};
+	}
