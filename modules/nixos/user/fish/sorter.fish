@@ -1,116 +1,101 @@
 function sorter
-	# Define base directory
-	set base_dir "/mnt/pool/downloads/random/"
+    # Define base directory
+    set -g base_dir /mnt/pool/downloads/random/
 
-	# Define destination directories
-	set jav_dir "/mnt/pool/sorted/jav/unsorted/"
-	set muut_dir "/mnt/pool/sorted/muut/"
-	set uncen_dir "/mnt/pool/sorted/uncen/"
+    # Define destination directories
+    set -g jav_dir /mnt/pool/sorted/jav/unsorted/
+    set -g muut_dir /mnt/pool/sorted/muut/
+    set -g uncen_dir /mnt/pool/sorted/uncen/
+    set -g to_upscale_dir /mnt/pool/sorted/to-be-upscaled/
 
-	# List of junk file extensions, .html, .html, .url
-	set -l junk_exts ".html" ".htm" ".url" ".jpg" ".jpeg" ".png" ".webp"
+    set -l junk_exts ".html" ".htm" ".url" ".jpg" ".jpeg" ".png" ".webp"
+    set -l video_exts ".mkv" ".mp4" ".avi" ".mov" ".wmv" ".flv" ".webm" ".m4v" ".mpeg" ".m2v" ".m4v" ".ts" ".vob" ".3gp" ".3g2" ".mpg"
+    set -g delete_files
 
-	# Get a list of video files from the base directory
-	set video_files (find "$base_dir" -type f \( -name "*.mkv" -o -name "*.mp4" -o -name "*.avi" -o -name "*.mov" -o -name "*.wmv" -o -name "*.flv" -o -name "*.webm" -o -name "*.m4v" -o -name "*.mpg" -o -name "*.mpeg" -o -name "*.m2v" -o -name "*.m4v" -o -name "*.ts" -o -name "*.vob" -o -name "*.3gp" -o -name "*.3g2" \))
+    set video_files
+    function print_color -a color text
+        set_color $color
+        echo -e $text
+        set_color normal
+    end
 
-	# List variable for files to be deleted
-	set delete_files
+    function process_file -a video_file
+        while true
+            echo -e "Playing $video_file"
+            mpv --really-quiet $video_file
 
-	# Loop through each video file
-	for video_file in $video_files
-			# Open video file in mpv
-			echo -e "Playing $video_file"
-			mpv --quiet $video_file
+            set_color yellow
+            echo -e "d. Delete"
+            echo -e "j. Move to JAV"
+            echo -e "m. Move to Muut"
+            echo -e "u. Move to Uncen"
+            echo -e "t. Move to upscale"
+            echo -e "r. Play again"
+            echo -e "q. Quit"
+            set_color normal
+            read -n 1 -P "Enter choice: " choice
 
-			# Ask user for choice
-			set_color yellow
-			echo -e "d. Delete"
-			echo -e "j. Move to JAV"
-			echo -e "m. Move to Muut"
-			echo -e "u. Move to Uncen"
-			echo -e "r. Play again"
-			echo -e "q. Quit"
-			set_color normal
-			read -n 1 -P "Enter choice: " choice
+            switch $choice
+                case d
+                    set -g delete_files $delete_files $video_file
+                    return
+                case j
+                    print_color green "Moving $video_file to $jav_dir"
+                    mv "$video_file" "$jav_dir"
+                    return
+                case m
+                    print_color green "Moving $video_file to $muut_dir"
+                    mv "$video_file" "$muut_dir"
+                    return
+                case u
+                    print_color green "Moving $video_file to $uncen_dir"
+                    mv "$video_file" "$uncen_dir"
+                    return
+                case t
+                    print_color green "Moving $video_file to $to_upscale_dir"
+                    mv "$video_file" "$to_upscale_dir"
+                    return
+                case r
+                    process_file $video_file
+                    return
+                case q
+                    return 1
+            end
+        end
+    end
 
-			# Delete file if user chooses d
-			if test $choice = "d"
-					# Add file to delete list
-					set delete_files $delete_files $video_file
-			end
+    for video_ext in $video_exts
+        set video_files $video_files (find "$base_dir" -type f -name "*$video_ext")
+    end
 
-			# Move file to JAV directory if user chooses j
-			if test $choice = "j"
-					set_color green
-					echo -e "Moving $video_file to $jav_dir"
-					set_color normal
-					mv $video_file $jav_dir
-			end
+    for video_file in $video_files
+        if not process_file $video_file
+            break
+        end
+    end
 
-			# Move file to Muut directory if user chooses m
-			if test $choice = "m"
-					set_color green
-					echo -e "Moving $video_file to $muut_dir"
-					set_color normal
-					mv $video_file $muut_dir
-			end
+    if test -n "$delete_files"
+        print_color yellow "Files to be deleted:"
+        for delete_file in $delete_files
+            echo $delete_file
+        end
+        read -P "Delete files? (y/n): " delete_choice
+        if test $delete_choice = y
+            print_color red "Deleting files..."
+            # Delete files in delete list
+            for delete_file in $delete_files
+                rm $delete_file
+            end
+        end
+    end
 
-			# Move file to Uncen directory if user chooses u
-			if test $choice = "u"
-					set_color green
-					echo -e "Moving $video_file to $uncen_dir"
-					set_color normal
-					mv $video_file $uncen_dir
-			end
+    # Recursively delete all junk files
+    print_color red "Deleting junk files..."
+    for junk_ext in $junk_exts
+        find "$base_dir" -type f -name "*$junk_ext" -print -delete
+    end
 
-			# Play file again if user chooses r
-			if test $choice = "r"
-					# Open video file in mpv
-					echo -e "Playing $video_file"
-					mpv $video_file
-			end
-
-			# Quit if user chooses q
-			if test $choice = "q"
-					break
-			end
-	end
-
-	# Print delete list
-	set_color yellow
-	echo -e "Files to be deleted:"
-	set_color normal
-	for delete_file in $delete_files
-			echo $delete_file
-	end
-
-	# If there is files to be deleted, ask user if they want to delete files
-	if test -n "$delete_files"
-			read -P "Delete files? (y/n): " delete_choice
-	end
-
-	# Delete files if user chooses y
-	if test $delete_choice = "y"
-			set_color red
-			echo -e "Deleting files..."
-			set_color normal
-			# Delete files in delete list
-			for delete_file in $delete_files
-					rm $delete_file
-			end
-	end
-
-	# Recursively delete all junk files
-	set_color red
-	echo -e "Deleting junk files..."
-	set_color normal
-	for junk_ext in $junk_exts
-			find "$base_dir" -type f -name "*$junk_ext" -print -delete
-	end
-
-	# Recursively find all empty directories and delete them
-	set_color red
-	echo -e "Deleting empty directories..."
-	set_color normal
-	find "$base_dir" -type d -empty -delete -print
+    # Recursively find all empty directories and delete them
+    print_color red "Deleting empty directories..."
+    find "$base_dir" -type d -empty -delete -print
 end
