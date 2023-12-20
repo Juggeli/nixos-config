@@ -15,7 +15,6 @@ with lib.plusultra; {
       };
       firefox = enabled;
       chrome = enabled;
-      kitty = enabled;
       mpv = enabled;
       via = enabled;
       pdf = enabled;

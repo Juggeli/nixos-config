@@ -1,18 +1,8 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.desktop.sway;
-  term = config.plusultra.desktop.addons.term;
-  substitutedConfig = pkgs.substituteAll {
-    src = ./config;
-    term = term.pkg.pname or term.pkg.name;
-  };
+
   # bash script to let dbus know about important env variables and
   # propogate them to relevent services run at the end of sway config
   # see
@@ -39,16 +29,19 @@ with lib.plusultra; let
     name = "configure-gtk";
     destination = "/bin/configure-gtk";
     executable = true;
-    text = let
-      schema = pkgs.gsettings-desktop-schemas;
-      datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-    in ''
-      export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-      gnome_schema=org.gnome.desktop.interface
-      gsettings set $gnome_schema gtk-theme 'Yaru-purple-dark'
-    '';
+    text =
+      let
+        schema = pkgs.gsettings-desktop-schemas;
+        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+      in
+      ''
+        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+        gnome_schema=org.gnome.desktop.interface
+        gsettings set $gnome_schema gtk-theme 'Catppuccin-Mocha-Compact-Pink-Dark'
+      '';
   };
-in {
+in
+{
   options.plusultra.desktop.sway = with types; {
     enable = mkBoolOpt false "Whether or not to enable Sway.";
     extraConfig =
@@ -83,7 +76,12 @@ in {
         dbus-sway-environment
         configure-gtk
         autotiling-rs
-        yaru-theme
+        (catppuccin-gtk.override {
+          accents = [ "pink" ];
+          size = "compact";
+          # tweaks = [ "rimless" "black" ];
+          variant = "mocha";
+        })
       ];
 
       extraSessionCommands = ''
@@ -123,7 +121,7 @@ in {
             xkb_options = "grp:caps_toggle";
           };
         };
-        bars = [];
+        bars = [ ];
         gaps = {
           top = 200;
           left = 300;
@@ -133,11 +131,11 @@ in {
         window.commands = [
           {
             command = "floating enable";
-            criteria = {app_id = "pavucontrol";};
+            criteria = { app_id = "pavucontrol"; };
           }
           {
             command = "floating enable";
-            criteria = {app_id = "mpv";};
+            criteria = { app_id = "mpv"; };
           }
         ];
         keybindings = lib.mkOptionDefault {
@@ -154,8 +152,8 @@ in {
         };
         startup = [
           # { command = "${pkgs.swayidle}/bin/swayidle -w timeout 600 '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg' timeout 150 '${pkgs.sway}/bin/swaymsg \"output * dpms off\"' resume '${pkgs.sway}/bin/swaymsg \"output * dpms on\"' before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ~/.config/dotfiles/config/bg1.jpg'"; }
-          {command = "${pkgs.waybar}/bin/waybar";}
-          {command = "${pkgs.autotiling-rs}/bin/autotiling-rs";}
+          { command = "${pkgs.waybar}/bin/waybar"; }
+          { command = "${pkgs.autotiling-rs}/bin/autotiling-rs"; }
         ];
         output = {
           DP-1 = {
@@ -176,5 +174,9 @@ in {
         client.focused_inactive ${base03} ${base03} ${base03} ${base03}
       '';
     };
+
+    security.pam.loginLimits = [
+      { domain = "@users"; item = "rtprio"; type = "-"; value = 1; }
+    ];
   };
 }
