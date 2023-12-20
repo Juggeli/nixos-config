@@ -1,8 +1,4 @@
-{ lib
-, config
-, pkgs
-, ...
-}:
+{ lib, config, pkgs, ... }:
 let
   inherit (lib) mkEnableOption mkIf;
 
@@ -75,6 +71,7 @@ in
             vim-illuminate
             vim-startuptime
             which-key-nvim
+            flutter-tools-nvim
             {
               name = "LuaSnip";
               path = luasnip;
@@ -161,6 +158,7 @@ in
               with plugins; [
                 nix
                 lua
+                fish
               ])).dependencies;
         };
       in
