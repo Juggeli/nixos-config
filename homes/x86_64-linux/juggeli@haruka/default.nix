@@ -1,11 +1,4 @@
-{
-  lib,
-  pkgs,
-  config,
-  osConfig ? {},
-  format ? "unknown",
-  ...
-}:
+{ lib, config, ... }:
 with lib.plusultra; {
   plusultra = {
     user = {

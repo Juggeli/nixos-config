@@ -1,4 +1,4 @@
-{ options, config, pkgs, lib, ... }:
+{ config, lib, ... }:
 
 with lib;
 with lib.plusultra;
@@ -27,3 +27,4 @@ in
     plusultra.home.file.".hushlogin".text = "";
   };
 }
+

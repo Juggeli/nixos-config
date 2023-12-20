@@ -4,12 +4,6 @@ with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.desktop.addons.skhd;
-
-  mkScript = name: file: pkgs.writeShellApplication {
-    inherit name;
-    checkPhase = "";
-    text = builtins.readFile file;
-  };
 in
 {
   options.plusultra.desktop.addons.skhd = {
@@ -105,3 +99,4 @@ in
     };
   };
 }
+

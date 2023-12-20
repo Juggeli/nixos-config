@@ -1,15 +1,8 @@
-{ options, config, pkgs, lib, inputs, ... }:
+{ options, config, lib, ... }:
 
 with lib;
 with lib.plusultra;
-let
-  cfg = config.plusultra.home;
-in
 {
-  # imports = with inputs; [
-  #   home-manager.darwinModules.home-manager
-  # ];
-
   options.plusultra.home = with types; {
     file = mkOpt attrs { }
       "A set of files to be managed by home-manager's <option>home.file</option>.";
@@ -32,9 +25,7 @@ in
     home-manager = {
       useUserPackages = true;
       useGlobalPkgs = true;
-
-      # users.${config.plusultra.user.name} = args:
-      #   mkAliasDefinitions options.plusultra.home.extraOptions;
     };
   };
 }
+

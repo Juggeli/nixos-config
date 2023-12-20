@@ -1,6 +1,6 @@
 { lib }:
 
-rec {
+{
   mkBorgBackup = { config, paths, exclude ? [ ] }: {
     inherit paths;
     inherit exclude;

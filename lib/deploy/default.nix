@@ -3,7 +3,7 @@
 let
   inherit (inputs) deploy-rs;
 in
-rec {
+{
   mkDeploy = { self, overrides ? { } }:
     let
       hosts = self.nixosConfigurations or { };
