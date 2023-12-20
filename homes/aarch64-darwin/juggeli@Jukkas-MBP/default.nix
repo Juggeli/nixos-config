@@ -1,10 +1,6 @@
-{
-  lib,
-  pkgs,
-  config,
-  osConfig ? {},
-  format ? "unknown",
-  ...
+{ lib
+, config
+, ...
 }:
 with lib.plusultra; {
   plusultra = {
@@ -14,7 +10,10 @@ with lib.plusultra; {
     };
 
     apps = {
-      wezterm = enabled;
+      wezterm = {
+        enable = true;
+        fontSize = "15";
+      };
     };
 
     cli-apps = {

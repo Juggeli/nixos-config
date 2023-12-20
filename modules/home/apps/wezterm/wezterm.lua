@@ -1,3 +1,5 @@
+{ fontSize, ...}:
+''
 -- Pull in the wezterm API
 local wezterm = require("wezterm")
 
@@ -23,7 +25,7 @@ config.window_close_confirmation = "NeverPrompt"
 -- config.window_decorations = "NONE"
 -- config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
-config.font_size = 14.0
+config.font_size = ${fontSize}
 
 -- then finally apply the plugin
 -- these are currently the defaults:
@@ -63,3 +65,4 @@ wezterm.plugin.require("https://github.com/nekowinston/wezterm-bar").apply_to_co
 
 -- and finally, return the configuration to wezterm
 return config
+''

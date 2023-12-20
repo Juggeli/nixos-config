@@ -1,16 +1,16 @@
-inputs @ {
-  options,
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.apps.wezterm;
-in {
+in
+{
   options.plusultra.apps.wezterm = with types; {
-    enable = mkBoolOpt false "Whether or not to enable wezterm.";
+    enable = mkEnableOption "Whether or not to enable wezterm.";
+    fontSize = mkOpt types.str "13" "Font size to use with wezterm.";
   };
 
   config = mkIf cfg.enable {
@@ -18,7 +18,7 @@ in {
       wezterm
     ];
     xdg.configFile = {
-      "wezterm/wezterm.lua".source = ./wezterm.lua;
+      "wezterm/wezterm.lua".text = import ./wezterm.lua cfg;
     };
   };
 }
