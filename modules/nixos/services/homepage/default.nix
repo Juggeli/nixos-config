@@ -1,14 +1,9 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.services.homepage;
-in {
+in
+{
   options.plusultra.services.homepage = with types; {
     enable = mkBoolOpt false "Whether or not to enable homepage service.";
   };
@@ -17,7 +12,7 @@ in {
     virtualisation.oci-containers.containers.homepage = {
       image = "ghcr.io/benphelps/homepage:latest";
       autoStart = true;
-      ports = ["3000:3000"];
+      ports = [ "3000:3000" ];
       volumes = [
         "/mnt/appdata/homepage:/app/config"
         "/run/podman/podman.sock:/var/run/docker.sock"

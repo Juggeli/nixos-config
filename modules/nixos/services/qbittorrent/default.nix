@@ -1,14 +1,9 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.services.qbittorrent;
-in {
+in
+{
   options.plusultra.services.qbittorrent = with types; {
     enable = mkBoolOpt false "Whether or not to enable qbittorrent service.";
   };
@@ -17,7 +12,7 @@ in {
     virtualisation.oci-containers.containers.qbittorrent = {
       image = "cr.hotio.dev/hotio/qbittorrent";
       autoStart = true;
-      ports = ["8080:8080"];
+      ports = [ "8080:8080" ];
       volumes = [
         "/mnt/appdata/qbittorrent:/config"
         "/mnt/pool/downloads/:/mnt/pool/downloads/"

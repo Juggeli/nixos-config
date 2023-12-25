@@ -1,14 +1,9 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.services.unifi;
-in {
+in
+{
   options.plusultra.services.unifi = with types; {
     enable = mkBoolOpt false "Whether or not to enable unifi service.";
   };
@@ -20,6 +15,6 @@ in {
       openFirewall = true;
     };
 
-    networking.firewall.allowedTCPPorts = [8443];
+    networking.firewall.allowedTCPPorts = [ 8443 ];
   };
 }

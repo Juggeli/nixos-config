@@ -1,14 +1,9 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.services.jackett;
-in {
+in
+{
   options.plusultra.services.jackett = with types; {
     enable = mkBoolOpt false "Whether or not to jackett service.";
   };
@@ -17,7 +12,7 @@ in {
     virtualisation.oci-containers.containers.jackett = {
       image = "cr.hotio.dev/hotio/jackett";
       autoStart = true;
-      ports = ["9117:9117"];
+      ports = [ "9117:9117" ];
       volumes = [
         "/mnt/appdata/jackett/:/config"
       ];

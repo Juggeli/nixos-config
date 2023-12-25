@@ -1,14 +1,9 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.services.plex;
-in {
+in
+{
   options.plusultra.services.plex = with types; {
     enable = mkBoolOpt false "Whether or not to enable plex service.";
   };

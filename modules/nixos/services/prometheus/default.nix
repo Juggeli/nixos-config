@@ -1,14 +1,9 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.services.prometheus;
-in {
+in
+{
   options.plusultra.services.prometheus = with types; {
     enable = mkBoolOpt false "Whether or not to enable prometheus service.";
   };
@@ -28,7 +23,7 @@ in {
 
         smokeping = {
           enable = true;
-          hosts = ["1.1.1.1" "google.com"];
+          hosts = [ "1.1.1.1" "google.com" ];
         };
       };
 
@@ -49,8 +44,8 @@ in {
     };
     systemd.services."smartprom" = {
       description = "monitor smart devices";
-      wantedBy = ["multi-user.target"];
-      after = ["network.target"];
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
       serviceConfig = {
         DeviceAllow = lib.mkOverride 10 [
           "block-blkext rw"
@@ -62,7 +57,7 @@ in {
     };
 
     networking.firewall = {
-      allowedTCPPorts = [9633 9090 9902];
+      allowedTCPPorts = [ 9633 9090 9902 ];
     };
   };
 }
