@@ -65,21 +65,22 @@
     };
   };
 
-  outputs = inputs: let
-    lib = inputs.snowfall-lib.mkLib {
-      inherit inputs;
-      src = ./.;
+  outputs = inputs:
+    let
+      lib = inputs.snowfall-lib.mkLib {
+        inherit inputs;
+        src = ./.;
 
-      snowfall = {
-        meta = {
-          name = "plusultra";
-          title = "Plus Ultra";
+        snowfall = {
+          meta = {
+            name = "plusultra";
+            title = "Plus Ultra";
+          };
+
+          namespace = "plusultra";
         };
-
-        namespace = "plusultra";
       };
-    };
-  in
+    in
     lib.mkFlake {
       channels-config = {
         allowUnfree = true;
@@ -98,12 +99,12 @@
         agenix.nixosModules.default
       ];
 
-      deploy = lib.mkDeploy {inherit (inputs) self;};
+      deploy = lib.mkDeploy { inherit (inputs) self; };
 
       checks =
         builtins.mapAttrs
-        (system: deploy-lib:
-          deploy-lib.deployChecks inputs.self.deploy)
-        inputs.deploy-rs.lib;
+          (system: deploy-lib:
+            deploy-lib.deployChecks inputs.self.deploy)
+          inputs.deploy-rs.lib;
     };
 }

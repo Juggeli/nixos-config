@@ -1,10 +1,4 @@
-{
-  pkgs,
-  config,
-  lib,
-  channel,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; {
   imports = [
@@ -25,9 +19,9 @@ with lib.plusultra; {
     services = {
       cloudflared = enabled;
       grafana = disabled;
-      homeassistant = disabled;
       jackett = enabled;
       plex = enabled;
+      jellyfin = enabled;
       prometheus = enabled;
       qbittorrent = disabled;
       qbit-manage = disabled;
@@ -71,15 +65,15 @@ with lib.plusultra; {
       }
     ];
     defaultGateway = "10.11.11.1";
-    nameservers = ["10.11.11.1"];
+    nameservers = [ "10.11.11.1" ];
     nat = {
       enable = true;
-      internalInterfaces = ["ve-+"];
+      internalInterfaces = [ "ve-+" ];
       externalInterface = "enp3s0";
     };
   };
 
-  boot.kernelParams = ["ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp3s0:off"];
+  boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp3s0:off" ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
@@ -90,7 +84,7 @@ with lib.plusultra; {
       enable = true;
       port = 22;
       authorizedKeys = config.plusultra.services.openssh.authorizedKeys;
-      hostKeys = [/etc/ssh/ssh_host_ed25519_key];
+      hostKeys = [ /etc/ssh/ssh_host_ed25519_key ];
     };
     secrets = {
       "/etc/ssh/ssh_host_ed25519_key" = /etc/ssh/ssh_host_ed25519_key;
