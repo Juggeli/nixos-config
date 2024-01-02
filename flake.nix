@@ -63,6 +63,11 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "unstable";
+    };
   };
 
   outputs = inputs:
@@ -97,6 +102,7 @@
         home-manager.nixosModules.home-manager
         # hyprland.nixosModules.default
         agenix.nixosModules.default
+        disko.nixosModules.disko
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
