@@ -1,14 +1,9 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.suites.common-slim;
-in {
+in
+{
   options.plusultra.suites.common-slim = with types; {
     enable = mkBoolOpt false "Whether or not to enable common configuration.";
   };

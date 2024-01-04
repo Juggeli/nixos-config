@@ -15,7 +15,7 @@ in
     kernelPackages = pkgs.linuxPackages_latest;
 
     initrd = {
-      availableKernelModules = [ 
+      availableKernelModules = [
         "ahci"
         "xhci_pci"
         "usbhid"
@@ -41,7 +41,7 @@ in
         };
       };
     };
-    
+
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
       "mitigations=off"
@@ -49,15 +49,15 @@ in
   };
 
   fileSystems = {
-    "/" = { 
+    "/" = {
       device = "/dev/disk/by-uuid/c5de15d7-1543-485e-b480-a429ebdb9c57";
       fsType = "xfs";
     };
-    "/boot" = { 
+    "/boot" = {
       device = "/dev/disk/by-uuid/2A12-EEC8";
       fsType = "vfat";
     };
-    "/mnt/appdata" = { 
+    "/mnt/appdata" = {
       device = "/dev/disk/by-uuid/78cab7c2-db29-4b6f-9668-6c6519d51b9c";
       fsType = "btrfs";
     };

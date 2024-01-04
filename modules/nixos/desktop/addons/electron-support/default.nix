@@ -1,24 +1,19 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.desktop.addons.electron-support;
-in {
+in
+{
   options.plusultra.desktop.addons.electron-support = with types; {
     enable =
       mkBoolOpt false
-      "Whether to enable electron support in the desktop environment.";
+        "Whether to enable electron support in the desktop environment.";
   };
 
   config = mkIf cfg.enable {
     plusultra.home.configFile."electron-flags.conf".source =
       ./electron-flags.conf;
 
-    environment.sessionVariables = {NIXOS_OZONE_WL = "1";};
+    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
   };
 }

@@ -1,15 +1,9 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.desktop.addons.waybar;
-in {
+in
+{
   options.plusultra.desktop.addons.waybar = with types; {
     enable =
       mkBoolOpt false "Whether to enable Waybar in the desktop environment.";
@@ -26,21 +20,21 @@ in {
           margin-left = 1200;
           margin-right = 1200;
           margin-bottom = 6;
-          modules-left = ["wlr/workspaces"];
-          modules-center = ["sway/window"];
-          modules-right = ["pulseaudio" "network" "clock" "tray"];
+          modules-left = [ "wlr/workspaces" ];
+          modules-center = [ "sway/window" ];
+          modules-right = [ "pulseaudio" "network" "clock" "tray" ];
 
           "wlr/workspaces" = {
             disable-scroll = true;
             sort-by-name = true;
             format = "{icon}";
-            format-icons = {default = "";};
+            format-icons = { default = ""; };
           };
 
           pulseaudio = {
             format = " {icon} ";
             format-muted = "ﱝ";
-            format-icons = ["奄" "奔" "墳"];
+            format-icons = [ "奄" "奔" "墳" ];
             tooltip = true;
             tooltip-format = "{volume}%";
           };

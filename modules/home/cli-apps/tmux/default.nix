@@ -1,14 +1,9 @@
-inputs @ {
-  options,
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.cli-apps.tmux;
-in {
+in
+{
   options.plusultra.cli-apps.tmux = with types; {
     enable = mkBoolOpt false "Whether or not to enable tmux.";
   };

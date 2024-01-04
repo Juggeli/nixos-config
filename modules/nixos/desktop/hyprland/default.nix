@@ -1,10 +1,4 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.desktop.hyprland;
@@ -13,7 +7,8 @@ with lib.plusultra; let
     src = ./config;
     term = term.pkg.pname or term.pkg.name;
   };
-in {
+in
+{
   options.plusultra.desktop.hyprland = with types; {
     enable = mkBoolOpt false "Whether or not to enable Hyprland.";
     wallpaper = mkOpt (nullOr package) null "The wallpaper to display.";

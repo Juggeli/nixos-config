@@ -1,4 +1,4 @@
-{ lib, config, pkgs, osConfig ? { }, ... }:
+{ lib, config, pkgs, ... }:
 
 let
   inherit (lib) types mkIf mkDefault mkMerge;
@@ -6,7 +6,6 @@ let
 
   cfg = config.plusultra.user;
 
-  is-linux = pkgs.stdenv.isLinux;
   is-darwin = pkgs.stdenv.isDarwin;
 
   home-directory =
@@ -48,3 +47,4 @@ in
     }
   ]);
 }
+

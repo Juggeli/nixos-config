@@ -1,21 +1,16 @@
-inputs @ {
-  options,
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.apps.mpv;
-in {
+in
+{
   options.plusultra.apps.mpv = with types; {
     enable = mkBoolOpt false "Whether or not to enable mpv.";
   };
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      (mpv.override {scripts = [];})
+      (mpv.override { scripts = [ ]; })
     ];
 
     xdg.configFile = {

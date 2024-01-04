@@ -1,6 +1,6 @@
 { stdenv, lib, fetchFromGitHub, cmake, curl, openssl, libxml2 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "speedtestpp";
   version = "2021-08-29";
   src = fetchFromGitHub {

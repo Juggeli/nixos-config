@@ -1,4 +1,4 @@
-{ lib, config, pkgs, host ? null, format ? "unknown", ... }:
+{ lib, host ? null, ... }:
 
 let
   inherit (lib) types;
@@ -9,3 +9,4 @@ in
     name = mkOpt (types.nullOr types.str) host "The host name.";
   };
 }
+

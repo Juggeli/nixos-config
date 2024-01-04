@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, ... }:
 
 let
   inherit (lib) types mkEnableOption mkIf;
@@ -28,3 +28,4 @@ in
     };
   };
 }
+

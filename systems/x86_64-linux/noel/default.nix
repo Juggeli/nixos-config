@@ -1,10 +1,4 @@
-{
-  pkgs,
-  config,
-  lib,
-  channel,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; {
   imports = [
@@ -14,12 +8,16 @@ with lib.plusultra; {
   ];
 
   plusultra = {
-    archetypes = {
-      workstation = enabled;
+    suites = {
+      common = enabled;
+      desktop = enabled;
+      development = enabled;
+      social = enabled;
+      media = enabled;
     };
     tools.agenix = enabled;
     hardware.networking.hosts = {
-      "10.11.11.2" = ["haruka"];
+      "10.11.11.2" = [ "haruka" ];
     };
     hardware.logitech = enabled;
     services.syncthing = {
@@ -40,10 +38,12 @@ with lib.plusultra; {
   fileSystems."/mnt/pool" = {
     device = "//10.11.11.2/pool";
     fsType = "cifs";
-    options = let
-      # this line prevents hanging on network split
-      automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-    in ["${automount_opts},credentials=/etc/nixos/smb-secrets,uid=1001,gid=100"];
+    options =
+      let
+        # this line prevents hanging on network split
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+      in
+      [ "${automount_opts},credentials=/etc/nixos/smb-secrets,uid=1001,gid=100" ];
   };
 
   systemd.extraConfig = ''

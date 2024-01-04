@@ -1,13 +1,10 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}: let
+{ lib, config, pkgs, ... }:
+let
   inherit (lib) mkEnableOption mkIf;
 
   cfg = config.plusultra.cli-apps.fish;
-in {
+in
+{
   options.plusultra.cli-apps.fish = {
     enable = mkEnableOption "fish";
   };

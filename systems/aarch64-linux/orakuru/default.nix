@@ -1,10 +1,4 @@
-{
-  pkgs,
-  config,
-  lib,
-  channel,
-  ...
-}:
+{ lib, ... }:
 with lib;
 with lib.plusultra; {
   imports = [
@@ -12,8 +6,8 @@ with lib.plusultra; {
   ];
 
   plusultra = {
-    archetypes = {
-      server = enabled;
+    suites = {
+      common-slim = enabled;
     };
     services = {
       openssh.authorizedKeys = [

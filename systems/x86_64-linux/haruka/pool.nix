@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
   mover = pkgs.writeShellApplication {
     name = "mover";

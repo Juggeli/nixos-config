@@ -1,25 +1,20 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.user;
-in {
+in
+{
   options.plusultra.user = with types; {
     name = mkOpt str "juggeli" "The name to use for the user account.";
     fullName = mkOpt str "Jukka Alavesa" "The full name of the user.";
     email = mkOpt str "juggeli@gmail.com" "The email of the user.";
     initialPassword =
       mkOpt str "password"
-      "The initial password to use when the user is first created.";
-    extraGroups = mkOpt (listOf str) [] "Groups for the user to be assigned.";
+        "The initial password to use when the user is first created.";
+    extraGroups = mkOpt (listOf str) [ ] "Groups for the user to be assigned.";
     extraOptions =
-      mkOpt attrs {}
-      "Extra options passed to <option>users.users.<name></option>.";
+      mkOpt attrs { }
+        "Extra options passed to <option>users.users.<name></option>.";
   };
 
   config = {
@@ -57,7 +52,7 @@ in {
         # system to select).
         uid = 1000;
 
-        extraGroups = ["wheel"] ++ cfg.extraGroups;
+        extraGroups = [ "wheel" ] ++ cfg.extraGroups;
       }
       // cfg.extraOptions;
   };

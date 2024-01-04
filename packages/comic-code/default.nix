@@ -15,7 +15,7 @@ stdenv.mkDerivation {
     description = "Comic code font";
     license = lib.licenses.gpl3;
     platforms = platforms.all;
-    maintainers = [];
+    maintainers = [ ];
   };
 }
 

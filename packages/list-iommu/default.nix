@@ -1,8 +1,4 @@
-{ lib
-, writeShellApplication
-, pciutils
-, ...
-}:
+{ writeShellApplication, pciutils, ... }:
 
 writeShellApplication
 {

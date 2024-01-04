@@ -7,8 +7,8 @@ with lib.plusultra; {
   ];
 
   plusultra = {
-    archetypes = {
-      server = enabled;
+    suites = {
+      common-slim = enabled;
     };
 
     security = {

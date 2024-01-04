@@ -49,11 +49,6 @@
       flake = false;
     };
 
-    neovim = {
-      url = "github:Juggeli/neovim/custom";
-      inputs.nixpkgs.follows = "unstable";
-    };
-
     # hyprland = {
     #   url = "github:hyprwm/Hyprland";
     #   inputs.nixpkgs.follows = "unstable";
@@ -93,10 +88,6 @@
           "electron-25.9.0"
         ];
       };
-
-      overlays = with inputs; [
-        neovim.overlays.default
-      ];
 
       systems.modules.nixos = with inputs; [
         home-manager.nixosModules.home-manager

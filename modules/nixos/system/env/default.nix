@@ -1,22 +1,17 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.system.env;
-in {
+in
+{
   options.plusultra.system.env = with types;
     mkOption {
-      type = attrsOf (oneOf [str path (listOf (either str path))]);
+      type = attrsOf (oneOf [ str path (listOf (either str path)) ]);
       apply = mapAttrs (n: v:
         if isList v
         then concatMapStringsSep ":" (x: toString x) v
         else (toString v));
-      default = {};
+      default = { };
       description = "A set of environment variables to set.";
     };
 
@@ -37,7 +32,7 @@ in {
       };
       extraInit =
         concatStringsSep "\n"
-        (mapAttrsToList (n: v: ''export ${n}="${v}"'') cfg);
+          (mapAttrsToList (n: v: ''export ${n}="${v}"'') cfg);
     };
   };
 }

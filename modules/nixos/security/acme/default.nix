@@ -1,14 +1,11 @@
-{
-  lib,
-  pkgs,
-  config,
-  ...
-}: let
+{ lib, config, ... }:
+let
   inherit (lib) mkIf mkEnableOption;
   inherit (lib.plusultra) mkOpt;
 
   cfg = config.plusultra.security.acme;
-in {
+in
+{
   options.plusultra.security.acme = with lib.types; {
     enable = mkEnableOption "default ACME configuration";
     email = mkOpt str config.plusultra.user.email "The email to use.";
