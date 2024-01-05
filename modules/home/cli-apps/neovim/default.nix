@@ -37,6 +37,7 @@ in
             cmp-nvim-lsp
             cmp-path
             cmp_luasnip
+            cmp-emoji
             conform-nvim
             dashboard-nvim
             dressing-nvim
@@ -159,6 +160,9 @@ in
                 nix
                 lua
                 fish
+                dart
+                kotlin
+                swift
               ])).dependencies;
         };
       in

@@ -43,4 +43,16 @@ return {
 			close_if_last_window = true,
 		},
 	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		opts = {
+			indent = {
+				enable = true,
+				-- Disable dart indendation for now because of massive lag
+				disable = {
+					"dart",
+				},
+			},
+		},
+	},
 }
