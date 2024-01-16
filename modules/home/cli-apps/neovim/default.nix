@@ -73,6 +73,7 @@ in
             vim-startuptime
             which-key-nvim
             flutter-tools-nvim
+            lexima-vim
             {
               name = "LuaSnip";
               path = luasnip;
@@ -95,10 +96,6 @@ in
             }
             {
               name = "mini.indentscope";
-              path = mini-nvim;
-            }
-            {
-              name = "mini.pairs";
               path = mini-nvim;
             }
             {

@@ -1,16 +1,15 @@
 snippet mod Nix module
-	{ config, lib, pkgs, ... }:
+  { config, lib, pkgs, ... }:
+  with lib;
+  with lib.plusultra; let
+    cfg = config.plusultra.apps.${1};
+  in
+  {
+    options.plusultra.apps.${1} = with types; {
+      enable = mkBoolOpt false "Whether or not to enable ${1}.";
+    };
 
-	let
-		inherit (lib) mkEnableOption mkIf;
-		cfg = config.plusultra.${1};
-	in
-	{
-		options.plusultra.${1} = {
-			enable = mkEnableOption "${1}";
-		};
-
-		config = mkIf cfg.enable {
-			${2}
-		};
-	}
+    config = mkIf cfg.enable {
+      ${2}
+    };
+  }
