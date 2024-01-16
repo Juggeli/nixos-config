@@ -21,6 +21,7 @@ in
         # nix
         nil
         nixpkgs-fmt
+        (pkgs.writeShellScriptBin "gsed" "exec -a $0 ${gnused}/bin/sed $@")
       ];
 
       plugins = with pkgs.vimPlugins; [
