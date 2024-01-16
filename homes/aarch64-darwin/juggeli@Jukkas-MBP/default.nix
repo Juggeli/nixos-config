@@ -18,6 +18,7 @@ with lib.plusultra; {
       fish = enabled;
       neovim = enabled;
       home-manager = enabled;
+      btop = enabled;
     };
 
     tools = {
