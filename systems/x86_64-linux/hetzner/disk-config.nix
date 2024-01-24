@@ -3,11 +3,16 @@
     disk = {
       vdb = {
         type = "disk";
-        device = "/dev/vdb";
+        device = "/dev/sda";
         content = {
           type = "gpt";
           partitions = {
-            ESP = {
+            boot = {
+              name = "boot";
+              size = "1M";
+              type = "EF02";
+            };
+            esp = {
               size = "500M";
               type = "EF00";
               content = {
@@ -22,7 +27,7 @@
                 type = "luks";
                 name = "crypted";
                 settings.allowDiscards = true;
-                passwordFile = "/tmp/secret.key";
+                passwordFile = "/tmp/disk1.key";
                 content = {
                   type = "filesystem";
                   format = "ext4";
@@ -36,3 +41,4 @@
     };
   };
 }
+
