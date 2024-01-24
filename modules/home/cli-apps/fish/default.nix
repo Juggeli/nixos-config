@@ -16,6 +16,7 @@ in
       bat
       lazygit
       fzf
+      du-dust
     ];
     programs.fish = {
       enable = true;
