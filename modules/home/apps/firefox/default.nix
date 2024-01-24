@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.apps.firefox;
@@ -169,7 +169,6 @@ in
   config = mkIf cfg.enable {
     programs.firefox = {
       enable = true;
-      package = pkgs.firefox-wayland;
 
       profiles.${config.plusultra.user.name} = {
         inherit (cfg) extraConfig userChrome settings;
