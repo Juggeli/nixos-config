@@ -26,7 +26,6 @@ with lib.plusultra; {
       qbittorrent = disabled;
       qbit-manage = disabled;
       sonarr = enabled;
-      unifi = disabled;
       homepage = enabled;
       radarr = enabled;
       syncthing = enabled;
