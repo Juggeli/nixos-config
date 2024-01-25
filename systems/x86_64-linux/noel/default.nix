@@ -4,7 +4,7 @@ with lib.plusultra; {
   imports = [
     ./hardware.nix
     ./autologin.nix
-    ./virt.nix
+    # ./virt.nix
   ];
 
   plusultra = {

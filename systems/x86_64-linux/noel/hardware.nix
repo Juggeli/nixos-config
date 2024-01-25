@@ -9,8 +9,23 @@ in
     common-cpu-intel
     common-pc
     common-pc-ssd
-    common-gpu-nvidia-disable
+    # common-gpu-nvidia-disable
   ];
+
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+  };
+
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = true;
+    open = true;
+    nvidiaSettings = true;
+  };
 
   boot = {
     kernelPackages = pkgs.linuxPackages_6_6;
