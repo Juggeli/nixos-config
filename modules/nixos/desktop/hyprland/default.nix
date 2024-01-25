@@ -157,7 +157,7 @@ in
           "overlay" = "false";
         };
         misc = {
-          "vfr" = "false";
+          "vfr" = "true";
         };
         env = [
           "LIBVA_DRIVER_NAME,nvidia"
