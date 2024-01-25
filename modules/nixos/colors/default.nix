@@ -19,5 +19,22 @@ with lib.plusultra;
     base0D = mkOpt str "#89b4fa" "blue";
     base0E = mkOpt str "#cba6f7" "mauve";
     base0F = mkOpt str "#f2cdcd" "flamingo";
+
+    base = mkOpt str "#1e1e2e" "base";
+    mantle = mkOpt str "#181825" "mantle";
+    surface0 = mkOpt str "#313244" "surface0";
+    surface1 = mkOpt str "#45475a" "surface1";
+    surface2 = mkOpt str "#585b70" "surface2";
+    text = mkOpt str "#cdd6f4" "text";
+    rosewater = mkOpt str "#f5e0dc" "rosewater";
+    lavender = mkOpt str "#b4befe" "lavender";
+    red = mkOpt str "#f38ba8" "red";
+    peach = mkOpt str "#fab387" "peach";
+    yellow = mkOpt str "#f9e2af" "yellow";
+    green = mkOpt str "#a6e3a1" "green";
+    teal = mkOpt str "#94e2d5" "teal";
+    blue = mkOpt str "#89b4fa" "blue";
+    mauve = mkOpt str "#cba6f7" "mauve";
+    flamingo = mkOpt str "#f2cdcd" "flamingo";
   };
 }

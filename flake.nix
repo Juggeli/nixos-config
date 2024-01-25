@@ -8,7 +8,6 @@
     snowfall-lib = {
       url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
-      # inputs.flake-utils-plus.url = "github:ravensiris/flake-utils-plus/ravensiris/fix-devshell-legacy-packages";
     };
 
     darwin = {
@@ -49,11 +48,6 @@
       flake = false;
     };
 
-    # hyprland = {
-    #   url = "github:hyprwm/Hyprland";
-    #   inputs.nixpkgs.follows = "unstable";
-    # };
-
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "unstable";
@@ -91,7 +85,6 @@
 
       systems.modules.nixos = with inputs; [
         home-manager.nixosModules.home-manager
-        # hyprland.nixosModules.default
         agenix.nixosModules.default
         disko.nixosModules.disko
       ];
