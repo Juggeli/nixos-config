@@ -80,10 +80,10 @@ in
         "$mod" = "SUPER";
         bind =
           [
-            "$mod, Space, exec, ${pkgs.rofi-wayland}/bin/rofi -modi run, drun, window -show drun"
-            "$mod, B, exec, ${pkgs.firefox}/bin/firefox"
-            ", Print, exec, ${screenshot}/bin/screenshot"
-            "$mod, Return, exec, ${pkgs.kitty}/bin/kitty"
+            "$mod, Space, exec, rofi -show combi"
+            "$mod, B, exec, firefox"
+            ", Print, exec, screenshot"
+            "$mod, Return, exec, kitty"
             "$mod, W, killactive"
             "$mod Shift, E, exit"
             "$mod, T, togglefloating"

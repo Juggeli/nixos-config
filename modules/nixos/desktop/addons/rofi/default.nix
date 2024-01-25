@@ -10,13 +10,21 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      rofi
-    ];
-
-    plusultra.home.configFile = {
-      "rofi/config.rasi".source = ./config.rasi;
-      "rofi/catppuccin-mocha.rasi".source = ./catppuccin-mocha.rasi;
+    plusultra.home.extraOptions.programs.rofi = {
+      enable = true;
+      package = pkgs.rofi-wayland;
+      theme = ./catppuccin-mocha.rasi;
+      terminal = "kitty";
+      plugins = with pkgs; [
+        rofi-power-menu
+        rofi-calc
+      ];
+      extraConfig = {
+        modi = "drun,run,combi,calc,power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu";
+        combi-modi = "drun,calc,power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu";
+        combi-hide-mode-prefix = true;
+        show-icons = true;
+      };
     };
   };
 }
