@@ -23,7 +23,7 @@ in
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = true;
-    open = true;
+    open = false;
     nvidiaSettings = true;
   };
 
@@ -41,6 +41,7 @@ in
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
       "mitigations=off"
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     ];
 
     loader.systemd-boot.memtest86.enable = true;
