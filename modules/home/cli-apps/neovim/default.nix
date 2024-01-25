@@ -161,6 +161,12 @@ in
                 dart
                 kotlin
                 swift
+                rust
+                go
+                c
+                vim
+                vimdoc
+                query
               ])).dependencies;
         };
       in
