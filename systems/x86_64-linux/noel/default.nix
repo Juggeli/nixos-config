@@ -15,6 +15,7 @@ with lib.plusultra; {
       social = enabled;
       media = enabled;
     };
+    apps.gaming = enabled;
     tools.agenix = enabled;
     hardware.networking.hosts = {
       "10.11.11.2" = [ "haruka" ];

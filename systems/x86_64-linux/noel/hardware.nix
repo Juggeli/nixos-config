@@ -1,4 +1,4 @@
-{ pkgs, modulesPath, inputs, ... }:
+{ pkgs, modulesPath, inputs, config, ... }:
 
 let
   inherit (inputs) nixos-hardware;
@@ -25,6 +25,7 @@ in
     powerManagement.enable = true;
     open = false;
     nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
   boot = {
@@ -41,7 +42,6 @@ in
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
       "mitigations=off"
-      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     ];
 
     loader.systemd-boot.memtest86.enable = true;
