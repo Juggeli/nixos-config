@@ -16,48 +16,55 @@ in
         mainBar = {
           layer = "top";
           position = "bottom";
-          margin-top = 0;
+          margin-top = 6;
           margin-left = 1200;
           margin-right = 1200;
           margin-bottom = 6;
-          modules-left = [ "wlr/workspaces" ];
-          modules-center = [ "sway/window" ];
-          modules-right = [ "pulseaudio" "network" "clock" "tray" ];
+          height = 40;
+          modules-left = [ "custom/logo" "hyprland/workspaces" ];
+          modules-right = [ "pulseaudio" "tray" "clock" ];
 
-          "wlr/workspaces" = {
+          "custom/logo" = {
+            format = "";
+            tooltip = false;
+          };
+
+          "hyprland/workspaces" = {
             disable-scroll = true;
-            sort-by-name = true;
-            format = "{icon}";
-            format-icons = { default = ""; };
+            persistent_workspaces = {
+              "1" = [ ];
+              "2" = [ ];
+              "3" = [ ];
+              "4" = [ ];
+            };
+            disable-click = true;
           };
 
           pulseaudio = {
             format = " {icon} ";
-            format-muted = "ﱝ";
-            format-icons = [ "奄" "奔" "墳" ];
+            format-muted = "";
+            format-icons = [ "" "󰖀" "󰕾" ];
             tooltip = true;
             tooltip-format = "{volume}%";
           };
 
-          network = {
-            format-wifi = " ";
-            format-disconnected = "睊";
-            format-ethernet = " ";
-            tooltip = true;
-            tooltip-format = "{signalStrength}%";
-          };
-
-          "custom/power" = {
-            tooltip = false;
-            on-click = "powermenu";
-            format = "襤";
-          };
-
           clock = {
-            tooltip-format = ''              <big>{:%Y %B}</big>
-                            <tt><small>{calendar}</small></tt>'';
-            format-alt = ''{:%d.%m.%Y}'';
             format = ''{:%H:%M}'';
+            format-alt = ''{:%d.%m.%Y}'';
+            tooltip-format = ''<tt>{calendar}</tt>'';
+            calendar = {
+              mode = "month";
+              mode-mon-col = 3;
+              weeks-pos = "right";
+              on-scroll = 1;
+              format = {
+                months = "<span color='#bac2de'><b>{}</b></span>";
+                days = "<span color='#cdd6f4'><b>{}</b></span>";
+                weeks = "<span color='#f9e2af'><b>W{}</b></span>";
+                weekdays = "<span color='#a6adc8'><b>{}</b></span>";
+                today = "<span color='#f38ba8'><b><u>{}</u></b></span>";
+              };
+            };
           };
 
           tray = {
