@@ -24,12 +24,13 @@ in
           noto-fonts-cjk-sans
           noto-fonts-cjk-serif
           noto-fonts-emoji
-          (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "FantasqueSansMono" ]; })
+          ubuntu_font_family
+          (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
           plusultra.comic-code
         ]
         ++ cfg.fonts;
       fontconfig.defaultFonts = {
-        monospace = [ "Comic Code Ligatures" ];
+        monospace = [ "Ubuntu Mono" ];
       };
     };
   };
