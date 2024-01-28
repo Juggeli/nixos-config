@@ -11,7 +11,10 @@ in
 
   config = mkIf cfg.enable {
     system.defaults = {
-      dock.autohide = true;
+      dock = {
+        autohide = true;
+        orientation = "left";
+      };
 
       finder = {
         AppleShowAllExtensions = true;
