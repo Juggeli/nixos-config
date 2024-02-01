@@ -16,6 +16,7 @@ return {
 		end,
 		opts = {
 			servers = {
+				kotlin_language_server = {},
 				nil_ls = {
 					settings = {
 						["nil"] = {
