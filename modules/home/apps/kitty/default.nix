@@ -25,6 +25,9 @@ in
         "tab_bar_min_tabs" = "1";
         "tab_bar_style" = "powerline";
         "tab_powerline_style" = "slanted";
+        "hide_window_decorations" = "yes";
+        "tab_title_max_length" = "60";
+        "tab_title_template" = "{fmt.fg.tab}{index}: {tab.active_oldest_exe}";
       };
       keybindings = {
         "super+shift+t" = "new_tab";

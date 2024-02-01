@@ -11,7 +11,10 @@ with lib.plusultra; {
         enable = true;
         fontSize = "15";
       };
-      kitty = enabled;
+      kitty = {
+        enable = true;
+        fontSize = 15;
+      };
     };
 
     cli-apps = {
