@@ -42,6 +42,7 @@ with lib.plusultra; {
   home.sessionPath = [
     "$HOME/src/flutter/bin"
     "$HOME/.pub-cache/bin"
+    "$HOME/.local/bin"
   ];
 
   home.stateVersion = "23.05";
