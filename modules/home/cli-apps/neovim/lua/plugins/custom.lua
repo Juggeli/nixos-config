@@ -65,4 +65,23 @@ return {
 	},
 	{ "echasnovski/mini.pairs", enabled = false },
 	{ "cohama/lexima.vim", event = "VeryLazy" },
+	{
+		"nvim-telescope/telescope.nvim",
+		opts = {
+			defaults = {
+				layout_strategy = "vertical",
+			},
+		},
+	},
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		opts = {
+			custom_highlights = function(colors)
+				return {
+					WinSeparator = { fg = colors.surface1 },
+				}
+			end,
+		},
+	},
 }

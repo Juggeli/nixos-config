@@ -5,3 +5,9 @@ local map = vim.keymap.set
 
 map("n", "<S-j>", "<C-d>", { desc = "Scroll down" })
 map("n", "<S-k>", "<C-u>", { desc = "Scroll up" })
+
+-- Disable horizontal scrolling
+map("n", "<ScrollWheelRight>", "<Nop>")
+map("n", "<ScrollWheelLeft>", "<Nop>")
+map("n", "<S-ScrollWheelUp>", "<ScrollWheelRight>")
+map("n", "<S-ScrollWheelDown>", "<ScrollWheelLeft>")
