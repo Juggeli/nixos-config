@@ -56,16 +56,33 @@ in
       };
 
       extraConfig = ''
-        yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
-        yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
-        yabai -m rule --add label="System Preferences" app="^System Preferences$" title=".*" manage=off
-        yabai -m rule --add label="App Store" app="^App Store$" manage=off
-        yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
-        yabai -m rule --add label="Calculator" app="^Calculator$" manage=off
-        yabai -m rule --add label="Dictionary" app="^Dictionary$" manage=off
-        yabai -m rule --add label="mpv" app="^mpv$" manage=off
-        yabai -m rule --add label="Software Update" title="Software Update" manage=off
-        yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+        yabai -m rule --add app="Finder" manage=off
+        yabai -m rule --add app="System Settings" manage=off
+        yabai -m rule --add app="App Store" manage=off
+        yabai -m rule --add app="Activity Monitor" manage=off
+        yabai -m rule --add app="Calculator" manage=off
+        yabai -m rule --add app="Dictionary" manage=off
+        yabai -m rule --add app="mpv" manage=off
+        yabai -m rule --add app="Software Update" manage=off
+        yabai -m rule --add app="System Information" manage=off
+        yabai -m rule --add app="Raycast" manage=off
+        yabai -m rule --add app="1Password" manage=off
+
+        # Spaces
+        yabai -m space 1 --label slack
+        yabai -m space 2 --label browser
+        yabai -m space 3 --label term
+        yabai -m space 4 --label git
+        yabai -m space 5 --label android
+        yabai -m space 6 --label ios
+
+        # Assign to spaces
+        yabai -m rule --add app="Slack" space=slack
+        yabai -m rule --add app="Firefox" space=browser
+        yabai -m rule --add app="kitty" space=term
+        yabai -m rule --add app="GitKraken" space=git
+        yabai -m rule --add app="Android Studio" space=android
+        yabai -m rule --add app="XCode" space=ios
       '';
     };
   };
