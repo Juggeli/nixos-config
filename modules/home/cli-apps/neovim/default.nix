@@ -22,7 +22,6 @@ in
         nil
         nixpkgs-fmt
         (pkgs.writeShellScriptBin "gsed" "exec -a $0 ${gnused}/bin/sed $@")
-        kotlin-language-server
       ];
 
       plugins = with pkgs.vimPlugins; [
