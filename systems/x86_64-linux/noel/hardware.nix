@@ -4,21 +4,6 @@ let
   inherit (inputs) nixos-hardware;
 in
 {
-  # Stupid nvidia patch
-  nixpkgs.overlays = [
-    (self: super: (
-      let
-        patched_pkgs = import inputs.nixpkgs_patched {
-          inherit (self) system;
-          config.allowUnfree = true;
-        };
-      in
-      {
-        linuxPackages = patched_pkgs.linuxPackages;
-      }
-    ))
-  ];
-
   imports = with nixos-hardware.nixosModules; [
     (modulesPath + "/installer/scan/not-detected.nix")
     common-cpu-intel
@@ -44,7 +29,7 @@ in
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages;
+    kernelPackages = pkgs.linuxPackages_6_6;
 
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "aesni_intel" ];
