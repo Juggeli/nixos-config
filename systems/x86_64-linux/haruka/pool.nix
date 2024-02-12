@@ -35,22 +35,24 @@ let
       SOURCE="''${1}"
       DEST="''${2}"
       TEMP="/mnt/pool/downloads/temp"
+      SOURCE_FILES="/mnt/pool/downloads/source_files.txt"
+      DOWNLOADED_FILES="/mnt/pool/downloads/downloaded_files.txt"
 
-      rclone lsf --files-only -R "''${SOURCE}" > "''${DEST}/source_files.txt"
+      rclone lsf --files-only -R "''${SOURCE}" > "''${SOURCE_FILES}"
 
       while read -r file; do
-        if ! grep -Fxq "''${file}" "''${DEST}/.downloaded_files.txt"; then
+        if ! grep -Fxq "''${file}" "''${DOWNLOADED_FILES}"; then
           if rclone copyto "''${SOURCE}/''${file}" "''${TEMP}/''${file}"; then
             mkdir -p "''$(dirname "''${DEST}/''${file}")"
             mv "''${TEMP}/''${file}" "''${DEST}/''${file}"
-            echo "''${file}" >> "''${DEST}/.downloaded_files.txt"
+            echo "''${file}" >> "''${DOWNLOADED_FILES}"
             echo "Download success ''${file}"
           else
             echo "Download failed ''${file}"
           fi
         fi
-      done < "''${DEST}/source_files.txt"
-      rm "''${DEST}/source_files.txt"
+      done < "''${SOURCE_FILES}"
+      rm "''${SOURCE_FILES}"
     '';
   };
 in
