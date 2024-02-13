@@ -7,7 +7,7 @@ with lib.plusultra; {
     };
 
     apps = {
-      wezterm = enabled;
+      wezterm = disabled;
       kitty = enabled;
       vscode = enabled;
       discord = {

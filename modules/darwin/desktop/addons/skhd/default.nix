@@ -78,7 +78,7 @@ in
         shift + cmd - space : yabai -m window --toggle float
 
         # Terminal
-        shift + cmd - return : ${pkgs.wezterm}/bin/wezterm
+        shift + cmd - return : ${pkgs.kitty}/bin/kitty
 
         # Fullscreen
         alt - f : yabai -m window --toggle zoom-fullscreen

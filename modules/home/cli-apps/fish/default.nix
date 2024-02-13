@@ -31,7 +31,8 @@ in
         la = "LC_COLLATE=C eza -ablF";
         cat = "bat";
         lg = "lazygit";
-        s = "wezterm ssh";
+        s = "kitten ssh";
+        ssh = "kitten ssh";
       };
       shellAbbrs = {
         eza = "eza --group-directories-first --git";

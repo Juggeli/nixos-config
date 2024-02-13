@@ -8,7 +8,7 @@ with lib.plusultra; {
 
     apps = {
       wezterm = {
-        enable = true;
+        enable = false;
         fontSize = "15";
       };
       kitty = {

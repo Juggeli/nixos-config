@@ -113,7 +113,7 @@ in
         down = "j";
         up = "k";
         right = "l";
-        terminal = "${pkgs.wezterm}/bin/wezterm";
+        terminal = "${pkgs.kitty}/bin/kitty";
         menu = "'${pkgs.rofi-wayland}/bin/rofi -modi run, drun, window  -show drun'";
         input = {
           "type:keyboard" = {
