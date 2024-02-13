@@ -34,11 +34,6 @@ with lib.plusultra; {
     };
   };
 
-  programs.fish.shellAbbrs = {
-    nixsw = "darwin-rebuild switch --flake .#";
-    nixup = "darwin-rebuild switch --flake .# --recreate-lock-file";
-  };
-
   home.sessionPath = [
     "$HOME/src/flutter/bin"
     "$HOME/.pub-cache/bin"

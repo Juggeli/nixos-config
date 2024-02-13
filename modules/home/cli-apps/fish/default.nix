@@ -3,6 +3,7 @@ let
   inherit (lib) mkEnableOption mkIf;
 
   cfg = config.plusultra.cli-apps.fish;
+  rebuildCommand = if pkgs.stdenv.isLinux then "doas nixos-rebuild" else "darwin-rebuild";
 in
 {
   options.plusultra.cli-apps.fish = {
@@ -37,6 +38,8 @@ in
       shellAbbrs = {
         eza = "eza --group-directories-first --git";
         tree = "eza --tree";
+        nixsw = rebuildCommand + " switch --flake .#";
+        nixup = rebuildCommand + " switch --flake .# --recreate-lock-file";
       };
       interactiveShellInit =
         ''

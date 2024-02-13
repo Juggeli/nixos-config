@@ -43,11 +43,6 @@ with lib.plusultra; {
     };
   };
 
-  programs.fish.shellAbbrs = {
-    nixsw = "doas nixos-rebuild switch --flake .#";
-    nixup = "doas nixos-rebuild switch --flake .# --recreate-lock-file";
-  };
-
   home.sessionPath = [
   ];
 }
