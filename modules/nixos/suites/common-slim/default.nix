@@ -20,6 +20,10 @@ in
         misc = enabled;
       };
 
+      hardware = {
+        storage = enabled;
+      };
+
       services = {
         openssh = enabled;
         tailscale = enabled;
