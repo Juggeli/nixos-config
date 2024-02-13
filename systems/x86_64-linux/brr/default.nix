@@ -13,6 +13,10 @@ with lib.plusultra; {
       common-slim = enabled;
     };
     system.boot = lib.mkForce disabled;
+
+    services = {
+      qbittorrent = enabled;
+    };
   };
 
   boot.loader.grub = {
