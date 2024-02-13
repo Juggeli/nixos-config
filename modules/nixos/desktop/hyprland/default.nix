@@ -7,22 +7,6 @@ with lib.plusultra; let
   surface0 = "0xff313244";
   red = "0xffa6e3a1";
 
-  hyprland-per-window-layout = pkgs.hyprland-per-window-layout.overrideAttrs (oldAttrs: rec {
-    version = "git";
-    src = pkgs.fetchFromGitHub {
-      owner = oldAttrs.src.owner;
-      repo = oldAttrs.src.repo;
-      rev = "ee08b5c72032c7b8c0f9eb064b188c0633f24e53";
-      hash = "sha256-g6cFZXEWKB9IxP/ARe788tXFpDofJNDWMwUU15yKYhA=";
-    };
-
-    cargoDeps = oldAttrs.cargoDeps.overrideAttrs (lib.const {
-      name = "${oldAttrs.pname}-vendor.tar.gz";
-      inherit src;
-      outputHash = "sha256-LQH2DRZ5OOVoV1Ph51Ko/YH+eMSOUbTmzreQT0zUES0=";
-    });
-  });
-
   mpvpaper-nvidia = pkgs.mpvpaper.overrideAttrs (oldAttrs: {
     version = "git";
     src = pkgs.fetchFromGitHub {
@@ -171,7 +155,7 @@ in
         ];
         exec-once = [
           "${pkgs.waybar}/bin/waybar"
-          "${hyprland-per-window-layout}/bin/hyprland-per-window-layout"
+          "${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout"
         ];
         debug = {
           "overlay" = "false";
