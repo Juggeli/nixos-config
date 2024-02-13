@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.qbit-manage = {
-      image = "cr.hotio.dev/hotio/qbitmanage";
+      image = "ghcr.io/hotio/qbitmanage";
       autoStart = true;
       volumes = [
         "/mnt/appdata/qbit_manage/:/config/"

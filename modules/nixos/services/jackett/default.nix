@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.jackett = {
-      image = "cr.hotio.dev/hotio/jackett";
+      image = "ghcr.io/hotio/jackett";
       autoStart = true;
       ports = [ "9117:9117" ];
       volumes = [

@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.jellyfin = {
-      image = "cr.hotio.dev/hotio/jellyfin";
+      image = "ghcr.io/hotio/jellyfin";
       autoStart = true;
       ports = [ "8096:8096" ];
       extraOptions = [

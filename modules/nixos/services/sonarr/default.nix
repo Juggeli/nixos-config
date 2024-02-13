@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.sonarr = {
-      image = "cr.hotio.dev/hotio/sonarr";
+      image = "ghcr.io/hotio/sonarr";
       autoStart = true;
       ports = [ "8989:8989" ];
       volumes = [

@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.qbittorrent = {
-      image = "cr.hotio.dev/hotio/qbittorrent";
+      image = "ghcr.io/hotio/qbittorrent";
       autoStart = true;
       ports = [ "8080:8080" ];
       volumes = [

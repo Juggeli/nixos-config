@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.radarr = {
-      image = "cr.hotio.dev/hotio/radarr";
+      image = "ghcr.io/hotio/radarr";
       autoStart = true;
       ports = [ "7878:7878" ];
       volumes = [
