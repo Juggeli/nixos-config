@@ -9,10 +9,8 @@ with lib.plusultra; {
   ];
 
   plusultra = {
-    nix = enabled;
-
-    tools = {
-      misc = enabled;
+    suites = {
+      common-slim = enabled;
     };
 
     services = {
@@ -24,25 +22,7 @@ with lib.plusultra; {
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICbJeg8M8Pmbab+/X5on+hFEJlLW0/f4vX8nNtDNAcox jukka"
         ];
       };
-      tailscale = enabled;
     };
-
-    security = {
-      doas = enabled;
-    };
-
-    system = {
-      fonts = enabled;
-      locale = enabled;
-      time = enabled;
-    };
-  };
-
-  boot.loader.grub = {
-    # no need to set devices, disko will add all devices that have a EF02 partition to the list already
-    # devices = [ ];
-    efiSupport = true;
-    efiInstallAsRemovable = true;
   };
 
   boot.loader.supportsInitrdSecrets = true;
