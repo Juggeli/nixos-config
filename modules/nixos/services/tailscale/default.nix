@@ -10,6 +10,7 @@ in
       enable = mkBoolOpt false "Whether or not to enable automatic connection to Tailscale";
       key = mkOpt str "" "The authentication key to use";
     };
+    port = mkOpt types.int 41641 "Custom port for tailscale";
   };
 
   config = mkIf cfg.enable {
@@ -22,7 +23,11 @@ in
 
     environment.systemPackages = with pkgs; [ tailscale ];
 
-    services.tailscale = enabled;
+    services.tailscale = {
+      enable = true;
+      port = cfg.port;
+    };
+
 
     networking = {
       firewall = {

@@ -16,6 +16,7 @@ with lib.plusultra; {
 
     services = {
       qbittorrent = enabled;
+      tailscale.port = 50288;
     };
   };
 
