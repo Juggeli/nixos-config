@@ -15,12 +15,11 @@ in
       ports = [ "8080:8080" ];
       volumes = [
         "/mnt/appdata/qbittorrent:/config"
-        "/mnt/pool/downloads/:/mnt/pool/downloads/"
-        "/mnt/pool/media/:/mnt/pool/media/"
+        "/mnt/pool/:/mnt/pool/"
       ];
       environment = {
         VPN_ENABLED = "true";
-        VPN_LAN_NETWORK = "10.11.11.0/24,172.20.0.0/16";
+        VPN_LAN_NETWORK = "100.64.0.0/10";
         VPN_CONF = "wg0";
         PRIVOXY_ENABLED = "false";
         PUID = "1000";
@@ -28,9 +27,10 @@ in
       };
       extraOptions = [
         "--cap-add=NET_ADMIN"
-        ''--sysctl="net.ipv4.conf.all.src_valid_mark=1"''
+        "--cap-add=NET_RAW"
         ''--sysctl="net.ipv6.conf.all.disable_ipv6=1"''
       ];
     };
+    boot.kernel.sysctl."net.ipv4.conf.all.src_valid_mark" = 1;
   };
 }
