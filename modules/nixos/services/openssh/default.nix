@@ -41,6 +41,8 @@ in
       ];
     };
 
+    programs.ssh.startAgent = true;
+
     plusultra.user.extraOptions.openssh.authorizedKeys.keys =
       cfg.authorizedKeys;
   };
