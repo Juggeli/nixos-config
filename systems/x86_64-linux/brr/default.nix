@@ -18,6 +18,10 @@ with lib.plusultra; {
       qbittorrent = enabled;
       tailscale.port = 50288;
     };
+
+    virtualisation = {
+      podman = enabled;
+    };
   };
 
   boot.loader.grub = {
