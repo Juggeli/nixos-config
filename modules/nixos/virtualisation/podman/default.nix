@@ -19,6 +19,7 @@ in
         enable = cfg.enable;
         dockerSocket.enable = true;
         defaultNetwork.settings.dns_enabled = true;
+        autoPrune.enable = true;
       };
     };
   };
