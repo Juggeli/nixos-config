@@ -28,6 +28,18 @@ let
       done
     '';
   };
+
+  downloaderBrr = pkgs.writeShellApplication {
+    name = "downloaderBrr";
+    runtimeInputs = [ pkgs.rclone ];
+    text = ''
+      SOURCE="''${1}"
+      DEST="''${2}"
+      
+      rclone -v move "''${SOURCE}" "''${DEST}"
+    '';
+  };
+
   downloader = pkgs.writeShellApplication {
     name = "downloader";
     runtimeInputs = [ pkgs.rclone ];
@@ -216,6 +228,26 @@ in
       OnUnitActiveSec = "300s";
       OnBootSec = "300s";
       Unit = "downloadStuff.service";
+    };
+  };
+
+  systemd.services.downloaderBrr = {
+    description = "download all stuff from brr";
+    serviceConfig = {
+      User = "juggeli";
+      Type = "oneshot";
+    };
+    script = ''
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/ /mnt/pool/downloads/random/
+    '';
+  };
+  systemd.timers.downloaderBrr = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "downloaderBrr.service" ];
+    timerConfig = {
+      OnUnitActiveSec = "30s";
+      OnBootSec = "300s";
+      Unit = "downloaderBrr.service";
     };
   };
 }
