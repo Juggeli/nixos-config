@@ -38,6 +38,18 @@ in
       };
     };
 
-    plusultra.home.configFile."mako/config".source = ./config;
+    plusultra.home.configFile."mako/config".text = ''
+      font=Hack Nerd Font Mono 10
+      anchor=bottom-center
+      border-radius=8
+      text-color=#2e3440ff
+      background-color=#eceff4f4
+      border-color=#d8dee9ff
+      border-size=0
+      margin=12,12,6
+      padding=12,12,12,12
+      default-timeout=5000
+      max-visible=3
+    '';
   };
 }
