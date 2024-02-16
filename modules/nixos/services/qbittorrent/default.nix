@@ -19,8 +19,11 @@ in
       ];
       environment = {
         VPN_ENABLED = "true";
+        VPN_PROVIDER = "proton";
         VPN_LAN_NETWORK = "100.64.0.0/10";
         VPN_CONF = "wg0";
+        VPN_AUTO_PORT_FORWARD = "true";
+        VPN_KEEP_LOCAL_DNS = "false";
         PRIVOXY_ENABLED = "false";
         PUID = "1000";
         PGID = "100";
