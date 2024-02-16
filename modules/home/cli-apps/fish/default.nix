@@ -18,6 +18,7 @@ in
       lazygit
       fzf
       du-dust
+      gum
     ];
     programs.fish = {
       enable = true;
