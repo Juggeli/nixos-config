@@ -84,4 +84,5 @@ return {
 			end,
 		},
 	},
+	{ "linux-cultist/venv-selector.nvim", enabled = false },
 }

@@ -75,6 +75,12 @@ in
             which-key-nvim
             flutter-tools-nvim
             lexima-vim
+            neotest-python
+            nvim-dap
+            nvim-dap-ui
+            nvim-dap-virtual-text
+            nvim-dap-python
+            neotest
             {
               name = "LuaSnip";
               path = luasnip;
@@ -131,13 +137,16 @@ in
             },
             spec = {
               { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+              { import = "lazyvim.plugins.extras.dap.core" },
               { import = "lazyvim.plugins.extras.ui.mini-animate" },
+              { import = "lazyvim.plugins.extras.lang.python" },
               -- The following configs are needed for fixing lazyvim on nix
               -- force enable telescope-fzf-native.nvim
               { "nvim-telescope/telescope-fzf-native.nvim", enabled = true },
               -- disable mason.nvim, use programs.neovim.extraPackages
               { "williamboman/mason-lspconfig.nvim", enabled = false },
               { "williamboman/mason.nvim", enabled = false },
+              { "jay-babu/mason-nvim-dap.nvim", enabled = false },
               -- import/override with your plugins
               { import = "plugins" },
               -- treesitter handled by xdg.configFile."nvim/parser", put this line at the end of spec to clear ensure_installed
@@ -167,6 +176,10 @@ in
                 vim
                 vimdoc
                 query
+                ninja
+                python
+                rst
+                toml
               ])).dependencies;
         };
       in
