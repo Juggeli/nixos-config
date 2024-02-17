@@ -35,5 +35,29 @@ in
       ];
     };
     boot.kernel.sysctl."net.ipv4.conf.all.src_valid_mark" = 1;
+
+    environment.systemPackages = [
+      plusultra.qbit-manager
+    ];
+
+    systemd.services.qbit-manager = {
+      description = "manage qbittorrent";
+      serviceConfig = {
+        User = "juggeli";
+        Type = "oneshot";
+      };
+      script = ''
+        ${plusultra.qbit-manager}/bin/qbit-manager
+      '';
+    };
+    systemd.timers.qbit-manager = {
+      wantedBy = [ "timers.target" ];
+      partOf = [ "qbit-manager.service" ];
+      timerConfig = {
+        OnUnitActiveSec = "30s";
+        OnBootSec = "300s";
+        Unit = "qbit-manager.service";
+      };
+    };
   };
 }
