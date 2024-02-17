@@ -20,6 +20,12 @@ in
         autofit=1920x1080
         deband=no
       '';
+      "mpv/input.conf".text = ''
+        WHEEL_DOWN seek -10
+        WHEEL_UP seek 10
+        WHEEL_RIGHT add volume 2
+        WHEEL_LEFT add volume -2
+      '';
       "mpv/scripts/delete_file.lua".source = ./delete_file.lua;
     };
   };
