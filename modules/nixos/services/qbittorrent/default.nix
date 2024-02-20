@@ -52,6 +52,7 @@ in
     };
     systemd.timers.qbit-manager = {
       wantedBy = [ "timers.target" ];
+      after = [ "podman-qbittorrent.service" ];
       partOf = [ "qbit-manager.service" ];
       timerConfig = {
         OnUnitActiveSec = "30s";
