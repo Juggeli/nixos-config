@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.services.qbittorrent;
@@ -36,7 +36,7 @@ in
     };
     boot.kernel.sysctl."net.ipv4.conf.all.src_valid_mark" = 1;
 
-    environment.systemPackages = [
+    environment.systemPackages = with pkgs; [
       plusultra.qbit-manager
     ];
 
@@ -47,7 +47,7 @@ in
         Type = "oneshot";
       };
       script = ''
-        ${plusultra.qbit-manager}/bin/qbit-manager
+        ${pkgs.plusultra.qbit-manager}/bin/qbit-manager
       '';
     };
     systemd.timers.qbit-manager = {
