@@ -99,10 +99,11 @@ with lib.plusultra; {
       "/mnt/appdata"
     ];
     exclude = [
-      "/mnt/appdata/plex/Plex\ Media\ Server/Cache"
-      "/mnt/appdata/plex/Plex\ Media\ Server/Media"
-      "/mnt/appdata/plex/Plex\ Media\ Server/Metadata"
-      "/mnt/appdata/plex/Plex\ Media\ Server/Drivers"
+      "/mnt/appdata/plex/Cache/"
+      "/mnt/appdata/plex/Media/"
+      "/mnt/appdata/plex/Metadata/"
+      "/mnt/appdata/plex/Drivers/"
+      "/mnt/appdata/jellyfin/cache/"
     ];
   };
 
