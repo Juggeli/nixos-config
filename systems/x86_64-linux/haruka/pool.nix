@@ -238,7 +238,10 @@ in
       Type = "oneshot";
     };
     script = ''
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/ /mnt/pool/downloads/random/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Private/ /mnt/pool/downloads/random/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Public/ /mnt/pool/downloads/random/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr/ /mnt/pool/downloads/radarr/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr/ /mnt/pool/downloads/sonarr/
     '';
   };
   systemd.timers.downloaderBrr = {
