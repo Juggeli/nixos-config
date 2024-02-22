@@ -23,5 +23,20 @@ in
         PGID = "100";
       };
     };
+
+    virtualisation.oci-containers.containers.sonarr-anime = {
+      image = "ghcr.io/hotio/sonarr";
+      autoStart = true;
+      ports = [ "8999:8989" ];
+      volumes = [
+        "/mnt/appdata/sonarr-anime/:/config"
+        "/mnt/pool/downloads/:/mnt/pool/downloads/"
+        "/mnt/pool/media/:/mnt/pool/media/"
+      ];
+      environment = {
+        PUID = "1000";
+        PGID = "100";
+      };
+    };
   };
 }

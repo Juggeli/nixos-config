@@ -23,5 +23,20 @@ in
         PGID = "100";
       };
     };
+
+    virtualisation.oci-containers.containers.radarr-anime = {
+      image = "ghcr.io/hotio/radarr";
+      autoStart = true;
+      ports = [ "7879:7878" ];
+      volumes = [
+        "/mnt/appdata/radarr-anime/:/config"
+        "/mnt/pool/downloads/:/mnt/pool/downloads/"
+        "/mnt/pool/media/:/mnt/pool/media/"
+      ];
+      environment = {
+        PUID = "1000";
+        PGID = "100";
+      };
+    };
   };
 }
