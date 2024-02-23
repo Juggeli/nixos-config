@@ -19,7 +19,7 @@ with lib.plusultra; {
     services = {
       cloudflared = enabled;
       grafana = disabled;
-      jackett = enabled;
+      prowlarr = enabled;
       plex = enabled;
       jellyfin = enabled;
       prometheus = enabled;
