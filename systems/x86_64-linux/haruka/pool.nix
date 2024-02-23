@@ -39,34 +39,6 @@ let
       rclone -v move "''${SOURCE}" "''${DEST}"
     '';
   };
-
-  downloader = pkgs.writeShellApplication {
-    name = "downloader";
-    runtimeInputs = [ pkgs.rclone ];
-    text = ''
-      SOURCE="''${1}"
-      DEST="''${2}"
-      TEMP="/mnt/pool/downloads/temp"
-      SOURCE_FILES="/mnt/pool/downloads/source_files.txt"
-      DOWNLOADED_FILES="/mnt/pool/downloads/downloaded_files.txt"
-
-      rclone lsf --files-only -R "''${SOURCE}" > "''${SOURCE_FILES}"
-
-      while read -r file; do
-        if ! grep -Fxq "''${file}" "''${DOWNLOADED_FILES}"; then
-          if rclone copyto "''${SOURCE}/''${file}" "''${TEMP}/''${file}"; then
-            mkdir -p "''$(dirname "''${DEST}/''${file}")"
-            mv "''${TEMP}/''${file}" "''${DEST}/''${file}"
-            echo "''${file}" >> "''${DOWNLOADED_FILES}"
-            echo "Download success ''${file}"
-          else
-            echo "Download failed ''${file}"
-          fi
-        fi
-      done < "''${SOURCE_FILES}"
-      rm "''${SOURCE_FILES}"
-    '';
-  };
 in
 {
   environment.systemPackages = with pkgs; [
@@ -79,7 +51,6 @@ in
     python3 # to run mover script
     hdparm
     mover
-    downloader
   ];
 
   # /etc/crypttab: decrypt drives
@@ -210,27 +181,6 @@ in
     };
   };
 
-  systemd.services.downloadStuff = {
-    description = "download all stuff from server";
-    serviceConfig = {
-      User = "juggeli";
-      Type = "oneshot";
-    };
-    script = ''
-      ${downloader}/bin/downloader ultra.cc:downloads/qbittorrent/tv-sonarr-dl /mnt/pool/downloads/tv-sonarr-dl
-      ${downloader}/bin/downloader ultra.cc:downloads/qbittorrent/done /mnt/pool/downloads/random
-    '';
-  };
-  systemd.timers.downloadStuff = {
-    wantedBy = [ "timers.target" ];
-    partOf = [ "downloadStuff.service" ];
-    timerConfig = {
-      OnUnitActiveSec = "300s";
-      OnBootSec = "300s";
-      Unit = "downloadStuff.service";
-    };
-  };
-
   systemd.services.downloaderBrr = {
     description = "download all stuff from brr";
     serviceConfig = {
@@ -241,7 +191,9 @@ in
       ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Private/ /mnt/pool/downloads/random/
       ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Public/ /mnt/pool/downloads/random/
       ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr/ /mnt/pool/downloads/radarr/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr-anime/ /mnt/pool/downloads/radarr-anime/
       ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr/ /mnt/pool/downloads/sonarr/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr-anime/ /mnt/pool/downloads/sonarr-anime/
     '';
   };
   systemd.timers.downloaderBrr = {
