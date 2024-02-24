@@ -10,8 +10,9 @@ with lib.plusultra; {
       wezterm = disabled;
       kitty = enabled;
       vscode = enabled;
+      armcord = enabled;
       discord = {
-        enable = true;
+        enable = false;
         chromium = enabled;
       };
       firefox = enabled;

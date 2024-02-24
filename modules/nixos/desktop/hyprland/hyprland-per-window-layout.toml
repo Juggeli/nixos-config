@@ -12,4 +12,5 @@ keyboards = [
 1 = [
   "discord",
   "firefox",
+  "armcord",
 ]
