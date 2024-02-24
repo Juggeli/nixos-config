@@ -36,18 +36,6 @@
       inputs.nixpkgs.follows = "unstable";
     };
 
-    # Discord Replugged
-    replugged = {
-      url = "github:LunNova/replugged-nix-flake";
-      inputs.nixpkgs.follows = "unstable";
-    };
-
-    # Discord Replugged plugins / themes
-    discord-tweaks = {
-      url = "github:NurMarvin/discord-tweaks";
-      flake = false;
-    };
-
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "unstable";
