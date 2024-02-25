@@ -36,6 +36,7 @@ with lib.plusultra; {
       speedtestpp = enabled;
       btop = enabled;
       tmux = enabled;
+      yazi = enabled;
     };
 
     tools = {

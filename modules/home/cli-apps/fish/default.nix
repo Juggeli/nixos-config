@@ -19,6 +19,8 @@ in
       fzf
       du-dust
       gum
+      trashy
+      dua
     ];
     programs.fish = {
       enable = true;
@@ -57,6 +59,15 @@ in
           function fish_user_key_bindings
             bind ! bind_bang
             bind \cY accept-autosuggestion execute
+          end
+
+          function ya
+            set tmp (mktemp -t "yazi-cwd.XXXXX")
+            yazi $argv --cwd-file="$tmp"
+            if set cwd (cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+              cd -- "$cwd"
+            end
+            rm -f -- "$tmp"
           end
         ''
         + builtins.readFile ./catpuccin.fish;
