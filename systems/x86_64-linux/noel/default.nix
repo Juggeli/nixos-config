@@ -17,15 +17,20 @@ with lib.plusultra; {
     };
     apps.gaming = enabled;
     tools.agenix = enabled;
-    hardware.networking.hosts = {
-      "10.11.11.2" = [ "haruka" ];
+    hardware = {
+      networking.hosts = {
+        "10.11.11.2" = [ "haruka" ];
+      };
+      logitech = enabled;
+      liquidctl = enabled;
     };
-    hardware.logitech = enabled;
     services.syncthing = {
       enable = true;
       dataDir = "/home/juggeli";
     };
   };
+
+  services.flatpak = enabled;
 
   services.borgbackup.jobs.homeRemote = mkBorgBackup {
     inherit config;
