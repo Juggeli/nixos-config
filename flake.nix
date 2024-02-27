@@ -45,6 +45,8 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    impermanence.url = "github:nix-community/impermanence";
   };
 
   outputs = inputs:
@@ -76,6 +78,7 @@
         home-manager.nixosModules.home-manager
         agenix.nixosModules.default
         disko.nixosModules.disko
+        impermanence.nixosModules.impermanence
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };

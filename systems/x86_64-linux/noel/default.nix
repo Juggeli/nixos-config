@@ -4,10 +4,19 @@ with lib.plusultra; {
   imports = [
     ./hardware.nix
     ./autologin.nix
-    # ./virt.nix
+    ./disk-config.nix
   ];
 
   plusultra = {
+    feature = {
+      boot = enabled;
+    };
+    filesystem = {
+      btrfs = enabled;
+      encryption = enabled;
+      impermanence = enabled;
+      tmpfs = enabled;
+    };
     suites = {
       common = enabled;
       desktop = enabled;
@@ -24,22 +33,20 @@ with lib.plusultra; {
       logitech = enabled;
       liquidctl = enabled;
     };
-    services.syncthing = {
-      enable = true;
-      dataDir = "/home/juggeli";
-    };
+    # services.syncthing = {
+    #   enable = true;
+    #   dataDir = "/home/juggeli";
+    # };
   };
 
-  services.flatpak = enabled;
-
-  services.borgbackup.jobs.homeRemote = mkBorgBackup {
-    inherit config;
-    paths = [
-      "/home/juggeli/src/"
-      "/home/juggeli/documents/"
-      "/home/juggeli/Hydrus/"
-    ];
-  };
+  # services.borgbackup.jobs.homeRemote = mkBorgBackup {
+  #   inherit config;
+  #   paths = [
+  #     "/home/juggeli/src/"
+  #     "/home/juggeli/documents/"
+  #     "/home/juggeli/Hydrus/"
+  #   ];
+  # };
 
   fileSystems."/mnt/pool" = {
     device = "//10.11.11.2/pool";
@@ -52,9 +59,9 @@ with lib.plusultra; {
       [ "${automount_opts},credentials=/etc/nixos/smb-secrets,uid=1001,gid=100" ];
   };
 
-  systemd.extraConfig = ''
-    DefaultTimeoutStopSec=10s
-  '';
+  # systemd.extraConfig = ''
+  #   DefaultTimeoutStopSec=10s
+  # '';
 
   # For via and ledger app
   services.udev.extraRules = ''

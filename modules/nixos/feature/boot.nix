@@ -1,10 +1,10 @@
 { config, lib, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.system.boot;
+  cfg = config.plusultra.feature.boot;
 in
 {
-  options.plusultra.system.boot = with types; {
+  options.plusultra.feature.boot = with types; {
     enable = mkOption {
       default = true;
       type = with types; bool;
@@ -25,6 +25,9 @@ in
           enableCryptodisk = mkDefault false;
           useOSProber = mkDefault false;
           efiInstallAsRemovable = true;
+          #theme = null;
+          #backgroundColor = null;
+          #splashImage = null
         };
       };
     };

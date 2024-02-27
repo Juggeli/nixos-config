@@ -13,6 +13,9 @@ with lib.plusultra; let
       "/home/${cfg.name}";
 in
 {
+  imports = [
+    ./impermanence.nix
+  ];
   options.plusultra.user = {
     enable = mkOpt types.bool false "Whether to configure the user account.";
     name = mkOpt (types.nullOr types.str) config.snowfallorg.user.name "The user account.";

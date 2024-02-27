@@ -28,6 +28,10 @@ in
       port = cfg.port;
     };
 
+    plusultra.filesystem.impermanence.directories = mkIf config.plusultra.filesystem.impermanence.enable [
+      "/var/lib/tailscale"
+    ];
+
     # Enable ip forwarding for app connector
     boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
     boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = 1;

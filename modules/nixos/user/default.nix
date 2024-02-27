@@ -9,8 +9,8 @@ in
     name = mkOpt str "juggeli" "The name to use for the user account.";
     fullName = mkOpt str "Jukka Alavesa" "The full name of the user.";
     email = mkOpt str "juggeli@gmail.com" "The email of the user.";
-    initialPassword =
-      mkOpt str "password"
+    initialHashedPassword =
+      mkOpt str "$y$j9T$vlxeZP0tYFe8ijF9gE40p0$zbi/GzShWgo.c292Zd.F3lVcxozCaq.iQjxjpaEcF07"
         "The initial password to use when the user is first created.";
     extraGroups = mkOpt (listOf str) [ ] "Groups for the user to be assigned.";
     extraOptions =
@@ -32,11 +32,13 @@ in
       };
     };
 
+    users.mutableUsers = false;
+    users.users.root.initialHashedPassword = cfg.initialHashedPassword;
     users.users.${cfg.name} =
       {
         isNormalUser = true;
 
-        inherit (cfg) name initialPassword;
+        inherit (cfg) name initialHashedPassword;
 
         home = "/home/${cfg.name}";
         group = "users";

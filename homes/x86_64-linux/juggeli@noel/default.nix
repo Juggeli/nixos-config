@@ -4,6 +4,7 @@ with lib.plusultra; {
     user = {
       enable = true;
       name = config.snowfallorg.user.name;
+      impermanence = enabled;
     };
 
     apps = {
