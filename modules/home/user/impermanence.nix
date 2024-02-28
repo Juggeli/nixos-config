@@ -28,7 +28,6 @@ in
         ".ssh"
         ".local/share/direnv"
         ".mozilla"
-        ".config/ArmCord"
         "src"
         "downloads"
         "documents"
