@@ -93,5 +93,10 @@ in
         }
       ];
     };
+
+    plusultra.user.impermanence.directories = mkIf config.plusultra.user.impermanence.enable [
+      ".local/share/fish"
+      ".local/share/z"
+    ];
   };
 }

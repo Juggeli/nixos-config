@@ -190,5 +190,10 @@ in
     xdg.configFile."nvim/lua/config".source = ./lua/config;
 
     xdg.configFile."nvim/snippets/nix.snippets".source = ./nix.snippets;
+
+    plusultra.user.impermanence.directories = mkIf config.plusultra.user.impermanence.enable [
+      ".local/state/nvim"
+      ".local/share/nvim"
+    ];
   };
 }
