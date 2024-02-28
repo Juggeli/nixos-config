@@ -108,6 +108,8 @@ in
                     : # The path is a symbolic link, so is probably handled by NixOS already
                   elif [ -d "$path" ]; then
                     : # The path is a directory, ignore
+                  elif [[ $path == /home/* ]]; then
+                    : # The path is in home directory, ignore
                   else
                     echo "$path"
                   fi
@@ -135,12 +137,8 @@ in
 
       fileSystems = mkIf cfg_impermanence.enable {
         "/persist" = {
-          # options = [ "subvol=persist/active" "compress=zstd" "noatime" ];
           neededForBoot = true;
         };
-        # "/persist/.snapshots" = {
-        #   options = [ "subvol=persist/snapshots" "compress=zstd" "noatime" ];
-        # };
       };
 
       programs.fuse.userAllowOther = true;
