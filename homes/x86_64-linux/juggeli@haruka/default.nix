@@ -12,6 +12,7 @@ with lib.plusultra; {
       home-manager = enabled;
       btop = enabled;
       rclone = enabled;
+      lazygit = enabled;
     };
 
     tools = {

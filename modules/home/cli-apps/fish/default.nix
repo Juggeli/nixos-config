@@ -15,7 +15,6 @@ in
       grc
       eza
       bat
-      lazygit
       fzf
       du-dust
       gum

@@ -11,6 +11,7 @@ with lib.plusultra; {
       neovim = enabled;
       btop = enabled;
       rclone = enabled;
+      lazygit = enabled;
     };
 
     tools = {

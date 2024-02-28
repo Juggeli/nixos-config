@@ -37,6 +37,7 @@ with lib.plusultra; {
       btop = enabled;
       tmux = enabled;
       yazi = enabled;
+      lazygit = enabled;
     };
 
     tools = {
