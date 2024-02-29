@@ -194,6 +194,7 @@ in
     plusultra.user.impermanence.directories = mkIf config.plusultra.user.impermanence.enable [
       ".local/state/nvim"
       ".local/share/nvim"
+      ".cache/nvim"
     ];
   };
 }

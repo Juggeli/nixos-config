@@ -176,5 +176,9 @@ in
         name = config.plusultra.user.name;
       };
     };
+    plusultra.user.impermanence.directories = mkIf config.plusultra.user.impermanence.enable [
+      ".cache/mozilla"
+      ".mozilla"
+    ];
   };
 }

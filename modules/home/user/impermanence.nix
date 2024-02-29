@@ -27,7 +27,8 @@ in
       directories = [
         ".ssh"
         ".local/share/direnv"
-        ".mozilla"
+        ".local/state/wireplumber"
+        ".config/1Password"
         "src"
         "downloads"
         "documents"

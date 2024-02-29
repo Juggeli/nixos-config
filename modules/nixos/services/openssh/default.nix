@@ -45,5 +45,9 @@ in
 
     plusultra.user.extraOptions.openssh.authorizedKeys.keys =
       cfg.authorizedKeys;
+
+    plusultra.filesystem.impermanence.directories = mkIf config.plusultra.filesystem.impermanence.enable [
+      "/etc/ssh"
+    ];
   };
 }

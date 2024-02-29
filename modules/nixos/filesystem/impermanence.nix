@@ -3,6 +3,32 @@ with lib;
 with lib.plusultra; let
   cfg_impermanence = config.plusultra.filesystem.impermanence;
   cfg_encrypt = config.plusultra.filesystem.encryption;
+  # Running this will show what changed during boot to potentially use for persisting
+  impermanence-fsdiff = pkgs.writeShellScriptBin "impermanence-fsdiff" ''
+    _mount_drive=''${1:-"$(mount | grep '.* on / type btrfs' | awk '{ print $1}')"}
+    _tmp_root=$(mktemp -d)
+    mkdir -p "$_tmp_root"
+    doas mount -o subvol=/ "$_mount_drive" "$_tmp_root" > /dev/null 2>&1
+
+    set -euo pipefail
+
+    OLD_TRANSID=$(doas btrfs subvolume find-new $_tmp_root/root-blank 9999999)
+    OLD_TRANSID=''${OLD_TRANSID#transid marker was }
+
+    doas btrfs subvolume find-new "$_tmp_root/${cfg_impermanence.root-subvol}" "$OLD_TRANSID" | sed '$d' | cut -f17- -d' ' | sort | uniq |
+    while read path; do
+      path="/$path"
+       if [ -L "$path" ]; then
+          : # The path is a symbolic link, so is probably handled by NixOS already
+        elif [ -d "$path" ]; then
+          : # The path is a directory, ignore
+        else
+          echo "$path"
+        fi
+    done
+    doas umount "$_tmp_root"
+    rm -rf "$_tmp_root"
+  '';
 in
 {
   options.plusultra.filesystem.impermanence = with types; {
@@ -87,40 +113,9 @@ in
       ];
 
       environment = mkIf cfg_impermanence.enable {
-        systemPackages =
-          let
-            # Running this will show what changed during boot to potentially use for persisting
-            impermanence-fsdiff = pkgs.writeShellScriptBin "impermanence-fsdiff" ''
-              _mount_drive=''${1:-"$(mount | grep '.* on / type btrfs' | awk '{ print $1}')"}
-              _tmp_root=$(mktemp -d)
-              mkdir -p "$_tmp_root"
-              doas mount -o subvol=/ "$_mount_drive" "$_tmp_root" > /dev/null 2>&1
-
-              set -euo pipefail
-
-              OLD_TRANSID=$(doas btrfs subvolume find-new $_tmp_root/root-blank 9999999)
-              OLD_TRANSID=''${OLD_TRANSID#transid marker was }
-
-              doas btrfs subvolume find-new "$_tmp_root/${cfg_impermanence.root-subvol}" "$OLD_TRANSID" | sed '$d' | cut -f17- -d' ' | sort | uniq |
-              while read path; do
-                path="/$path"
-                 if [ -L "$path" ]; then
-                    : # The path is a symbolic link, so is probably handled by NixOS already
-                  elif [ -d "$path" ]; then
-                    : # The path is a directory, ignore
-                  elif [[ $path == /home/* ]]; then
-                    : # The path is in home directory, ignore
-                  else
-                    echo "$path"
-                  fi
-                done
-                doas umount "$_tmp_root"
-                rm -rf "$_tmp_root"
-            '';
-          in
-          [
-            impermanence-fsdiff
-          ];
+        systemPackages = [
+          impermanence-fsdiff
+        ];
 
         persistence."/persist" = {
           hideMounts = true;
@@ -128,6 +123,7 @@ in
             "/var/lib/bluetooth"
             "/var/lib/nixos"
             "/var/lib/systemd/coredump"
+            "/var/lib/NetworkManager/"
           ] ++ cfg_impermanence.directories;
           files = [
             "/etc/machine-id"
@@ -142,11 +138,6 @@ in
       };
 
       programs.fuse.userAllowOther = true;
-
-      # plusultra.filesystem.impermanence.directories = mkIf ((config.plusultra.filesystem.impermanence.enable) && (config.networking.networkmanager.enable)) [
-      #   "/etc/NetworkManager" # NetworkManager TODO Potentially should be its own module but at least it is limited in this config
-      #   "/var/lib/NetworkManager" # NetworkManager
-      # ];
 
       services = mkIf cfg_impermanence.enable {
         btrbk = {
