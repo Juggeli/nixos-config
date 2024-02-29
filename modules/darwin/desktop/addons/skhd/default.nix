@@ -58,13 +58,14 @@ in
         lctrl + shift + cmd - 4 : yabai -m window --space 4; yabai -m space --focus 4
 
         # Focus Space
-        # shift + cmd - m : yabai -m space --focus last
-        # shift + cmd - p : yabai -m space --focus prev
-        # shift + cmd - n : yabai -m space --focus next
-        shift + cmd - 1 : yabai -m space --focus 1
-        shift + cmd - 2 : yabai -m space --focus 2
-        shift + cmd - 3 : yabai -m space --focus 3
-        shift + cmd - 4 : yabai -m space --focus 4
+        hyper - 1 : yabai -m space --focus 1
+        hyper - 2 : yabai -m space --focus 2
+        hyper - 3 : yabai -m space --focus 3
+        hyper - 4 : yabai -m space --focus 4
+        hyper - 5 : yabai -m space --focus 5
+        hyper - 6 : yabai -m space --focus 6
+        hyper - 7 : yabai -m space --focus 7
+        hyper - 8 : yabai -m space --focus 8
 
         # Insert Direction
         lctrl + shift + cmd - v : yabai -m window --insert south

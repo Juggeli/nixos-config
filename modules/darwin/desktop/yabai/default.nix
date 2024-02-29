@@ -83,6 +83,7 @@ in
         yabai -m rule --add app="GitKraken" space=git
         yabai -m rule --add app="Android Studio" space=android
         yabai -m rule --add app="XCode" space=ios
+        yabai -m rule --add app="Simulator" space=term layer=above
       '';
     };
   };

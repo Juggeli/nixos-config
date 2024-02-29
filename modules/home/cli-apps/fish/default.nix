@@ -19,7 +19,7 @@ in
       fzf
       du-dust
       gum
-      trashy
+      (mkIf pkgs.stdenv.isLinux trashy)
       dua
     ];
     programs.fish = {
