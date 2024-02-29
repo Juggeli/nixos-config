@@ -4,3 +4,5 @@ systems/.DS_Store
 .DS_Store
 
 .direnv
+
+result/
