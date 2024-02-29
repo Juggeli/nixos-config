@@ -10,7 +10,7 @@ with lib.plusultra; {
     apps = {
       wezterm = disabled;
       kitty = enabled;
-      vscode = enabled;
+      vscode = disabled;
       armcord = enabled;
       discord = {
         enable = false;
