@@ -15,6 +15,4 @@ with lib.plusultra; {
     "$HOME/.pub-cache/bin"
     "$HOME/.local/bin"
   ];
-
-  home.stateVersion = "23.11";
 }

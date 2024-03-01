@@ -1,13 +1,9 @@
 { lib, config, pkgs, ... }:
 
-let
-  inherit (lib) types mkIf mkDefault mkMerge;
-  inherit (lib.plusultra) mkOpt;
-
+with lib;
+with lib.plusultra; let
   cfg = config.plusultra.user;
-
   is-darwin = pkgs.stdenv.isDarwin;
-
   home-directory =
     if cfg.name == null then
       null

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, ... }:
 
 with lib;
 with lib.plusultra;
@@ -7,29 +7,20 @@ in
 {
   options.plusultra.system.nix = with types; {
     enable = mkBoolOpt true "Whether or not to manage nix configuration.";
-    package = mkOpt package pkgs.nixUnstable "Which nix package to use.";
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      deploy-rs
-      nixfmt
-      nix-index
-      nix-prefetch-git
-    ];
-
+    services.nix-daemon = enabled;
     nix =
       let users = [ "root" config.plusultra.user.name ];
       in
       {
-        package = cfg.package;
-
         settings = {
           experimental-features = "nix-command flakes";
           http-connections = 50;
           warn-dirty = false;
           log-lines = 50;
-          sandbox = "relaxed";
+          sandbox = false;
           auto-optimise-store = true;
           trusted-users = users;
           allowed-users = users;
@@ -39,10 +30,6 @@ in
           extra-nix-path = "nixpkgs=flake:nixpkgs";
           build-users-group = "nixbld";
         };
-        #// (lib.optionalAttrs config.plusultra.tools.direnv.enable {
-        #  keep-outputs = true;
-        #  keep-derivations = true;
-        #});
 
         gc = {
           automatic = true;

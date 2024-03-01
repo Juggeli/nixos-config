@@ -1,4 +1,5 @@
 { config, pkgs, lib, ... }:
+
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.user;
@@ -18,18 +19,15 @@ in
   };
 
   config = {
-    environment.systemPackages = with pkgs; [
-      lolcat
-    ];
-
     programs.fish.enable = true;
-    plusultra.home.configFile = {
-      "fish/functions/".source = ./fish;
-    };
 
     plusultra.home = {
+      configFile = {
+        "fish/functions/".source = ./fish;
+      };
       file = {
         "downloads/.keep".text = "";
+        "documents/.keep".text = "";
         "src/.keep".text = "";
       };
     };

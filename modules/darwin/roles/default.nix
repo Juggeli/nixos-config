@@ -9,6 +9,7 @@ in
   };
 
   config = mkIf cfg.enable {
+    programs.fish = enabled;
     plusultra = {
       desktop = {
         yabai = enabled;

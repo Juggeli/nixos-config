@@ -28,7 +28,6 @@ with lib.plusultra; {
     cli-apps = {
       fish = enabled;
       neovim = enabled;
-      home-manager = enabled;
       ffmpeg = enabled;
       imv = enabled;
       sshfs = enabled;

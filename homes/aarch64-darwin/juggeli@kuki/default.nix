@@ -6,6 +6,4 @@ with lib.plusultra; {
 
   home.sessionPath = [
   ];
-
-  home.stateVersion = "23.11";
 }

@@ -1,9 +1,7 @@
 { lib, config, ... }:
 
-let
-  inherit (lib) types mkIf;
-  inherit (lib.plusultra) mkOpt;
-
+with lib;
+with lib.plusultra; let
   cfg = config.plusultra.user;
 in
 {
@@ -22,17 +20,11 @@ in
       uid = mkIf (cfg.uid != null) cfg.uid;
     };
 
-    snowfallorg.user.${config.plusultra.user.name}.home.config = {
-      home = {
-        file = {
-          ".profile".text = ''
-            # The default file limit is far too low and throws an error when rebuilding the system.
-            # See the original with: ulimit -Sa
-            ulimit -n 4096
-          '';
-        };
-      };
-    };
+    plusultra.home.file.".profile".text = ''
+      # The default file limit is far too low and throws an error when rebuilding the system.
+      # See the original with: ulimit -Sa
+      ulimit -n 4096
+    '';
   };
 }
 
