@@ -78,15 +78,6 @@ in
       };
     };
 
-    # Run extra initialization on provisioning.
-    environment.extraInit = ''
-      # Show the ~/Library folder
-      chflags nohidden /home/ktemkin/Library
-
-      # Show the /Volumes folder
-      chflags nohidden /Volumes
-    '';
-
     plusultra.home.file.".hushlogin".text = "";
   };
 }
