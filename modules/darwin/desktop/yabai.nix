@@ -1,22 +1,16 @@
 { lib, config, ... }:
+with lib;
+with lib.plusultra;
 let
   cfg = config.plusultra.desktop.yabai;
-
-  inherit (lib) types mkEnableOption mkIf;
-  inherit (lib.plusultra) mkOpt enabled;
 in
 {
   options.plusultra.desktop.yabai = {
-    enable = mkEnableOption "Yabai";
-    enable-scripting-addition = mkOpt types.bool true "Whether to enable the scripting addition for Yabai. (Requires SIP to be disabled)";
+    enable = mkBoolOpt false "Whether to enable yabai";
+    enable-scripting-addition = mkBoolOpt true "Whether to enable the scripting addition for Yabai. (Requires SIP to be disabled)";
   };
 
   config = mkIf cfg.enable {
-    plusultra.desktop.addons = {
-      skhd = enabled;
-      spacebar = enabled;
-    };
-
     services.yabai = {
       enable = true;
       enableScriptingAddition = cfg.enable-scripting-addition;

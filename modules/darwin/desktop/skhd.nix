@@ -3,11 +3,11 @@
 with lib;
 with lib.plusultra;
 let
-  cfg = config.plusultra.desktop.addons.skhd;
+  cfg = config.plusultra.desktop.skhd;
 in
 {
-  options.plusultra.desktop.addons.skhd = {
-    enable = mkEnableOption "skhd";
+  options.plusultra.desktop.skhd = {
+    enable = mkBoolOpt false "Whether to enable skhd";
   };
 
   config = mkIf cfg.enable {

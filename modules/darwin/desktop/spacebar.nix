@@ -3,11 +3,11 @@
 with lib;
 with lib.plusultra;
 let
-  cfg = config.plusultra.desktop.addons.spacebar;
+  cfg = config.plusultra.desktop.spacebar;
 in
 {
-  options.plusultra.desktop.addons.spacebar = {
-    enable = mkEnableOption "Spacebar";
+  options.plusultra.desktop.spacebar = {
+    enable = mkBoolOpt false "Whether to enable spacebar";
   };
 
   config = mkIf cfg.enable {

@@ -1,11 +1,7 @@
 { lib, ... }:
 with lib.plusultra; {
   plusultra = {
-    suites = {
-      common = enabled;
-    };
-
-    desktop.yabai = enabled;
+    roles.darwin-common = enabled;
   };
 
   environment.systemPath = [

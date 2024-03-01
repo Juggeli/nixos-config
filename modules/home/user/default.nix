@@ -22,7 +22,7 @@ in
     name = mkOpt (types.nullOr types.str) config.snowfallorg.user.name "The user account.";
 
     fullName = mkOpt types.str "Jukka Alavesa" "The full name of the user.";
-    email = mkOpt types.str "jukka.alavesa@codemate.com" "The email of the user.";
+    email = mkOpt types.str "juggeli@gmail.com" "The email of the user.";
 
     home = mkOpt (types.nullOr types.str) home-directory "The user's home directory.";
   };

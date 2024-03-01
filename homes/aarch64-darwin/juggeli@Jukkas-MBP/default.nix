@@ -1,36 +1,12 @@
-{ lib, config, ... }:
+{ lib, ... }:
 with lib.plusultra; {
   plusultra = {
-    user = {
-      enable = true;
-      name = config.snowfallorg.user.name;
-    };
-
-    apps = {
-      wezterm = {
-        enable = false;
-        fontSize = "15";
-      };
-      kitty = {
-        enable = true;
-        fontSize = 15;
-      };
-    };
-
-    cli-apps = {
-      fish = enabled;
-      neovim = enabled;
-      home-manager = enabled;
-      btop = enabled;
-    };
-
+    roles.home-common = enabled;
     tools = {
       git = {
-        enable = true;
         userName = "jukka.alavesa";
         userEmail = "jukka.alavesa@codemate.com";
       };
-      direnv = enabled;
     };
   };
 
@@ -40,5 +16,5 @@ with lib.plusultra; {
     "$HOME/.local/bin"
   ];
 
-  home.stateVersion = "23.05";
+  home.stateVersion = "23.11";
 }
