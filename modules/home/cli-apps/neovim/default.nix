@@ -12,6 +12,7 @@ in
   config = mkIf cfg.enable {
     programs.neovim = {
       enable = true;
+      defaultEditor = true;
       extraPackages = with pkgs; [
         # LazyVim
         lua-language-server
