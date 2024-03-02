@@ -5,4 +5,5 @@ in
 {
   "borg-passkey.age".publicKeys = [ user system ];
   "smb.age".publicKeys = [ user system ];
+  "tailscale.age".publicKeys = [ user system ];
 }

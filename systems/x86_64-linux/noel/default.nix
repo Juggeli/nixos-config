@@ -33,6 +33,15 @@ with lib.plusultra; {
       logitech = enabled;
       liquidctl = enabled;
     };
+    services = {
+      tailscale = {
+        enable = true;
+        autoconnect = {
+          enable = true;
+          key = config.age.secrets.tailscale.path;
+        };
+      };
+    };
     # services.syncthing = {
     #   enable = true;
     #   dataDir = "/home/juggeli";
