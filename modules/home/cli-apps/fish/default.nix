@@ -20,6 +20,7 @@ in
       gum
       (mkIf pkgs.stdenv.isLinux trashy)
       dua
+      neofetch
     ];
     programs.fish = {
       enable = true;
