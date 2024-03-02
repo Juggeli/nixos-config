@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
     snowfall-lib = {
       url = "github:snowfallorg/lib";
@@ -75,6 +76,7 @@
       };
 
       systems.modules.nixos = with inputs; [
+        chaotic.nixosModules.default
         home-manager.nixosModules.home-manager
         agenix.nixosModules.default
         disko.nixosModules.disko
