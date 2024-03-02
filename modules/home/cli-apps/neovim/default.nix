@@ -82,6 +82,8 @@ in
             nvim-dap-virtual-text
             nvim-dap-python
             neotest
+            copilot-lua
+            copilot-cmp
             {
               name = "LuaSnip";
               path = luasnip;
@@ -141,6 +143,7 @@ in
               { import = "lazyvim.plugins.extras.dap.core" },
               { import = "lazyvim.plugins.extras.ui.mini-animate" },
               { import = "lazyvim.plugins.extras.lang.python" },
+              { import = "lazyvim.plugins.extras.coding.copilot" },
               -- The following configs are needed for fixing lazyvim on nix
               -- force enable telescope-fzf-native.nvim
               { "nvim-telescope/telescope-fzf-native.nvim", enabled = true },
