@@ -10,6 +10,7 @@ with lib.plusultra; {
   plusultra = {
     feature = {
       boot = enabled;
+      graphical = enabled;
     };
     filesystem = {
       btrfs = enabled;
