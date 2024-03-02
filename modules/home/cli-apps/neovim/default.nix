@@ -192,13 +192,17 @@ in
     # Normal LazyVim config here, see https://github.com/LazyVim/starter/tree/main/lua
     xdg.configFile."nvim/lua/plugins/custom.lua".source = ./lua/plugins/custom.lua;
     xdg.configFile."nvim/lua/config".source = ./lua/config;
-
     xdg.configFile."nvim/snippets/nix.snippets".source = ./nix.snippets;
 
-    plusultra.user.impermanence.directories = mkIf config.plusultra.user.impermanence.enable [
-      ".local/state/nvim"
-      ".local/share/nvim"
-      ".cache/nvim"
-    ];
+    plusultra.user.impermanence = mkIf config.plusultra.user.impermanence.enable {
+      directories = [
+        ".local/state/nvim"
+        ".local/share/nvim"
+        ".cache/nvim"
+      ];
+      files = [
+        ".config/nvim/lazyvim.json"
+      ];
+    };
   };
 }
