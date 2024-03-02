@@ -156,6 +156,7 @@ in
         exec-once = [
           "${pkgs.waybar}/bin/waybar"
           "${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout"
+          (mkIf config.programs._1password-gui.enable "1password --silent")
         ];
         debug = {
           "overlay" = "false";
