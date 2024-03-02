@@ -43,7 +43,12 @@ in
             preserve_hour_of_day = "0";
             snapshot_preserve = "48h 10d 4w 12m 10y";
             snapshot_preserve_min = "2d";
-            volume."/home" = {
+            volume."/persist-home" = {
+              snapshot_create = "always";
+              subvolume = ".";
+              snapshot_dir = ".snapshots";
+            };
+            volume."/persist" = {
               snapshot_create = "always";
               subvolume = ".";
               snapshot_dir = ".snapshots";
