@@ -6,4 +6,6 @@ in
   "borg-passkey.age".publicKeys = [ user system ];
   "smb.age".publicKeys = [ user system ];
   "tailscale.age".publicKeys = [ user system ];
+  "syncthing-key.age".publicKeys = [ user system ];
+  "syncthing-cert.age".publicKeys = [ user system ];
 }

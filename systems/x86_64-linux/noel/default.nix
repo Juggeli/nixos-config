@@ -11,6 +11,7 @@ with lib.plusultra; {
     feature = {
       boot = enabled;
       graphical = enabled;
+      syncthing = enabled;
     };
     filesystem = {
       btrfs = enabled;
@@ -43,10 +44,6 @@ with lib.plusultra; {
         };
       };
     };
-    # services.syncthing = {
-    #   enable = true;
-    #   dataDir = "/home/juggeli";
-    # };
   };
 
   # services.borgbackup.jobs.homeRemote = mkBorgBackup {

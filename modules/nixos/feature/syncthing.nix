@@ -1,21 +1,29 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.services.syncthing;
+  cfg = config.plusultra.feature.syncthing;
+  syncthing-browser = pkgs.writeShellScriptBin "syncthing-browser" ''
+    xdg-open http://${config.services.syncthing.guiAddress}
+  '';
 in
 {
-  options.plusultra.services.syncthing = with types; {
+  options.plusultra.feature.syncthing = with types; {
     enable = mkBoolOpt false "Whether or not to enable syncthing service.";
-    dataDir = mkOpt str "/mnt/appdata/syncthing" "Syncthing data dir";
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [
+      syncthing-browser
+    ];
+
     services = {
       syncthing = {
         enable = true;
-        user = "juggeli";
-        dataDir = cfg.dataDir;
-        configDir = "${cfg.dataDir}/.config/syncthing";
+        user = config.plusultra.user.name;
+        configDir = "/var/lib/syncthing";
+        dataDir = "/home/${config.plusultra.user.name}";
+        key = config.age.secrets.syncthing-key.path;
+        cert = config.age.secrets.syncthing-cert.path;
         guiAddress = "0.0.0.0:8384";
         overrideDevices = true;
         overrideFolders = true;
@@ -27,17 +35,21 @@ in
           };
           folders = {
             "documents" = {
-              path = "${cfg.dataDir}/documents";
+              path = "${config.services.syncthing.dataDir}/documents";
               devices = [ "air" "haruka" "noel" ];
             };
             "downloads" = {
-              path = "${cfg.dataDir}/downloads";
+              path = "${config.services.syncthing.dataDir}/downloads";
               devices = [ "air" "haruka" "noel" ];
             };
           };
         };
       };
     };
+
+    plusultra.filesystem.impermanence.directories = mkIf config.plusultra.filesystem.impermanence.enable [
+      "/var/lib/syncthing"
+    ];
 
     # Syncthing ports
     networking.firewall.allowedTCPPorts = [ 8384 22000 ];
