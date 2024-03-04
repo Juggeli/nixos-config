@@ -63,7 +63,6 @@ return {
 			require("luasnip.loaders.from_snipmate").lazy_load()
 		end,
 	},
-	{ "echasnovski/mini.pairs", enabled = false },
 	{ "cohama/lexima.vim", event = "VeryLazy" },
 	{
 		"nvim-telescope/telescope.nvim",
@@ -79,16 +78,22 @@ return {
 		opts = {
 			custom_highlights = function(colors)
 				return {
+					-- Set a bit brigher color for window separator
 					WinSeparator = { fg = colors.surface1 },
 				}
 			end,
 		},
 	},
-	{ "linux-cultist/venv-selector.nvim", enabled = false },
 	{
 		"hrsh7th/nvim-cmp",
 		opts = function(_, opts)
 			local cmp = require("cmp")
+			opts.window = {
+				documentation = cmp.config.window.bordered(),
+				completion = cmp.config.window.bordered({
+					winhighlight = "Normal:CmpPmenu,CursorLine:PmenuSel,Search:None",
+				}),
+			}
 			opts.mapping["<CR>"] = nil
 			opts.mapping = vim.tbl_deep_extend("force", opts.mapping, {
 				["<C-y>"] = cmp.mapping.confirm({ select = true }),

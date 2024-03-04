@@ -22,7 +22,12 @@ in
         # nix
         nil
         nixpkgs-fmt
+
+        # For spectre search and replace
         (pkgs.writeShellScriptBin "gsed" "exec -a $0 ${gnused}/bin/sed $@")
+
+        # Copilot
+        nodejs_21
       ];
 
       plugins = with pkgs.vimPlugins; [
@@ -190,7 +195,7 @@ in
       "${parsers}/parser";
 
     # Normal LazyVim config here, see https://github.com/LazyVim/starter/tree/main/lua
-    xdg.configFile."nvim/lua/plugins/custom.lua".source = ./lua/plugins/custom.lua;
+    xdg.configFile."nvim/lua/plugins".source = ./lua/plugins;
     xdg.configFile."nvim/lua/config".source = ./lua/config;
     xdg.configFile."nvim/snippets/nix.snippets".source = ./nix.snippets;
 
