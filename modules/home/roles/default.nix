@@ -25,6 +25,7 @@ in
         fish = enabled;
         neovim = enabled;
         btop = enabled;
+        lazygit = enabled;
       };
       tools = {
         git = enabled;
