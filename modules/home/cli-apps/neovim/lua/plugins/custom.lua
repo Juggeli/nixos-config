@@ -30,15 +30,6 @@ return {
 		},
 	},
 	{
-		"akinsho/flutter-tools.nvim",
-		lazy = false,
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"stevearc/dressing.nvim", -- optional for vim.ui.select
-		},
-		config = true,
-	},
-	{
 		"nvim-neo-tree/neo-tree.nvim",
 		opts = {
 			close_if_last_window = true,
