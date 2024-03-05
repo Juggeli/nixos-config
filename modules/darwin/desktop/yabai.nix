@@ -18,8 +18,7 @@ in
       config = {
         layout = "bsp";
 
-        auto_balance = "on";
-
+        auto_balance = "off";
         debug_output = "on";
 
         top_padding = 0;
@@ -61,6 +60,7 @@ in
         yabai -m rule --add app="System Information" manage=off
         yabai -m rule --add app="Raycast" manage=off
         yabai -m rule --add app="1Password" manage=off
+        yabai -m rule --add app="^Digital Colou?r Meter$" sticky=on
 
         # Spaces
         yabai -m space 1 --label slack
@@ -77,7 +77,6 @@ in
         yabai -m rule --add app="GitKraken" space=git
         yabai -m rule --add app="Android Studio" space=android
         yabai -m rule --add app="XCode" space=ios
-        yabai -m rule --add app="Simulator" space=term layer=above
       '';
     };
   };

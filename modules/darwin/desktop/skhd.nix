@@ -48,6 +48,9 @@ in
 
         lctrl + cmd - e : yabai -m space --balance
 
+        # Fix balance between kitty and ios simulator
+        alt + cmd - f : yabai -m window --resize right:411:0
+
         # Move Window To Space
         lctrl + shift + cmd - m : yabai -m window --space last; yabai -m space --focus last
         lctrl + shift + cmd - p : yabai -m window --space prev; yabai -m space --focus prev
