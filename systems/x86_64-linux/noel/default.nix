@@ -10,7 +10,7 @@ with lib.plusultra; {
   plusultra = {
     feature = {
       boot = enabled;
-      graphical = enabled;
+      graphical = disabled;
       syncthing = enabled;
       borgmatic = {
         enable = true;
