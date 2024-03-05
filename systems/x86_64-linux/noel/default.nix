@@ -73,9 +73,9 @@ with lib.plusultra; {
       [ "${automount_opts},credentials=${config.age.secrets.smb.path},uid=1000,gid=100" ];
   };
 
-  # systemd.extraConfig = ''
-  #   DefaultTimeoutStopSec=10s
-  # '';
+  systemd.extraConfig = ''
+    DefaultTimeoutStopSec=10s
+  '';
 
   # For via and ledger app
   services.udev.extraRules = ''
