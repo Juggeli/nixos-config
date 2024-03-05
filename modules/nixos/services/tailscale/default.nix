@@ -29,7 +29,7 @@ in
       authKeyFile = cfg.autoconnect.key;
     };
 
-    plusultra.filesystem.impermanence.directories = mkIf config.plusultra.filesystem.impermanence.enable [
+    plusultra.filesystem.impermanence.directories = [
       "/var/lib/tailscale"
     ];
 

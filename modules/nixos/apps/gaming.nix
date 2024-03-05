@@ -13,5 +13,13 @@ in
       heroic
     ];
     programs.steam.enable = true;
+
+    environment.persistence."/persist-home" = {
+      users."${config.plusultra.user.name}".directories = [
+        ".local/share/Steam"
+        ".steam"
+        ".config/heroic"
+      ];
+    };
   };
 }

@@ -95,7 +95,7 @@ in
       ];
     };
 
-    plusultra.user.impermanence.directories = mkIf config.plusultra.user.impermanence.enable [
+    plusultra.user.impermanence.directories = [
       ".local/share/fish"
       ".local/share/z"
     ];

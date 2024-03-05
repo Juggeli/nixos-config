@@ -32,7 +32,7 @@ in
         "src"
         "downloads"
         "documents"
-        "Games"
+        "games"
         "Hydrus"
         "My Games"
         "obsidian"

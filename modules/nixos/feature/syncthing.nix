@@ -47,7 +47,7 @@ in
       };
     };
 
-    plusultra.filesystem.impermanence.directories = mkIf config.plusultra.filesystem.impermanence.enable [
+    plusultra.filesystem.impermanence.directories = [
       "/var/lib/syncthing"
     ];
 

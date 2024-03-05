@@ -13,7 +13,7 @@ in
       armcord
     ];
 
-    plusultra.user.impermanence.directories = mkIf config.plusultra.user.impermanence.enable [
+    plusultra.user.impermanence.directories = [
       ".config/ArmCord"
     ];
   };

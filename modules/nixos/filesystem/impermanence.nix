@@ -135,6 +135,12 @@ in
         "/persist" = {
           neededForBoot = true;
         };
+        "/persist-home" = {
+          neededForBoot = true;
+        };
+        "/etc/ssh" = {
+          neededForBoot = true;
+        };
       };
 
       programs.fuse.userAllowOther = true;

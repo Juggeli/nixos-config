@@ -12,7 +12,7 @@ in
     home.packages = with pkgs; [
       lazygit
     ];
-    plusultra.user.impermanence.files = mkIf config.plusultra.user.impermanence.enable [
+    plusultra.user.impermanence.files = [
       ".config/lazygit/state.yml"
     ];
   };
