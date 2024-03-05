@@ -16,7 +16,7 @@ in
       description = "set pump speed and color";
       script = ''
         ${pkgs.liquidctl}/bin/liquidctl initialize all
-        ${pkgs.liquidctl}/bin/liquidctl --match kraken set pump speed 70
+        ${pkgs.liquidctl}/bin/liquidctl --match kraken set pump speed 50
         ${pkgs.liquidctl}/bin/liquidctl --match kraken set ring color spectrum-wave
       '';
       wantedBy = [ "multi-user.target" ];
