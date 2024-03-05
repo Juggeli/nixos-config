@@ -12,6 +12,13 @@ with lib.plusultra; {
       boot = enabled;
       graphical = enabled;
       syncthing = enabled;
+      borgmatic = {
+        enable = true;
+        directories = [
+          "/persist/"
+          "/persist-home/"
+        ];
+      };
     };
     filesystem = {
       btrfs = enabled;

@@ -8,4 +8,6 @@ in
   "tailscale.age".publicKeys = [ user system ];
   "syncthing-key.age".publicKeys = [ user system ];
   "syncthing-cert.age".publicKeys = [ user system ];
+  "borg-healthcheck.age".publicKeys = [ user system ];
+  "storagebox-url.age".publicKeys = [ user system ];
 }
