@@ -11,6 +11,15 @@ in
   };
 
   config = mkIf cfg.enable {
+    homebrew = {
+      enable = true;
+      brews = [
+        "lutzifer/homebrew-tap/keyboardSwitcher"
+      ];
+      taps = [
+        "lutzifer/tap"
+      ];
+    };
     services.skhd = {
       enable = true;
 
@@ -49,7 +58,7 @@ in
         lctrl + cmd - e : yabai -m space --balance
 
         # Fix balance between kitty and ios simulator
-        alt + cmd - f : yabai -m window --resize right:411:0
+        cmd + shift - f : yabai -m window --resize right:411:0
 
         # Move Window To Space
         lctrl + shift + cmd - m : yabai -m window --space last; yabai -m space --focus last

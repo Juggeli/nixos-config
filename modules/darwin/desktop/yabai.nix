@@ -77,6 +77,12 @@ in
         yabai -m rule --add app="GitKraken" space=git
         yabai -m rule --add app="Android Studio" space=android
         yabai -m rule --add app="XCode" space=ios
+
+        yabai -m signal --add event=window_focused action="keyboardSwitcher select 'U.S.'" app="kitty"
+        yabai -m signal --add event=window_focused action="keyboardSwitcher select 'U.S.'" app="XCode"
+        yabai -m signal --add event=window_focused action="keyboardSwitcher select 'U.S.'" app="Android Studio"
+        yabai -m signal --add event=window_focused action="keyboardSwitcher select 'Finnish'" app="Slack"
+        yabai -m signal --add event=window_focused action="keyboardSwitcher select 'Finnish'" app="Firefox"
       '';
     };
   };
