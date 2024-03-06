@@ -27,7 +27,7 @@ in
             ApplePressAndHoldEnabled = false;
 
             KeyRepeat = 2;
-            InitialKeyRepeat = 10;
+            InitialKeyRepeat = 15;
 
             NSAutomaticCapitalizationEnabled = false;
             NSAutomaticDashSubstitutionEnabled = false;
