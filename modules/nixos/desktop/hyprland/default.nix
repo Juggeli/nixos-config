@@ -151,7 +151,7 @@ in
         ];
         windowrule = [
           "float,^(mpv)$"
-          "nomaximizerequest,^(mpv)$"
+          "suppressevent maximize,^(mpv)$"
         ];
         exec-once = [
           "${pkgs.waybar}/bin/waybar"
