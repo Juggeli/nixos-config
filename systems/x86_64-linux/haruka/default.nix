@@ -29,6 +29,7 @@ with lib.plusultra; {
       homepage = enabled;
       radarr = enabled;
       syncthing = enabled;
+      cockpit = enabled;
       changedetection = enabled;
 
       samba = {
