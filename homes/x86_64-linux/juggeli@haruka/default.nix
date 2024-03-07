@@ -9,7 +9,6 @@ with lib.plusultra; {
     cli-apps = {
       fish = enabled;
       neovim = enabled;
-      home-manager = enabled;
       btop = enabled;
       rclone = enabled;
       lazygit = enabled;
