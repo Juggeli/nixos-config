@@ -12,8 +12,7 @@ in
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-
+    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
     initrd = {
       availableKernelModules = [
         "ahci"
@@ -46,7 +45,10 @@ in
     kernelParams = [
       "mitigations=off"
     ];
+    supportedFilesystems = [ "zfs" ];
+    zfs.forceImportRoot = false;
   };
+  networking.hostId = "37bf5335";
 
   fileSystems = {
     "/" = {
