@@ -21,6 +21,7 @@ in
       (mkIf pkgs.stdenv.isLinux trashy)
       dua
       neofetch
+      screen
     ];
     programs.fish = {
       enable = true;
