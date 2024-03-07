@@ -24,6 +24,7 @@ in
       tldr
       pciutils
       grc
+      smartmontools
     ];
   };
 }
