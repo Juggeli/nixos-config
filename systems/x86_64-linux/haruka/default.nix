@@ -22,7 +22,7 @@ with lib.plusultra; {
       prowlarr = enabled;
       plex = enabled;
       jellyfin = enabled;
-      prometheus = enabled;
+      prometheus = disabled;
       qbittorrent = disabled;
       qbit-manage = disabled;
       sonarr = enabled;
