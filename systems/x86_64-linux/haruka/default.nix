@@ -59,7 +59,7 @@ with lib.plusultra; {
   };
 
   networking = {
-    interfaces.enp3s0.ipv4.addresses = [
+    interfaces.enp4s0.ipv4.addresses = [
       {
         address = "10.11.11.2";
         prefixLength = 24;
@@ -70,11 +70,11 @@ with lib.plusultra; {
     nat = {
       enable = true;
       internalInterfaces = [ "ve-+" ];
-      externalInterface = "enp3s0";
+      externalInterface = "enp4s0";
     };
   };
 
-  boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp3s0:off" ];
+  boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp4s0:off" ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
