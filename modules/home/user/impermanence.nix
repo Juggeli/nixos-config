@@ -35,7 +35,6 @@ in
         "games"
         "Hydrus"
         "My Games"
-        "obsidian"
       ] ++ cfg.directories;
       files = cfg.files;
     };

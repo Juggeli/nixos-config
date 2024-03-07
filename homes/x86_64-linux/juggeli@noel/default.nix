@@ -21,7 +21,6 @@ with lib.plusultra; {
       mpv = enabled;
       via = enabled;
       pdf = enabled;
-      obsidian = enabled;
       crypto = enabled;
       hydrus = enabled;
     };
