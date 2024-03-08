@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, ... }:
+{ config, lib, modulesPath, inputs, ... }:
 
 let
   inherit (inputs) nixos-hardware;
@@ -12,7 +12,6 @@ in
   ];
 
   boot = {
-    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
     initrd = {
       availableKernelModules = [
         "ahci"
@@ -45,9 +44,9 @@ in
     kernelParams = [
       "mitigations=off"
     ];
-    supportedFilesystems = [ "zfs" ];
-    zfs.forceImportRoot = false;
   };
+
+  # Generate with: head -c4 /dev/urandom | od -A none -t x4
   networking.hostId = "37bf5335";
 
   fileSystems = {

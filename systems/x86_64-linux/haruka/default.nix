@@ -17,6 +17,8 @@ with lib.plusultra; {
       };
     };
 
+    filesystem.zfs = enabled;
+
     suites = {
       common-slim = enabled;
     };

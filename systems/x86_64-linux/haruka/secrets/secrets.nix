@@ -10,5 +10,6 @@ in
   "syncthing-cert.age".publicKeys = [ user user2 system ];
   "borg-healthcheck.age".publicKeys = [ user user2 system ];
   "storagebox-url.age".publicKeys = [ user user2 system ];
+  "ntfy-topic.age".publicKeys = [ user user2 system ];
 }
 

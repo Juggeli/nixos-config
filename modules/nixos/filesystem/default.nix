@@ -6,5 +6,6 @@
     ./encryption.nix
     ./impermanence.nix
     ./tmpfs.nix
+    ./zfs.nix
   ];
 }
