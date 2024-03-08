@@ -24,15 +24,6 @@ in
       ];
     };
 
-    # fileSystems = {
-    #   "/".options = [ "subvol=root" "compress=zstd" "noatime" ];
-    #   "/home".options = [ "subvol=home/active" "compress=zstd" "noatime" ];
-    #   "/home/.snapshots".options = [ "subvol=home/snapshots" "compress=zstd" "noatime" ];
-    #   "/nix".options = [ "subvol=nix" "compress=zstd" "noatime" ];
-    #   "/var/log".options = [ "subvol=var_log" "compress=zstd" "noatime" ];
-    #   "/var/log".neededForBoot = true;
-    # };
-
     services = {
       btrbk = {
         instances."btrbak" = {
