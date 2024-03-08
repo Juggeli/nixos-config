@@ -40,6 +40,7 @@ with lib.plusultra; {
       radarr = enabled;
       cockpit = enabled;
       changedetection = enabled;
+      trilium = enabled;
 
       samba = {
         enable = true;
