@@ -36,7 +36,6 @@ with lib.plusultra; {
       jellyfin = enabled;
       prometheus = disabled;
       qbittorrent = disabled;
-      qbit-manage = disabled;
       sonarr = enabled;
       homepage = enabled;
       radarr = enabled;
