@@ -44,6 +44,7 @@ with lib.plusultra; {
       changedetection = enabled;
       trilium = enabled;
       nfs = enabled;
+      grist = enabled;
 
       samba = {
         enable = true;
