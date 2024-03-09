@@ -15,8 +15,8 @@ in
       ports = [ "8989:8989" ];
       volumes = [
         "/mnt/appdata/sonarr/:/config"
-        "/mnt/pool/downloads/:/mnt/pool/downloads/"
-        "/mnt/pool/media/:/mnt/pool/media/"
+        "/tank/downloads/:/mnt/pool/downloads/"
+        "/tank/media/:/mnt/pool/media/"
       ];
       environment = {
         PUID = "1000";
@@ -30,8 +30,8 @@ in
       ports = [ "8999:8989" ];
       volumes = [
         "/mnt/appdata/sonarr-anime/:/config"
-        "/mnt/pool/downloads/:/mnt/pool/downloads/"
-        "/mnt/pool/media/:/mnt/pool/media/"
+        "/tank/downloads/:/mnt/pool/downloads/"
+        "/tank/media/:/mnt/pool/media/"
       ];
       environment = {
         PUID = "1000";

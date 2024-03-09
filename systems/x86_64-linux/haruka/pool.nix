@@ -188,12 +188,12 @@ in
       Type = "oneshot";
     };
     script = ''
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Private/ /mnt/pool/downloads/random/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Public/ /mnt/pool/downloads/random/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr/ /mnt/pool/downloads/radarr/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr-anime/ /mnt/pool/downloads/radarr-anime/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr/ /mnt/pool/downloads/sonarr/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr-anime/ /mnt/pool/downloads/sonarr-anime/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Private/ /tank/downloads/random/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Public/ /tank/downloads/random/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr/ /tank/downloads/radarr/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr-anime/ /tank/downloads/radarr-anime/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr/ /tank/downloads/sonarr/
+      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr-anime/ /tank/downloads/sonarr-anime/
     '';
   };
   systemd.timers.downloaderBrr = {

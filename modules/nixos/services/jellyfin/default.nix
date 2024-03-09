@@ -19,7 +19,7 @@ in
       ];
       volumes = [
         "/mnt/appdata/jellyfin/:/config"
-        "/mnt/pool/media/:/media"
+        "/tank/media/:/media"
         "/mnt/pool/transcode/:/transcode"
       ];
     };

@@ -15,8 +15,8 @@ in
       ports = [ "7878:7878" ];
       volumes = [
         "/mnt/appdata/radarr/:/config"
-        "/mnt/pool/downloads/:/mnt/pool/downloads/"
-        "/mnt/pool/media/:/mnt/pool/media/"
+        "/tank/downloads/:/mnt/pool/downloads/"
+        "/tank/media/:/mnt/pool/media/"
       ];
       environment = {
         PUID = "1000";
@@ -30,8 +30,8 @@ in
       ports = [ "7879:7878" ];
       volumes = [
         "/mnt/appdata/radarr-anime/:/config"
-        "/mnt/pool/downloads/:/mnt/pool/downloads/"
-        "/mnt/pool/media/:/mnt/pool/media/"
+        "/tank/downloads/:/mnt/pool/downloads/"
+        "/tank/media/:/mnt/pool/media/"
       ];
       environment = {
         PUID = "1000";
