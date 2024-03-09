@@ -43,6 +43,7 @@ with lib.plusultra; {
       cockpit = enabled;
       changedetection = enabled;
       trilium = enabled;
+      nfs = enabled;
 
       samba = {
         enable = true;
