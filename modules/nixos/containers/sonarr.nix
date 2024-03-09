@@ -1,20 +1,20 @@
 { config, lib, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.services.radarr;
+  cfg = config.plusultra.containers.sonarr;
 in
 {
-  options.plusultra.services.radarr = with types; {
-    enable = mkBoolOpt false "Whether or not to enable radarr service.";
+  options.plusultra.containers.sonarr = with types; {
+    enable = mkBoolOpt false "Whether or not to enable sonarr service.";
   };
 
   config = mkIf cfg.enable {
-    virtualisation.oci-containers.containers.radarr = {
-      image = "ghcr.io/hotio/radarr";
+    virtualisation.oci-containers.containers.sonarr = {
+      image = "ghcr.io/hotio/sonarr";
       autoStart = true;
-      ports = [ "7878:7878" ];
+      ports = [ "8989:8989" ];
       volumes = [
-        "/mnt/appdata/radarr/:/config"
+        "/mnt/appdata/sonarr/:/config"
         "/tank/downloads/:/mnt/pool/downloads/"
         "/tank/media/:/mnt/pool/media/"
       ];
@@ -24,12 +24,12 @@ in
       };
     };
 
-    virtualisation.oci-containers.containers.radarr-anime = {
-      image = "ghcr.io/hotio/radarr";
+    virtualisation.oci-containers.containers.sonarr-anime = {
+      image = "ghcr.io/hotio/sonarr";
       autoStart = true;
-      ports = [ "7879:7878" ];
+      ports = [ "8999:8989" ];
       volumes = [
-        "/mnt/appdata/radarr-anime/:/config"
+        "/mnt/appdata/sonarr-anime/:/config"
         "/tank/downloads/:/mnt/pool/downloads/"
         "/tank/media/:/mnt/pool/media/"
       ];

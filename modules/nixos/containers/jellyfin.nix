@@ -1,10 +1,10 @@
 { config, lib, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.services.jellyfin;
+  cfg = config.plusultra.containers.jellyfin;
 in
 {
-  options.plusultra.services.jellyfin = with types; {
+  options.plusultra.containers.jellyfin = with types; {
     enable = mkBoolOpt false "Whether or not to jellyfin service.";
   };
 

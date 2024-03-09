@@ -14,8 +14,11 @@ with lib.plusultra; {
     };
     system.boot = lib.mkForce disabled;
 
-    services = {
+    containers = {
       qbittorrent = enabled;
+    };
+
+    services = {
       tailscale.port = 50288;
     };
 

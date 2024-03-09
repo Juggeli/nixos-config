@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.services.qbittorrent;
+  cfg = config.plusultra.containers.qbittorrent;
 in
 {
-  options.plusultra.services.qbittorrent = with types; {
+  options.plusultra.containers.qbittorrent = with types; {
     enable = mkBoolOpt false "Whether or not to enable qbittorrent service.";
   };
 

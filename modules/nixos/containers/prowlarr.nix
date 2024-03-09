@@ -1,10 +1,10 @@
 { config, lib, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.services.prowlarr;
+  cfg = config.plusultra.containers.prowlarr;
 in
 {
-  options.plusultra.services.prowlarr = with types; {
+  options.plusultra.containers.prowlarr = with types; {
     enable = mkBoolOpt false "Whether or not to prowlarr service.";
   };
 

@@ -1,10 +1,10 @@
 { config, lib, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.services.plex;
+  cfg = config.plusultra.containers.plex;
 in
 {
-  options.plusultra.services.plex = with types; {
+  options.plusultra.containers.plex = with types; {
     enable = mkBoolOpt false "Whether or not to enable plex service.";
   };
 

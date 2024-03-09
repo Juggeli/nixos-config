@@ -1,10 +1,10 @@
 { config, lib, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.services.changedetection;
+  cfg = config.plusultra.containers.changedetection;
 in
 {
-  options.plusultra.services.changedetection = with types; {
+  options.plusultra.containers.changedetection = with types; {
     enable = mkBoolOpt false "Whether or not to enable changedetection service.";
   };
 

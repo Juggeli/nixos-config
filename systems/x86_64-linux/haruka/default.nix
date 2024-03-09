@@ -28,22 +28,25 @@ with lib.plusultra; {
     };
     tools.agenix = enabled;
 
-    services = {
-      cloudflared = enabled;
-      grafana = disabled;
+    containers = {
       prowlarr = enabled;
       plex = enabled;
       jellyfin = enabled;
-      prometheus = disabled;
       qbittorrent = disabled;
       sonarr = enabled;
       homepage = enabled;
       radarr = enabled;
-      cockpit = enabled;
       changedetection = enabled;
       trilium = enabled;
-      nfs = enabled;
       grist = enabled;
+    };
+
+    services = {
+      cockpit = enabled;
+      cloudflared = enabled;
+      grafana = disabled;
+      prometheus = disabled;
+      nfs = enabled;
 
       samba = {
         enable = true;
