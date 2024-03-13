@@ -12,5 +12,6 @@ in
   "storagebox-url.age".publicKeys = [ user user2 system ];
   "ntfy-topic.age".publicKeys = [ user user2 system ];
   "zfs.age".publicKeys = [ user user2 system ];
+  "cloudflare-dns.age".publicKeys = [ user user2 system ];
 }
 
