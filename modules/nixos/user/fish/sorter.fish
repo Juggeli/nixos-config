@@ -1,6 +1,6 @@
 function sorter
     # Define base directory
-    set -g base_dir /mnt/pool/downloads/random/
+    set -g base_dir /mnt/downloads/random/
 
     # Define destination directories
     set -g jav_dir /mnt/pool/sorted/jav/unsorted/
@@ -67,6 +67,8 @@ function sorter
     for video_ext in $video_exts
         set video_files $video_files (find "$base_dir" -type f -iname "*$video_ext")
     end
+
+    set video_files (shuf -e $video_files)
 
     for video_file in $video_files
         if not process_file $video_file
