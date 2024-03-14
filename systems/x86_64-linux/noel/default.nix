@@ -62,6 +62,11 @@ with lib.plusultra; {
   #   ];
   # };
 
+  fileSystems."/mnt/downloads" = {
+    device = "100.125.162.103:/tank/downloads";
+    fsType = "nfs";
+  };
+
   fileSystems."/mnt/pool" = {
     device = "//10.11.11.2/pool";
     fsType = "cifs";
