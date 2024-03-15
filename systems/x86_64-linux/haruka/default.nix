@@ -1,6 +1,10 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; {
+with lib.plusultra; let
+  ip = "10.11.11.2";
+  gateway = "10.11.11.1";
+in
+{
   imports = [
     ./hardware.nix
     ./pool.nix
@@ -77,20 +81,15 @@ with lib.plusultra; {
   networking = {
     interfaces.enp4s0.ipv4.addresses = [
       {
-        address = "10.11.11.2";
+        address = ip;
         prefixLength = 24;
       }
     ];
-    defaultGateway = "10.11.11.1";
-    nameservers = [ "10.11.11.1" ];
-    nat = {
-      enable = true;
-      internalInterfaces = [ "ve-+" ];
-      externalInterface = "enp4s0";
-    };
+    defaultGateway = gateway;
+    nameservers = [ gateway ];
   };
 
-  boot.kernelParams = [ "ip=10.11.11.2::10.11.11.1:255.255.255.0:haruka:enp4s0:off" ];
+  boot.kernelParams = [ "ip=${ip}::${gateway}:255.255.255.0:haruka:enp4s0:off" ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
