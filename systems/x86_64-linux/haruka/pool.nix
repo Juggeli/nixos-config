@@ -90,96 +90,96 @@ in
         [ "defaults" "compress-force=zstd" "nofail" "autodefrag" ];
     };
 
-    "/mnt/disks/parity" = {
-      device = "/dev/mapper/parity";
-      fsType = "xfs";
-    };
+    # "/mnt/disks/parity" = {
+    #   device = "/dev/mapper/parity";
+    #   fsType = "xfs";
+    # };
 
-    "/mnt/disks/slowpool" = {
-      device = "/mnt/disks/disk1:/mnt/disks/disk2";
-      fsType = "fuse.mergerfs";
-      options = [
-        "defaults"
-        "allow_other"
-        "use_ino"
-        "cache.files=partial"
-        "dropcacheonclose=true"
-        "category.create=epff"
-        "moveonenospc=true"
-      ];
-    };
-
-    "/mnt/pool" = {
-      device = "/mnt/disks/cache:/mnt/disks/disk1:/mnt/disks/disk2";
-      fsType = "fuse.mergerfs";
-      options = [
-        "defaults"
-        "allow_other"
-        "use_ino"
-        "cache.files=partial"
-        "dropcacheonclose=true"
-        "category.create=ff"
-        "moveonenospc=true"
-      ];
-    };
+    #   "/mnt/disks/slowpool" = {
+    #     device = "/mnt/disks/disk1:/mnt/disks/disk2";
+    #     fsType = "fuse.mergerfs";
+    #     options = [
+    #       "defaults"
+    #       "allow_other"
+    #       "use_ino"
+    #       "cache.files=partial"
+    #       "dropcacheonclose=true"
+    #       "category.create=epff"
+    #       "moveonenospc=true"
+    #     ];
+    #   };
+    #
+    #   "/mnt/pool" = {
+    #     device = "/mnt/disks/cache:/mnt/disks/disk1:/mnt/disks/disk2";
+    #     fsType = "fuse.mergerfs";
+    #     options = [
+    #       "defaults"
+    #       "allow_other"
+    #       "use_ino"
+    #       "cache.files=partial"
+    #       "dropcacheonclose=true"
+    #       "category.create=ff"
+    #       "moveonenospc=true"
+    #     ];
+    #   };
   };
 
-  services.btrfs.autoScrub = {
-    enable = true;
-    fileSystems = [ "/mnt/disks/cache" "/mnt/disks/disk1" "/mnt/disks/disk2" ];
-  };
+  # services.btrfs.autoScrub = {
+  #   enable = true;
+  #   fileSystems = [ "/mnt/disks/cache" "/mnt/disks/disk1" "/mnt/disks/disk2" ];
+  # };
 
-  environment.etc."snapraid.conf".text = ''
-    parity /mnt/disks/parity/.snapraid.parity
+  # environment.etc."snapraid.conf".text = ''
+  #   parity /mnt/disks/parity/.snapraid.parity
+  #
+  #   content /mnt/disks/parity/snapraid.content
+  #   content /mnt/disks/cache/.snapraid.content
+  #
+  #   data cache /mnt/disks/cache
+  #   data disk1 /mnt/disks/disk1
+  #   data disk2 /mnt/disks/disk2
+  #
+  #   exclude *.log
+  #   exclude *.!qB
+  # '';
 
-    content /mnt/disks/parity/snapraid.content
-    content /mnt/disks/cache/.snapraid.content
-
-    data cache /mnt/disks/cache
-    data disk1 /mnt/disks/disk1
-    data disk2 /mnt/disks/disk2
-
-    exclude *.log
-    exclude *.!qB
-  '';
-
-  systemd.services.snapraidSync = {
-    description = "sync snapraid";
-    serviceConfig = {
-      User = "root";
-      Type = "oneshot";
-    };
-    script = ''
-      ${mover}/bin/mover /mnt/disks/cache/ /mnt/disks/slowpool/ 50
-      ${pkgs.snapraid}/bin/snapraid --force-empty sync
-    '';
-  };
-  systemd.timers.snapraidSync = {
-    wantedBy = [ "timers.target" ];
-    partOf = [ "snapraidSync.service" ];
-    timerConfig = {
-      OnCalendar = "*-*-* 12:00:00";
-      Unit = "snapraidSync.service";
-    };
-  };
-  systemd.services.snapraidScrub = {
-    description = "scrub snapraid";
-    serviceConfig = {
-      User = "root";
-      Type = "oneshot";
-    };
-    script = ''
-      ${pkgs.snapraid}/bin/snapraid -p full scrub
-    '';
-  };
-  systemd.timers.snapraidScrub = {
-    wantedBy = [ "timers.target" ];
-    partOf = [ "snapraidScrub.service" ];
-    timerConfig = {
-      OnCalendar = "*-*-01 12:00:00";
-      Unit = "snapraidScrub.service";
-    };
-  };
+  # systemd.services.snapraidSync = {
+  #   description = "sync snapraid";
+  #   serviceConfig = {
+  #     User = "root";
+  #     Type = "oneshot";
+  #   };
+  #   script = ''
+  #     ${mover}/bin/mover /mnt/disks/cache/ /mnt/disks/slowpool/ 50
+  #     ${pkgs.snapraid}/bin/snapraid --force-empty sync
+  #   '';
+  # };
+  # systemd.timers.snapraidSync = {
+  #   wantedBy = [ "timers.target" ];
+  #   partOf = [ "snapraidSync.service" ];
+  #   timerConfig = {
+  #     OnCalendar = "*-*-* 12:00:00";
+  #     Unit = "snapraidSync.service";
+  #   };
+  # };
+  # systemd.services.snapraidScrub = {
+  #   description = "scrub snapraid";
+  #   serviceConfig = {
+  #     User = "root";
+  #     Type = "oneshot";
+  #   };
+  #   script = ''
+  #     ${pkgs.snapraid}/bin/snapraid -p full scrub
+  #   '';
+  # };
+  # systemd.timers.snapraidScrub = {
+  #   wantedBy = [ "timers.target" ];
+  #   partOf = [ "snapraidScrub.service" ];
+  #   timerConfig = {
+  #     OnCalendar = "*-*-01 12:00:00";
+  #     Unit = "snapraidScrub.service";
+  #   };
+  # };
 
   systemd.services.downloaderBrr = {
     description = "download all stuff from brr";
