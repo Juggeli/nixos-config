@@ -38,6 +38,7 @@ with lib.plusultra; {
       tmux = enabled;
       yazi = enabled;
       lazygit = enabled;
+      ab-av1 = enabled;
     };
 
     tools = {
