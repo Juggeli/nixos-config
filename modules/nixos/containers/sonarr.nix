@@ -11,7 +11,7 @@ in
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.sonarr = {
       image = "ghcr.io/hotio/sonarr";
-      autoStart = true;
+      autoStart = false;
       ports = [ "8989:8989" ];
       volumes = [
         "/mnt/appdata/sonarr/:/config"
@@ -26,7 +26,7 @@ in
 
     virtualisation.oci-containers.containers.sonarr-anime = {
       image = "ghcr.io/hotio/sonarr";
-      autoStart = true;
+      autoStart = false;
       ports = [ "8999:8989" ];
       volumes = [
         "/mnt/appdata/sonarr-anime/:/config"

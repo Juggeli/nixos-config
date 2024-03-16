@@ -11,7 +11,7 @@ in
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.plex = {
       image = "ghcr.io/hotio/plex";
-      autoStart = true;
+      autoStart = false;
       ports = [ "32400:32400" ];
       extraOptions = [
         ''--device="/dev/dri/renderD128:/dev/dri/renderD128"''

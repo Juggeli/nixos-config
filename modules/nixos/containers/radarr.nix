@@ -11,7 +11,7 @@ in
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.radarr = {
       image = "ghcr.io/hotio/radarr";
-      autoStart = true;
+      autoStart = false;
       ports = [ "7878:7878" ];
       volumes = [
         "/mnt/appdata/radarr/:/config"
@@ -26,7 +26,7 @@ in
 
     virtualisation.oci-containers.containers.radarr-anime = {
       image = "ghcr.io/hotio/radarr";
-      autoStart = true;
+      autoStart = false;
       ports = [ "7879:7878" ];
       volumes = [
         "/mnt/appdata/radarr-anime/:/config"
