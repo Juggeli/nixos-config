@@ -43,6 +43,7 @@ in
       changedetection = enabled;
       trilium = enabled;
       grist = enabled;
+      caddy = enabled;
     };
 
     services = {
@@ -77,6 +78,10 @@ in
       }
     ];
   };
+
+  services.nfs.server.exports = ''
+    /mnt/disks/disk1 100.66.172.75(rw)
+  '';
 
   networking = {
     interfaces.enp4s0.ipv4.addresses = [
