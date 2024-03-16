@@ -86,7 +86,9 @@ in
             nvim-dap-ui
             nvim-dap-virtual-text
             nvim-dap-python
+            nvim-dap-go
             neotest
+            neotest-go
             copilot-lua
             copilot-cmp
             {
@@ -149,6 +151,7 @@ in
               { import = "lazyvim.plugins.extras.ui.mini-animate" },
               { import = "lazyvim.plugins.extras.lang.python" },
               { import = "lazyvim.plugins.extras.coding.copilot" },
+              { import = "lazyvim.plugins.extras.lang.go" },
               -- The following configs are needed for fixing lazyvim on nix
               -- force enable telescope-fzf-native.nvim
               { "nvim-telescope/telescope-fzf-native.nvim", enabled = true },
