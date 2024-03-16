@@ -20,8 +20,8 @@ in
         rofi-calc
       ];
       extraConfig = {
-        modi = "drun,run,combi,calc,power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu";
-        combi-modi = "drun,calc,power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu";
+        modi = "drun,run,combi,power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu";
+        combi-modi = "drun,power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu";
         combi-hide-mode-prefix = true;
         show-icons = true;
       };
