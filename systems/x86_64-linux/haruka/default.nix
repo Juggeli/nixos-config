@@ -1,14 +1,34 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.plusultra; let
   ip = "10.11.11.2";
   gateway = "10.11.11.1";
+
+  startcontainers = pkgs.writeShellScriptBin "startcontainers" ''
+    services=(
+      "podman-plex.service"
+      "podman-jellyfin.service"
+      "podman-radarr.service"
+      "podman-radarr-anime.service"
+      "podman-sonarr.service"
+      "podman-sonarr-anime.service"
+    )
+
+    for service in "''${services[@]}"
+    do
+      gum spin -s line --title "Starting ''${service}..." --show-output -- doas systemctl start "$service"
+    done
+
+    echo "All services started successfully."
+  '';
 in
 {
   imports = [
     ./hardware.nix
     ./pool.nix
   ];
+
+  environment.systemPackages = [ startcontainers ];
 
   plusultra = {
     feature = {
