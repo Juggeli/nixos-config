@@ -53,15 +53,6 @@ with lib.plusultra; {
     };
   };
 
-  # services.borgbackup.jobs.homeRemote = mkBorgBackup {
-  #   inherit config;
-  #   paths = [
-  #     "/home/juggeli/src/"
-  #     "/home/juggeli/documents/"
-  #     "/home/juggeli/Hydrus/"
-  #   ];
-  # };
-
   fileSystems."/mnt/downloads" = {
     device = "100.125.162.103:/tank/downloads";
     fsType = "nfs";
