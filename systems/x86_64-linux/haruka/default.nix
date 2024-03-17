@@ -100,7 +100,7 @@ in
   };
 
   services.nfs.server.exports = ''
-    /mnt/disks/disk1 100.66.172.75(rw)
+    /mnt/disk1 100.66.172.75(rw)
   '';
 
   networking = {
