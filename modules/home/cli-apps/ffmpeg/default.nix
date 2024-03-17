@@ -10,7 +10,7 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      ffmpeg_5-full
+      (ffmpeg-headless.override { withVmaf = true; })
       mkvtoolnix
       makemkv
     ];
