@@ -59,7 +59,7 @@ with lib.plusultra; {
   };
 
   fileSystems."/mnt/pool" = {
-    device = "100.125.162.103:/mnt/disks/disk1";
+    device = "100.125.162.103:/mnt/disk1";
     fsType = "nfs";
   };
 
