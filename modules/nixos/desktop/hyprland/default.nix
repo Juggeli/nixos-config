@@ -7,24 +7,6 @@ with lib.plusultra; let
   surface0 = "0xff313244";
   red = "0xffa6e3a1";
 
-  mpvpaper-nvidia = pkgs.mpvpaper.overrideAttrs (oldAttrs: {
-    version = "git";
-    src = pkgs.fetchFromGitHub {
-      owner = oldAttrs.src.owner;
-      repo = oldAttrs.src.repo;
-      rev = "f65700a3ecc9ecd8ca501e18a807ee18845f9441";
-      hash = "sha256-h+YJ4YGVGGgInVgm3NbXQIbrxkMOD/HtBnCzkTcRXH8=";
-    };
-  });
-
-  set-wallpaper = pkgs.writeShellApplication {
-    name = "set-wallpaper";
-    runtimeInputs = [ mpvpaper-nvidia ];
-    text = ''
-      mpvpaper -o "no-audio --loop-playlist shuffle gpu-api=vulkan hwdec-codecs=all" DP-3 ~/.config/hypr/paper.mp4
-    '';
-  };
-
   workspaces = builtins.concatLists (builtins.genList
     (
       x:
@@ -72,8 +54,6 @@ in
       wl-clipboard
       screenshot
       wev # Find mouse or keycodes
-      mpvpaper-nvidia
-      set-wallpaper
     ];
 
     programs.hyprland.enable = true;
@@ -155,8 +135,8 @@ in
         ];
         exec-once = [
           "${pkgs.waybar}/bin/waybar"
+          "${pkgs.hyprpaper}/bin/hyprpaper"
           "${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout"
-          (mkIf config.programs._1password-gui.enable "1password --silent")
         ];
         debug = {
           "overlay" = "false";
@@ -192,18 +172,9 @@ in
     };
 
     plusultra.home.configFile = {
+      "hypr/hyprpaper.conf".source = ./hyprpaper.conf;
+      "hypr/background.png".source = ./background.png;
       "hyprland-per-window-layout/options.toml".source = ./hyprland-per-window-layout.toml;
-      "hypr/paper.mp4".source = ./frieren-and-fern-in-snow-forest-frieren-beyond-journeys-end-moewalls-com.mp4;
-    };
-
-    systemd.user.services.wallpaper = {
-      description = "Set wallpaper with mpvpaper";
-      after = [ "hyprland-session.target" ];
-      wantedBy = [ "default.target" ];
-      serviceConfig = {
-        Restart = "always";
-        ExecStart = "${set-wallpaper}/bin/set-wallpaper";
-      };
     };
   };
 }
