@@ -12,6 +12,8 @@ with lib.plusultra; {
       btop = enabled;
       rclone = enabled;
       lazygit = enabled;
+      ffmpeg = enabled;
+      ab-av1 = enabled;
     };
 
     tools = {
