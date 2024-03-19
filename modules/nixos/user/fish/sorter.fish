@@ -3,10 +3,10 @@ function sorter
     set -g base_dir /mnt/downloads/random/
 
     # Define destination directories
-    set -g jav_dir /mnt/pool/sorted/jav/unsorted/
-    set -g muut_dir /mnt/pool/sorted/muut/
-    set -g uncen_dir /mnt/pool/sorted/uncen/
-    set -g to_upscale_dir /mnt/pool/sorted/to-be-upscaled/
+    set -g jav_dir /mnt/sorted/jav/unsorted/
+    set -g muut_dir /mnt/sorted/muut/
+    set -g uncen_dir /mnt/sorted/uncen/
+    set -g to_upscale_dir /mnt/sorted/to-be-upscaled/
 
     set -l junk_exts ".ass" ".srt" ".gif" ".txt" ".html" ".htm" ".url" ".jpg" ".jpeg" ".png" ".webp"
     set -l video_exts ".mkv" ".mp4" ".avi" ".mov" ".wmv" ".flv" ".webm" ".m4v" ".mpeg" ".m2v" ".m4v" ".ts" ".vob" ".3gp" ".3g2" ".mpg" ".ogm"
