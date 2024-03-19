@@ -44,6 +44,7 @@ in
         tree = "eza --tree";
         nixsw = rebuildCommand + " switch --flake .#";
         nixup = rebuildCommand + " switch --flake .# --recreate-lock-file";
+        nixed = "nvim && nixos-rebuild build --flake .# && doas ./result/bin/switch-to-configuration switch";
       };
       interactiveShellInit =
         ''
