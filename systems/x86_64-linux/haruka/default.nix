@@ -63,7 +63,6 @@ in
       changedetection = enabled;
       trilium = enabled;
       grist = enabled;
-      caddy = enabled;
     };
 
     services = {
