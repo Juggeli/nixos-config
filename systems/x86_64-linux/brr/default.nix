@@ -22,7 +22,7 @@ with lib.plusultra; {
       tailscale.port = 50288;
     };
 
-    virtualisation = {
+    feature = {
       podman = enabled;
     };
   };

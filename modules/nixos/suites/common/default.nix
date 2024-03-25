@@ -43,7 +43,7 @@ in
         time = enabled;
       };
 
-      virtualisation = {
+      feature = {
         podman = enabled;
       };
     };

@@ -39,6 +39,7 @@ in
           "/mnt/appdata"
         ];
       };
+      podman = enabled;
     };
 
     filesystem.zfs = enabled;
@@ -82,9 +83,6 @@ in
           };
         };
       };
-    };
-    virtualisation = {
-      podman = enabled;
     };
   };
 

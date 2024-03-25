@@ -6,5 +6,6 @@
     ./graphical.nix
     ./syncthing.nix
     ./borgmatic.nix
+    ./podman.nix
   ];
 }
