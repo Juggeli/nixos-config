@@ -3,7 +3,8 @@ let
   inherit (lib) mkEnableOption mkIf;
 
   cfg = config.plusultra.cli-apps.fish;
-  rebuildCommand = if pkgs.stdenv.isLinux then "doas nixos-rebuild" else "darwin-rebuild";
+  rebuildCommand = if pkgs.stdenv.isLinux then "nixos-rebuild" else "darwin-rebuild";
+  sudoCommand = if pkgs.stdenv.isLinux then "doas" else "sudo";
 in
 {
   options.plusultra.cli-apps.fish = {
@@ -42,9 +43,9 @@ in
       shellAbbrs = {
         eza = "eza --group-directories-first --git";
         tree = "eza --tree";
-        nixsw = rebuildCommand + " switch --flake .#";
-        nixup = rebuildCommand + " switch --flake .# --recreate-lock-file";
-        nixed = "nvim && nixos-rebuild build --flake .# && doas ./result/bin/switch-to-configuration switch";
+        nixsw = "${rebuildCommand} build --flake .# && ${sudoCommand} ./result/bin/switch-to-configuration switch";
+        nixup = "${rebuildCommand} build --flake .# --recreate-lock-file && ${sudoCommand} ./result/bin/switch-to-configuration switch";
+        nixed = "nvim && ${rebuildCommand} build --flake .# && ${sudoCommand} ./result/bin/switch-to-configuration switch";
       };
       interactiveShellInit =
         ''
