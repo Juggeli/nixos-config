@@ -18,6 +18,9 @@ in
         sway = disabled;
         hyprland = enabled;
       };
+      feature = {
+        flatpak = enabled;
+      };
 
       services = {
         avahi = enabled;

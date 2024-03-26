@@ -7,5 +7,6 @@
     ./syncthing.nix
     ./borgmatic.nix
     ./podman.nix
+    ./flatpak.nix
   ];
 }
