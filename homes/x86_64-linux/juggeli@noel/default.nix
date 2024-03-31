@@ -22,7 +22,7 @@ with lib.plusultra; {
       via = enabled;
       pdf = enabled;
       crypto = enabled;
-      hydrus = enabled;
+      hydrus = disabled;
       floorp = enabled;
     };
 
