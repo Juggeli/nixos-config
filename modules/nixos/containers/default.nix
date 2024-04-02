@@ -12,5 +12,6 @@
     ./radarr.nix
     ./sonarr.nix
     ./trilium.nix
+    ./bazarr.nix
   ];
 }

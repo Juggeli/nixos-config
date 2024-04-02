@@ -12,6 +12,7 @@ with lib.plusultra; let
       "podman-radarr-anime.service"
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
+      "podman-bazarr.service"
     )
 
     for service in "''${services[@]}"
@@ -64,6 +65,7 @@ in
       changedetection = enabled;
       trilium = enabled;
       grist = enabled;
+      bazarr = enabled;
     };
 
     services = {
