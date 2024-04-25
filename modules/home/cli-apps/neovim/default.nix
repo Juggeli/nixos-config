@@ -87,6 +87,7 @@ in
             nvim-dap-virtual-text
             nvim-dap-python
             nvim-dap-go
+            nvim-nio
             neotest
             neotest-go
             copilot-lua
