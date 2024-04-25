@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 with lib;
 with lib.plusultra; let
   cfg = config.plusultra.feature.flatpak;
@@ -10,10 +10,6 @@ in
 
   config = mkIf cfg.enable {
     services.flatpak.enable = true;
-    environment.systemPackages = with pkgs; [
-      gnome.gnome-software
-    ];
-
     plusultra.filesystem.impermanence.directories = [
       "/var/lib/flatpak"
     ];
