@@ -40,7 +40,6 @@ with lib.plusultra; {
         "10.11.11.2" = [ "haruka" ];
       };
       logitech = enabled;
-      liquidctl = enabled;
     };
     services = {
       tailscale = {
