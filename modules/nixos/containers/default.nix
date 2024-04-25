@@ -13,5 +13,6 @@
     ./sonarr.nix
     ./trilium.nix
     ./bazarr.nix
+    ./stash.nix
   ];
 }
