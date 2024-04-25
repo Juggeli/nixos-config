@@ -53,20 +53,20 @@ with lib.plusultra; {
   };
 
   fileSystems."/mnt/downloads" = {
-    device = "100.125.162.103:/tank/downloads";
+    device = "10.11.11.2:/tank/downloads";
     fsType = "nfs";
   };
   fileSystems."/mnt/sorted" = {
-    device = "100.125.162.103:/tank/sorted";
+    device = "10.11.11.2:/tank/sorted";
     fsType = "nfs";
   };
   fileSystems."/mnt/documents" = {
-    device = "100.125.162.103:/tank/documents";
+    device = "10.11.11.2:/tank/documents";
     fsType = "nfs";
   };
 
-  fileSystems."/mnt/pool" = {
-    device = "100.125.162.103:/mnt/disk1";
+  fileSystems."/mnt/media" = {
+    device = "10.11.11.2:/tank/media";
     fsType = "nfs";
   };
 
