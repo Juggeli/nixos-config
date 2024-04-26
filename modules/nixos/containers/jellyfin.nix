@@ -15,7 +15,7 @@ in
       ports = [ "8096:8096" ];
       extraOptions = [
         ''--group-add="303"''
-        ''--device="/dev/dri/renderD128:/dev/dri/renderD128"''
+        ''--device=/dev/dri/renderD128''
       ];
       volumes = [
         "/mnt/appdata/jellyfin/:/config"

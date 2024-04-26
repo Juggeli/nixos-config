@@ -14,7 +14,8 @@ in
       autoStart = false;
       ports = [ "32400:32400" ];
       extraOptions = [
-        ''--device="/dev/dri/renderD128:/dev/dri/renderD128"''
+        ''--group-add="303"''
+        ''--device=/dev/dri/renderD128''
       ];
       volumes = [
         "/mnt/appdata/plex/:/config"
