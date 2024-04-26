@@ -63,7 +63,16 @@ in
       fsType = "btrfs";
     };
   };
-  swapDevices = [ ];
+
+  swapDevices = [{
+    device = "/mnt/appdata/swapfile";
+    size = 16 * 1024;
+    priority = 1;
+  }];
+
+  zramSwap = {
+    enable = true;
+  };
 
   hardware.enableRedistributableFirmware = true;
 
