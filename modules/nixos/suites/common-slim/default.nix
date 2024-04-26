@@ -15,6 +15,7 @@ in
 
     plusultra = {
       nix = enabled;
+      feature.earlyoom = enabled;
 
       tools = {
         misc = enabled;

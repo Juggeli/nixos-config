@@ -8,5 +8,6 @@
     ./borgmatic.nix
     ./podman.nix
     ./flatpak.nix
+    ./earlyoom.nix
   ];
 }
