@@ -27,7 +27,7 @@ in
         (pkgs.writeShellScriptBin "gsed" "exec -a $0 ${gnused}/bin/sed $@")
 
         # Copilot
-        nodejs_21
+        nodePackages.nodejs
       ];
 
       plugins = with pkgs.vimPlugins; [
