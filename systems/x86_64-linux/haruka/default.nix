@@ -76,7 +76,7 @@ in
       cloudflared = enabled;
       grafana = disabled;
       prometheus = disabled;
-      nfs = enabled;
+      nfs = disabled;
 
       samba = {
         enable = true;
@@ -100,10 +100,6 @@ in
       }
     ];
   };
-
-  services.nfs.server.exports = ''
-    /mnt/disk1 100.66.172.75(rw)
-  '';
 
   networking = {
     interfaces."${interface}".ipv4.addresses = [
