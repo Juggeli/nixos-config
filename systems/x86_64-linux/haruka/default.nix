@@ -81,8 +81,8 @@ in
       samba = {
         enable = true;
         shares = {
-          pool = {
-            path = "/mnt/pool";
+          tank = {
+            path = "/tank";
             public = false;
             read-only = false;
           };
