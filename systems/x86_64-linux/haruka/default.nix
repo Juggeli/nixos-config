@@ -5,6 +5,15 @@ with lib.plusultra; let
   gateway = "10.11.11.1";
   interface = "enp3s0";
 
+  startpool = pkgs.writeShellScriptBin "startpool" ''
+    doas zpool import tank
+    doas zfs load-key -L file:///run/agenix/zfs tank
+    doas zfs mount tank/media
+    doas zfs mount tank/sorted
+    doas zfs mount tank/downloads
+    doas zfs mount tank/documents
+  '';
+
   startcontainers = pkgs.writeShellScriptBin "startcontainers" ''
     services=(
       "podman-plex.service"
@@ -24,6 +33,26 @@ with lib.plusultra; let
 
     echo "All services started successfully."
   '';
+
+  stopcontainers = pkgs.writeShellScriptBin "stopcontainers" ''
+    services=(
+      "podman-plex.service"
+      "podman-jellyfin.service"
+      "podman-radarr.service"
+      "podman-radarr-anime.service"
+      "podman-sonarr.service"
+      "podman-sonarr-anime.service"
+      "podman-bazarr.service"
+      "podman-stash.service"
+    )
+
+    for service in "''${services[@]}"
+    do
+      gum spin -s line --title "Stopping ''${service}..." --show-output -- doas systemctl stop "$service"
+    done
+
+    echo "All services stopped successfully."
+  '';
 in
 {
   imports = [
@@ -31,7 +60,11 @@ in
     ./pool.nix
   ];
 
-  environment.systemPackages = [ startcontainers ];
+  environment.systemPackages = [
+    startcontainers
+    stopcontainers
+    startpool
+  ];
 
   plusultra = {
     feature = {
