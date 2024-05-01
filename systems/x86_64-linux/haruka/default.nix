@@ -3,6 +3,7 @@ with lib;
 with lib.plusultra; let
   ip = "10.11.11.2";
   gateway = "10.11.11.1";
+  interface = "enp3s0";
 
   startcontainers = pkgs.writeShellScriptBin "startcontainers" ''
     services=(
@@ -105,7 +106,7 @@ in
   '';
 
   networking = {
-    interfaces.enp4s0.ipv4.addresses = [
+    interfaces."${interface}".ipv4.addresses = [
       {
         address = ip;
         prefixLength = 24;
@@ -115,7 +116,7 @@ in
     nameservers = [ gateway ];
   };
 
-  boot.kernelParams = [ "ip=${ip}::${gateway}:255.255.255.0:haruka:enp4s0:off" ];
+  boot.kernelParams = [ "ip=${ip}::${gateway}:255.255.255.0:haruka:${interface}:off" ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
