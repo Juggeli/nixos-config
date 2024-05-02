@@ -11,3 +11,7 @@ map("n", "<ScrollWheelRight>", "<Nop>")
 map("n", "<ScrollWheelLeft>", "<Nop>")
 map("n", "<S-ScrollWheelUp>", "<ScrollWheelRight>")
 map("n", "<S-ScrollWheelDown>", "<ScrollWheelLeft>")
+
+-- Disable replacing cliboard on change
+map("n", "c", '"_c', { desc = "Change without replacing clipboard" })
+map("n", "C", '"_C', { desc = "Change without replacing clipboard" })
