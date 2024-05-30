@@ -68,7 +68,7 @@ function sorter
         set video_files $video_files (find "$base_dir" -type f -iname "*$video_ext")
     end
 
-    set video_files (shuf -e $video_files)
+    # set video_files (shuf -e $video_files)
 
     for video_file in $video_files
         if not process_file $video_file
