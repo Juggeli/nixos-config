@@ -36,6 +36,8 @@ in
         options = "--delete-older-than 30d";
       };
 
+      package = pkgs.nixVersions.latest;
+
       # flake-utils-plus
       generateRegistryFromInputs = true;
       generateNixPathFromInputs = true;
