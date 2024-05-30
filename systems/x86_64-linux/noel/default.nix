@@ -52,22 +52,15 @@ with lib.plusultra; {
     };
   };
 
-  fileSystems."/mnt/downloads" = {
-    device = "10.11.11.2:/tank/downloads";
-    fsType = "nfs";
-  };
-  fileSystems."/mnt/sorted" = {
-    device = "10.11.11.2:/tank/sorted";
-    fsType = "nfs";
-  };
-  fileSystems."/mnt/documents" = {
-    device = "10.11.11.2:/tank/documents";
-    fsType = "nfs";
-  };
-
-  fileSystems."/mnt/media" = {
-    device = "10.11.11.2:/tank/media";
-    fsType = "nfs";
+  fileSystems."/mnt" = {
+    device = "//10.11.11.2/tank";
+    fsType = "cifs";
+    options =
+      let
+        # this line prevents hanging on network split
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+      in
+      [ "${automount_opts},credentials=${config.age.secrets.smb.path},uid=1000,gid=100" ];
   };
 
   systemd.extraConfig = ''
