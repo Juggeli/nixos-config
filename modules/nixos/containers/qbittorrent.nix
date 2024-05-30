@@ -14,7 +14,7 @@ in
       autoStart = true;
       ports = [ "8080:8080" ];
       volumes = [
-        "/mnt/appdata/qbittorrent:/config"
+        "/var/lib/qbittorrent:/config"
         "/mnt/pool/:/mnt/pool/"
       ];
       environment = {
