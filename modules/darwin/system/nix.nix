@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 with lib.plusultra;
@@ -42,6 +42,8 @@ in
         generateRegistryFromInputs = true;
         generateNixPathFromInputs = true;
         linkInputs = true;
+
+        package = pkgs.nixVersions.latest;
       };
   };
 }
