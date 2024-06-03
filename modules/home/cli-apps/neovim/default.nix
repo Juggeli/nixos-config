@@ -92,6 +92,8 @@ in
             neotest-go
             copilot-lua
             copilot-cmp
+            nvim-snippets
+            CopilotChat-nvim
             {
               name = "LuaSnip";
               path = luasnip;
@@ -151,8 +153,12 @@ in
               { import = "lazyvim.plugins.extras.dap.core" },
               { import = "lazyvim.plugins.extras.ui.mini-animate" },
               { import = "lazyvim.plugins.extras.coding.mini-surround" },
+              { import = "lazyvim.plugins.extras.coding.mini-comment" },
               { import = "lazyvim.plugins.extras.lang.python" },
               { import = "lazyvim.plugins.extras.coding.copilot" },
+              { import = "lazyvim.plugins.extras.coding.copilot-chat" },
+              { import = "lazyvim.plugins.extras.coding.luasnip" },
+              { import = "lazyvim.plugins.extras.editor.illuminate" },
               { import = "lazyvim.plugins.extras.lang.go" },
               -- The following configs are needed for fixing lazyvim on nix
               -- force enable telescope-fzf-native.nvim
