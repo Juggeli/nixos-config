@@ -26,6 +26,7 @@ in
         neovim = enabled;
         btop = enabled;
         lazygit = enabled;
+        jq = enabled;
       };
       tools = {
         git = enabled;
