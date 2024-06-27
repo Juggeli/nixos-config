@@ -8,7 +8,7 @@ return {
 		},
 		config = true,
 		keys = {
-			{ "<leader>rr", "<cmd>FlutterRun --flavor prd<cr>", desc = "Run flutter app" },
+			{ "<leader>rr", "<cmd>FlutterRun<cr>", desc = "Run flutter app" },
 			{ "<leader>rR", "<cmd>FlutterRestart<cr>", desc = "Restart flutter app" },
 			{ "<leader>rh", "<cmd>FlutterReload<cr>", desc = "Reload flutter app" },
 			{ "<leader>rd", "<cmd>FlutterDevices<cr>", desc = "Run flutter app in selected device" },
