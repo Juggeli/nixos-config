@@ -8,8 +8,8 @@ function sorter
     set -g uncen_dir /mnt/sorted/uncen/
     set -g to_upscale_dir /mnt/sorted/to-be-upscaled/
 
-    set -l junk_exts ".ass" ".srt" ".gif" ".txt" ".html" ".htm" ".url" ".jpg" ".jpeg" ".png" ".webp"
-    set -l video_exts ".mkv" ".mp4" ".avi" ".mov" ".wmv" ".flv" ".webm" ".m4v" ".mpeg" ".m2v" ".m4v" ".ts" ".vob" ".3gp" ".3g2" ".mpg" ".ogm"
+    set -l junk_exts ".ass" ".srt" ".gif" ".txt" ".html" ".htm" ".url" ".jpg" ".jpeg" ".png" ".webp" ".nfo"
+    set -l video_exts ".mkv" ".mp4" ".avi" ".mov" ".wmv" ".flv" ".webm" ".m4v" ".mpeg" ".m2v" ".m4v" ".ts" ".vob" ".3gp" ".3g2" ".mpg" ".ogm" ".m2ts" ".iso"
     set -g delete_files
 
     set video_files
