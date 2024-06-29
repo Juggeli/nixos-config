@@ -127,6 +127,7 @@ in
           "DP-3,addreserved,200,0,300,300"
           "HDMI-A-1,disable"
           "HDMI-A-5,disable"
+          "Unknown-1,disable"
         ];
         windowrule = [
           "float,^(mpv)$"
