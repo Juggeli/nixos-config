@@ -43,6 +43,7 @@ in
   config = mkIf cfg.enable {
     plusultra.desktop.addons = {
       gtk = enabled;
+      qt = enabled;
       mako = enabled;
       rofi = enabled;
       xdg-portal = enabled;
