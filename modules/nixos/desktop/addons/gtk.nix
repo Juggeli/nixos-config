@@ -10,27 +10,17 @@ in
 
   config = mkIf cfg.enable {
     plusultra.home.extraOptions = {
+      dconf.settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+        };
+      };
       gtk = {
         enable = true;
 
         theme = {
-          name = "Catppuccin-Mocha-Compact-Pink-Dark";
-          package = pkgs.catppuccin-gtk.override {
-            accents = [ "pink" ];
-            size = "compact";
-            tweaks = [ "rimless" "black" ];
-            variant = "mocha";
-          };
-        };
-
-        cursorTheme = {
-          name = "Catppuccin-Mocha-Pink-Cursors";
-          package = pkgs.catppuccin-cursors.mochaPink;
-        };
-
-        iconTheme = {
-          name = "Papirus";
-          package = pkgs.papirus-icon-theme;
+          name = "Adwaita-dark";
+          package = pkgs.gnome.gnome-themes-extra;
         };
       };
     };
