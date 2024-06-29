@@ -47,6 +47,8 @@
     };
 
     impermanence.url = "github:nix-community/impermanence";
+
+    catppuccin.url = "github:catppuccin/nix";
   };
 
   outputs = inputs:
@@ -79,6 +81,7 @@
         agenix.nixosModules.default
         disko.nixosModules.disko
         impermanence.nixosModules.impermanence
+        catppuccin.nixosModules.catppuccin
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
