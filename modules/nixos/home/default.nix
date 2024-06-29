@@ -1,4 +1,4 @@
-{ options, config, lib, ... }:
+{ options, config, lib, namespace, ... }:
 with lib;
 with lib.plusultra;
 {
@@ -15,17 +15,16 @@ with lib.plusultra;
   config = {
     plusultra.home.extraOptions = {
       home.stateVersion = config.system.stateVersion;
-      home.file = mkAliasDefinitions options.plusultra.home.file;
+      home.file = mkAliasDefinitions options.${namespace}.home.file;
       xdg.enable = true;
-      xdg.configFile = mkAliasDefinitions options.plusultra.home.configFile;
+      xdg.configFile = mkAliasDefinitions options.${namespace}.home.configFile;
     };
+
+    snowfallorg.users.${config.${namespace}.user.name}.home.config = config.${namespace}.home.extraOptions;
 
     home-manager = {
       useUserPackages = true;
       useGlobalPkgs = true;
-
-      users.${config.plusultra.user.name} =
-        mkAliasDefinitions options.plusultra.home.extraOptions;
     };
   };
 }
