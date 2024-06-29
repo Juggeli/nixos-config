@@ -1,16 +1,16 @@
 { config, lib, ... }:
 with lib;
 with lib.plusultra; let
-  cfg = config.plusultra.desktop.addons.waybar;
+  cfg = config.plusultra.desktop.waybar;
 in
 {
-  options.plusultra.desktop.addons.waybar = with types; {
+  options.plusultra.desktop.waybar = with types; {
     enable =
       mkBoolOpt false "Whether to enable Waybar in the desktop environment.";
   };
 
   config = mkIf cfg.enable {
-    plusultra.home.extraOptions.programs.waybar = {
+    programs.waybar = {
       enable = true;
       settings = {
         mainBar = {
@@ -75,7 +75,7 @@ in
       };
     };
 
-    plusultra.home.configFile."waybar/mocha.css".source = ./mocha.css;
-    plusultra.home.configFile."waybar/style.css".source = ./style.css;
+    xdg.configFile."waybar/mocha.css".source = ./mocha.css;
+    xdg.configFile."waybar/style.css".source = ./style.css;
   };
 }

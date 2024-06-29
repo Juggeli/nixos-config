@@ -45,7 +45,6 @@ in
       gtk = enabled;
       mako = enabled;
       rofi = enabled;
-      waybar = enabled;
       xdg-portal = enabled;
       electron-support = enabled;
     };

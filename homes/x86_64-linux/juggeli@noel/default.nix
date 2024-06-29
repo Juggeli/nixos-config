@@ -45,6 +45,10 @@ with lib.plusultra; {
       git = enabled;
       direnv = enabled;
     };
+
+    desktop = {
+      waybar = enabled;
+    };
   };
 
   home.sessionPath = [
