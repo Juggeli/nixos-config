@@ -13,7 +13,7 @@ in
     environment.systemPackages = with pkgs; [
       git
       deploy-rs
-      nixfmt
+      nixfmt-rfc-style
       nix-index
       nix-prefetch-git
     ];
