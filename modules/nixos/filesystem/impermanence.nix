@@ -141,6 +141,9 @@ in
         "/etc/ssh" = {
           neededForBoot = true;
         };
+        "/nix" = {
+          neededForBoot = true;
+        };
       };
 
       programs.fuse.userAllowOther = true;
