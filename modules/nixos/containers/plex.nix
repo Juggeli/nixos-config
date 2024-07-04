@@ -20,7 +20,7 @@ in
       volumes = [
         "/mnt/appdata/plex/:/config"
         "/tank/media/:/mnt/pool/media"
-        "/mnt/appdata/transcode/:/transcode"
+        "/mnt/appdata/plex-transcode/:/transcode"
       ];
     };
   };
