@@ -1,8 +1,5 @@
 keyboards = [
-  "keychron-keychron-q10-keyboard",
   "keychron-keychron-q10",
-  "keychron-keychron-q10-system-control",
-  "keychron-keychron-q10-consumer-control",
 ]
 
 [[default_layouts]]
@@ -12,5 +9,5 @@ keyboards = [
 1 = [
   "discord",
   "firefox",
-  "armcord",
+  "ArmCord",
 ]
