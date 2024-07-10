@@ -34,7 +34,7 @@ in
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
       "mitigations=off"
-      "NVreg_PreserveVideoMemoryAllocations=1"
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     ];
   };
 
