@@ -11,11 +11,8 @@ with lib.plusultra; {
       wezterm = disabled;
       kitty = enabled;
       vscode = disabled;
-      armcord = enabled;
-      discord = {
-        enable = false;
-        chromium = enabled;
-      };
+      armcord = disabled;
+      discord = enabled;
       firefox = enabled;
       chrome = enabled;
       mpv = enabled;
