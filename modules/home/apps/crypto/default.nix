@@ -12,7 +12,7 @@ in
     home.packages = with pkgs; [
       ledger-live-desktop
       ledger-udev-rules
-      monero-gui
+      # monero-gui
     ];
   };
 }
