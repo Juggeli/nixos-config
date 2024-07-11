@@ -23,7 +23,7 @@ with lib.plusultra; {
       pdf = enabled;
       crypto = enabled;
       hydrus = disabled;
-      floorp = enabled;
+      floorp = disabled;
     };
 
     cli-apps = {
