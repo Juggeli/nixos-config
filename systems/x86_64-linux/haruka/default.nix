@@ -145,7 +145,11 @@ in
     nameservers = [ gateway ];
   };
 
-  boot.kernelParams = [ "ip=${ip}::${gateway}:255.255.255.0:haruka:${interface}:off" ];
+  boot.kernelParams = [
+    "ip=${ip}::${gateway}:255.255.255.0:haruka:${interface}:off"
+    # try to fix zfs oom issue
+    "zfs.zfs_arc_shrinker_limit=0"
+  ];
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
