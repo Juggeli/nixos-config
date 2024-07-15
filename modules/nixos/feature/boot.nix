@@ -25,6 +25,7 @@ in
           enableCryptodisk = mkDefault false;
           useOSProber = mkDefault false;
           efiInstallAsRemovable = true;
+          catppuccin.enable = true;
           #theme = null;
           #backgroundColor = null;
           #splashImage = null
