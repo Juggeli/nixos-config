@@ -37,13 +37,13 @@ in
       };
 
       system = {
-        boot = enabled;
         fonts = enabled;
         locale = enabled;
         time = enabled;
       };
 
       feature = {
+        boot = enabled;
         podman = enabled;
       };
     };

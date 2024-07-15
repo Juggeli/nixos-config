@@ -15,7 +15,10 @@ in
 
     plusultra = {
       nix = enabled;
-      feature.earlyoom = disabled;
+      feature = {
+        boot = enabled;
+        earlyoom = disabled;
+      };
 
       tools = {
         misc = enabled;
@@ -35,7 +38,6 @@ in
       };
 
       system = {
-        boot = enabled;
         fonts = enabled;
         locale = enabled;
         time = enabled;
