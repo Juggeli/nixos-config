@@ -3,10 +3,11 @@
 -- Add any additional keymaps here
 local map = vim.keymap.set
 
+-- Fast scrolling
 map("n", "<S-j>", "10j", { desc = "Scroll down" })
 map("n", "<S-k>", "10k", { desc = "Scroll up" })
 
--- Disable horizontal scrolling
+-- Disable horizontal scrolling with mouse
 map("n", "<ScrollWheelRight>", "<Nop>")
 map("n", "<ScrollWheelLeft>", "<Nop>")
 map("n", "<S-ScrollWheelUp>", "<ScrollWheelRight>")
