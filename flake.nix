@@ -46,6 +46,8 @@
       inputs.nixpkgs.follows = "unstable";
     };
 
+    neovim.url = "github:Juggeli/neovim";
+
     impermanence.url = "github:nix-community/impermanence";
 
     catppuccin.url = "github:catppuccin/nix";
@@ -75,6 +77,10 @@
           "freeimage-unstable-2021-11-01"
         ];
       };
+
+      overlays = with inputs; [
+        neovim.overlays.default
+      ];
 
       systems.modules.nixos = with inputs; [
         home-manager.nixosModules.home-manager
