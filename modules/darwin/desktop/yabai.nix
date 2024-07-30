@@ -30,7 +30,7 @@ in
         window_shadow = "off";
         window_border = "off";
 
-        focus_follows_mouse = "autofocus";
+        focus_follows_mouse = "off";
 
         external_bar = "all:${builtins.toString config.services.spacebar.config.height}:0";
 
