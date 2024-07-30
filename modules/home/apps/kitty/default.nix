@@ -1,6 +1,7 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.apps.kitty;
 in
 {
@@ -17,6 +18,7 @@ in
         size = cfg.fontSize;
       };
       shellIntegration.enableFishIntegration = true;
+      shellIntegration.mode = "no-sudo";
       theme = "Catppuccin-Mocha";
       settings = {
         "shell" = "/run/current-system/sw/bin/fish";
