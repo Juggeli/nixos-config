@@ -16,15 +16,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    homebrew = {
-      enable = true;
-      brews = [ "lutzifer/homebrew-tap/keyboardSwitcher" ];
-      taps = [ "lutzifer/tap" ];
-    };
     environment.systemPackages = [ pkgs.jq ];
     services.skhd = {
       enable = true;
-
       skhdConfig = ''
         # Movement
         shift + cmd - h : yabai -m window --focus west

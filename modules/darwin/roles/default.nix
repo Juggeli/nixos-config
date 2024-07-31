@@ -1,6 +1,7 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.roles.darwin-common;
 in
 {
@@ -15,6 +16,7 @@ in
         yabai = enabled;
         spacebar = enabled;
         skhd = enabled;
+        homebrew = enabled;
       };
       system = {
         nix = enabled;
