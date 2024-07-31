@@ -15,6 +15,7 @@ in
       enable = true;
       brews = [ "lutzifer/homebrew-tap/keyboardSwitcher" ];
       taps = [ "lutzifer/tap" ];
+      casks = [ "obsidian" ];
     };
   };
 }
