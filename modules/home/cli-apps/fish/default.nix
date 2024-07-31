@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkEnableOption mkIf;
 
@@ -37,8 +42,6 @@ in
         la = "LC_COLLATE=C eza -ablF";
         cat = "bat";
         lg = "lazygit";
-        s = "kitten ssh";
-        ssh = "kitten ssh";
       };
       shellAbbrs = {
         eza = "eza --group-directories-first --git";
