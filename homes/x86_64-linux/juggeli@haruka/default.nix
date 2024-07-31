@@ -1,5 +1,6 @@
 { lib, config, ... }:
-with lib.plusultra; {
+with lib.plusultra;
+{
   plusultra = {
     user = {
       enable = true;
@@ -14,6 +15,7 @@ with lib.plusultra; {
       lazygit = enabled;
       ffmpeg = enabled;
       ab-av1 = enabled;
+      yazi = enabled;
     };
 
     tools = {
@@ -22,6 +24,5 @@ with lib.plusultra; {
     };
   };
 
-  home.sessionPath = [
-  ];
+  home.sessionPath = [ ];
 }
