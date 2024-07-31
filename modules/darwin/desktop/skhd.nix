@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 with lib;
 with lib.plusultra;
@@ -13,13 +18,10 @@ in
   config = mkIf cfg.enable {
     homebrew = {
       enable = true;
-      brews = [
-        "lutzifer/homebrew-tap/keyboardSwitcher"
-      ];
-      taps = [
-        "lutzifer/tap"
-      ];
+      brews = [ "lutzifer/homebrew-tap/keyboardSwitcher" ];
+      taps = [ "lutzifer/tap" ];
     };
+    environment.systemPackages = [ pkgs.jq ];
     services.skhd = {
       enable = true;
 
@@ -76,22 +78,20 @@ in
         hyper - 7 : yabai -m space --focus 7
         hyper - 8 : yabai -m space --focus 8
 
-        # Insert Direction
-        lctrl + shift + cmd - v : yabai -m window --insert south
-        lctrl + shift + cmd - b : yabai -m window --insert east
-        lctrl + shift + cmd - s : yabai -m window --insert stack
-
         # Floating Windows
-        # shift + cmd - space : \
-        #   yabai -m window --toggle float; \
-        #   yabai -m window --toggle border
         shift + cmd - space : yabai -m window --toggle float
 
         # Fix balance between kitty and ios simulator
         cmd + shift - f : yabai -m window --resize right:411:0
 
-        # Terminal
-        shift + cmd - return : ${pkgs.kitty}/bin/kitty
+        # T for terminal
+        hyper - t : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "kitty")) | .[0].id')" || (yabai -m signal --add event="window_created" label="kitty_label" app="^kitty$" action="yabai -m window \$YABAI_WINDOW_ID --focus && yabai -m signal --remove kitty_label") && open -ga ~/Applications/Home\ Manager\ Apps/kitty.app
+
+        # B for browser
+        hyper - b : export MOZ_DISABLE_SAFE_MODE_KEY=1; yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Firefox")) | .[0].id')" || (yabai -m signal --add event="window_created" label="firefox_label" app="^Firefox$" action="yabai -m window \$YABAI_WINDOW_ID --focus && yabai -m signal --remove firefox_label") && open -ga /Applications/Firefox.app
+
+        # C for chat
+        hyper - c : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Slack")) | .[0].id')" || (yabai -m signal --add event="window_created" label="slack_label" app="^Slack$" action="yabai -m window \$YABAI_WINDOW_ID --focus && yabai -m signal --remove slack_label") && open -ga /Applications/Slack.app
 
         # Fullscreen
         alt - f : yabai -m window --toggle zoom-fullscreen
@@ -112,4 +112,3 @@ in
     };
   };
 }
-
