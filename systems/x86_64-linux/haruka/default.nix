@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   ip = "10.11.11.2";
   gateway = "10.11.11.1";
   interface = "enp3s0";
@@ -71,9 +77,7 @@ in
       syncthing = enabled;
       borgmatic = {
         enable = true;
-        directories = [
-          "/mnt/appdata"
-        ];
+        directories = [ "/mnt/appdata" ];
       };
       podman = enabled;
     };
