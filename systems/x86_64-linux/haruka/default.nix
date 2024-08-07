@@ -153,6 +153,7 @@ in
     "ip=${ip}::${gateway}:255.255.255.0:haruka:${interface}:off"
     # try to fix zfs oom issue
     "zfs.zfs_arc_shrinker_limit=0"
+    "zfs.zfs_arc_max=8589934592"
   ];
 
   boot.loader.supportsInitrdSecrets = true;
