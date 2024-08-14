@@ -20,12 +20,20 @@ in
       inherit (cfg) userName userEmail;
       lfs = enabled;
       extraConfig = {
-        init = { defaultBranch = "main"; };
-        pull = { rebase = true; };
-        push = { autoSetupRemote = true; };
-        core = { whitespace = "trailing-space,space-before-tab"; };
+        init = {
+          defaultBranch = "main";
+        };
+        pull = {
+          rebase = true;
+        };
+        push = {
+          autoSetupRemote = true;
+        };
+        core = {
+          whitespace = "trailing-space,space-before-tab";
+        };
       };
+      ignores = [ ".nvim.lua" ];
     };
   };
 }
-
