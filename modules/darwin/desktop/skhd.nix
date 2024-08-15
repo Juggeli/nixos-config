@@ -87,6 +87,12 @@ in
         # C for chat
         hyper - c : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Slack")) | .[0].id')" || (yabai -m signal --add event="window_created" label="slack_label" app="^Slack$" action="yabai -m window \$YABAI_WINDOW_ID --focus && yabai -m signal --remove slack_label") && open -ga /Applications/Slack.app
 
+        # M for mail
+        hyper - m : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Mail")) | .[0].id')" || (yabai -m signal --add event="window_created" label="mail_label" app="^Mail$" action="yabai -m window \$YABAI_WINDOW_ID --focus && yabai -m signal --remove mail_label") && open -ga /Applications/Mail.app
+
+        # N for notes
+        hyper - n : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Obsidian")) | .[0].id')" || (yabai -m signal --add event="window_created" label="obsidian_label" app="^Obsidian$" action="yabai -m window \$YABAI_WINDOW_ID --focus && yabai -m signal --remove obsidian_label") && open -ga /Applications/Obsidian.app
+
         # Fullscreen
         alt - f : yabai -m window --toggle zoom-fullscreen
         shift + alt - f : yabai -m window --toggle native-fullscreen
