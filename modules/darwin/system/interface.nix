@@ -40,7 +40,7 @@ in
       };
 
       NSGlobalDomain = {
-        _HIHideMenuBar = true;
+        _HIHideMenuBar = false;
         AppleShowScrollBars = "Always";
         # Always use dark mode.
         AppleInterfaceStyle = "Dark";
