@@ -2,7 +2,8 @@
 
 with lib;
 with lib.plusultra;
-let cfg = config.plusultra.system.input;
+let
+  cfg = config.plusultra.system.input;
 in
 {
   options.plusultra.system.input = with types; {
@@ -14,6 +15,7 @@ in
       system = {
         keyboard = {
           enableKeyMapping = true;
+          # Use Hyperkey app for this
           remapCapsLockToEscape = true;
         };
 
@@ -51,4 +53,3 @@ in
     }
   ]);
 }
-
