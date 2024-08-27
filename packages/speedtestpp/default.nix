@@ -1,4 +1,12 @@
-{ stdenv, lib, fetchFromGitHub, cmake, curl, openssl, libxml2 }:
+{
+  stdenv,
+  lib,
+  fetchFromGitHub,
+  cmake,
+  curl,
+  openssl,
+  libxml2,
+}:
 
 stdenv.mkDerivation {
   pname = "speedtestpp";
@@ -9,7 +17,12 @@ stdenv.mkDerivation {
     rev = "0f63cfbf7ce8d64ea803bf143b957eae76323405";
     sha256 = "sha256-rGY0kK2OCZl+229/JERf2ghBSdvAedhVuL4SrVzYFmU=";
   };
-  nativeBuildInputs = [ cmake curl openssl libxml2 ];
+  nativeBuildInputs = [
+    cmake
+    curl
+    openssl
+    libxml2
+  ];
   postInstall = ''
     ln -s $out/bin/SpeedTest $out/bin/speedtestpp
   '';

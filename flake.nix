@@ -53,7 +53,8 @@
     catppuccin.url = "github:catppuccin/nix";
   };
 
-  outputs = inputs:
+  outputs =
+    inputs:
     let
       lib = inputs.snowfall-lib.mkLib {
         inherit inputs;
@@ -92,10 +93,8 @@
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
 
-      checks =
-        builtins.mapAttrs
-          (system: deploy-lib:
-            deploy-lib.deployChecks inputs.self.deploy)
-          inputs.deploy-rs.lib;
+      checks = builtins.mapAttrs (
+        system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
+      ) inputs.deploy-rs.lib;
     };
 }

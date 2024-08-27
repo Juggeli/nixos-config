@@ -1,6 +1,12 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.services.cloudflared;
 in
 {
@@ -23,7 +29,10 @@ in
 
     systemd.services.cloudflare-tunnel = {
       wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.target" "systemd-resolved.service" ];
+      after = [
+        "network-online.target"
+        "systemd-resolved.service"
+      ];
       serviceConfig = {
         Restart = "always";
         User = "cloudflared";

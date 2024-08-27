@@ -1,6 +1,7 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.apps._1password;
 in
 {

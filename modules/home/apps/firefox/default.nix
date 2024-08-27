@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.apps.firefox;
   defaultSettings = {
     # Default to dark theme in DevTools panel
@@ -159,10 +165,8 @@ in
 {
   options.plusultra.apps.firefox = with types; {
     enable = mkBoolOpt false "Whether or not to enable Firefox.";
-    extraConfig =
-      mkOpt str "" "Extra configuration for the user profile JS file.";
-    userChrome =
-      mkOpt str "" "Extra configuration for the user chrome CSS file.";
+    extraConfig = mkOpt str "" "Extra configuration for the user profile JS file.";
+    userChrome = mkOpt str "" "Extra configuration for the user chrome CSS file.";
     settings = mkOpt attrs defaultSettings "Settings to apply to the profile.";
   };
 

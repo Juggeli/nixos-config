@@ -1,6 +1,14 @@
-{ options, config, pkgs, lib, inputs, ... }:
+{
+  options,
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.tools.agenix;
   user = config.plusultra.user;
   secretsDir = "${toString ../../../../systems/x86_64-linux}/${config.networking.hostName}/secrets";
@@ -18,16 +26,16 @@ in
 
     age = {
       secrets =
-        if pathExists secretsFile
-        then
-          mapAttrs'
-            (n: _:
-              nameValuePair (removeSuffix ".age" n) {
-                file = "${secretsDir}/${n}";
-                owner = mkDefault user.name;
-              })
-            (import secretsFile)
-        else { };
+        if pathExists secretsFile then
+          mapAttrs' (
+            n: _:
+            nameValuePair (removeSuffix ".age" n) {
+              file = "${secretsDir}/${n}";
+              owner = mkDefault user.name;
+            }
+          ) (import secretsFile)
+        else
+          { };
       identityPaths =
         options.age.identityPaths.default
         ++ (filter pathExists [

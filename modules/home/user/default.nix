@@ -1,7 +1,13 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.user;
   is-darwin = pkgs.stdenv.isDarwin;
   home-directory =
@@ -46,4 +52,3 @@ in
     }
   ]);
 }
-

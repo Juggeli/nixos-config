@@ -1,8 +1,17 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.nix;
-  users = [ "root" config.plusultra.user.name ];
+  users = [
+    "root"
+    config.plusultra.user.name
+  ];
 in
 {
   options.plusultra.nix = with types; {

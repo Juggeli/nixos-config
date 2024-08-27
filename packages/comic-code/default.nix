@@ -18,4 +18,3 @@ stdenv.mkDerivation {
     maintainers = [ ];
   };
 }
-

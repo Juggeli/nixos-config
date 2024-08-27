@@ -1,7 +1,12 @@
-{ lib, inputs, snowfall-inputs }:
+{
+  lib,
+  inputs,
+  snowfall-inputs,
+}:
 
 {
-  override-meta = meta: package:
+  override-meta =
+    meta: package:
     package.overrideAttrs (_: {
       inherit meta;
     });

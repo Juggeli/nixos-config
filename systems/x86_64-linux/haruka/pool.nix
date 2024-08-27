@@ -6,7 +6,7 @@ let
     text = ''
       SOURCE="''${1}"
       DEST="''${2}"
-      
+
       rclone -v move "''${SOURCE}" "''${DEST}"
     '';
   };
@@ -18,7 +18,7 @@ in
     hdparm
   ];
 
-  powerManagement.powerUpCommands = with pkgs;''
+  powerManagement.powerUpCommands = with pkgs; ''
     ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sda
     ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdb
     ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdc
@@ -49,4 +49,3 @@ in
     };
   };
 }
-

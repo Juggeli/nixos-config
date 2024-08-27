@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.feature.syncthing;
   syncthing-browser = pkgs.writeShellScriptBin "syncthing-browser" ''
     xdg-open http://${config.services.syncthing.guiAddress}
@@ -29,18 +35,32 @@ in
         overrideFolders = true;
         settings = {
           devices = {
-            "air" = { id = "TDYWB6T-LY5VAOF-X25VOXH-H6L3RUU-CN3ZFDM-NCM7YDY-NAI2P6H-723IBQZ"; };
-            "haruka" = { id = "45RLMRL-COTJJV7-QXRIMZC-E2UR3P5-X5DV62Q-X6EO5HY-I4RJISU-BTPXIAB"; };
-            "noel" = { id = "7WH7YG3-7UCT4KC-R27XT6G-RC6C7OF-JFQJJEH-JNVDCZJ-ZUZFFK4-3O25GQT"; };
+            "air" = {
+              id = "TDYWB6T-LY5VAOF-X25VOXH-H6L3RUU-CN3ZFDM-NCM7YDY-NAI2P6H-723IBQZ";
+            };
+            "haruka" = {
+              id = "45RLMRL-COTJJV7-QXRIMZC-E2UR3P5-X5DV62Q-X6EO5HY-I4RJISU-BTPXIAB";
+            };
+            "noel" = {
+              id = "7WH7YG3-7UCT4KC-R27XT6G-RC6C7OF-JFQJJEH-JNVDCZJ-ZUZFFK4-3O25GQT";
+            };
           };
           folders = {
             "documents" = {
               path = "${config.services.syncthing.dataDir}/documents";
-              devices = [ "air" "haruka" "noel" ];
+              devices = [
+                "air"
+                "haruka"
+                "noel"
+              ];
             };
             "downloads" = {
               path = "${config.services.syncthing.dataDir}/downloads";
-              devices = [ "air" "haruka" "noel" ];
+              devices = [
+                "air"
+                "haruka"
+                "noel"
+              ];
             };
           };
         };
@@ -52,7 +72,13 @@ in
     ];
 
     # Syncthing ports
-    networking.firewall.allowedTCPPorts = [ 8384 22000 ];
-    networking.firewall.allowedUDPPorts = [ 22000 21027 ];
+    networking.firewall.allowedTCPPorts = [
+      8384
+      22000
+    ];
+    networking.firewall.allowedUDPPorts = [
+      22000
+      21027
+    ];
   };
 }

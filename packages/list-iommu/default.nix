@@ -1,7 +1,6 @@
 { writeShellApplication, pciutils, ... }:
 
-writeShellApplication
-{
+writeShellApplication {
   name = "list-iommu";
   checkPhase = "";
   runtimeInputs = [
@@ -15,4 +14,4 @@ writeShellApplication
       lspci -nns "''${d##*/}"
     done
   '';
-} 
+}

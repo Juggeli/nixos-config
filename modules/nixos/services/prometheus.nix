@@ -1,6 +1,12 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.services.prometheus;
 in
 {
@@ -23,7 +29,10 @@ in
 
         smokeping = {
           enable = true;
-          hosts = [ "1.1.1.1" "google.com" ];
+          hosts = [
+            "1.1.1.1"
+            "google.com"
+          ];
         };
       };
 
@@ -57,7 +66,11 @@ in
     };
 
     networking.firewall = {
-      allowedTCPPorts = [ 9633 9090 9902 ];
+      allowedTCPPorts = [
+        9633
+        9090
+        9902
+      ];
     };
   };
 }

@@ -1,14 +1,20 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.desktop.hyprland;
 
   # Catppuccin-Mocha
   surface0 = "0xff313244";
   red = "0xffa6e3a1";
 
-  workspaces = builtins.concatLists (builtins.genList
-    (
+  workspaces = builtins.concatLists (
+    builtins.genList (
       x:
       let
         ws =
@@ -22,13 +28,17 @@ with lib.plusultra; let
         ", F${ws}, workspace, ${toString (x + 1)}"
         "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
       ]
-    )
-    10);
+    ) 10
+  );
 
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
 
-    runtimeInputs = with pkgs; [ grim slurp wl-clipboard ];
+    runtimeInputs = with pkgs; [
+      grim
+      slurp
+      wl-clipboard
+    ];
 
     text = ''
       grim -g "$(slurp)" - | wl-copy
@@ -62,34 +72,33 @@ in
       enable = true;
       settings = {
         "$mod" = "SUPER";
-        bind =
-          [
-            "$mod, Space, exec, rofi -show combi"
-            "$mod, B, exec, firefox"
-            ", Print, exec, screenshot"
-            "$mod, Return, exec, kitty"
-            "$mod, W, killactive"
-            "$mod Shift, E, exit"
-            "$mod, T, togglefloating"
-            "$mod, F, fullscreen"
+        bind = [
+          "$mod, Space, exec, rofi -show combi"
+          "$mod, B, exec, firefox"
+          ", Print, exec, screenshot"
+          "$mod, Return, exec, kitty"
+          "$mod, W, killactive"
+          "$mod Shift, E, exit"
+          "$mod, T, togglefloating"
+          "$mod, F, fullscreen"
 
-            # Groups
-            "$mod, G, togglegroup"
-            "Control Shift, bracketleft, changegroupactive, b"
-            "Control Shift, bracketright, changegroupactive, f"
+          # Groups
+          "$mod, G, togglegroup"
+          "Control Shift, bracketleft, changegroupactive, b"
+          "Control Shift, bracketright, changegroupactive, f"
 
-            # Move focus
-            "$mod, H, movefocus, l"
-            "$mod, L, movefocus, r"
-            "$mod, K, movefocus, u"
-            "$mod, J, movefocus, d"
+          # Move focus
+          "$mod, H, movefocus, l"
+          "$mod, L, movefocus, r"
+          "$mod, K, movefocus, u"
+          "$mod, J, movefocus, d"
 
-            # Move window
-            "$mod Shift, H, movewindow, l"
-            "$mod Shift, L, movewindow, r"
-            "$mod Shift, K, movewindow, u"
-            "$mod Shift, J, movewindow, d"
-          ] ++ workspaces;
+          # Move window
+          "$mod Shift, H, movewindow, l"
+          "$mod Shift, L, movewindow, r"
+          "$mod Shift, K, movewindow, u"
+          "$mod Shift, J, movewindow, d"
+        ] ++ workspaces;
         bindm = [
           "$mod, mouse:272, movewindow"
           "$mod, mouse:273, resizewindow"

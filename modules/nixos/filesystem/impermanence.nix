@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg_impermanence = config.plusultra.filesystem.impermanence;
   cfg_encrypt = config.plusultra.filesystem.encryption;
   # Running this will show what changed during boot to potentially use for persisting

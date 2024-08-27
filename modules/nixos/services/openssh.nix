@@ -1,6 +1,12 @@
-{ config, lib, format ? "", ... }:
+{
+  config,
+  lib,
+  format ? "",
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.services.openssh;
   defaultKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO"
@@ -15,8 +21,7 @@ in
 {
   options.plusultra.services.openssh = with types; {
     enable = mkBoolOpt false "Whether or not to configure OpenSSH support.";
-    authorizedKeys =
-      mkOpt (listOf str) defaultKeys "The public keys to apply.";
+    authorizedKeys = mkOpt (listOf str) defaultKeys "The public keys to apply.";
     port = mkOpt port 2222 "The port to listen on (in addition to 22).";
   };
 
@@ -25,10 +30,7 @@ in
       enable = true;
 
       settings = {
-        PermitRootLogin =
-          if format == "install-iso"
-          then "yes"
-          else "no";
+        PermitRootLogin = if format == "install-iso" then "yes" else "no";
         PasswordAuthentication = false;
       };
 
@@ -44,8 +46,7 @@ in
 
     programs.ssh.startAgent = true;
 
-    plusultra.user.extraOptions.openssh.authorizedKeys.keys =
-      cfg.authorizedKeys;
+    plusultra.user.extraOptions.openssh.authorizedKeys.keys = cfg.authorizedKeys;
 
     plusultra.filesystem.impermanence.directories = [
       "/etc/ssh"

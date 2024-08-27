@@ -1,7 +1,8 @@
 { lib, config, ... }:
 
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.user;
 in
 {
@@ -27,4 +28,3 @@ in
     '';
   };
 }
-

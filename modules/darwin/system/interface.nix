@@ -2,7 +2,8 @@
 
 with lib;
 with lib.plusultra;
-let cfg = config.plusultra.system.interface;
+let
+  cfg = config.plusultra.system.interface;
 in
 {
   options.plusultra.system.interface = with types; {
@@ -81,4 +82,3 @@ in
     plusultra.home.file.".hushlogin".text = "";
   };
 }
-

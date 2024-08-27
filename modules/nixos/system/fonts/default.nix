@@ -1,6 +1,12 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.system.fonts;
 in
 {
@@ -18,7 +24,8 @@ in
     environment.systemPackages = with pkgs; [ font-manager ];
 
     fonts = {
-      packages = with pkgs;
+      packages =
+        with pkgs;
         [
           noto-fonts
           noto-fonts-cjk-sans

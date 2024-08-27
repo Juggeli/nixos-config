@@ -1,6 +1,7 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.filesystem.tmpfs;
 in
 {
@@ -12,7 +13,12 @@ in
     };
     size = mkOption {
       default = "50%";
-      type = with types; oneOf [ types.str types.types.ints.positive ];
+      type =
+        with types;
+        oneOf [
+          types.str
+          types.types.ints.positive
+        ];
       description = "Size of TMPFS";
     };
   };

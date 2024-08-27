@@ -1,13 +1,16 @@
-{ options, config, lib, ... }:
+{
+  options,
+  config,
+  lib,
+  ...
+}:
 
 with lib;
 with lib.plusultra;
 {
   options.plusultra.home = with types; {
-    file = mkOpt attrs { }
-      "A set of files to be managed by home-manager's home.file.";
-    configFile = mkOpt attrs { }
-      "A set of files to be managed by home-manager's xdg.configFile.";
+    file = mkOpt attrs { } "A set of files to be managed by home-manager's home.file.";
+    configFile = mkOpt attrs { } "A set of files to be managed by home-manager's xdg.configFile.";
     extraOptions = mkOpt attrs { } "Options to pass directly to home-manager.";
   };
 
@@ -23,9 +26,7 @@ with lib.plusultra;
       useUserPackages = true;
       useGlobalPkgs = true;
 
-      users.${config.plusultra.user.name} =
-        mkAliasDefinitions options.plusultra.home.extraOptions;
+      users.${config.plusultra.user.name} = mkAliasDefinitions options.plusultra.home.extraOptions;
     };
   };
 }
-

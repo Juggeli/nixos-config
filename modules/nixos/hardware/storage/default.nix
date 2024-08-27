@@ -1,13 +1,17 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.hardware.storage;
 in
 {
   options.plusultra.hardware.storage = with types; {
-    enable =
-      mkBoolOpt false
-        "Whether or not to enable support for extra storage devices.";
+    enable = mkBoolOpt false "Whether or not to enable support for extra storage devices.";
   };
 
   config = mkIf cfg.enable {

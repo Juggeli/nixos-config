@@ -1,12 +1,17 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.desktop.addons.rofi;
 in
 {
   options.plusultra.desktop.addons.rofi = with types; {
-    enable =
-      mkBoolOpt false "Whether to enable Rofi in the desktop environment.";
+    enable = mkBoolOpt false "Whether to enable Rofi in the desktop environment.";
   };
 
   config = mkIf cfg.enable {

@@ -1,7 +1,13 @@
-{ modulesPath, lib, config, ... }:
+{
+  modulesPath,
+  lib,
+  config,
+  ...
+}:
 
 with lib;
-with lib.plusultra; {
+with lib.plusultra;
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")

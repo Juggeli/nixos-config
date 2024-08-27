@@ -1,5 +1,6 @@
 { lib, config, ... }:
-with lib.plusultra; {
+with lib.plusultra;
+{
   plusultra = {
     user = {
       enable = true;
@@ -48,6 +49,7 @@ with lib.plusultra; {
     };
   };
 
-  home.sessionPath = [
-  ];
+  home.sessionPath =
+    [
+    ];
 }

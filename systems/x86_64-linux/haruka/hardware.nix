@@ -1,4 +1,10 @@
-{ config, lib, modulesPath, inputs, ... }:
+{
+  config,
+  lib,
+  modulesPath,
+  inputs,
+  ...
+}:
 
 let
   inherit (inputs) nixos-hardware;
@@ -64,11 +70,13 @@ in
     };
   };
 
-  swapDevices = [{
-    device = "/mnt/appdata/swapfile";
-    size = 16 * 1024;
-    priority = 1;
-  }];
+  swapDevices = [
+    {
+      device = "/mnt/appdata/swapfile";
+      size = 16 * 1024;
+      priority = 1;
+    }
+  ];
 
   zramSwap = {
     enable = true;
@@ -76,6 +84,5 @@ in
 
   hardware.enableRedistributableFirmware = true;
 
-  hardware.cpu.intel.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

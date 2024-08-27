@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.filesystem.encryption;
 in
 {
@@ -64,7 +70,11 @@ in
       networkModule = mkOption {
         type = types.listOf types.str;
         default = [ ];
-        example = [ "ixgbe" "r8169" "virtio-pci" ];
+        example = [
+          "ixgbe"
+          "r8169"
+          "virtio-pci"
+        ];
         description = "Kernel module to embed in initrd to allow for network access. Use 'lspci -v' to get the right module";
       };
       port = mkOption {

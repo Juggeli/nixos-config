@@ -1,12 +1,12 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.suites.desktop;
 in
 {
   options.plusultra.suites.desktop = with types; {
-    enable =
-      mkBoolOpt false "Whether or not to enable common desktop configuration.";
+    enable = mkBoolOpt false "Whether or not to enable common desktop configuration.";
   };
 
   config = mkIf cfg.enable {

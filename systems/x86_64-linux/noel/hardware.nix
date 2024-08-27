@@ -1,4 +1,10 @@
-{ pkgs, modulesPath, inputs, config, ... }:
+{
+  pkgs,
+  modulesPath,
+  inputs,
+  config,
+  ...
+}:
 
 let
   inherit (inputs) nixos-hardware;
@@ -28,7 +34,13 @@ in
 
   boot = {
 
-    initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "aesni_intel" ];
+    initrd.availableKernelModules = [
+      "xhci_pci"
+      "ahci"
+      "nvme"
+      "usbhid"
+      "aesni_intel"
+    ];
     kernelPackages = pkgs.linuxPackages_6_10;
 
     kernelModules = [ "kvm-intel" ];

@@ -1,8 +1,14 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 with lib;
 with lib.plusultra;
-let cfg = config.plusultra.system.fonts;
+let
+  cfg = config.plusultra.system.fonts;
 in
 {
   options.plusultra.system.fonts = with types; {
@@ -17,16 +23,23 @@ in
     };
 
     fonts = {
-      packages = with pkgs;
+      packages =
+        with pkgs;
         [
           noto-fonts
           noto-fonts-cjk-sans
           noto-fonts-cjk-serif
           noto-fonts-emoji
-          (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "FantasqueSansMono" "Hack" ]; })
+          (nerdfonts.override {
+            fonts = [
+              "NerdFontsSymbolsOnly"
+              "FantasqueSansMono"
+              "Hack"
+            ];
+          })
           plusultra.comic-code
-        ] ++ cfg.fonts;
+        ]
+        ++ cfg.fonts;
     };
   };
 }
-

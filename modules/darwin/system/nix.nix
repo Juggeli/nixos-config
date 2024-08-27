@@ -1,8 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 with lib.plusultra;
-let cfg = config.plusultra.system.nix;
+let
+  cfg = config.plusultra.system.nix;
 in
 {
   options.plusultra.system.nix = with types; {
@@ -12,7 +18,11 @@ in
   config = mkIf cfg.enable {
     services.nix-daemon = enabled;
     nix =
-      let users = [ "root" config.plusultra.user.name ];
+      let
+        users = [
+          "root"
+          config.plusultra.user.name
+        ];
       in
       {
         settings = {
@@ -33,7 +43,9 @@ in
 
         gc = {
           automatic = true;
-          interval = { Day = 7; };
+          interval = {
+            Day = 7;
+          };
           options = "--delete-older-than 30d";
           user = config.plusultra.user.name;
         };
@@ -47,4 +59,3 @@ in
       };
   };
 }
-

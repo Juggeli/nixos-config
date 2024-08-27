@@ -2,7 +2,8 @@
 
 with lib;
 with lib.plusultra;
-let cfg = config.plusultra.roles.home-common;
+let
+  cfg = config.plusultra.roles.home-common;
 in
 {
   options.plusultra.roles.home-common = with types; {
@@ -35,4 +36,3 @@ in
     };
   };
 }
-

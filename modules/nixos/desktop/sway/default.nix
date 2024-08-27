@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.desktop.sway;
 
   # bash script to let dbus know about important env variables and
@@ -44,8 +50,7 @@ in
 {
   options.plusultra.desktop.sway = with types; {
     enable = mkBoolOpt false "Whether or not to enable Sway.";
-    extraConfig =
-      mkOpt str "" "Additional configuration for the Sway config file.";
+    extraConfig = mkOpt str "" "Additional configuration for the Sway config file.";
   };
 
   config = mkIf cfg.enable {
@@ -130,11 +135,15 @@ in
         window.commands = [
           {
             command = "floating enable";
-            criteria = { app_id = "pavucontrol"; };
+            criteria = {
+              app_id = "pavucontrol";
+            };
           }
           {
             command = "floating enable";
-            criteria = { app_id = "mpv"; };
+            criteria = {
+              app_id = "mpv";
+            };
           }
         ];
         keybindings = lib.mkOptionDefault {
@@ -175,7 +184,12 @@ in
     };
 
     security.pam.loginLimits = [
-      { domain = "@users"; item = "rtprio"; type = "-"; value = 1; }
+      {
+        domain = "@users";
+        item = "rtprio";
+        type = "-";
+        value = 1;
+      }
     ];
   };
 }

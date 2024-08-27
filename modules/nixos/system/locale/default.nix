@@ -1,6 +1,7 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.system.locale;
 in
 {
@@ -11,6 +12,8 @@ in
   config = mkIf cfg.enable {
     i18n.defaultLocale = "en_US.UTF-8";
 
-    console = { keyMap = mkForce "us"; };
+    console = {
+      keyMap = mkForce "us";
+    };
   };
 }

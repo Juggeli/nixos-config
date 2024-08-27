@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 with lib;
 with lib.plusultra;
@@ -47,4 +52,3 @@ in
     };
   };
 }
-

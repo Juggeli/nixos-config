@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.desktop.addons.mako;
 in
 {
@@ -9,7 +15,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ mako libnotify ];
+    environment.systemPackages = with pkgs; [
+      mako
+      libnotify
+    ];
 
     systemd.user.services.mako = {
       description = "Mako notification daemon";

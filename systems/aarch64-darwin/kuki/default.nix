@@ -1,5 +1,6 @@
 { lib, ... }:
-with lib.plusultra; {
+with lib.plusultra;
+{
   plusultra = {
     roles.darwin-common = enabled;
   };

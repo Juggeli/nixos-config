@@ -1,12 +1,12 @@
 { config, lib, ... }:
 with lib;
-with lib.plusultra; let
+with lib.plusultra;
+let
   cfg = config.plusultra.desktop.waybar;
 in
 {
   options.plusultra.desktop.waybar = with types; {
-    enable =
-      mkBoolOpt false "Whether to enable Waybar in the desktop environment.";
+    enable = mkBoolOpt false "Whether to enable Waybar in the desktop environment.";
   };
 
   config = mkIf cfg.enable {
@@ -21,8 +21,15 @@ in
           margin-right = 1200;
           margin-bottom = 6;
           height = 40;
-          modules-left = [ "custom/logo" "hyprland/workspaces" ];
-          modules-right = [ "pulseaudio" "tray" "clock" ];
+          modules-left = [
+            "custom/logo"
+            "hyprland/workspaces"
+          ];
+          modules-right = [
+            "pulseaudio"
+            "tray"
+            "clock"
+          ];
 
           "custom/logo" = {
             format = "";
@@ -43,7 +50,11 @@ in
           pulseaudio = {
             format = " {icon} ";
             format-muted = "";
-            format-icons = [ "" "󰖀" "󰕾" ];
+            format-icons = [
+              ""
+              "󰖀"
+              "󰕾"
+            ];
             tooltip = true;
             tooltip-format = "{volume}%";
           };

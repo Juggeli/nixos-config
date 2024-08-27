@@ -1,4 +1,9 @@
-{ lib, stdenv, pkgs, ... }:
+{
+  lib,
+  stdenv,
+  pkgs,
+  ...
+}:
 
 stdenv.mkDerivation {
   pname = "prometheus-smartcetl";
@@ -16,9 +21,11 @@ stdenv.mkDerivation {
   ];
 
   buildInputs = [
-    (pkgs.python3.withPackages (p: with p; [
-      prometheus_client
-    ]))
+    (pkgs.python3.withPackages (
+      p: with p; [
+        prometheus_client
+      ]
+    ))
   ];
 
   installPhase = ''
@@ -29,9 +36,11 @@ stdenv.mkDerivation {
 
   postFixup = ''
     wrapProgram $out/bin/smartprom \
-      --set PATH ${lib.makeBinPath [
-        pkgs.smartmontools
-      ]}
+      --set PATH ${
+        lib.makeBinPath [
+          pkgs.smartmontools
+        ]
+      }
   '';
 
   meta = {
@@ -42,4 +51,3 @@ stdenv.mkDerivation {
     maintainers = [ ];
   };
 }
-

@@ -1,6 +1,7 @@
 { lib, ... }:
 with lib;
-with lib.plusultra; {
+with lib.plusultra;
+{
   imports = [
     ./hardware.nix
   ];
