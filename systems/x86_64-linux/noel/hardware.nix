@@ -27,9 +27,9 @@ in
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_8;
 
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "aesni_intel" ];
+    kernelPackages = pkgs.linuxPackages_6_10;
 
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
