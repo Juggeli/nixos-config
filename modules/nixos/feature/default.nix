@@ -9,5 +9,6 @@
     ./podman.nix
     ./flatpak.nix
     ./earlyoom.nix
+    ./theming.nix
   ];
 }
