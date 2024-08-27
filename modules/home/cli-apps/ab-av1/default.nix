@@ -8,9 +8,5 @@ in
     enable = mkBoolOpt false "Whether or not to enable ab-av1.";
   };
 
-  config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      plusultra.ab-av1
-    ];
-  };
+  config = mkIf cfg.enable { home.packages = with pkgs; [ ab-av1 ]; };
 }
