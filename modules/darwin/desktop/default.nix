@@ -6,5 +6,6 @@
     ./skhd.nix
     ./spacebar.nix
     ./homebrew.nix
+    ./aerospace.nix
   ];
 }

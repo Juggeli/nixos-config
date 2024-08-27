@@ -13,10 +13,11 @@ in
     programs.fish = enabled;
     plusultra = {
       desktop = {
-        yabai = enabled;
-        spacebar = enabled;
-        skhd = enabled;
+        yabai = disabled;
+        spacebar = disabled;
+        skhd = disabled;
         homebrew = enabled;
+        aerospace = enabled;
       };
       system = {
         nix = enabled;
