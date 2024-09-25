@@ -21,6 +21,7 @@ in
           enable = true;
           fontSize = 15;
         };
+        mpv = enabled;
       };
       cli-apps = {
         fish = enabled;
