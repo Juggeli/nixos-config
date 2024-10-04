@@ -29,6 +29,7 @@ in
         btop = enabled;
         lazygit = enabled;
         jq = enabled;
+        yazi = enabled;
       };
       tools = {
         git = enabled;
