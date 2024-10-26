@@ -189,6 +189,11 @@ if.app-id = 'com.tinyspeck.slackmacgap'
 run = 'move-node-to-workspace C'
 
 [[on-window-detected]]
+# C for chat
+if.app-id = 'com.hnc.Discord'
+run = 'move-node-to-workspace C'
+
+[[on-window-detected]]
 # M for mail
 if.app-id = 'com.apple.mail'
 run = 'move-node-to-workspace M'
