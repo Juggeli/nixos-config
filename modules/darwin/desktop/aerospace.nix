@@ -33,6 +33,9 @@ let
         "com.apple.mail")
             switch_to_finnish
             ;;
+        "com.hnc.Discord")
+            switch_to_finnish
+            ;;
         *)
             # Default layout if the app is not recognized
             switch_to_us
