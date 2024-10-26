@@ -147,6 +147,7 @@ in
           "${pkgs.waybar}/bin/waybar"
           "${pkgs.hyprpaper}/bin/hyprpaper"
           "${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout"
+          ''${pkgs.hyprland}/bin/hyprctl setcursor "Banana-Catppuccin-Mocha" 64''
         ];
         debug = {
           "overlay" = "false";

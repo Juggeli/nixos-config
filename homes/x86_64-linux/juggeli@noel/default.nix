@@ -1,4 +1,9 @@
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 with lib.plusultra;
 {
   plusultra = {
@@ -52,4 +57,12 @@ with lib.plusultra;
   home.sessionPath =
     [
     ];
+
+  home.pointerCursor = {
+    x11.enable = true;
+    gtk.enable = true;
+    package = pkgs.plusultra.banana-cursor-dreams;
+    size = 64;
+    name = "Banana-Catppuccin-Mocha"; # Change to whatever theme you like
+  };
 }
