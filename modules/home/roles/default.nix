@@ -36,5 +36,10 @@ in
         direnv = enabled;
       };
     };
+    catppuccin = {
+      enable = true;
+      flavor = "mocha";
+      accent = "flamingo";
+    };
   };
 }

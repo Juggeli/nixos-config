@@ -50,33 +50,31 @@ in
         nixup = "${rebuildCommand} build --flake .# --recreate-lock-file && ${sudoCommand} ./result/bin/switch-to-configuration switch";
         nixed = "nvim && ${rebuildCommand} build --flake .# && ${sudoCommand} ./result/bin/switch-to-configuration switch";
       };
-      interactiveShellInit =
-        ''
-          function bind_bang
-            switch (commandline -t)
-            case "!"
-              commandline -t -- $history[1]
-              commandline -f repaint
-            case "*"
-              commandline -i !
-            end
+      interactiveShellInit = ''
+        function bind_bang
+          switch (commandline -t)
+          case "!"
+            commandline -t -- $history[1]
+            commandline -f repaint
+          case "*"
+            commandline -i !
           end
+        end
 
-          function fish_user_key_bindings
-            bind ! bind_bang
-            bind \cY accept-autosuggestion execute
-          end
+        function fish_user_key_bindings
+          bind ! bind_bang
+          bind \cY accept-autosuggestion execute
+        end
 
-          function ya
-            set tmp (mktemp -t "yazi-cwd.XXXXX")
-            yazi $argv --cwd-file="$tmp"
-            if set cwd (cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-              cd -- "$cwd"
-            end
-            rm -f -- "$tmp"
+        function ya
+          set tmp (mktemp -t "yazi-cwd.XXXXX")
+          yazi $argv --cwd-file="$tmp"
+          if set cwd (cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+            cd -- "$cwd"
           end
-        ''
-        + builtins.readFile ./catpuccin.fish;
+          rm -f -- "$tmp"
+        end
+      '';
       plugins = [
         {
           name = "grc";
