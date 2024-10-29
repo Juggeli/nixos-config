@@ -35,7 +35,6 @@ with lib.plusultra;
       ffmpeg = enabled;
       imv = enabled;
       sshfs = enabled;
-      vifm = enabled;
       speedtestpp = enabled;
       btop = enabled;
       tmux = enabled;
