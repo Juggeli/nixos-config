@@ -37,8 +37,8 @@ in
         ssh_command = "ssh -i /home/${config.plusultra.user.name}/.ssh/id_ed25519";
         keep_daily = 7;
         keep_weekly = 4;
-        keep_monthly = 6;
-        keep_yearly = 1;
+        keep_monthly = 12;
+        keep_yearly = 4;
         checks = [
           { name = "repository"; }
           {
