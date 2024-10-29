@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -15,9 +14,15 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      yazi
-    ];
-    xdg.configFile."yazi/theme.toml".source = ./theme.toml;
+    programs.yazi = {
+      enable = true;
+      enableFishIntegration = true;
+      catppuccin.enable = true;
+      settings = {
+        preview = {
+          image_delay = 0;
+        };
+      };
+    };
   };
 }
