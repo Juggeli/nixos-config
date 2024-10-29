@@ -16,8 +16,12 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      zathura
       poppler_utils
     ];
+
+    programs.zathura = {
+      enable = true;
+      catppuccin.enable = true;
+    };
   };
 }

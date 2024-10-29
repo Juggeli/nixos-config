@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -15,8 +14,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      tmux
-    ];
+    programs.tmux = {
+      enable = true;
+      catppuccin.enable = true;
+    };
   };
 }

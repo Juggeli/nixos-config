@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
 
 with lib;
 with lib.plusultra;
@@ -9,6 +14,8 @@ in
   options.plusultra.roles.home-common = with types; {
     enable = mkBoolOpt false "Whether to enable common home configuration";
   };
+
+  imports = [ (inputs.catppuccin.homeManagerModules.catppuccin) ];
 
   config = mkIf cfg.enable {
     plusultra = {

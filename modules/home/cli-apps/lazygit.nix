@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -15,9 +14,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      lazygit
-    ];
+    programs.lazygit = {
+      enable = true;
+      catppuccin.enable = true;
+    };
     plusultra.user.impermanence.files = [
       ".config/lazygit/state.yml"
     ];
