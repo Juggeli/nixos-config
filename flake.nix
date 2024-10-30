@@ -2,8 +2,8 @@
   description = "Juggeli's NixOS system";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     snowfall-lib = {
       url = "github:snowfallorg/lib?ref=v3.0.3";
