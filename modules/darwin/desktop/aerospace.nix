@@ -34,6 +34,9 @@ let
             switch_to_finnish
             ;;
         "com.hnc.Discord")
+            switch_to_finnish                              
+            ;;
+        "org.mozilla.com.zen.browser")
             switch_to_finnish
             ;;
         *)
