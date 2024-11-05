@@ -50,6 +50,10 @@ in
         nixsw = "${rebuildCommand} build --flake .# && ${sudoCommand} ./result/bin/switch-to-configuration switch";
         nixup = "${rebuildCommand} build --flake .# --recreate-lock-file && ${sudoCommand} ./result/bin/switch-to-configuration switch";
         nixed = "nvim && ${rebuildCommand} build --flake .# && ${sudoCommand} ./result/bin/switch-to-configuration switch";
+        scs = "doas systemctl start";
+        scr = "doas systemctl restart";
+        sce = "doas systemctl stop";
+        scd = "doas systemctl status";
       };
       interactiveShellInit = ''
         function bind_bang
