@@ -18,6 +18,9 @@ in
       enable = true;
       catppuccin.enable = true;
     };
+
+    xdg.configFile."lazygit/config.yml".text = "";
+
     plusultra.user.impermanence.files = [
       ".config/lazygit/state.yml"
     ];
