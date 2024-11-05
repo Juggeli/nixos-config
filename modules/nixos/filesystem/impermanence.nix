@@ -131,9 +131,10 @@ in
             "/var/lib/systemd/coredump"
             "/var/lib/NetworkManager/"
           ] ++ cfg_impermanence.directories;
-          files = [
-            "/etc/machine-id"
-          ] ++ cfg_impermanence.files;
+          files =
+            [
+            ]
+            ++ cfg_impermanence.files;
         };
       };
 
