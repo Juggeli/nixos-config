@@ -66,10 +66,6 @@ in
       files = [
         "/root/.ssh/known_hosts"
       ];
-      directories = [
-        "/root/.cache/borg"
-        "/root/.config/borg"
-      ];
     };
 
     system.activationScripts."healthcheck-secret" = ''
