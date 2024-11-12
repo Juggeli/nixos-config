@@ -31,7 +31,6 @@ in
           warn-dirty = false;
           log-lines = 50;
           sandbox = false;
-          auto-optimise-store = true;
           trusted-users = users;
           allowed-users = users;
 
@@ -40,6 +39,7 @@ in
           extra-nix-path = "nixpkgs=flake:nixpkgs";
           build-users-group = "nixbld";
         };
+        optimise.automatic = true;
 
         gc = {
           automatic = true;
