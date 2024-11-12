@@ -30,6 +30,8 @@ in
         "hide_window_decorations" = "yes";
         "tab_title_max_length" = "60";
         "tab_title_template" = "{fmt.fg.tab}{index}: {tab.active_oldest_exe}";
+        "cursor_trail" = "3";
+        "cursor_trail_decay" = "0.1 0.4";
       };
       keybindings = {
         "super+shift+t" = "new_tab";
