@@ -39,6 +39,9 @@ let
         "org.mozilla.com.zen.browser")
             switch_to_finnish
             ;;
+        "md.obsidian")
+            switch_to_finnish
+            ;;
         *)
             # Default layout if the app is not recognized
             switch_to_us
