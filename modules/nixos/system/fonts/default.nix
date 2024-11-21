@@ -32,7 +32,12 @@ in
           noto-fonts-cjk-serif
           noto-fonts-emoji
           ubuntu_font_family
-          (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+          (nerdfonts.override {
+            fonts = [
+              "NerdFontsSymbolsOnly"
+              "JetBrainsMono"
+            ];
+          })
           plusultra.comic-code
         ]
         ++ cfg.fonts;

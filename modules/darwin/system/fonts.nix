@@ -35,6 +35,7 @@ in
               "NerdFontsSymbolsOnly"
               "FantasqueSansMono"
               "Hack"
+              "JetBrainsMono"
             ];
           })
           plusultra.comic-code
