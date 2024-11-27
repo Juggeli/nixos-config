@@ -30,14 +30,10 @@ in
           noto-fonts-cjk-sans
           noto-fonts-cjk-serif
           noto-fonts-emoji
-          (nerdfonts.override {
-            fonts = [
-              "NerdFontsSymbolsOnly"
-              "FantasqueSansMono"
-              "Hack"
-              "JetBrainsMono"
-            ];
-          })
+          nerd-fonts.hack
+          nerd-fonts.jetbrains-mono
+          nerd-fonts.symbols-only
+          nerd-fonts.fantasque-sans-mono
           plusultra.comic-code
         ]
         ++ cfg.fonts;
