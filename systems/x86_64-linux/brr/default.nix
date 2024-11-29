@@ -2,16 +2,28 @@
   modulesPath,
   lib,
   config,
+  pkgs,
   ...
 }:
 
 with lib;
 with lib.plusultra;
+let
+  startpool = pkgs.writeShellScriptBin "startpool" ''
+    doas cryptsetup open /dev/vdb1 pool
+    doas mount -o noatime,nodatacow /dev/mapper/pool /mnt
+    doas systemctl restart podman-qbittorrent.service
+  '';
+in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
     ./disk-config.nix
+  ];
+
+  environment.systemPackages = [
+    startpool
   ];
 
   plusultra = {
