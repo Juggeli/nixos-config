@@ -30,7 +30,6 @@ in
     suites = {
       common-slim = enabled;
     };
-    system.boot = lib.mkForce disabled;
 
     containers = {
       qbittorrent = enabled;
@@ -45,12 +44,6 @@ in
     };
   };
 
-  boot.loader.grub = {
-    # no need to set devices, disko will add all devices that have a EF02 partition to the list already
-    # devices = [ ];
-    efiSupport = true;
-    efiInstallAsRemovable = true;
-  };
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
     luks.forceLuksSupportInInitrd = true;
