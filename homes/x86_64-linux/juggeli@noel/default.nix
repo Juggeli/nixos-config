@@ -26,6 +26,7 @@ with lib.plusultra;
       pdf = enabled;
       crypto = enabled;
       hydrus = disabled;
+      obsidian = enabled;
     };
 
     cli-apps = {
