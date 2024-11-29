@@ -50,6 +50,7 @@ with lib.plusultra;
           key = config.age.secrets.tailscale.path;
         };
       };
+      kdeconnect = enabled;
     };
   };
 
