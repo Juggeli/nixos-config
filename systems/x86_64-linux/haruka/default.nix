@@ -74,7 +74,10 @@ in
 
   plusultra = {
     feature = {
-      syncthing = enabled;
+      syncthing = {
+        enable = true;
+        dataDir = "/mnt/appdata/syncthing";
+      };
       borgmatic = {
         enable = true;
         directories = [ "/mnt/appdata" ];

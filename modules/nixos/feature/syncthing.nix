@@ -15,19 +15,18 @@ in
 {
   options.plusultra.feature.syncthing = with types; {
     enable = mkBoolOpt false "Whether or not to enable syncthing service.";
+    dataDir = mkOpt types.str "/home/${config.plusultra.user.name}" "Data dir location.";
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [
-      syncthing-browser
-    ];
+    environment.systemPackages = [ syncthing-browser ];
 
     services = {
       syncthing = {
         enable = true;
         user = config.plusultra.user.name;
         configDir = "/var/lib/syncthing";
-        dataDir = "/home/${config.plusultra.user.name}";
+        dataDir = cfg.dataDir;
         key = config.age.secrets.syncthing-key.path;
         cert = config.age.secrets.syncthing-cert.path;
         guiAddress = "0.0.0.0:8384";
@@ -67,9 +66,7 @@ in
       };
     };
 
-    plusultra.filesystem.impermanence.directories = [
-      "/var/lib/syncthing"
-    ];
+    plusultra.filesystem.impermanence.directories = [ "/var/lib/syncthing" ];
 
     # Syncthing ports
     networking.firewall.allowedTCPPorts = [
