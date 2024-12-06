@@ -10,10 +10,7 @@ let
     optionalAttrs
     ;
 
-  inherit (lib.plusultra)
-    mkOpt
-    mkBoolOpt
-    ;
+  inherit (lib.plusultra) mkOpt mkBoolOpt;
 
   bool-to-yes-no = value: if value then "yes" else "no";
 
@@ -39,7 +36,6 @@ in
   options.plusultra.services.samba = with types; {
     enable = mkEnableOption "Samba";
     workgroup = mkOpt str "WORKGROUP" "The workgroup to use.";
-    browseable = mkBoolOpt true "Whether the shares are browseable.";
 
     shares = mkOpt (attrsOf shares-submodule) { } "The shares to serve.";
   };
@@ -59,10 +55,6 @@ in
     services.samba = {
       enable = true;
       openFirewall = true;
-
-      extraConfig = ''
-        browseable = ${bool-to-yes-no cfg.browseable}
-      '';
 
       shares = mapAttrs (
         name: value:
