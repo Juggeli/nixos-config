@@ -17,9 +17,13 @@ in
     programs.lazygit = {
       enable = true;
       catppuccin.enable = true;
+      settings = {
+        gui = {
+          nerdFontsVersion = "3";
+        };
+        git.paging.pager = "delta --dark --paging=never";
+      };
     };
-
-    xdg.configFile."lazygit/config.yml".text = "";
 
     plusultra.user.impermanence.files = [
       ".config/lazygit/state.yml"

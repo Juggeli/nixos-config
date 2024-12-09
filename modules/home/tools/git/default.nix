@@ -17,6 +17,13 @@ in
   config = mkIf cfg.enable {
     programs.git = {
       enable = true;
+      delta = {
+        enable = true;
+        options = {
+          navigate = true;
+          dark = true;
+        };
+      };
       inherit (cfg) userName userEmail;
       lfs = enabled;
       extraConfig = {
@@ -31,6 +38,9 @@ in
         };
         core = {
           whitespace = "trailing-space,space-before-tab";
+        };
+        merge = {
+          conflictstyle = "zdiff3";
         };
       };
       ignores = [ ".nvim.lua" ];
