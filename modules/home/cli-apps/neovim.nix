@@ -19,6 +19,10 @@ in
       nvim-pkg
     ];
 
+    home.sessionVariables = {
+      EDITOR = "nvim";
+    };
+
     plusultra.user.impermanence = {
       directories = [
         ".local/state/nvim"
