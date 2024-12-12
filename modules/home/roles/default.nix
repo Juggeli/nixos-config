@@ -37,6 +37,7 @@ in
         lazygit = enabled;
         jq = enabled;
         yazi = enabled;
+        bat = enabled;
       };
       tools = {
         git = enabled;

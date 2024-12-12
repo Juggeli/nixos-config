@@ -20,7 +20,6 @@ in
     home.packages = with pkgs; [
       grc
       eza
-      bat
       fzf
       du-dust
       gum

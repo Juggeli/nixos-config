@@ -3,6 +3,7 @@
 {
   imports = [
     ./ab-av1.nix
+    ./bat.nix
     ./btop.nix
     ./ffmpeg.nix
     ./fish.nix

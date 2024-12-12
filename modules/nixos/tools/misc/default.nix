@@ -24,7 +24,6 @@ in
       file
       jq
       wget
-      bat
       eza
       fd
       tldr
