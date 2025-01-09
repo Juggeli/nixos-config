@@ -104,15 +104,15 @@ in
       sonarr = enabled;
       homepage = enabled;
       radarr = enabled;
-      changedetection = enabled;
+      changedetection = disabled;
       trilium = enabled;
-      grist = enabled;
+      grist = disabled;
       bazarr = enabled;
-      stash = enabled;
+      stash = disabled;
     };
 
     services = {
-      cockpit = enabled;
+      cockpit = disabled;
       cloudflared = enabled;
       grafana = disabled;
       prometheus = disabled;
