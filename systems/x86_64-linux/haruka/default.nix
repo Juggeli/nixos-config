@@ -109,6 +109,7 @@ in
       grist = disabled;
       bazarr = enabled;
       stash = disabled;
+      uptime-kuma = enabled;
     };
 
     services = {

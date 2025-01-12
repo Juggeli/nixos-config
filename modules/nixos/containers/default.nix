@@ -14,5 +14,6 @@
     ./trilium.nix
     ./bazarr.nix
     ./stash.nix
+    ./uptime-kuma.nix
   ];
 }
