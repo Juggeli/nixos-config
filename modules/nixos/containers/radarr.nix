@@ -16,7 +16,6 @@ in
       ports = [ "7878:7878" ];
       volumes = [
         "/mnt/appdata/radarr/:/config"
-        "/tank/downloads/:/mnt/pool/downloads/"
         "/tank/media/:/mnt/pool/media/"
       ];
       environment = {
@@ -31,7 +30,6 @@ in
       ports = [ "7879:7878" ];
       volumes = [
         "/mnt/appdata/radarr-anime/:/config"
-        "/tank/downloads/:/mnt/pool/downloads/"
         "/tank/media/:/mnt/pool/media/"
       ];
       environment = {

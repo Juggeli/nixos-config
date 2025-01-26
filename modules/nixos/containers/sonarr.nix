@@ -15,8 +15,7 @@ in
       autoStart = false;
       ports = [ "8989:8989" ];
       volumes = [
-        "/mnt/appdata/sonarr/:/config"
-        "/tank/downloads/:/mnt/pool/downloads/"
+        "/mnt/appdata/sonarr/:/config/"
         "/tank/media/:/mnt/pool/media/"
       ];
       environment = {
@@ -30,8 +29,7 @@ in
       autoStart = false;
       ports = [ "8999:8989" ];
       volumes = [
-        "/mnt/appdata/sonarr-anime/:/config"
-        "/tank/downloads/:/mnt/pool/downloads/"
+        "/mnt/appdata/sonarr-anime/:/config/"
         "/tank/media/:/mnt/pool/media/"
       ];
       environment = {
