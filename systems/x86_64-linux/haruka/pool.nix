@@ -7,7 +7,7 @@ let
       SOURCE="''${1}"
       DEST="''${2}"
 
-      rclone -v move "''${SOURCE}" "''${DEST}"
+      rclone -v move "''${SOURCE}" "''${DEST}" --delete-empty-src-dirs
     '';
   };
 in
@@ -34,12 +34,12 @@ in
       Type = "oneshot";
     };
     script = ''
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Private/ /tank/downloads/random/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/Public/ /tank/downloads/random/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr/ /tank/downloads/radarr/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/radarr-anime/ /tank/downloads/radarr-anime/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr/ /tank/downloads/sonarr/
-      ${downloaderBrr}/bin/downloaderBrr brr:/mnt/pool/done/sonarr-anime/ /tank/downloads/sonarr-anime/
+      ${downloaderBrr}/bin/downloaderBrr ultra:downloads/done/private/ /tank/media/downloads/random/
+      ${downloaderBrr}/bin/downloaderBrr ultra:downloads/done/public/ /tank/media/downloads/random/
+      ${downloaderBrr}/bin/downloaderBrr ultra:downloads/done/radarr/ /tank/media/downloads/radarr/
+      ${downloaderBrr}/bin/downloaderBrr ultra:downloads/done/radarr-anime/ /tank/media/downloads/radarr-anime/
+      ${downloaderBrr}/bin/downloaderBrr ultra:downloads/done/sonarr/ /tank/media/downloads/sonarr/
+      ${downloaderBrr}/bin/downloaderBrr ultra:downloads/done/sonarr-anime/ /tank/media/downloads/sonarr-anime/
     '';
   };
   systemd.timers.downloaderBrr = {
