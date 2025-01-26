@@ -209,7 +209,7 @@ in
     tools.agenix = enabled;
 
     containers = {
-      prowlarr = enabled;
+      prowlarr = disabled;
       plex = enabled;
       jellyfin = enabled;
       qbittorrent = disabled;
