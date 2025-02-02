@@ -1,6 +1,6 @@
 function sorter
     # Define base directory
-    set -g base_dir /mnt/downloads/random/
+    set -g base_dir /mnt/media/downloads/random/
 
     # Define destination directories
     set -g jav_dir /mnt/sorted/jav/unsorted/
