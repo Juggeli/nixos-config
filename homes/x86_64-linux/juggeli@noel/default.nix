@@ -41,6 +41,7 @@ with lib.plusultra;
       yazi = enabled;
       lazygit = enabled;
       ab-av1 = enabled;
+      nushell = enabled;
     };
 
     tools = {

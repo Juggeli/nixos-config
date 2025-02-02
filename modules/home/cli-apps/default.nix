@@ -11,6 +11,7 @@
     ./jq.nix
     ./lazygit.nix
     ./neovim.nix
+    ./nushell.nix
     ./rclone.nix
     ./speedtestpp.nix
     ./sshfs.nix
