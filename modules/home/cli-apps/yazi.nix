@@ -16,7 +16,7 @@ in
   config = mkIf cfg.enable {
     programs.yazi = {
       enable = true;
-      enableFishIntegration = true;
+      enableFishIntegration = false;
       catppuccin.enable = true;
       settings = {
         preview = {
