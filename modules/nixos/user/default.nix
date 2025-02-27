@@ -27,7 +27,13 @@ in
 
     plusultra.home = {
       configFile = {
-        "fish/functions/".source = ./fish;
+        "fish/functions/enc-all.fish".source = ./fish/enc-all.fish;
+        "fish/functions/enc-anime-all.fish".source = ./fish/enc-anime-all.fish;
+        "fish/functions/enc-anime.fish".source = ./fish/enc-anime.fish;
+        "fish/functions/enc-auto.fish".source = ./fish/enc-auto.fish;
+        "fish/functions/enc-crf.fish".source = ./fish/enc-crf.fish;
+        "fish/functions/javrter.fish".source = ./fish/javrter.fish;
+        "fish/functions/sorter.fish".source = ./fish/sorter.fish;
       };
       file = {
         "downloads/.keep".text = "";
