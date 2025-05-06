@@ -16,7 +16,6 @@ in
   config = mkIf cfg.enable {
     programs.lazygit = {
       enable = true;
-      catppuccin.enable = true;
       settings = {
         gui = {
           nerdFontsVersion = "3";
@@ -24,6 +23,7 @@ in
         git.paging.pager = "delta --dark --paging=never";
       };
     };
+    catppuccin.lazygit.enable = true;
 
     plusultra.user.impermanence.files = [
       ".config/lazygit/state.yml"

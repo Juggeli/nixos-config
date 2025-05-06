@@ -16,7 +16,7 @@ in
   config = mkIf cfg.enable {
     programs.tmux = {
       enable = true;
-      catppuccin.enable = true;
     };
+    catppuccin.tmux.enable = true;
   };
 }

@@ -30,7 +30,6 @@ in
     ];
     programs.fish = {
       enable = true;
-      catppuccin.enable = true;
       shellAliases = {
         ".." = "cd ..";
         "..." = "cd ../..";
@@ -102,6 +101,8 @@ in
         }
       ];
     };
+
+    catppuccin.fish.enable = true;
 
     plusultra.user.impermanence.directories = [
       ".local/share/fish"

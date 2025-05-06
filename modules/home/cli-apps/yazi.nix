@@ -17,12 +17,12 @@ in
     programs.yazi = {
       enable = true;
       enableFishIntegration = false;
-      catppuccin.enable = true;
       settings = {
         preview = {
           image_delay = 0;
         };
       };
     };
+    catppuccin.yazi.enable = true;
   };
 }

@@ -15,7 +15,7 @@ in
     enable = mkBoolOpt false "Whether to enable common home configuration";
   };
 
-  imports = [ (inputs.catppuccin.homeManagerModules.catppuccin) ];
+  imports = [ (inputs.catppuccin.homeModules.catppuccin) ];
 
   config = mkIf cfg.enable {
     plusultra = {

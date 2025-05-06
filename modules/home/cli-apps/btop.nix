@@ -16,7 +16,7 @@ in
   config = mkIf cfg.enable {
     programs.btop = {
       enable = true;
-      catppuccin.enable = true;
     };
+    catppuccin.btop.enable = true;
   };
 }

@@ -16,7 +16,7 @@ in
   config = mkIf cfg.enable {
     programs.imv = {
       enable = true;
-      catppuccin.enable = true;
     };
+    catppuccin.imv.enable = true;
   };
 }
