@@ -140,8 +140,8 @@ in
           "Unknown-1,disable"
         ];
         windowrule = [
-          "float,^(mpv)$"
-          "suppressevent maximize,^(mpv)$"
+          "float,class:mpv"
+          "suppressevent maximize,class:mpv"
         ];
         exec-once = [
           "${pkgs.waybar}/bin/waybar"
