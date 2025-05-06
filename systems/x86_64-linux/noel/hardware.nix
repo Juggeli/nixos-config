@@ -41,7 +41,7 @@ in
       "usbhid"
       "aesni_intel"
     ];
-    kernelPackages = pkgs.linuxPackages_6_11;
+    kernelPackages = pkgs.linuxPackages_6_12;
 
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
