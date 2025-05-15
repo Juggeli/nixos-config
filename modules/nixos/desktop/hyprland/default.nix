@@ -66,17 +66,20 @@ in
       wev # Find mouse or keycodes
     ];
 
-    programs.hyprland.enable = true;
+    programs.hyprland = {
+      enable = true;
+      withUWSM = true;
+    };
 
     plusultra.home.extraOptions.wayland.windowManager.hyprland = {
       enable = true;
       settings = {
         "$mod" = "SUPER";
         bind = [
-          "$mod, Space, exec, rofi -show combi"
-          "$mod, B, exec, firefox"
-          ", Print, exec, screenshot"
-          "$mod, Return, exec, kitty"
+          "$mod, Space, exec, uwsm app -- rofi -show combi"
+          "$mod, B, exec, uwsm app -- firefox"
+          ", Print, exec, uwsm app -- screenshot"
+          "$mod, Return, exec, uwsm app -- kitty"
           "$mod, W, killactive"
           "$mod Shift, E, exit"
           "$mod, T, togglefloating"
@@ -144,10 +147,10 @@ in
           "suppressevent maximize,class:mpv"
         ];
         exec-once = [
-          "${pkgs.waybar}/bin/waybar"
-          "${pkgs.hyprpaper}/bin/hyprpaper"
-          "${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout"
-          ''${pkgs.hyprland}/bin/hyprctl setcursor "Banana-Catppuccin-Mocha" 64''
+          "uwsm app -- ${pkgs.waybar}/bin/waybar"
+          "uwsm app -- ${pkgs.hyprpaper}/bin/hyprpaper"
+          "uwsm app -- ${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout"
+          ''uwsm app -- ${pkgs.hyprland}/bin/hyprctl setcursor "Banana-Catppuccin-Mocha" 64''
         ];
         debug = {
           "overlay" = "false";
