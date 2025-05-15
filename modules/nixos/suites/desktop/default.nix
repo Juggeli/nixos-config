@@ -15,7 +15,6 @@ in
         _1password = enabled;
       };
       desktop = {
-        sway = disabled;
         hyprland = enabled;
       };
       feature = {
