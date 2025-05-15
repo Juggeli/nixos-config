@@ -42,6 +42,7 @@ with lib.plusultra;
       lazygit = enabled;
       ab-av1 = enabled;
       nushell = enabled;
+      claude-code = enabled;
     };
 
     tools = {
