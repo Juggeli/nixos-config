@@ -55,9 +55,8 @@ with lib.plusultra;
     };
   };
 
-  home.sessionPath =
-    [
-    ];
+  home.sessionPath = [
+  ];
 
   home.pointerCursor = {
     x11.enable = true;
