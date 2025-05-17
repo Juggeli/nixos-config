@@ -56,7 +56,6 @@ in
       qt = enabled;
       mako = enabled;
       rofi = enabled;
-      xdg-portal = enabled;
       electron-support = enabled;
     };
 
