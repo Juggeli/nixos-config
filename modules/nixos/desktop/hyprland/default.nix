@@ -63,11 +63,92 @@ in
       wl-clipboard
       screenshot
       wev # Find mouse or keycodes
+      hyprlock
     ];
 
     programs.hyprland = {
       enable = true;
       withUWSM = true;
+    };
+
+    plusultra.home.extraOptions.services = {
+      hypridle = {
+        enable = true;
+        settings = {
+          general = {
+            before_sleep_cmd = "loginctl lock-session";
+            after_sleep_cmd = "hyprctl dispatch dpms on";
+            ignore_dbus_inhibit = false;
+            lock_cmd = "hyprlock";
+          };
+          listener = [
+            {
+              timeout = 300;
+              on-timeout = "hyprlock";
+            }
+            {
+              timeout = 360;
+              on-timeout = "hyprctl dispatch dpms off";
+              on-resume = "hyprctl dispatch dpms on";
+            }
+            {
+              timeout = 1800;
+              on-timeout = "systemctl suspend";
+            }
+          ];
+        };
+      };
+    };
+
+    security = {
+      polkit.enable = true;
+      pam.services.hyprlock = { };
+    };
+
+    plusultra.home.extraOptions.programs.hyprlock = {
+      enable = true;
+      settings = {
+        general = {
+          disable_loading_bar = true;
+          grace = 10;
+          hide_cursor = true;
+          no_fade_in = false;
+        };
+        background = [
+          {
+            path = "~/.config/hypr/background.png";
+            blur_passes = 3;
+            blur_size = 8;
+          }
+        ];
+        # image = [
+        #   {
+        #     path = "/home/${username}/.config/face.jpg";
+        #     size = 150;
+        #     border_size = 4;
+        #     border_color = "rgb(0C96F9)";
+        #     rounding = -1; # Negative means circle
+        #     position = "0, 200";
+        #     halign = "center";
+        #     valign = "center";
+        #   }
+        # ];
+        input-field = [
+          {
+            size = "200, 50";
+            position = "0, -80";
+            monitor = "";
+            dots_center = true;
+            fade_on_empty = false;
+            font_color = "rgb(CFE6F4)";
+            inner_color = "rgb(657DC2)";
+            outer_color = "rgb(0D0E15)";
+            outline_thickness = 5;
+            placeholder_text = "Password...";
+            shadow_passes = 2;
+          }
+        ];
+      };
     };
 
     plusultra.home.extraOptions.wayland.windowManager.hyprland = {
