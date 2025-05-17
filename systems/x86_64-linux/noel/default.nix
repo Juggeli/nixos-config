@@ -79,6 +79,9 @@ with lib.plusultra;
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0666", TAG+="uaccess", TAG+="udev-acl"
   '';
 
+  hardware.i2c.enable = true;
+  environment.systemPackages = with pkgs; [ ddcutil ];
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
