@@ -25,7 +25,7 @@ with lib.plusultra;
       via = enabled;
       pdf = enabled;
       crypto = enabled;
-      hydrus = disabled;
+      hydrus = enabled;
       obsidian = enabled;
     };
 
