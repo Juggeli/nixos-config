@@ -44,6 +44,21 @@ let
       grim -g "$(slurp)" - | wl-copy
     '';
   };
+
+  waitSuspend = pkgs.writeShellScriptBin "wait-suspend" ''
+    #!/usr/bin/env bash
+    CHECK_INTERVAL=5
+    trap 'exit 0' INT TERM          # quit cleanly if hypridle kills us
+
+    while busctl get-property \
+            org.freedesktop.login1 /org/freedesktop/login1 \
+            org.freedesktop.login1.Manager BlockInhibited |
+          grep -q sleep; do
+        sleep "$CHECK_INTERVAL"
+    done
+
+    systemctl suspend
+  '';
 in
 {
   options.plusultra.desktop.hyprland = with types; {
@@ -65,11 +80,21 @@ in
       wev # Find mouse or keycodes
       hyprlock
       playerctl
+      waitSuspend
     ];
 
     programs.hyprland = {
       enable = true;
       withUWSM = true;
+    };
+
+    systemd.user.services.idle-wait-suspend = {
+      description = "Wait until block inhibitors clear, then suspend";
+      serviceConfig = {
+        ExecStart = "${waitSuspend}/bin/wait-suspend";
+        KillMode = "mixed";
+        Type = "simple";
+      };
     };
 
     plusultra.home.extraOptions.services = {
@@ -80,6 +105,7 @@ in
             before_sleep_cmd = "loginctl lock-session & playerctl pause";
             after_sleep_cmd = "hyprctl dispatch dpms on";
             ignore_dbus_inhibit = false;
+            ignore_systemd_inhibit = false;
             lock_cmd = "pidof hyprlock || hyprlock -q";
           };
           listener = [
@@ -94,7 +120,8 @@ in
             }
             {
               timeout = 1800;
-              on-timeout = "systemctl suspend";
+              on-timeout = "systemctl --user start idle-wait-suspend.service";
+              on-resume = "systemctl --user stop idle-wait-suspend.service";
             }
           ];
         };
