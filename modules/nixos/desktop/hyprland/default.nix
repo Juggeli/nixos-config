@@ -44,23 +44,13 @@ let
       grim -g "$(slurp)" - | wl-copy
     '';
   };
-
-  waitSuspend = pkgs.writeShellScriptBin "wait-suspend" ''
-    #!/usr/bin/env bash
-    CHECK_INTERVAL=5
-    trap 'exit 0' INT TERM          # quit cleanly if hypridle kills us
-
-    while busctl get-property \
-            org.freedesktop.login1 /org/freedesktop/login1 \
-            org.freedesktop.login1.Manager BlockInhibited |
-          grep -q sleep; do
-        sleep "$CHECK_INTERVAL"
-    done
-
-    systemctl suspend
-  '';
 in
 {
+  imports = [
+    ./hyprlock.nix
+    ./hypridle.nix
+  ];
+
   options.plusultra.desktop.hyprland = with types; {
     enable = mkBoolOpt false "Whether or not to enable Hyprland.";
   };
@@ -74,13 +64,15 @@ in
       electron-support = enabled;
     };
 
+    plusultra.desktop.hyprland = {
+      hyprlock.enable = true;
+      hypridle.enable = true;
+    };
+
     environment.systemPackages = with pkgs; [
       wl-clipboard
       screenshot
       wev # Find mouse or keycodes
-      hyprlock
-      playerctl
-      waitSuspend
     ];
 
     programs.hyprland = {
@@ -88,95 +80,8 @@ in
       withUWSM = true;
     };
 
-    systemd.user.services.idle-wait-suspend = {
-      description = "Wait until block inhibitors clear, then suspend";
-      serviceConfig = {
-        ExecStart = "${waitSuspend}/bin/wait-suspend";
-        KillMode = "mixed";
-        Type = "simple";
-      };
-    };
-
-    plusultra.home.extraOptions.services = {
-      hypridle = {
-        enable = true;
-        settings = {
-          general = {
-            before_sleep_cmd = "loginctl lock-session & playerctl pause";
-            after_sleep_cmd = "hyprctl dispatch dpms on";
-            ignore_dbus_inhibit = false;
-            ignore_systemd_inhibit = false;
-            lock_cmd = "pidof hyprlock || hyprlock -q";
-          };
-          listener = [
-            {
-              timeout = 300;
-              on-timeout = "hyprlock";
-            }
-            {
-              timeout = 360;
-              on-timeout = "hyprctl dispatch dpms off";
-              on-resume = "hyprctl dispatch dpms on";
-            }
-            {
-              timeout = 1800;
-              on-timeout = "systemctl --user start idle-wait-suspend.service";
-              on-resume = "systemctl --user stop idle-wait-suspend.service";
-            }
-          ];
-        };
-      };
-    };
-
     security = {
       polkit.enable = true;
-      pam.services.hyprlock = { };
-    };
-
-    plusultra.home.extraOptions.programs.hyprlock = {
-      enable = true;
-      settings = {
-        general = {
-          disable_loading_bar = true;
-          grace = 10;
-          hide_cursor = true;
-          no_fade_in = false;
-        };
-        background = [
-          {
-            path = "~/.config/hypr/background.png";
-            blur_passes = 3;
-            blur_size = 8;
-          }
-        ];
-        # image = [
-        #   {
-        #     path = "/home/${username}/.config/face.jpg";
-        #     size = 150;
-        #     border_size = 4;
-        #     border_color = "rgb(0C96F9)";
-        #     rounding = -1; # Negative means circle
-        #     position = "0, 200";
-        #     halign = "center";
-        #     valign = "center";
-        #   }
-        # ];
-        input-field = [
-          {
-            size = "200, 50";
-            position = "0, -80";
-            monitor = "";
-            dots_center = true;
-            fade_on_empty = false;
-            font_color = "rgb(CFE6F4)";
-            inner_color = "rgb(657DC2)";
-            outer_color = "rgb(0D0E15)";
-            outline_thickness = 5;
-            placeholder_text = "Password...";
-            shadow_passes = 2;
-          }
-        ];
-      };
     };
 
     plusultra.home.extraOptions.wayland.windowManager.hyprland = {
@@ -231,6 +136,7 @@ in
         misc = {
           "disable_hyprland_logo" = "yes";
           "disable_splash_rendering" = "yes";
+          "vfr" = "true";
         };
         decoration = {
           "rounding" = 0;
@@ -262,9 +168,6 @@ in
         ];
         debug = {
           "overlay" = "false";
-        };
-        misc = {
-          "vfr" = "true";
         };
         env = [
           "LIBVA_DRIVER_NAME,nvidia"
