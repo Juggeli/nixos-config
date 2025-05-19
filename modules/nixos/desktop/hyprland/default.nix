@@ -64,6 +64,7 @@ in
       screenshot
       wev # Find mouse or keycodes
       hyprlock
+      playerctl
     ];
 
     programs.hyprland = {
@@ -76,7 +77,7 @@ in
         enable = true;
         settings = {
           general = {
-            before_sleep_cmd = "loginctl lock-session";
+            before_sleep_cmd = "loginctl lock-session & playerctl pause";
             after_sleep_cmd = "hyprctl dispatch dpms on";
             ignore_dbus_inhibit = false;
             lock_cmd = "hyprlock";
