@@ -214,7 +214,7 @@ in
       jellyfin = enabled;
       qbittorrent = disabled;
       sonarr = enabled;
-      homepage = enabled;
+      homepage = disabled; # Using native service instead
       radarr = enabled;
       changedetection = disabled;
       trilium = enabled;
@@ -228,6 +228,7 @@ in
       cockpit = disabled;
       cloudflared = enabled;
       grafana = disabled;
+      homepage = enabled;
       prometheus = disabled;
       nfs = disabled;
 

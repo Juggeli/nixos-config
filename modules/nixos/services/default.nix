@@ -6,6 +6,7 @@
     ./cloudflared.nix
     ./cockpit.nix
     ./grafana.nix
+    ./homepage.nix
     ./kdeconnect.nix
     ./nfs.nix
     ./openssh.nix
