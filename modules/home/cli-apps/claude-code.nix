@@ -18,5 +18,10 @@ in
     home.packages = with pkgs; [
       claude-code
     ];
+    plusultra.user.impermanence = {
+      directories = [
+        ".claude"
+      ];
+    };
   };
 }
