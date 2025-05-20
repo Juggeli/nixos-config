@@ -38,6 +38,7 @@ in
         jq = enabled;
         yazi = enabled;
         bat = enabled;
+        claude-code = enabled;
       };
       tools = {
         git = enabled;
