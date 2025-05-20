@@ -3,9 +3,9 @@
 {
   imports = [
     ./ab-av1.nix
+    ./ai-agents.nix
     ./bat.nix
     ./btop.nix
-    ./claude-code.nix
     ./ffmpeg.nix
     ./fish.nix
     ./imv.nix

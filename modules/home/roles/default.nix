@@ -38,7 +38,7 @@ in
         jq = enabled;
         yazi = enabled;
         bat = enabled;
-        claude-code = enabled;
+        ai-agents = enabled;
       };
       tools = {
         git = enabled;
