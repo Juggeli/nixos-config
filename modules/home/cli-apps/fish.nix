@@ -27,6 +27,7 @@ in
       dua
       neofetch
       screen
+      ripgrep
     ];
     programs.fish = {
       enable = true;
