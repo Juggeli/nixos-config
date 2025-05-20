@@ -1,27 +1,19 @@
 {
   lib,
-  config,
   pkgs,
   ...
 }:
 with lib.plusultra;
 {
   plusultra = {
-    user = {
-      enable = true;
-      name = config.snowfallorg.user.name;
-      impermanence = enabled;
-    };
+    roles.home-common = enabled;
+    user.impermanence = enabled;
 
     apps = {
-      wezterm = disabled;
-      kitty = enabled;
-      vscode = disabled;
-      armcord = disabled;
+      kitty.fontSize = lib.mkForce 14;
       discord = enabled;
       firefox = enabled;
       chrome = enabled;
-      mpv = enabled;
       via = enabled;
       pdf = enabled;
       crypto = enabled;
@@ -30,24 +22,13 @@ with lib.plusultra;
     };
 
     cli-apps = {
-      fish = enabled;
-      neovim = enabled;
       ffmpeg = enabled;
       imv = enabled;
       sshfs = enabled;
       speedtestpp = enabled;
-      btop = enabled;
       tmux = enabled;
-      yazi = enabled;
-      lazygit = enabled;
       ab-av1 = enabled;
       nushell = enabled;
-      claude-code = enabled;
-    };
-
-    tools = {
-      git = enabled;
-      direnv = enabled;
     };
 
     desktop = {
@@ -63,6 +44,6 @@ with lib.plusultra;
     gtk.enable = true;
     package = pkgs.plusultra.banana-cursor-dreams;
     size = 64;
-    name = "Banana-Catppuccin-Mocha"; # Change to whatever theme you like
+    name = "Banana-Catppuccin-Mocha";
   };
 }
