@@ -23,5 +23,15 @@ in
         "/tank/sorted/:/data"
       ];
     };
+    
+    # Add to homepage
+    plusultra.services.homepage.services = mkIf config.plusultra.services.homepage.enable {
+      Media = [{
+        Stash = {
+          href = "http://${config.networking.hostName}:9999";
+          icon = "stash.png";
+        };
+      }];
+    };
   };
 }

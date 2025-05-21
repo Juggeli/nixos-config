@@ -24,5 +24,17 @@ in
         "/tank/media/:/mnt/pool/media/"
       ];
     };
+
+    # Add to homepage
+    plusultra.services.homepage.services = mkIf config.plusultra.services.homepage.enable {
+      Media = [
+        {
+          Bazarr = {
+            href = "http://${config.networking.hostName}:6767";
+            icon = "bazarr.png";
+          };
+        }
+      ];
+    };
   };
 }

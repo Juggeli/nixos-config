@@ -37,5 +37,23 @@ in
         PGID = "100";
       };
     };
+    
+    # Add to homepage
+    plusultra.services.homepage.services = mkIf config.plusultra.services.homepage.enable {
+      Media = [
+        {
+          Sonarr = {
+            href = "http://${config.networking.hostName}:8989";
+            icon = "sonarr.png";
+          };
+        }
+        {
+          "Sonarr Anime" = {
+            href = "http://${config.networking.hostName}:8999";
+            icon = "sonarr.png";
+          };
+        }
+      ];
+    };
   };
 }

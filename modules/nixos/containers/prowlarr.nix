@@ -18,5 +18,15 @@ in
         "/mnt/appdata/prowlarr/:/config"
       ];
     };
+    
+    # Add to homepage
+    plusultra.services.homepage.services = mkIf config.plusultra.services.homepage.enable {
+      Media = [{
+        Prowlarr = {
+          href = "http://${config.networking.hostName}:9696";
+          icon = "prowlarr.png";
+        };
+      }];
+    };
   };
 }
