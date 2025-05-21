@@ -26,7 +26,7 @@ in
     };
     
     # Add Plex to homepage services if homepage is enabled
-    plusultra.services.homepage.services = mkIf config.plusultra.services.homepage.enable {
+    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
       Media = [{
         Plex = {
           href = "http://${config.networking.hostName}:32400";

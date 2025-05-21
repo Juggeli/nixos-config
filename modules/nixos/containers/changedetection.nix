@@ -20,7 +20,7 @@ in
     };
     
     # Add to homepage
-    plusultra.services.homepage.services = mkIf config.plusultra.services.homepage.enable {
+    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
       Monitoring = [{
         "Change Detection" = {
           href = "http://${config.networking.hostName}:5000";
