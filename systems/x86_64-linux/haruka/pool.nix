@@ -19,12 +19,12 @@ in
   ];
 
   powerManagement.powerUpCommands = with pkgs; ''
-    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sda
-    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdb
-    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdc
-    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdd
-    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sde
-    ${hdparm}/bin/hdparm -S 241 -B 127 /dev/sdf
+    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sda
+    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdb
+    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdc
+    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdd
+    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sde
+    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdf
   '';
 
   systemd.services.downloaderBrr = {
