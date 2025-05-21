@@ -31,6 +31,8 @@ in
         "aesni_intel"
         "cryptd"
         "nvme"
+        "mlx4_core"
+        "mlx4_en"
       ];
       luks.devices = {
         root = {
