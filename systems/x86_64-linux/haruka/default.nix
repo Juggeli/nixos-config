@@ -7,10 +7,6 @@
 with lib;
 with lib.plusultra;
 let
-  ip = "10.11.11.2";
-  gateway = "10.11.11.1";
-  interface = "enp3s0";
-
   startpool = pkgs.writeShellScriptBin "startpool" ''
     doas zpool import tank
     doas zfs load-key -L file:///run/agenix/zfs tank
@@ -255,19 +251,7 @@ in
     ];
   };
 
-  networking = {
-    interfaces."${interface}".ipv4.addresses = [
-      {
-        address = ip;
-        prefixLength = 24;
-      }
-    ];
-    defaultGateway = gateway;
-    nameservers = [ gateway ];
-  };
-
   boot.kernelParams = [
-    "ip=${ip}::${gateway}:255.255.255.0:haruka:${interface}:off"
     # try to fix zfs oom issue
     "zfs.zfs_arc_shrinker_limit=0"
     "zfs.zfs_arc_max=8589934592"
