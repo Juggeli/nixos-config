@@ -19,6 +19,7 @@ in
       claude-code
       codex
       aider-chat
+      uv
     ];
     plusultra.user.impermanence = {
       directories = [

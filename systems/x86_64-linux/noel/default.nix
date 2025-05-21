@@ -59,6 +59,8 @@ with lib.plusultra;
     };
   };
 
+  programs.nix-ld.enable = true;
+
   fileSystems."/mnt" = {
     device = "//10.11.11.2/tank";
     fsType = "cifs";
