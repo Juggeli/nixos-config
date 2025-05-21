@@ -6,3 +6,5 @@ systems/.DS_Store
 .direnv
 
 result
+
+**/.claude/settings.local.json
