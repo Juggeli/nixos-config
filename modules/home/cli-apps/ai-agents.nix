@@ -24,6 +24,7 @@ in
     plusultra.user.impermanence = {
       directories = [
         ".claude"
+        ".local/share/uv"
       ];
     };
   };
