@@ -196,5 +196,11 @@ in
       "hypr/background.png".source = ./background.png;
       "hyprland-per-window-layout/options.toml".source = ./hyprland-per-window-layout.toml;
     };
+
+    plusultra.filesystem.impermanence = {
+      files = [
+        ".local/share/hyprland/lastVersion"
+      ];
+    };
   };
 }

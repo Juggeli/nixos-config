@@ -17,6 +17,13 @@ in
     programs.bat = {
       enable = true;
     };
+
     catppuccin.bat.enable = true;
+
+    plusultra.user.impermanence = {
+      directories = [
+        ".local/cache/bat"
+      ];
+    };
   };
 }

@@ -108,6 +108,7 @@ in
     plusultra.user.impermanence.directories = [
       ".local/share/fish"
       ".local/share/z"
+      ".local/cache/fish"
     ];
   };
 }

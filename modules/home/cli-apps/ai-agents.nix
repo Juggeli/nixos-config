@@ -25,6 +25,9 @@ in
       directories = [
         ".claude"
         ".local/share/uv"
+        ".local/cache/uv"
+        ".aider"
+        ".codex"
       ];
     };
   };
