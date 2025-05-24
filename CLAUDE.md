@@ -74,3 +74,6 @@ nix develop
 
 ## Configuration Tips
 - Use plusultra.home.configFile.<file> option to make config files in home dir
+
+## Coding Guidelines
+- Dont leave code comments, unless the code is not obvious
