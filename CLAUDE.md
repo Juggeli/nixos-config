@@ -77,7 +77,9 @@ equals to { enabled = true; }, do not try to set just boolean values to enabled
 - Use plusultra.home.configFile.<file> option to make config files in home dir
 
 ## Coding Guidelines
-- Dont leave code comments, unless the code is not obvious
+- Don't leave code comments, unless the code is not obvious
 
 ## Development Reminders
 - Remember to git add any new files, no need to add changed files
+- Don't leave code comments, unless the code is not obvious
+- Don't add unrelated things to same commit, make separate commits for those
