@@ -22,7 +22,7 @@ in
 
     plusultra.user.impermanence = {
       directories = [
-        ".local/cache/bat"
+        ".cache/bat"
       ];
     };
   };
