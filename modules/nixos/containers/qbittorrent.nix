@@ -66,15 +66,6 @@ in
         Unit = "qbit-manager.service";
       };
     };
-    
-    # Add to homepage
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Media = [{
-        qBittorrent = {
-          href = "http://${config.networking.hostName}:8080";
-          icon = "qbittorrent.png";
-        };
-      }];
-    };
+
   };
 }

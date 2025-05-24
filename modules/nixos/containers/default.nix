@@ -4,7 +4,6 @@
   imports = [
     ./changedetection.nix
     ./grist.nix
-    ./homepage.nix
     ./jellyfin.nix
     ./plex.nix
     ./prowlarr.nix

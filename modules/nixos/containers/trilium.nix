@@ -18,15 +18,6 @@ in
         "/mnt/appdata/trilium/:/home/node/trilium-data"
       ];
     };
-    
-    # Add to homepage
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Apps = [{
-        Trilium = {
-          href = "http://${config.networking.hostName}:8080";
-          icon = "trilium.png";
-        };
-      }];
-    };
+
   };
 }

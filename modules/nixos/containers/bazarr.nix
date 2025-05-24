@@ -25,16 +25,5 @@ in
       ];
     };
 
-    # Add to homepage
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Media = [
-        {
-          Bazarr = {
-            href = "http://${config.networking.hostName}:6767";
-            icon = "bazarr.png";
-          };
-        }
-      ];
-    };
   };
 }

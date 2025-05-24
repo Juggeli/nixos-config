@@ -37,23 +37,6 @@ in
         PGID = "100";
       };
     };
-    
-    # Add to homepage
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Media = [
-        {
-          Radarr = {
-            href = "http://${config.networking.hostName}:7878";
-            icon = "radarr.png";
-          };
-        }
-        {
-          "Radarr Anime" = {
-            href = "http://${config.networking.hostName}:7879";
-            icon = "radarr.png";
-          };
-        }
-      ];
-    };
+
   };
 }

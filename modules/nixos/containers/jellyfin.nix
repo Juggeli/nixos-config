@@ -24,17 +24,5 @@ in
         "/mnt/appdata/transcode/:/transcode"
       ];
     };
-    
-    # Add Jellyfin to homepage services if homepage is enabled
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Media = [
-        {
-          Jellyfin = {
-            href = "http://${config.networking.hostName}:8096";
-            icon = "jellyfin.png";
-          };
-        }
-      ];
-    };
   };
 }

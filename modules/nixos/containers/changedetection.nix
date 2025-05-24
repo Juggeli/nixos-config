@@ -18,15 +18,5 @@ in
         "/mnt/appdata/changedetection:/datastore"
       ];
     };
-    
-    # Add to homepage
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Monitoring = [{
-        "Change Detection" = {
-          href = "http://${config.networking.hostName}:5000";
-          icon = "changedetection.png";
-        };
-      }];
-    };
   };
 }

@@ -25,15 +25,6 @@ in
         "--cap-add=NET_RAW"
       ];
     };
-    
-    # Add to homepage
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Monitoring = [{
-        "Uptime Kuma" = {
-          href = "http://${config.networking.hostName}:3001";
-          icon = "uptime-kuma.png";
-        };
-      }];
-    };
+
   };
 }

@@ -18,15 +18,5 @@ in
         "/mnt/appdata/grist/:/persist"
       ];
     };
-    
-    # Add to homepage
-    plusultra._module.args.plusultra.homepage.services = mkIf config.plusultra.services.homepage.enable {
-      Apps = [{
-        Grist = {
-          href = "http://${config.networking.hostName}:8484";
-          icon = "grist.png";
-        };
-      }];
-    };
   };
 }

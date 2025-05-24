@@ -49,4 +49,9 @@ in
     user2
     system
   ];
+  "homepage-env.age".publicKeys = [
+    user
+    user2
+    system
+  ];
 }
