@@ -71,3 +71,6 @@ nix develop
 
 ## Development Tips
 - Use 'nix store prefetch-file' to check hashes instead of 'nix-prefetch-url'
+
+## Configuration Tips
+- Use plusultra.home.configFile.<file> option to make config files in home dir
