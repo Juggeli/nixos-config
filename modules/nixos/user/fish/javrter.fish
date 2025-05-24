@@ -1,5 +1,5 @@
 function javrter
-    set -g base_dir /mnt/pool/sorted/jav/sorted
+    set -g base_dir ~/tank/sorted/jav/sorted
 
     set -g dirs (fd -t d -d 1 . $base_dir | shuf)
     set -g delete_dirs

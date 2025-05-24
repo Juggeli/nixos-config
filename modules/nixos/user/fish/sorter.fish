@@ -1,12 +1,12 @@
 function sorter
     # Define base directory
-    set -g base_dir /mnt/media/downloads/random/
+    set -g base_dir ~/tank/media/downloads/random/
 
     # Define destination directories
-    set -g jav_dir /mnt/sorted/jav/unsorted/
-    set -g muut_dir /mnt/sorted/muut/
-    set -g uncen_dir /mnt/sorted/uncen/
-    set -g to_upscale_dir /mnt/sorted/to-be-upscaled/
+    set -g jav_dir ~/tank/sorted/jav/unsorted/
+    set -g muut_dir ~/tank/sorted/muut/
+    set -g uncen_dir ~/tank/sorted/uncen/
+    set -g to_upscale_dir ~/tank/sorted/to-be-upscaled/
 
     set -l junk_exts ".apk" ".ass" ".srt" ".gif" ".txt" ".html" ".htm" ".url" ".jpg" ".jpeg" ".png" ".webp" ".nfo"
     set -l video_exts ".mkv" ".mp4" ".avi" ".mov" ".wmv" ".flv" ".webm" ".m4v" ".mpeg" ".m2v" ".m4v" ".ts" ".vob" ".3gp" ".3g2" ".mpg" ".ogm" ".m2ts" ".iso" ".rmvb"

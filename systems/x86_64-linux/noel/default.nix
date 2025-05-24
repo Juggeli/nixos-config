@@ -61,15 +61,18 @@ with lib.plusultra;
 
   programs.nix-ld.enable = true;
 
-  fileSystems."/mnt" = {
-    device = "//10.11.11.2/tank";
-    fsType = "cifs";
-    options =
-      let
-        # this line prevents hanging on network split
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-      in
-      [ "${automount_opts},credentials=${config.age.secrets.smb.path},uid=1000,gid=100" ];
+  systemd.services.mount-tank = {
+    description = "Mount tank network share for juggeli";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /home/juggeli/tank";
+      ExecStart = "${pkgs.cifs-utils}/bin/mount.cifs //10.11.11.2/tank /home/juggeli/tank -o credentials=${config.age.secrets.smb.path},uid=1000,gid=100,iocharset=utf8";
+      ExecStop = "${pkgs.util-linux}/bin/umount /home/juggeli/tank";
+      RemainAfterExit = true;
+    };
   };
 
   systemd.extraConfig = ''
