@@ -180,6 +180,8 @@ in
     pkgs.mergerfs
   ];
 
+  programs.nix-ld.enable = true;
+
   plusultra = {
     feature = {
       syncthing = {
@@ -210,7 +212,6 @@ in
       jellyfin = enabled;
       qbittorrent = disabled;
       sonarr = enabled;
-      homepage = disabled; # Using native service instead
       radarr = enabled;
       changedetection = disabled;
       trilium = enabled;
