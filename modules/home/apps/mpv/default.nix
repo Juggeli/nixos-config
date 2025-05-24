@@ -33,6 +33,7 @@ in
         WHEEL_LEFT add volume -2
       '';
       "mpv/scripts/delete_file.lua".source = ./delete_file.lua;
+      "mpv/scripts/brightness_control.lua".source = ./brightness_control.lua;
     };
   };
 }
