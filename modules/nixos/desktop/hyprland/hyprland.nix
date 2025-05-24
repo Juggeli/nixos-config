@@ -197,8 +197,8 @@ in
       "hyprland-per-window-layout/options.toml".source = ./hyprland-per-window-layout.toml;
     };
 
-    plusultra.filesystem.impermanence = {
-      files = [
+    environment.persistence."/persist-home" = {
+      users."${config.plusultra.user.name}".files = [
         ".local/share/hyprland/lastVersion"
       ];
     };
