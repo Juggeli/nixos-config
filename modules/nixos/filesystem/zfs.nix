@@ -35,7 +35,7 @@ in
 
   config = mkIf cfg.enable {
     boot = {
-      kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+      kernelPackages = pkgs.linuxPackages_latest;
       supportedFilesystems = [
         "zfs"
       ];
