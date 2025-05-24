@@ -12,6 +12,7 @@ in
 {
   options.plusultra.apps.mpv = with types; {
     enable = mkBoolOpt false "Whether or not to enable mpv.";
+    brightnessControl = mkBoolOpt false "Whether or not to enable ddcutil brightness control on fullscreen.";
   };
 
   config = mkIf cfg.enable {
@@ -33,6 +34,7 @@ in
         WHEEL_LEFT add volume -2
       '';
       "mpv/scripts/delete_file.lua".source = ./delete_file.lua;
+    } // lib.optionalAttrs cfg.brightnessControl {
       "mpv/scripts/brightness_control.lua".source = ./brightness_control.lua;
     };
   };

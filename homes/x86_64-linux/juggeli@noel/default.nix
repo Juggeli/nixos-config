@@ -19,6 +19,7 @@ with lib.plusultra;
       crypto = enabled;
       hydrus = enabled;
       obsidian = enabled;
+      mpv.brightnessControl = true;
     };
 
     cli-apps = {
@@ -38,7 +39,6 @@ with lib.plusultra;
 
   home.sessionPath = [
   ];
-
 
   home.pointerCursor = {
     x11.enable = true;
