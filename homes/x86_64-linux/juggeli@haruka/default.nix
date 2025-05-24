@@ -16,6 +16,8 @@ with lib.plusultra;
       ffmpeg = enabled;
       ab-av1 = enabled;
       yazi = enabled;
+      ai-agents = enabled;
+      bat = enabled;
     };
 
     tools = {
