@@ -18,15 +18,15 @@ window#waybar {
 #custom-logo {
   font-size: 24px;
   margin: 0;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 12px;
+  margin-right: 20px;
   padding: 0;
 }
 
 #workspaces button {
 	color: @text;
-	padding-left: 6px;
-  padding-right: 6px;
+	padding-left: 8px;
+	padding-right: 8px;
 }
 
 #workspaces button.active {
