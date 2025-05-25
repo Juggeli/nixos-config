@@ -19,5 +19,4 @@ in
   "zfs.age".publicKeys = keys;
   "cloudflare-dns.age".publicKeys = keys;
   "homepage-env.age".publicKeys = keys;
-  "bazarr-api.age".publicKeys = keys;
 }

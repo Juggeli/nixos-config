@@ -39,16 +39,6 @@ in
           default = false;
           description = "Enable API widget for homepage";
         };
-        apiKey = mkOption {
-          type = str;
-          default = "";
-          description = "API key for Bazarr (find in Settings > General)";
-        };
-        apiKeyFile = mkOption {
-          type = nullOr path;
-          default = null;
-          description = "Path to file containing API key for Bazarr";
-        };
         fields = mkOption {
           type = listOf str;
           default = ["missingEpisodes" "missingMovies"];

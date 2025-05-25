@@ -33,6 +33,32 @@ in
         default = 8999;
         description = "Port for homepage link";
       };
+      url = mkOption {
+        type = nullOr str;
+        default = null;
+        description = "Custom URL for homepage link (overrides auto-generated URL)";
+      };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        type = mkOption {
+          type = str;
+          default = "sonarr";
+          description = "Widget type for homepage";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "wanted"
+            "queued"
+            "series"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 
@@ -52,3 +78,4 @@ in
     };
   };
 }
+

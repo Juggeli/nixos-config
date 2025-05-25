@@ -33,6 +33,27 @@ in
         default = 8989;
         description = "Port for homepage link";
       };
+      url = mkOption {
+        type = nullOr str;
+        default = null;
+        description = "Custom URL for homepage link (overrides auto-generated URL)";
+      };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "wanted"
+            "queued"
+            "series"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 

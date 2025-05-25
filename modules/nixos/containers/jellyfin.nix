@@ -33,6 +33,33 @@ in
         default = 8096;
         description = "Port for homepage link";
       };
+      url = mkOption {
+        type = nullOr str;
+        default = null;
+        description = "Custom URL for homepage link (overrides auto-generated URL)";
+      };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        enableBlocks = mkOption {
+          type = bool;
+          default = true;
+          description = "Enable blocks for widget";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "movies"
+            "series"
+            "episodes"
+            "songs"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 

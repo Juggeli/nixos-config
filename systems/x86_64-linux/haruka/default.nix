@@ -210,13 +210,58 @@ in
 
     containers = {
       prowlarr = disabled;
-      plex = enabled;
-      jellyfin = enabled;
+      plex = {
+        enable = true;
+        homepage.widget = {
+          enable = true;
+        };
+      };
+      jellyfin = {
+        enable = true;
+        homepage = {
+          url = "https://jelly.jugi.cc";
+          widget = {
+            enable = true;
+          };
+        };
+      };
       qbittorrent = disabled;
-      sonarr = enabled;
-      sonarr-anime = enabled;
-      radarr = enabled;
-      radarr-anime = enabled;
+      sonarr = {
+        enable = true;
+        homepage = {
+          url = "https://sonarr.jugi.cc";
+          widget = {
+            enable = true;
+          };
+        };
+      };
+      sonarr-anime = {
+        enable = true;
+        homepage = {
+          url = "https://sonarr-anime.jugi.cc";
+          widget = {
+            enable = true;
+          };
+        };
+      };
+      radarr = {
+        enable = true;
+        homepage = {
+          url = "https://radarr.jugi.cc";
+          widget = {
+            enable = true;
+          };
+        };
+      };
+      radarr-anime = {
+        enable = true;
+        homepage = {
+          url = "https://radarr-anime.jugi.cc";
+          widget = {
+            enable = true;
+          };
+        };
+      };
       changedetection = disabled;
       trilium = enabled;
       grist = disabled;
@@ -224,15 +269,15 @@ in
         enable = true;
         homepage.widget = {
           enable = true;
-          apiKeyFile = ./secrets/bazarr-api.age;
-          fields = [
-            "missingEpisodes"
-            "missingMovies"
-          ];
         };
       };
       stash = disabled;
-      uptime-kuma = enabled;
+      uptime-kuma = {
+        enable = true;
+        homepage.widget = {
+          enable = true;
+        };
+      };
     };
 
     services = {

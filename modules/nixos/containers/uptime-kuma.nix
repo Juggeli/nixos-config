@@ -33,6 +33,33 @@ in
         default = 3001;
         description = "Port for homepage link";
       };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        type = mkOption {
+          type = str;
+          default = "uptimekuma";
+          description = "Widget type for homepage";
+        };
+        slug = mkOption {
+          type = str;
+          default = "ultra";
+          description = "Status page slug, the url without the /status/ portion";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "up"
+            "down"
+            "uptime"
+            "incident"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 

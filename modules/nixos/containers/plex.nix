@@ -33,6 +33,22 @@ in
         default = 32400;
         description = "Port for homepage link";
       };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "streams"
+            "movies"
+            "tv"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 
