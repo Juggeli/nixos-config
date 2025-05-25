@@ -44,6 +44,18 @@ let
       grim -g "$(slurp)" - | wl-copy
     '';
   };
+
+  windowLayoutSwitcher = pkgs.writeShellApplication {
+    name = "window-layout-switcher";
+
+    runtimeInputs = with pkgs; [
+      hyprland
+      jq
+      socat
+    ];
+
+    text = builtins.readFile ./window-layout-switcher.sh;
+  };
 in
 {
   options.plusultra.desktop.hyprland = with types; {
@@ -67,6 +79,7 @@ in
     environment.systemPackages = with pkgs; [
       wl-clipboard
       screenshot
+      windowLayoutSwitcher
       wev # Find mouse or keycodes
     ];
 
@@ -159,6 +172,7 @@ in
           "uwsm app -- ${pkgs.waybar}/bin/waybar"
           "uwsm app -- ${pkgs.hyprpaper}/bin/hyprpaper"
           ''uwsm app -- ${pkgs.hyprland}/bin/hyprctl setcursor "Banana-Catppuccin-Mocha" 64''
+          "uwsm app -- window-layout-switcher"
         ];
         debug = {
           "overlay" = "false";
