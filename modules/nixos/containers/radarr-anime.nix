@@ -33,6 +33,33 @@ in
         default = 7879;
         description = "Port for homepage link";
       };
+      url = mkOption {
+        type = nullOr str;
+        default = null;
+        description = "Custom URL for homepage link (overrides auto-generated URL)";
+      };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        type = mkOption {
+          type = str;
+          default = "radarr";
+          description = "Widget type for homepage";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "wanted"
+            "missing"
+            "queued"
+            "movies"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 
@@ -52,3 +79,4 @@ in
     };
   };
 }
+
