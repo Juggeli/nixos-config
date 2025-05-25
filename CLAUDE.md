@@ -55,7 +55,8 @@ nix develop
 - `overlays/` - Package overlays
 
 ### Module System
-- Uses `enabled`/`disabled` helpers for clean module toggling
+- Uses `enabled`/`disabled` helpers for clean module toggling, note that `enabled`
+equals to { enabled = true; }, do not try to set just boolean values to enabled
 - Options are namespaced under `plusultra.*`
 - `suites/` provide pre-configured module bundles (common, desktop, development, media)
 - Individual modules can be granularly enabled
@@ -77,3 +78,6 @@ nix develop
 
 ## Coding Guidelines
 - Dont leave code comments, unless the code is not obvious
+
+## Development Reminders
+- Remember to git add any new files, no need to add changed files
