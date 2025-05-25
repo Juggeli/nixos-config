@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 with lib.plusultra;
@@ -19,12 +19,31 @@ let
   generateServiceEntries =
     category: services:
     map (service: {
-      "${service.homepage.name}" = {
-        icon = service.homepage.icon;
-        description = service.homepage.description or "";
-        href = "http://${config.networking.hostName}:${toString service.homepage.port}";
-        siteMonitor = "http://${config.networking.hostName}:${toString service.homepage.port}";
-      };
+      "${service.homepage.name}" =
+        {
+          icon = service.homepage.icon;
+          description = service.homepage.description or "";
+          href = "http://${config.networking.hostName}:${toString service.homepage.port}";
+          siteMonitor = "http://${config.networking.hostName}:${toString service.homepage.port}";
+        }
+        // lib.optionalAttrs
+          (
+            service.homepage ? widget && service.homepage.widget.enable && 
+            (service.homepage.widget.apiKey != "" || service.homepage.widget.apiKeyFile != null)
+          )
+          {
+            widget =
+              {
+                type = service._name;
+                url = "http://${config.networking.hostName}:${toString service.homepage.port}";
+                key = if service.homepage.widget.apiKeyFile != null 
+                      then "{{HOMEPAGE_VAR_${lib.toUpper service._name}_API_KEY}}"
+                      else service.homepage.widget.apiKey;
+              }
+              // lib.optionalAttrs (service.homepage.widget ? fields) {
+                fields = service.homepage.widget.fields;
+              };
+          };
     }) services;
 in
 {
@@ -66,7 +85,6 @@ in
       enable = true;
       openFirewall = true;
       listenPort = 3000;
-      environmentFile = config.age.secrets.homepage-env.path;
 
       customCSS = ''
         body, html {
@@ -123,6 +141,8 @@ in
         hideVersion = true;
       };
 
+      environmentFile = "/run/homepage/env";
+      
       services =
         # Dynamic service categories
         (map (category: {
@@ -185,6 +205,57 @@ in
               ];
           }
         ];
+    };
+    
+    # Create environment file with API keys from secrets
+    systemd.services.homepage-env = {
+      description = "Prepare Homepage environment file";
+      wantedBy = [ "homepage-dashboard.service" ];
+      before = [ "homepage-dashboard.service" ];
+      after = [ "agenix.service" ];
+      wants = [ "agenix.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        User = "root";
+        Group = "root";
+        ExecStart = let
+          apiKeyServices = lib.filterAttrs (name: service: 
+            service.homepage ? widget && service.homepage.widget.enable && service.homepage.widget.apiKeyFile != null
+          ) homepageServices;
+          
+          envScript = pkgs.writeShellScript "homepage-env-setup" ''
+            mkdir -p /run/homepage
+            
+            # Start with base environment file if it exists
+            ${lib.optionalString (config.age.secrets ? homepage-env) ''
+              if [ -f "${config.age.secrets.homepage-env.path}" ]; then
+                cp "${config.age.secrets.homepage-env.path}" /run/homepage/env
+              else
+                touch /run/homepage/env
+              fi
+            ''}
+            ${lib.optionalString (!(config.age.secrets ? homepage-env)) ''
+              touch /run/homepage/env
+            ''}
+            
+            # Add API keys for services
+            ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: service: 
+              let 
+                secretName = "${name}-api";
+                secretPath = config.age.secrets."${secretName}".path or null;
+              in
+              lib.optionalString (secretPath != null) ''
+                if [ -f "${secretPath}" ]; then
+                  echo "HOMEPAGE_VAR_${lib.toUpper name}_API_KEY=$(cat ${secretPath})" >> /run/homepage/env
+                fi
+              ''
+            ) apiKeyServices)}
+            
+            chmod 600 /run/homepage/env
+          '';
+        in "${envScript}";
+      };
     };
   };
 }

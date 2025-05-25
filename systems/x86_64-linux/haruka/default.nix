@@ -220,7 +220,17 @@ in
       changedetection = disabled;
       trilium = enabled;
       grist = disabled;
-      bazarr = enabled;
+      bazarr = {
+        enable = true;
+        homepage.widget = {
+          enable = true;
+          apiKeyFile = ./secrets/bazarr-api.age;
+          fields = [
+            "missingEpisodes"
+            "missingMovies"
+          ];
+        };
+      };
       stash = disabled;
       uptime-kuma = enabled;
     };

@@ -66,6 +66,7 @@ equals to { enabled = true; }, do not try to set just boolean values to enabled
 - **Impermanence**: Configured for ephemeral root filesystems
 - **Deploy-rs**: Automated remote deployment with verification
 - **Container Services**: Extensive media server stack via Podman containers
+- **Homepage Dashboard**: Dynamic service detection with API widget support for enhanced monitoring
 
 ## Manual Setup Notes
 - macOS: Start Aerospace window manager on first launch
@@ -75,6 +76,7 @@ equals to { enabled = true; }, do not try to set just boolean values to enabled
 
 ## Configuration Tips
 - Use plusultra.home.configFile.<file> option to make config files in home dir
+- Homepage API widgets: Set apiKey in container configs to enable enhanced monitoring (e.g., bazarr.homepage.widget.apiKey)
 
 ## Coding Guidelines
 - Don't leave code comments, unless the code is not obvious
