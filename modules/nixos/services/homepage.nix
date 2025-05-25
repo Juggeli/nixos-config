@@ -4,140 +4,187 @@ with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.services.homepage;
+
+  # Extract services with homepage metadata from containers
+  homepageServices = lib.filterAttrs (
+    name: value: value ? homepage && value.enable or false
+  ) config.plusultra.containers;
+
+  # Group services by category
+  servicesByCategory = lib.groupBy (service: service.homepage.category) (
+    lib.mapAttrsToList (name: value: value // { _name = name; }) homepageServices
+  );
+
+  # Generate service entries for a category
+  generateServiceEntries =
+    category: services:
+    map (service: {
+      "${service.homepage.name}" = {
+        icon = service.homepage.icon;
+        description = service.homepage.description or "";
+        href = "http://${config.networking.hostName}:${toString service.homepage.port}";
+        siteMonitor = "http://${config.networking.hostName}:${toString service.homepage.port}";
+      };
+    }) services;
 in
 {
   options.plusultra.services.homepage = with types; {
     enable = mkBoolOpt false "Whether or not to enable homepage dashboard service.";
+
+    misc = mkOption {
+      default = [ ];
+      type = listOf (
+        attrsOf (submodule {
+          options = {
+            description = mkOption {
+              type = str;
+              description = "Service description";
+            };
+            href = mkOption {
+              type = str;
+              description = "Service URL";
+            };
+            siteMonitor = mkOption {
+              type = str;
+              description = "URL for site monitoring";
+            };
+            icon = mkOption {
+              type = str;
+              description = "Icon for the service";
+            };
+          };
+        })
+      );
+      description = "Additional miscellaneous services to display";
+    };
   };
 
   config = mkIf cfg.enable {
+    services.glances.enable = true;
+
     services.homepage-dashboard = {
       enable = true;
       openFirewall = true;
       listenPort = 3000;
       environmentFile = config.age.secrets.homepage-env.path;
-      services = [
-        {
-          "Apps" = mkMerge [
-            (mkIf config.plusultra.containers.trilium.enable [
-              {
-                "Trilium" = {
-                  href = "http://${config.networking.hostName}:8080";
-                  icon = "trilium.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.grist.enable [
-              {
-                "Grist" = {
-                  href = "http://${config.networking.hostName}:8484";
-                  icon = "grist.png";
-                };
-              }
-            ])
-          ];
+
+      customCSS = ''
+        body, html {
+          font-family: SF Pro Display, Helvetica, Arial, sans-serif !important;
         }
-        {
-          "Media" = mkMerge [
-            (mkIf config.plusultra.containers.bazarr.enable [
-              {
-                "Bazarr" = {
-                  href = "http://${config.networking.hostName}:6767";
-                  icon = "bazarr.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.sonarr.enable [
-              {
-                "Sonarr" = {
-                  href = "http://${config.networking.hostName}:8989";
-                  icon = "sonarr.png";
-                };
-              }
-              {
-                "Sonarr Anime" = {
-                  href = "http://${config.networking.hostName}:8999";
-                  icon = "sonarr.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.radarr.enable [
-              {
-                "Radarr" = {
-                  href = "http://${config.networking.hostName}:7878";
-                  icon = "radarr.png";
-                };
-              }
-              {
-                "Radarr Anime" = {
-                  href = "http://${config.networking.hostName}:7879";
-                  icon = "radarr.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.plex.enable [
-              {
-                "Plex" = {
-                  href = "http://${config.networking.hostName}:32400";
-                  icon = "plex.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.jellyfin.enable [
-              {
-                "Jellyfin" = {
-                  href = "http://${config.networking.hostName}:8096";
-                  icon = "jellyfin.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.prowlarr.enable [
-              {
-                "Prowlarr" = {
-                  href = "http://${config.networking.hostName}:9696";
-                  icon = "prowlarr.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.qbittorrent.enable [
-              {
-                "qBittorrent" = {
-                  href = "http://${config.networking.hostName}:9999";
-                  icon = "qbittorrent.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.stash.enable [
-              {
-                "Stash" = {
-                  href = "http://${config.networking.hostName}:9999";
-                  icon = "stash.png";
-                };
-              }
-            ])
-          ];
+        .font-medium {
+          font-weight: 700 !important;
         }
-        {
-          "Monitoring" = mkMerge [
-            (mkIf config.plusultra.containers.uptime-kuma.enable [
-              {
-                "Uptime Kuma" = {
-                  href = "http://${config.networking.hostName}:3001";
-                  icon = "uptime-kuma.png";
-                };
-              }
-            ])
-            (mkIf config.plusultra.containers.changedetection.enable [
-              {
-                "Change Detection" = {
-                  href = "http://${config.networking.hostName}:5000";
-                  icon = "changedetection.png";
-                };
-              }
-            ])
-          ];
+        .font-light {
+          font-weight: 500 !important;
         }
-      ];
+        .font-thin {
+          font-weight: 400 !important;
+        }
+        #information-widgets {
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+        }
+        div#footer {
+          display: none;
+        }
+        .services-group.basis-full.flex-1.px-1.-my-1 {
+          padding-bottom: 3rem;
+        }
+      '';
+
+      settings = {
+        layout =
+          [
+            {
+              System = {
+                header = false;
+                style = "row";
+                columns = 4;
+              };
+            }
+          ]
+          ++ (map (category: {
+            "${category}" = {
+              header = true;
+              style = "column";
+            };
+          }) (lib.attrNames servicesByCategory))
+          ++ [
+            {
+              Misc = {
+                header = true;
+                style = "column";
+              };
+            }
+          ];
+        headerStyle = "clean";
+        statusStyle = "dot";
+        hideVersion = true;
+      };
+
+      services =
+        # Dynamic service categories
+        (map (category: {
+          "${category}" = generateServiceEntries category servicesByCategory.${category};
+        }) (lib.attrNames servicesByCategory))
+        # Misc services
+        ++ lib.optional (cfg.misc != [ ]) { Misc = cfg.misc; }
+        # System monitoring
+        ++ [
+          {
+            System =
+              let
+                port = toString config.services.glances.port;
+              in
+              [
+                {
+                  Info = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "info";
+                      chart = false;
+                      version = 4;
+                    };
+                  };
+                }
+                {
+                  "CPU Temp" = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "sensor:Package id 0";
+                      chart = false;
+                      version = 4;
+                    };
+                  };
+                }
+                {
+                  Processes = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "process";
+                      chart = false;
+                      version = 4;
+                    };
+                  };
+                }
+                {
+                  Network = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "network:enp1s0";
+                      chart = false;
+                      version = 4;
+                    };
+                  };
+                }
+              ];
+          }
+        ];
     };
   };
 }

@@ -7,6 +7,33 @@ in
 {
   options.plusultra.containers.jellyfin = with types; {
     enable = mkBoolOpt false "Whether or not to jellyfin service.";
+    homepage = {
+      name = mkOption {
+        type = str;
+        default = "Jellyfin";
+        description = "Service name for homepage";
+      };
+      description = mkOption {
+        type = str;
+        default = "Media server";
+        description = "Service description for homepage";
+      };
+      icon = mkOption {
+        type = str;
+        default = "jellyfin.png";
+        description = "Icon for homepage";
+      };
+      category = mkOption {
+        type = str;
+        default = "Media";
+        description = "Category for homepage";
+      };
+      port = mkOption {
+        type = int;
+        default = 8096;
+        description = "Port for homepage link";
+      };
+    };
   };
 
   config = mkIf cfg.enable {

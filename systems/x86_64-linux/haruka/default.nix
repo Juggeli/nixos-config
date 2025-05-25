@@ -25,7 +25,8 @@ let
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
-      "podman-stash.service"
+      "podman-trilium.service"
+      "podman-uptime-kuma.service"
     )
 
     for service in "''${services[@]}"
@@ -45,7 +46,8 @@ let
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
-      "podman-stash.service"
+      "podman-trilium.service"
+      "podman-uptime-kuma.service"
     )
 
     for service in "''${services[@]}"
@@ -212,7 +214,9 @@ in
       jellyfin = enabled;
       qbittorrent = disabled;
       sonarr = enabled;
+      sonarr-anime = enabled;
       radarr = enabled;
+      radarr-anime = enabled;
       changedetection = disabled;
       trilium = enabled;
       grist = disabled;

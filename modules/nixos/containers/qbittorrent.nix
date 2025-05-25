@@ -12,6 +12,33 @@ in
 {
   options.plusultra.containers.qbittorrent = with types; {
     enable = mkBoolOpt false "Whether or not to enable qbittorrent service.";
+    homepage = {
+      name = mkOption {
+        type = str;
+        default = "qBittorrent";
+        description = "Service name for homepage";
+      };
+      description = mkOption {
+        type = str;
+        default = "Torrent client";
+        description = "Service description for homepage";
+      };
+      icon = mkOption {
+        type = str;
+        default = "qbittorrent.png";
+        description = "Icon for homepage";
+      };
+      category = mkOption {
+        type = str;
+        default = "Downloads";
+        description = "Category for homepage";
+      };
+      port = mkOption {
+        type = int;
+        default = 8080;
+        description = "Port for homepage link";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
