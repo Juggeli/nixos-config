@@ -158,7 +158,6 @@ in
         exec-once = [
           "uwsm app -- ${pkgs.waybar}/bin/waybar"
           "uwsm app -- ${pkgs.hyprpaper}/bin/hyprpaper"
-          "uwsm app -- ${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout"
           ''uwsm app -- ${pkgs.hyprland}/bin/hyprctl setcursor "Banana-Catppuccin-Mocha" 64''
         ];
         debug = {
@@ -194,7 +193,6 @@ in
     plusultra.home.configFile = {
       "hypr/hyprpaper.conf".source = ./hyprpaper.conf;
       "hypr/background.png".source = ./background.png;
-      "hyprland-per-window-layout/options.toml".source = ./hyprland-per-window-layout.toml;
     };
 
     environment.persistence."/persist-home" = {
