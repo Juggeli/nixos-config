@@ -199,6 +199,11 @@ in
 
     filesystem.zfs = enabled;
 
+    hardware.storage = {
+      enable = true;
+      smartd.enable = true;
+    };
+
     suites = {
       common-slim = enabled;
     };

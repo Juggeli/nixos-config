@@ -10,6 +10,10 @@ let
   cfg = config.plusultra.hardware.storage;
 in
 {
+  imports = [
+    ./smartd.nix
+  ];
+
   options.plusultra.hardware.storage = with types; {
     enable = mkBoolOpt false "Whether or not to enable support for extra storage devices.";
   };
