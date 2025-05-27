@@ -12,6 +12,7 @@ in
   config = mkIf cfg.enable {
     programs.waybar = {
       enable = true;
+      systemd.enable = true;
       settings = {
         mainBar = {
           layer = "top";
@@ -26,6 +27,7 @@ in
             "hyprland/workspaces"
           ];
           modules-right = [
+            "idle_inhibitor"
             "pulseaudio"
             "tray"
             "clock"
@@ -76,6 +78,17 @@ in
                 today = "<span color='#f38ba8'><b><u>{}</u></b></span>";
               };
             };
+          };
+
+          idle_inhibitor = {
+            format = "{icon}";
+            format-icons = {
+              activated = "";
+              deactivated = "";
+            };
+            tooltip = true;
+            tooltip-format-activated = "Idle inhibitor active";
+            tooltip-format-deactivated = "Idle inhibitor inactive";
           };
 
           tray = {

@@ -39,7 +39,8 @@ window#waybar {
 
 #tray,
 #clock,
-#pulseaudio {
+#pulseaudio,
+#idle_inhibitor {
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -54,6 +55,14 @@ window#waybar {
 
 #pulseaudio.muted {
 	color: @red;
+}
+
+#idle_inhibitor {
+	color: @yellow;
+}
+
+#idle_inhibitor.activated {
+	color: @green;
 }
 
 tooltip {

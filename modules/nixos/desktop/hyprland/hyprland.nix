@@ -169,7 +169,6 @@ in
           "suppressevent maximize,class:mpv"
         ];
         exec-once = [
-          "uwsm app -- ${pkgs.waybar}/bin/waybar"
           "uwsm app -- ${pkgs.hyprpaper}/bin/hyprpaper"
           ''uwsm app -- ${pkgs.hyprland}/bin/hyprctl setcursor "Banana-Catppuccin-Mocha" 64''
           "uwsm app -- window-layout-switcher"
