@@ -28,6 +28,7 @@ in
         ".local/state/nvim"
         ".local/share/nvim"
         ".cache/nvim"
+        ".config/github-copilot"
       ];
     };
   };
