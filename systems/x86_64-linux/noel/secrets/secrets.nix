@@ -1,34 +1,18 @@
 let
   user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO";
   system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHRcPjReo8vFNgTRYYaJ6Q+wYdOxF414AFJuF3utHyd2";
+  keys = [
+    user
+    system
+  ];
 in
 {
-  "borg-passkey.age".publicKeys = [
-    user
-    system
-  ];
-  "smb.age".publicKeys = [
-    user
-    system
-  ];
-  "tailscale.age".publicKeys = [
-    user
-    system
-  ];
-  "syncthing-key.age".publicKeys = [
-    user
-    system
-  ];
-  "syncthing-cert.age".publicKeys = [
-    user
-    system
-  ];
-  "borg-healthcheck.age".publicKeys = [
-    user
-    system
-  ];
-  "storagebox-url.age".publicKeys = [
-    user
-    system
-  ];
+  "borg-passkey.age".publicKeys = keys;
+  "smb.age".publicKeys = keys;
+  "tailscale.age".publicKeys = keys;
+  "syncthing-key.age".publicKeys = keys;
+  "syncthing-cert.age".publicKeys = keys;
+  "borg-healthcheck.age".publicKeys = keys;
+  "storagebox-url.age".publicKeys = keys;
+  "borg-hydrus-healthcheck.age".publicKeys = keys;
 }
