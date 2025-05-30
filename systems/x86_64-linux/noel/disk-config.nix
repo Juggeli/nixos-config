@@ -66,6 +66,13 @@ in
                         "noatime"
                       ];
                     };
+                    "/hydrus" = {
+                      mountpoint = "/hydrus";
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
+                    };
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = [

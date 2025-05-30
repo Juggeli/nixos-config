@@ -39,7 +39,6 @@ in
         "downloads"
         "documents"
         "games"
-        "Hydrus"
         "My Games"
       ] ++ cfg.directories;
       files = cfg.files;
