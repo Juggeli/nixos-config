@@ -20,10 +20,27 @@ with lib.plusultra;
       syncthing = enabled;
       borgmatic = {
         enable = true;
-        directories = [
-          "/persist/"
-          "/persist-home/"
-        ];
+        backups = {
+          storagebox = {
+            directories = [
+              "/persist/"
+              "/persist-home/"
+            ];
+            repository = {
+              url_path = config.age.secrets.storagebox-url.path;
+              label = "storagebox";
+            };
+            healthcheck_url_path = config.age.secrets.borg-healthcheck.path;
+          };
+          hydrus = {
+            directories = [ "/hydrus" ];
+            repository = {
+              url = "ssh://juggeli@haruka/tank/backup/hydrus";
+              label = "haruka-hydrus";
+            };
+            healthcheck_url_path = config.age.secrets.borg-hydrus-healthcheck.path;
+          };
+        };
       };
     };
     filesystem = {
