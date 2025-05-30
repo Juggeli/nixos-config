@@ -183,6 +183,7 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [ "agenix.service" ];
         before = [ "borgmatic.service" ];
+        restartTriggers = [ config.environment.etc."borgmatic.d".source ];
         serviceConfig = {
           Type = "oneshot";
           RemainAfterExit = true;
