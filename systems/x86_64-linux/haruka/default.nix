@@ -194,7 +194,16 @@ in
       };
       borgmatic = {
         enable = true;
-        directories = [ "/mnt/appdata" ];
+        backups = {
+          storagebox = {
+            directories = [ "/mnt/appdata" ];
+            repository = {
+              label = "storagebox";
+              url_path = config.age.secrets.storagebox-url.path;
+            };
+            healthcheck_url_path = config.age.secrets.borg-healthcheck.path;
+          };
+        };
       };
       podman = enabled;
     };
