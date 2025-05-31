@@ -139,9 +139,7 @@ in
         source_directories = backup.directories;
         repositories = [
           {
-            path = if backup.repository.url != null 
-                   then backup.repository.url 
-                   else "@${name}-repository-url@";
+            path = if backup.repository.url != null then backup.repository.url else "@${name}-repository-url@";
             label = backup.repository.label;
           }
         ];
@@ -177,19 +175,11 @@ in
         ];
       };
 
-      # Handle secret substitution after agenix but before borgmatic services
-      systemd.services."borgmatic-secrets" = {
-        description = "Replace secrets in borgmatic configurations";
-        wantedBy = [ "multi-user.target" ];
-        after = [ "agenix.service" ];
-        before = [ "borgmatic.service" ];
-        restartTriggers = [ config.environment.etc."borgmatic.d".source ];
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-        };
-        script = concatStringsSep "\n" (
-          mapAttrsToList (name: backup: 
+      # Replace secrets in borgmatic configurations during system activation
+      system.activationScripts.borgmatic-secrets = {
+        text = concatStringsSep "\n" (
+          mapAttrsToList (
+            name: backup:
             let
               configFile = "/etc/borgmatic.d/${name}.yaml";
               repoReplacement = optionalString (backup.repository.url_path != null) ''
@@ -208,11 +198,10 @@ in
             repoReplacement + healthcheckReplacement
           ) cfg.backups
         );
-      };
-
-      systemd.services."borgmatic" = {
-        after = [ "borgmatic-secrets.service" ];
-        wants = [ "borgmatic-secrets.service" ];
+        deps = [
+          "agenix"
+          "etc"
+        ];
       };
     }
   );
