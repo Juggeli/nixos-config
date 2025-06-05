@@ -59,115 +59,14 @@ let
     echo "All services stopped successfully."
   '';
 
-  backup = pkgs.writeShellScriptBin "backup" ''
-    # List of UUIDs for your LUKS-encrypted partitions:
-    PARTITIONS_UUIDS=(
+  backup = pkgs.callPackage ../../../packages/luks-backup {
+    partitionUuids = [
       "585f6048-46df-4d11-a7f8-36a37b932a97"
       "b2fae3e5-97e0-425b-aa55-000eead6465e"
       "7064f0ca-116c-4ef8-af27-53f38552a492"
       "ed5f89cd-cf85-491a-b0f9-915d06d96465"
-    )
-
-    # Prefix for the LUKS mapping names:
-    LUKS_MAPPER_PREFIX="crypt_disk"
-
-    # Where each partition will be mounted (e.g., /mnt/disk1, /mnt/disk2, etc.)
-    # The script will append an index to this base name.
-    DISK_MOUNT_BASE="/mnt/disk"
-
-    # The mergerfs mountpoint:
-    MERGED_MOUNT="/mnt/disks"
-
-    # The directory you want to copy from:
-    SOURCE_DIR="/tank"
-
-    ################################################################################
-    # SCRIPT START
-    ################################################################################
-
-    set -e  # Exit on any error
-
-    # Prompt once for the LUKS passphrase (no echo)
-    read -sp "Enter LUKS passphrase: " LUKS_PASSWORD
-    echo  # Just to move to a new line
-
-    ################################################################################
-    # 1. OPEN & MOUNT ALL LUKS PARTITIONS
-    ################################################################################
-
-    # Counter to keep track of each disk index
-    COUNTER=1
-    MOUNT_PATHS=()  # Will hold each mount path to feed into mergerfs later
-
-    for UUID in "''${PARTITIONS_UUIDS[@]}"; do
-      # Convert UUID to a known device path
-      PART="/dev/disk/by-uuid/''${UUID}"
-      
-      # Create a name for the LUKS mapping
-      MAPPER_NAME="''${LUKS_MAPPER_PREFIX}''${COUNTER}"
-      
-      echo "Opening LUKS partition with UUID=''${UUID} as /dev/mapper/''${MAPPER_NAME}..."
-      # Feed the stored passphrase into cryptsetup via stdin
-      echo -n "''${LUKS_PASSWORD}" | doas cryptsetup open "''${PART}" "''${MAPPER_NAME}" --type luks
-      
-      # Create a mount directory for this partition
-      MOUNT_DIR="''${DISK_MOUNT_BASE}''${COUNTER}"
-      doas mkdir -p "''${MOUNT_DIR}"
-      
-      echo "Mounting /dev/mapper/''${MAPPER_NAME} at ''${MOUNT_DIR}..."
-      doas mount "/dev/mapper/''${MAPPER_NAME}" "''${MOUNT_DIR}"
-      
-      # Keep track of the mount path
-      MOUNT_PATHS+=("''${MOUNT_DIR}")
-      
-      ((COUNTER++))
-    done
-
-    ################################################################################
-    # 2. CREATE MERGERFS MOUNT
-    ################################################################################
-
-    # Make sure the mergerfs mount directory exists
-    doas mkdir -p "''${MERGED_MOUNT}"
-
-    # Join all mount paths with ':' for mergerfs
-    MERGER_DIRS=''$(IFS=":"; echo "''${MOUNT_PATHS[*]}")
-
-    echo "Creating mergerfs mount at ''${MERGED_MOUNT} combining: ''${MERGER_DIRS}"
-    doas mergerfs "''${MERGER_DIRS}" "''${MERGED_MOUNT}" -o cache.files=off,dropcacheonclose=false,category.create=mfs
-
-    ################################################################################
-    # 3. RSYNC FROM /tank TO THE MERGERFS MOUNT
-    ################################################################################
-
-    echo "Copying data from ''${SOURCE_DIR} to ''${MERGED_MOUNT}..."
-    doas rsync -avhP --delete "''${SOURCE_DIR}/" "''${MERGED_MOUNT}/"
-
-    ################################################################################
-    # 4. UNMOUNT EVERYTHING
-    ################################################################################
-
-    echo "Unmounting mergerfs mount at ''${MERGED_MOUNT}..."
-    doas umount "''${MERGED_MOUNT}"
-
-    # Close each LUKS container, unmount each partition
-    COUNTER=1
-    for UUID in "''${PARTITIONS_UUIDS[@]}"; do
-      MAPPER_NAME="''${LUKS_MAPPER_PREFIX}''${COUNTER}"
-      MOUNT_DIR="''${DISK_MOUNT_BASE}''${COUNTER}"
-      
-      echo "Unmounting ''${MOUNT_DIR}..."
-      doas umount "''${MOUNT_DIR}"
-      
-      echo "Closing LUKS container /dev/mapper/''${MAPPER_NAME}..."
-      doas cryptsetup close "''${MAPPER_NAME}"
-      
-      ((COUNTER++))
-    done
-
-    echo "All done!"
-    exit 0
-  '';
+    ];
+  };
 in
 {
   imports = [
