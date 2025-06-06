@@ -31,6 +31,11 @@ in
       type = with types; bool;
       description = "Enable zed support to send notifications to ntfy";
     };
+    autoSnapshot = mkOption {
+      default = true;
+      type = with types; bool;
+      description = "Enable automatic ZFS snapshots";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -45,6 +50,15 @@ in
     services.zfs = {
       autoScrub = mkIf cfg.autoscrub { enable = true; };
       trim = mkIf cfg.autotrim { enable = true; };
+      autoSnapshot = mkIf cfg.autoSnapshot {
+        enable = true;
+        flags = "-k -p --utc";
+        frequent = 4;
+        hourly = 48;
+        daily = 30;
+        weekly = 12;
+        monthly = 0;
+      };
       zed = mkIf cfg.zed {
         settings = {
           ZED_DEBUG_LOG = "/tmp/zed.debug.log";
@@ -61,5 +75,41 @@ in
       secret=$(cat "${config.age.secrets.ntfy-topic.path}")
       ${pkgs.gnused}/bin/sed -i "s#@ntfy-topic@#$secret#" "$configFile"
     '';
+
+    systemd.services = mkIf cfg.autoSnapshot {
+      "zfs-snapshot-tank-media-downloads" = {
+        description = "ZFS snapshot tank/media (frequent)";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.zfs}/bin/zfs snapshot tank/media@zfs-auto-snap-$(date -u +%Y-%m-%d-%H%M%S)";
+        };
+      };
+      "zfs-snapshot-tank-sorted" = {
+        description = "ZFS snapshot tank/sorted (frequent)";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.zfs}/bin/zfs snapshot tank/sorted@zfs-auto-snap-$(date -u +%Y-%m-%d-%H%M%S)";
+        };
+      };
+    };
+
+    systemd.timers = mkIf cfg.autoSnapshot {
+      "zfs-snapshot-tank-media-downloads" = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "*:0/15";
+          Persistent = true;
+          RandomizedDelaySec = "5m";
+        };
+      };
+      "zfs-snapshot-tank-sorted" = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "hourly";
+          Persistent = true;
+          RandomizedDelaySec = "5m";
+        };
+      };
+    };
   };
 }
