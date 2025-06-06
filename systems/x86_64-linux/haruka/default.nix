@@ -78,7 +78,6 @@ in
     stopcontainers
     startpool
     backup
-    pkgs.mergerfs
     pkgs.borgbackup
   ];
 
