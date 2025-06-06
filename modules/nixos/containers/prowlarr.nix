@@ -41,6 +41,9 @@ in
       image = "ghcr.io/hotio/prowlarr";
       autoStart = true;
       ports = [ "9696:9696" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/mnt/appdata/prowlarr/:/config"
       ];

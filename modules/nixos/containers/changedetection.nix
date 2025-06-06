@@ -41,6 +41,9 @@ in
       image = "ghcr.io/dgtlmoon/changedetection.io";
       autoStart = true;
       ports = [ "5000:5000" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/mnt/appdata/changedetection:/datastore"
       ];

@@ -41,6 +41,9 @@ in
       image = "ghcr.io/hotio/stash";
       autoStart = false;
       ports = [ "9999:9999" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       environment = {
         PUID = "1000";
         PGID = "100";

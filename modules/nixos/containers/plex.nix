@@ -57,6 +57,9 @@ in
       image = "ghcr.io/hotio/plex";
       autoStart = false;
       ports = [ "32400:32400" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       extraOptions = [
         ''--group-add="303"''
         ''--device=/dev/dri/renderD128''

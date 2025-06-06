@@ -53,6 +53,9 @@ in
       image = "ghcr.io/hotio/bazarr";
       autoStart = false;
       ports = [ "6767:6767" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       environment = {
         PUID = "1000";
         PGID = "100";

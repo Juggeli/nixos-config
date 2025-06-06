@@ -68,6 +68,9 @@ in
       image = "ghcr.io/hotio/jellyfin";
       autoStart = false;
       ports = [ "8096:8096" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       extraOptions = [
         ''--group-add="303"''
         ''--device=/dev/dri/renderD128''

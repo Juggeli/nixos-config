@@ -8,19 +8,6 @@ with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.feature.podman;
-  update-containers = pkgs.writeShellScriptBin "update-containers" ''
-    	SUDO=""
-    	if [[ $(id -u) -ne 0 ]]; then
-    		SUDO="doas"
-    	fi
-
-      images=$($SUDO ${pkgs.podman}/bin/podman ps -a --format="{{.Image}}" | sort -u)
-
-      for image in $images
-      do
-        $SUDO ${pkgs.podman}/bin/podman pull $image
-      done
-  '';
 in
 {
   options.plusultra.feature.podman = with types; {
@@ -30,7 +17,6 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [
       pkgs.lazydocker
-      update-containers
     ];
     virtualisation.oci-containers.backend = "podman";
 
@@ -46,19 +32,24 @@ in
       };
     };
 
-    systemd.timers.updatecontainers = {
+    systemd.timers.podman-auto-update = {
       timerConfig = {
-        Unit = "updatecontainers.service";
-        OnCalendar = "Mon 02:00";
+        OnCalendar = "06:00";
+        Persistent = true;
       };
       wantedBy = [ "timers.target" ];
     };
 
-    systemd.services.updatecontainers = {
+    systemd.services.podman-auto-update = {
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "update-containers";
+        ExecStart = "${pkgs.podman}/bin/podman auto-update";
+        ExecStartPost = "${pkgs.systemd}/bin/systemctl restart podman-auto-update-dependent.target";
       };
+    };
+
+    systemd.targets.podman-auto-update-dependent = {
+      description = "Target for services that depend on podman auto-update";
     };
   };
 }

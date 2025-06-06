@@ -68,6 +68,9 @@ in
       image = "louislam/uptime-kuma";
       autoStart = true;
       ports = [ "3001:3001" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/mnt/appdata/uptime-kuma:/app/data"
       ];

@@ -67,6 +67,9 @@ in
       image = "ghcr.io/hotio/sonarr";
       autoStart = false;
       ports = [ "8999:8989" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/mnt/appdata/sonarr-anime/:/config/"
         "/tank/media/:/mnt/pool/media/"

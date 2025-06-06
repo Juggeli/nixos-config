@@ -41,6 +41,9 @@ in
       image = "ghcr.io/zadam/trilium";
       autoStart = true;
       ports = [ "8080:8080" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/mnt/appdata/trilium/:/home/node/trilium-data"
       ];

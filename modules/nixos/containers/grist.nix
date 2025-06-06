@@ -41,6 +41,9 @@ in
       image = "docker.io/gristlabs/grist";
       autoStart = true;
       ports = [ "8484:8484" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/mnt/appdata/grist/:/persist"
       ];

@@ -46,6 +46,9 @@ in
       image = "ghcr.io/hotio/qbittorrent";
       autoStart = true;
       ports = [ "8080:8080" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/var/lib/qbittorrent:/config"
         "/mnt/pool/:/mnt/pool/"

@@ -68,6 +68,9 @@ in
       image = "ghcr.io/hotio/radarr";
       autoStart = false;
       ports = [ "7879:7878" ];
+      labels = {
+        "io.containers.autoupdate" = "registry";
+      };
       volumes = [
         "/mnt/appdata/radarr-anime/:/config"
         "/tank/media/:/mnt/pool/media/"
