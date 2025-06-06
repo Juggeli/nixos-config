@@ -198,7 +198,118 @@ in
       cockpit = disabled;
       cloudflared = enabled;
       grafana = disabled;
-      homepage = enabled;
+      homepage = {
+        enable = true;
+        misc = [
+          {
+            "Jellyfin" = {
+              description = "Media server";
+              href = "https://sweatpants.aiko.usbx.me/jellyfin";
+              siteMonitor = "https://sweatpants.aiko.usbx.me/jellyfin/health";
+              icon = "jellyfin.png";
+              widget = {
+                type = "jellyfin";
+                url = "https://sweatpants.aiko.usbx.me/jellyfin";
+                key = "{{HOMEPAGE_VAR_ULTRA_JELLYFIN_API_KEY}}";
+                enableBlocks = true;
+                enableNowPlaying = true;
+              };
+            };
+          }
+          {
+            "Jellyseerr" = {
+              description = "Media requests";
+              href = "https://jellyseerr-sweatpants.aiko.usbx.me/";
+              siteMonitor = "https://jellyseerr-sweatpants.aiko.usbx.me/";
+              icon = "jellyseerr.png";
+              widget = {
+                type = "jellyseerr";
+                url = "https://jellyseerr-sweatpants.aiko.usbx.me/";
+                key = "{{HOMEPAGE_VAR_ULTRA_JELLYSEERR_API_KEY}}";
+              };
+            };
+          }
+          {
+            "Overseerr" = {
+              description = "Media requests";
+              href = "https://overseerr-sweatpants.aiko.usbx.me/";
+              siteMonitor = "https://overseerr-sweatpants.aiko.usbx.me/";
+              icon = "overseerr.png";
+              widget = {
+                type = "overseerr";
+                url = "https://overseerr-sweatpants.aiko.usbx.me/";
+                key = "{{HOMEPAGE_VAR_ULTRA_OVERSEERR_API_KEY}}";
+              };
+            };
+          }
+          {
+            "Plex" = {
+              description = "Media streaming";
+              href = "http://aiko-direct.usbx.me:12975/";
+              siteMonitor = "http://aiko-direct.usbx.me:12975/";
+              icon = "plex.png";
+              widget = {
+                type = "plex";
+                url = "http://aiko-direct.usbx.me:12975/";
+                key = "{{HOMEPAGE_VAR_ULTRA_PLEX_API_KEY}}";
+              };
+            };
+          }
+          {
+            "Prowlarr" = {
+              description = "Indexer manager";
+              href = "https://sweatpants.aiko.usbx.me/prowlarr";
+              siteMonitor = "https://sweatpants.aiko.usbx.me/prowlarr";
+              icon = "prowlarr.png";
+              widget = {
+                type = "prowlarr";
+                url = "https://sweatpants.aiko.usbx.me/prowlarr";
+                key = "{{HOMEPAGE_VAR_ULTRA_PROWLARR_API_KEY}}";
+              };
+            };
+          }
+          {
+            "qBittorrent" = {
+              description = "BitTorrent client";
+              href = "https://sweatpants.aiko.usbx.me/qbittorrent";
+              siteMonitor = "https://sweatpants.aiko.usbx.me/qbittorrent";
+              icon = "qbittorrent.png";
+              widget = {
+                type = "qbittorrent";
+                url = "https://sweatpants.aiko.usbx.me/qbittorrent";
+                username = "{{HOMEPAGE_VAR_ULTRA_QBITTORRENT_USERNAME}}";
+                password = "{{HOMEPAGE_VAR_ULTRA_QBITTORRENT_PASSWORD}}";
+              };
+            };
+          }
+          {
+            "Radarr" = {
+              description = "Movie collection manager";
+              href = "https://sweatpants.aiko.usbx.me/radarr";
+              siteMonitor = "https://sweatpants.aiko.usbx.me/radarr";
+              icon = "radarr.png";
+              widget = {
+                type = "radarr";
+                url = "https://sweatpants.aiko.usbx.me/radarr";
+                key = "{{HOMEPAGE_VAR_ULTRA_RADARR_API_KEY}}";
+              };
+            };
+          }
+          {
+            "Sonarr" = {
+              description = "TV series collection manager";
+              href = "https://sweatpants.aiko.usbx.me/sonarr";
+              siteMonitor = "https://sweatpants.aiko.usbx.me/sonarr";
+              icon = "sonarr.png";
+              widget = {
+                type = "sonarr";
+                url = "https://sweatpants.aiko.usbx.me/sonarr";
+                key = "{{HOMEPAGE_VAR_ULTRA_SONARR_API_KEY}}";
+              };
+            };
+          }
+        ];
+      };
       prometheus = disabled;
       nfs = disabled;
 
