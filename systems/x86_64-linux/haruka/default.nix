@@ -78,7 +78,6 @@ in
     stopcontainers
     startpool
     backup
-    pkgs.borgbackup
   ];
 
   programs.nix-ld.enable = true;
@@ -119,7 +118,10 @@ in
     security = {
       acme = enabled;
     };
-    tools.agenix = enabled;
+    tools = {
+      agenix = enabled;
+      borgbackup = enabled;
+    };
 
     containers = {
       prowlarr = disabled;
