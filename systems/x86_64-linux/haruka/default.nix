@@ -16,47 +16,6 @@ let
     doas zfs mount tank/backup
   '';
 
-  startcontainers = pkgs.writeShellScriptBin "startcontainers" ''
-    services=(
-      "podman-plex.service"
-      "podman-jellyfin.service"
-      "podman-radarr.service"
-      "podman-radarr-anime.service"
-      "podman-sonarr.service"
-      "podman-sonarr-anime.service"
-      "podman-bazarr.service"
-      "podman-trilium.service"
-      "podman-uptime-kuma.service"
-    )
-
-    for service in "''${services[@]}"
-    do
-      gum spin -s line --title "Starting ''${service}..." --show-output -- doas systemctl start "$service"
-    done
-
-    echo "All services started successfully."
-  '';
-
-  stopcontainers = pkgs.writeShellScriptBin "stopcontainers" ''
-    services=(
-      "podman-plex.service"
-      "podman-jellyfin.service"
-      "podman-radarr.service"
-      "podman-radarr-anime.service"
-      "podman-sonarr.service"
-      "podman-sonarr-anime.service"
-      "podman-bazarr.service"
-      "podman-trilium.service"
-      "podman-uptime-kuma.service"
-    )
-
-    for service in "''${services[@]}"
-    do
-      gum spin -s line --title "Stopping ''${service}..." --show-output -- doas systemctl stop "$service"
-    done
-
-    echo "All services stopped successfully."
-  '';
 
   backup = pkgs.callPackage ../../../packages/luks-backup {
     partitionUuids = [
@@ -74,13 +33,45 @@ in
   ];
 
   environment.systemPackages = [
-    startcontainers
-    stopcontainers
     startpool
     backup
   ];
 
   programs.nix-ld.enable = true;
+
+  systemd.targets.media-stack = {
+    description = "Media server container stack";
+    wantedBy = [ "multi-user.target" ];
+    wants = [
+      "podman-plex.service"
+      "podman-jellyfin.service" 
+      "podman-radarr.service"
+      "podman-radarr-anime.service"
+      "podman-sonarr.service"
+      "podman-sonarr-anime.service"
+      "podman-bazarr.service"
+      "podman-trilium.service"
+      "podman-uptime-kuma.service"
+    ];
+    after = [
+      "zfs-mount.service"
+      "podman-plex.service"
+      "podman-jellyfin.service"
+      "podman-radarr.service" 
+      "podman-radarr-anime.service"
+      "podman-sonarr.service"
+      "podman-sonarr-anime.service"
+      "podman-bazarr.service"
+      "podman-trilium.service"
+      "podman-uptime-kuma.service"
+    ];
+  };
+
+  environment.shellAliases = {
+    startcontainers = "sudo systemctl start media-stack.target";
+    stopcontainers = "sudo systemctl stop media-stack.target";
+    statuscontainers = "sudo systemctl status media-stack.target";
+  };
 
   plusultra = {
     feature = {
