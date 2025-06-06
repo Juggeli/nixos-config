@@ -7,16 +7,6 @@
 with lib;
 with lib.plusultra;
 let
-  startpool = pkgs.writeShellScriptBin "startpool" ''
-    doas zpool import tank
-    doas zfs load-key -L file:///run/agenix/zfs tank
-    doas zfs mount tank/media
-    doas zfs mount tank/sorted
-    doas zfs mount tank/documents
-    doas zfs mount tank/backup
-  '';
-
-
   backup = pkgs.callPackage ../../../packages/luks-backup {
     partitionUuids = [
       "585f6048-46df-4d11-a7f8-36a37b932a97"
@@ -33,7 +23,6 @@ in
   ];
 
   environment.systemPackages = [
-    startpool
     backup
   ];
 
@@ -328,11 +317,25 @@ in
     ];
   };
 
-  boot.kernelParams = [
-    # try to fix zfs oom issue
-    "zfs.zfs_arc_shrinker_limit=0"
-    "zfs.zfs_arc_max=8589934592"
-  ];
+  boot = {
+    kernelParams = [
+      # try to fix zfs oom issue
+      "zfs.zfs_arc_shrinker_limit=0"
+      "zfs.zfs_arc_max=8589934592"
+    ];
+    zfs.extraPools = [ "tank" ];
+  };
+
+  systemd.services.zfs-load-key = {
+    description = "Load ZFS encryption key for tank pool";
+    after = [ "zfs-import.target" "agenix.service" ];
+    wants = [ "zfs-import.target" ];
+    wantedBy = [ "zfs-mount.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.zfs}/bin/zfs load-key -L file:///run/agenix/zfs tank";
+    };
+  };
 
   boot.loader.supportsInitrdSecrets = true;
   boot.initrd = {
