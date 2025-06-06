@@ -19,12 +19,11 @@ in
   ];
 
   powerManagement.powerUpCommands = with pkgs; ''
-    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sda
-    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdb
-    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdc
-    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdd
-    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sde
-    ${hdparm}/bin/hdparm -S 242 -B 127 /dev/sdf
+    for dev in /dev/sd[a-z]; do
+      if [ -b "$dev" ]; then
+        ${hdparm}/bin/hdparm -S 242 -B 127 "$dev" || true
+      fi
+    done
   '';
 
   systemd.services.downloaderBrr = {
