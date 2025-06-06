@@ -12,7 +12,6 @@ let
     doas zfs load-key -L file:///run/agenix/zfs tank
     doas zfs mount tank/media
     doas zfs mount tank/sorted
-    doas zfs mount tank/hydrus
     doas zfs mount tank/documents
     doas zfs mount tank/backup
   '';
