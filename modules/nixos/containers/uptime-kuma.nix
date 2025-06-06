@@ -65,7 +65,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.uptime-kuma = {
-      image = "louislam/uptime-kuma";
+      image = "docker.io/louislam/uptime-kuma";
       autoStart = true;
       ports = [ "3001:3001" ];
       labels = {
