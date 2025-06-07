@@ -81,14 +81,14 @@ in
         description = "ZFS snapshot tank/media (frequent)";
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "${pkgs.zfs}/bin/zfs snapshot tank/media@zfs-auto-snap-$(date -u +%Y-%m-%d-%H%M%S)";
+          ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.zfs}/bin/zfs snapshot tank/media@zfs-auto-snap-$(${pkgs.coreutils}/bin/date -u +%%Y-%%m-%%d-%%H%%M%%S)'";
         };
       };
       "zfs-snapshot-tank-sorted" = {
         description = "ZFS snapshot tank/sorted (frequent)";
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "${pkgs.zfs}/bin/zfs snapshot tank/sorted@zfs-auto-snap-$(date -u +%Y-%m-%d-%H%M%S)";
+          ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.zfs}/bin/zfs snapshot tank/sorted@zfs-auto-snap-$(${pkgs.coreutils}/bin/date -u +%%Y-%%m-%%d-%%H%%M%%S)'";
         };
       };
     };
