@@ -12,6 +12,7 @@
     ./openssh.nix
     ./printing.nix
     ./prometheus.nix
+    ./remote-downloader.nix
     ./samba.nix
     ./tailscale.nix
   ];

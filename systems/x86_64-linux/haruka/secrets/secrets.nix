@@ -19,4 +19,6 @@ in
   "zfs.age".publicKeys = keys;
   "cloudflare-dns.age".publicKeys = keys;
   "homepage-env.age".publicKeys = keys;
+  "webhook-token.age".publicKeys = keys;
+  "downloader-rclone-conf.age".publicKeys = keys;
 }
