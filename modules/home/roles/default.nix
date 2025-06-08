@@ -28,6 +28,7 @@ in
           enable = true;
           fontSize = 15;
         };
+        wezterm = enabled;
         mpv = enabled;
       };
       cli-apps = {
