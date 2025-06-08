@@ -56,6 +56,56 @@ let
 
     text = builtins.readFile ./window-layout-switcher.sh;
   };
+
+  oledBurnInPrevention = pkgs.writeShellApplication {
+    name = "oled-burnin-prevention";
+
+    runtimeInputs = with pkgs; [
+      hyprland
+      jq
+      coreutils
+      ddcutil
+    ];
+
+    text = ''
+      # Prevent OLED burn-in by slightly shifting windows and varying contrast
+      window_shift_counter=0
+      base_contrast=50
+      contrast_high=true  # Start with high contrast
+      
+      while true; do
+        sleep 60  # Check every minute
+        
+        # Toggle contrast between base and base+2
+        if [ "$contrast_high" = true ]; then
+          new_contrast=$((base_contrast + 2))
+          contrast_high=false
+        else
+          new_contrast=$base_contrast
+          contrast_high=true
+        fi
+        
+        # Set contrast using ddcutil (suppress errors if monitor doesn't support DDC)
+        ddcutil setvcp 12 "$new_contrast" 2>/dev/null || true
+        
+        # Shift windows every 5 minutes (every 5th iteration)
+        window_shift_counter=$((window_shift_counter + 1))
+        if [ $((window_shift_counter % 5)) -eq 0 ]; then
+          # Get all visible windows
+          windows=$(hyprctl clients -j | jq -r '.[] | select(.mapped == true and .hidden == false) | .address')
+          
+          for window in $windows; do
+            # Generate small random offset (-2 to +2 pixels)
+            x_offset=$((RANDOM % 5 - 2))
+            y_offset=$((RANDOM % 5 - 2))
+            
+            # Move window by small offset
+            hyprctl dispatch movewindowpixel "exact $x_offset $y_offset,address:$window" || true
+          done
+        fi
+      done
+    '';
+  };
 in
 {
   options.plusultra.desktop.hyprland = with types; {
@@ -80,6 +130,7 @@ in
       wl-clipboard
       screenshot
       windowLayoutSwitcher
+      oledBurnInPrevention
       wev # Find mouse or keycodes
     ];
 
@@ -172,6 +223,7 @@ in
           "uwsm app -- ${pkgs.hyprpaper}/bin/hyprpaper"
           ''uwsm app -- ${pkgs.hyprland}/bin/hyprctl setcursor "Banana-Catppuccin-Mocha" 64''
           "uwsm app -- window-layout-switcher"
+          "uwsm app -- oled-burnin-prevention"
         ];
         debug = {
           "overlay" = "false";
