@@ -49,7 +49,7 @@ in
       settings = {
         general = {
           before_sleep_cmd = "loginctl lock-session & playerctl pause";
-          after_sleep_cmd = "hyprctl dispatch dpms on";
+          after_sleep_cmd = "hyprctl dispatch dpms on && ${pkgs.doas}/bin/doas ${pkgs.kmod}/bin/modprobe -r hid-logitech-hidpp hid-logitech-dj && ${pkgs.doas}/bin/doas ${pkgs.kmod}/bin/modprobe hid-logitech-dj hid-logitech-hidpp";
           ignore_dbus_inhibit = false;
           ignore_systemd_inhibit = false;
           lock_cmd = "pidof hyprlock || hyprlock -q";
