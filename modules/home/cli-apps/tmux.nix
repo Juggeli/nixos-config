@@ -32,7 +32,7 @@ in
             set -g @tokyo-night-tmux_show_path 1
             set -g @tokyo-night-tmux_path_format relative
             set -g @tokyo-night-tmux_window_id_style dsquare
-            set -g @tokyo-night-tmux_show_git 0
+            set -g @tokyo-night-tmux_show_git 1
           '';
         }
       ];
@@ -79,6 +79,10 @@ in
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
         bind c new-window -c "#{pane_current_path}"
+
+        # Custom split bindings
+        bind | split-window -h -c "#{pane_current_path}"
+        bind - split-window -v -c "#{pane_current_path}"
       '';
     };
     catppuccin.tmux.enable = true;
