@@ -20,6 +20,7 @@ in
       codex
       aider-chat
       uv
+      plusultra.task-master-ai
     ];
     plusultra.user.impermanence = {
       directories = [
