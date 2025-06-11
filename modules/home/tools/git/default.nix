@@ -45,5 +45,6 @@ in
       };
       ignores = [ ".nvim.lua" ];
     };
+    catppuccin.delta.enable = true;
   };
 }
