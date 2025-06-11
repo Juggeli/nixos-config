@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.nix-daemon = enabled;
+    system.primaryUser = config.plusultra.user.name;
     nix =
       let
         users = [
@@ -47,7 +47,6 @@ in
             Day = 7;
           };
           options = "--delete-older-than 30d";
-          user = config.plusultra.user.name;
         };
 
         # flake-utils-plus
