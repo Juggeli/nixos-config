@@ -16,6 +16,7 @@ with lib.plusultra;
   };
 
   home.sessionPath = [
+    "/opt/homebrew/bin"
     "$HOME/src/flutter/bin"
     "$HOME/.pub-cache/bin"
     "$HOME/.local/bin"
