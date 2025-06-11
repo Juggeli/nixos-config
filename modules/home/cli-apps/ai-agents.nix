@@ -21,6 +21,7 @@ in
       aider-chat
       uv
       plusultra.task-master-ai
+      nodejs
     ];
     plusultra.user.impermanence = {
       directories = [
