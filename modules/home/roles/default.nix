@@ -40,6 +40,7 @@ in
         yazi = enabled;
         bat = enabled;
         ai-agents = enabled;
+        tmux = enabled;
       };
       tools = {
         git = enabled;
