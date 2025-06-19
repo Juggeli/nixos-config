@@ -106,7 +106,7 @@ in
     };
 
     users.groups.download-webhook = {};
-    users.groups.media = {};
+    users.groups.media.gid = 983;
 
     systemd.tmpfiles.rules = 
       [ "d /tank/media/downloads 0775 root media -" ] ++

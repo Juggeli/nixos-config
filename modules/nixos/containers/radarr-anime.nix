@@ -71,14 +71,14 @@ in
       labels = {
         "io.containers.autoupdate" = "registry";
       };
+      environment = {
+        PUID = "1000";
+        PGID = "983";
+      };
       volumes = [
         "/mnt/appdata/radarr-anime/:/config"
         "/tank/media/:/mnt/pool/media/"
       ];
-      environment = {
-        PUID = "1000";
-        PGID = "100";
-      };
     };
   };
 }

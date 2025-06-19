@@ -58,7 +58,7 @@ in
       };
       environment = {
         PUID = "1000";
-        PGID = "100";
+        PGID = "983";
         WEBUI_PORTS = "6767/tcp,6767/udp";
       };
       volumes = [
