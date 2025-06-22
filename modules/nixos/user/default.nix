@@ -33,7 +33,6 @@ in
         "fish/functions/enc-auto.fish".source = ./fish/enc-auto.fish;
         "fish/functions/enc-crf.fish".source = ./fish/enc-crf.fish;
         "fish/functions/javrter.fish".source = ./fish/javrter.fish;
-        "fish/functions/sorter.fish".source = ./fish/sorter.fish;
       };
       file = {
         "downloads/.keep".text = "";

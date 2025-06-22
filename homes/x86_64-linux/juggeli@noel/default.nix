@@ -35,6 +35,10 @@ with lib.plusultra;
     desktop = {
       waybar = enabled;
     };
+
+    tools = {
+      sorter = enabled;
+    };
   };
 
   home.sessionPath = [

@@ -1,0 +1,71 @@
+# Default configuration for Sorter
+# This file defines the default settings that will be copied to ~/.config/sorter/config.yaml
+# when the program is first run.
+
+# Base directory to scan for video files
+base_dir: "~/Downloads/unsorted/"
+
+# Directory categories with their destination paths and hotkeys
+# Customize these categories according to your needs
+categories:
+  category1:
+    path: "~/sorted/category1/"
+    hotkey: "1"
+  category2:
+    path: "~/sorted/category2/"
+    hotkey: "2"
+  category3:
+    path: "~/sorted/category3/"
+    hotkey: "3"
+  archive:
+    path: "~/sorted/archive/"
+    hotkey: "a"
+
+# Video file extensions to search for
+video_extensions:
+  - ".mkv"
+  - ".mp4"
+  - ".avi"
+  - ".mov"
+  - ".wmv"
+  - ".flv"
+  - ".webm"
+  - ".m4v"
+  - ".mpeg"
+  - ".m2v"
+  - ".ts"
+  - ".vob"
+  - ".3gp"
+  - ".3g2"
+  - ".mpg"
+  - ".ogm"
+  - ".m2ts"
+  - ".iso"
+  - ".rmvb"
+
+# Junk file extensions to automatically delete during cleanup
+junk_extensions:
+  - ".apk"
+  - ".ass"
+  - ".srt"
+  - ".gif"
+  - ".txt"
+  - ".html"
+  - ".htm"
+  - ".url"
+  - ".jpg"
+  - ".jpeg"
+  - ".png"
+  - ".webp"
+  - ".nfo"
+
+# Log file for recording all file operations
+log_file: "~/.config/sorter/operations.log"
+
+# Junk video filename patterns - files matching these patterns will be auto-deleted
+# Patterns support wildcards (*) and are matched against the filename without extension
+# Add patterns here manually or use the 'x' key during file review to add automatically
+junk_video_patterns:
+  - "sample*"
+  - "trailer*"
+  - "preview*"
