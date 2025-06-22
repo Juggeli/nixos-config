@@ -124,8 +124,9 @@ in
       description = "download all stuff from brr";
       serviceConfig = {
         User = "download-webhook";
-        Group = "download-webhook";
+        Group = "media";
         Type = "oneshot";
+        UMask = "0002";
       };
       environment = {
         RCLONE_CONFIG = config.age.secrets.downloader-rclone-conf.path;
