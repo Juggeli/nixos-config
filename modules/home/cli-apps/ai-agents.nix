@@ -30,6 +30,7 @@ in
         ".cache/uv"
         ".aider"
         ".codex"
+        ".config/claude"
       ];
       files = [
         ".claude.json"
