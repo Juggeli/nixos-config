@@ -39,7 +39,7 @@ in
         ls = "eza -blF";
         ll = "eza -abghilmu";
         llm = "ll --sort=modified";
-        la = "LC_COLLATE=C eza -ablF";
+        la = "LC_COLLATE=C eza -ablF --group";
         cat = "bat";
         lg = "lazygit";
       };
