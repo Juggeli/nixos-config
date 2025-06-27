@@ -22,6 +22,7 @@ in
       uv
       plusultra.task-master-ai
       nodejs
+      gemini-cli
     ];
     plusultra.user.impermanence = {
       directories = [
