@@ -58,14 +58,22 @@ let
     }) services;
 
   # Generate misc service entries with widget support
-  generateMiscServiceEntries = miscServices:
-    map (serviceSet:
-      lib.mapAttrs (name: service:
+  generateMiscServiceEntries =
+    miscServices:
+    map (
+      serviceSet:
+      lib.mapAttrs (
+        name: service:
         {
-          inherit (service) description href siteMonitor icon;
+          inherit (service)
+            description
+            href
+            siteMonitor
+            icon
+            ;
         }
         // lib.optionalAttrs (service.widget != null) {
-          widget = 
+          widget =
             {
               inherit (service.widget) type url;
             }

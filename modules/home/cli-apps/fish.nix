@@ -46,8 +46,8 @@ in
       shellAbbrs = {
         eza = "eza --group-directories-first --git";
         tree = "eza --tree";
-        nixsw = "${rebuildCommand} switch --flake .#";
-        nixup = "${rebuildCommand} switch --flake .# --recreate-lock-file";
+        nixsw = "${sudoCommand} ${rebuildCommand} switch --flake .#";
+        nixup = "${sudoCommand} ${rebuildCommand} switch --flake .# --recreate-lock-file";
         nixed = "nvim && ${rebuildCommand} switch --flake .#";
         scs = "doas systemctl start";
         scr = "doas systemctl restart";

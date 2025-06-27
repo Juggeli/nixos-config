@@ -33,7 +33,7 @@ in
     wantedBy = [ "multi-user.target" ];
     wants = [
       "podman-plex.service"
-      "podman-jellyfin.service" 
+      "podman-jellyfin.service"
       "podman-radarr.service"
       "podman-radarr-anime.service"
       "podman-sonarr.service"
@@ -46,7 +46,7 @@ in
       "zfs-mount.service"
       "podman-plex.service"
       "podman-jellyfin.service"
-      "podman-radarr.service" 
+      "podman-radarr.service"
       "podman-radarr-anime.service"
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
@@ -329,7 +329,10 @@ in
 
   systemd.services.zfs-load-key = {
     description = "Load ZFS encryption key for tank pool";
-    after = [ "zfs-import.target" "agenix.service" ];
+    after = [
+      "zfs-import.target"
+      "agenix.service"
+    ];
     wants = [ "zfs-import.target" ];
     wantedBy = [ "zfs-mount.service" ];
     serviceConfig = {

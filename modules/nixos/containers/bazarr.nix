@@ -41,7 +41,10 @@ in
         };
         fields = mkOption {
           type = listOf str;
-          default = ["missingEpisodes" "missingMovies"];
+          default = [
+            "missingEpisodes"
+            "missingMovies"
+          ];
           description = "Widget fields to display";
         };
       };

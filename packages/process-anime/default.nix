@@ -12,9 +12,11 @@ stdenv.mkDerivation {
   src = ../../tools/process-anime;
 
   buildInputs = [
-    (python3.withPackages (ps: with ps; [
-      ffmpeg-python
-    ]))
+    (python3.withPackages (
+      ps: with ps; [
+        ffmpeg-python
+      ]
+    ))
     ffmpeg
   ];
 
@@ -22,10 +24,12 @@ stdenv.mkDerivation {
     mkdir -p $out/bin
     cp process_mkv.py $out/bin/process-anime
     chmod +x $out/bin/process-anime
-    
+
     # Patch the shebang to use the correct Python interpreter
     substituteInPlace $out/bin/process-anime \
-      --replace "#!/usr/bin/env python3" "#!${python3.withPackages (ps: with ps; [ffmpeg-python])}/bin/python3"
+      --replace "#!/usr/bin/env python3" "#!${
+        python3.withPackages (ps: with ps; [ ffmpeg-python ])
+      }/bin/python3"
   '';
 
   meta = with lib; {

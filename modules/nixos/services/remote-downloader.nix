@@ -79,13 +79,13 @@ in
 {
   options.plusultra.services.remote-downloader = with types; {
     enable = mkBoolOpt false "Whether to enable remote download service.";
-    
+
     mappings = mkOpt (listOf (submodule {
       options = {
         src = mkOpt str "" "Source path for downloads.";
         dest = mkOpt str "" "Destination path for downloads.";
       };
-    })) [] "Download path mappings.";
+    })) [ ] "Download path mappings.";
 
     webhook = {
       enable = mkBoolOpt true "Enable webhook for immediate triggers.";
@@ -101,18 +101,19 @@ in
     users.users.download-webhook = {
       isSystemUser = true;
       group = "download-webhook";
-      extraGroups = [ "systemd-journal" "media" ];
+      extraGroups = [
+        "systemd-journal"
+        "media"
+      ];
       description = "Download webhook service user";
     };
 
-    users.groups.download-webhook = {};
+    users.groups.download-webhook = { };
     users.groups.media.gid = 983;
 
-    systemd.tmpfiles.rules = 
-      [ "d /tank/media/downloads 0775 root media -" ] ++
-      (map (mapping: 
-        "d ${mapping.dest} 0775 root media -"
-      ) cfg.mappings);
+    systemd.tmpfiles.rules = [
+      "d /tank/media/downloads 0775 root media -"
+    ] ++ (map (mapping: "d ${mapping.dest} 0775 root media -") cfg.mappings);
 
     age.secrets.downloader-rclone-conf = {
       owner = "download-webhook";
@@ -160,11 +161,16 @@ in
       };
     };
 
-    security.doas.extraRules = [{
-      users = [ "download-webhook" ];
-      noPass = true;
-      cmd = "systemctl";
-      args = [ "start" "downloaderBrr" ];
-    }];
+    security.doas.extraRules = [
+      {
+        users = [ "download-webhook" ];
+        noPass = true;
+        cmd = "systemctl";
+        args = [
+          "start"
+          "downloaderBrr"
+        ];
+      }
+    ];
   };
 }

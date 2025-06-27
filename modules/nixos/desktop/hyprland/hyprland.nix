@@ -72,7 +72,7 @@ let
       window_shift_counter=0
       base_contrast=50
       contrast_high=true  # Start with high contrast
-      
+
       while true; do
         sleep 60  # Check every minute
         

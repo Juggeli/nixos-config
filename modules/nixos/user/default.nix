@@ -60,7 +60,10 @@ in
       # system to select).
       uid = 1000;
 
-      extraGroups = [ "wheel" "media" ] ++ cfg.extraGroups;
+      extraGroups = [
+        "wheel"
+        "media"
+      ] ++ cfg.extraGroups;
     } // cfg.extraOptions;
   };
 }

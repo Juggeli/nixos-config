@@ -14,16 +14,15 @@ final: prev: {
 
     installPhase = ''
       runHook preInstall
-      
+
       mkdir -p $out/lib/node_modules/@openai/codex
       cp -r * $out/lib/node_modules/@openai/codex/
-      
+
       mkdir -p $out/bin
       ln -s $out/lib/node_modules/@openai/codex/bin/codex.js $out/bin/codex
       chmod +x $out/bin/codex
-      
+
       runHook postInstall
     '';
   };
 }
-
