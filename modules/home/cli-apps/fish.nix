@@ -46,9 +46,9 @@ in
       shellAbbrs = {
         eza = "eza --group-directories-first --git";
         tree = "eza --tree";
-        nixsw = "${rebuildCommand} build --flake .# && ${sudoCommand} ./result/bin/switch-to-configuration switch";
-        nixup = "${rebuildCommand} build --flake .# --recreate-lock-file && ${sudoCommand} ./result/bin/switch-to-configuration switch";
-        nixed = "nvim && ${rebuildCommand} build --flake .# && ${sudoCommand} ./result/bin/switch-to-configuration switch";
+        nixsw = "${rebuildCommand} switch --flake .#";
+        nixup = "${rebuildCommand} switch --flake .# --recreate-lock-file";
+        nixed = "nvim && ${rebuildCommand} switch --flake .#";
         scs = "doas systemctl start";
         scr = "doas systemctl restart";
         sce = "doas systemctl stop";

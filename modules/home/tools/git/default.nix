@@ -42,6 +42,9 @@ in
         merge = {
           conflictstyle = "zdiff3";
         };
+        safe = {
+          directory = "/home/${user.name}/src/dotfiles";
+        };
       };
       ignores = [ ".nvim.lua" ];
     };
