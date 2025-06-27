@@ -41,6 +41,10 @@ with lib.plusultra;
     };
   };
 
+  home.packages = with pkgs; [
+    plusultra.process-anime
+  ];
+
   home.sessionPath = [
   ];
 
