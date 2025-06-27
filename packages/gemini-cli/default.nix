@@ -6,16 +6,16 @@
 
 buildNpmPackage {
   pname = "gemini-cli";
-  version = "0.1.1";
+  version = "2025-06-27";
 
   src = fetchFromGitHub {
     owner = "google-gemini";
     repo = "gemini-cli";
-    rev = "3a369ddec3b226dea9d1a9dcc3bae048310edffd";
-    hash = "sha256-ygBh8n+8bWmqTgvLnMFp2H7txstGg249+vpXyoKg5E8=";
+    rev = "5fd6664c4b1c4a1ca84119ea709e5dac2a9fce70";
+    hash = "sha256-po0jfhJaEI7XszXvGwpGXpCFquJd6br1i92ZbcL4jD4=";
   };
 
-  npmDepsHash = "sha256-2zyMrVykKtN+1ePQko9MVhm79p7Xbo9q0+r/P22buQA=";
+  npmDepsHash = "sha256-qimhi2S8fnUbIq2MPU1tlvj5k9ZChY7kzxLrYqy9FXI=";
 
   postPatch = ''
     mkdir -p packages/cli/src/generated

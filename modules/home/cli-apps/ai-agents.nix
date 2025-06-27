@@ -22,7 +22,7 @@ in
       uv
       plusultra.task-master-ai
       nodejs
-      gemini-cli
+      plusultra.gemini-cli
     ];
     plusultra.user.impermanence = {
       directories = [
@@ -32,6 +32,7 @@ in
         ".aider"
         ".codex"
         ".config/claude"
+        ".gemini"
       ];
       files = [
         ".claude.json"
