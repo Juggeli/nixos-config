@@ -22,7 +22,7 @@ in
     environment.systemPackages = with pkgs; [
       git
       deploy-rs
-      nixfmt-rfc-style
+      nixfmt-tree
       nix-index
       nix-prefetch-git
     ];
