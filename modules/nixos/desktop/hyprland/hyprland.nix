@@ -91,8 +91,8 @@ let
         # Shift windows every 5 minutes (every 5th iteration)
         window_shift_counter=$((window_shift_counter + 1))
         if [ $((window_shift_counter % 5)) -eq 0 ]; then
-          # Get all visible windows
-          windows=$(hyprctl clients -j | jq -r '.[] | select(.mapped == true and .hidden == false) | .address')
+          # Get all visible tiled windows (exclude floating windows)
+          windows=$(hyprctl clients -j | jq -r '.[] | select(.mapped == true and .hidden == false and .floating == false) | .address')
           
           for window in $windows; do
             # Generate small random offset (-2 to +2 pixels)
