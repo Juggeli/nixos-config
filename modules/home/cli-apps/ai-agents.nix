@@ -23,6 +23,7 @@ in
       plusultra.task-master-ai
       nodejs
       plusultra.gemini-cli
+      plusultra.opencode
     ];
     plusultra.user.impermanence = {
       directories = [
@@ -33,6 +34,9 @@ in
         ".codex"
         ".config/claude"
         ".gemini"
+        ".cache/opencode"
+        ".local/share/opencode"
+        ".local/state/opencode"
       ];
       files = [
         ".claude.json"
