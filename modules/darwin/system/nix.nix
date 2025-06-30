@@ -16,6 +16,14 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = with pkgs; [
+      git
+      deploy-rs
+      nixfmt-tree
+      nix-index
+      nix-prefetch-git
+    ];
+
     system.primaryUser = config.plusultra.user.name;
     nix =
       let
