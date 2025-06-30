@@ -29,6 +29,7 @@ in
           fontSize = 15;
         };
         wezterm = enabled;
+        ghostty = enabled;
         mpv = enabled;
       };
       cli-apps = {

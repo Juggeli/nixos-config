@@ -55,6 +55,11 @@ in
         scd = "doas systemctl status";
       };
       interactiveShellInit = ''
+        # Auto-start tmux if not already inside tmux and in a terminal
+        if status is-interactive; and not set -q TMUX; and test "$TERM_PROGRAM" != "vscode"
+          tmux new-session -A -s main
+        end
+
         function bind_bang
           switch (commandline -t)
           case "!"

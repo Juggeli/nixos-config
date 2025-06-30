@@ -3,6 +3,7 @@ with lib.plusultra;
 {
   plusultra = {
     roles.home-common = enabled;
+    apps.ghostty.fontSize = 16;
     tools = {
       git = {
         userName = "jukka.alavesa";
