@@ -14,11 +14,11 @@ let
   unstableWithOverlay = inputs.unstable.legacyPackages.${pkgs.system}.extend (
     final: prev: {
       ghostty-bin = prev.ghostty-bin.overrideAttrs (oldAttrs: rec {
-        version = "tip-2025-06-28";
+        version = "tip-2025-07-03";
 
         src = prev.fetchurl {
           url = "https://github.com/ghostty-org/ghostty/releases/download/tip/Ghostty.dmg";
-          hash = "sha256-dInGK34IEp1wLXUbVA3xXOsPxLCBbMgrncmBggriRhs=";
+          hash = "sha256-HGMZx3v2KrCVJWuGHPk2OaGSXTVWi+5CaaTj6veLxj8=";
         };
 
         meta = oldAttrs.meta // {
