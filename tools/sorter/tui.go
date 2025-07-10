@@ -32,6 +32,7 @@ type Model struct {
 	currentFile  int
 	scanComplete bool
 	scanError    error
+	totalSize    int64
 
 	pendingOps []Operation
 	
@@ -122,6 +123,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case scanCompleteMsg:
 		m.files = msg.files
+		m.totalSize = m.scanner.CalculateTotalSize(msg.files)
 		m.scanComplete = true
 		if len(m.files) == 0 {
 			m.state = StateDone
@@ -385,6 +387,8 @@ func (m Model) viewScanning() string {
 	s.WriteString(fmt.Sprintf("Directory: %s\n", m.config.BaseDir))
 	
 	if m.scanComplete {
+		s.WriteString(fmt.Sprintf("Found %d files, total size: %s\n", len(m.files), FormatFileSize(m.totalSize)))
+		
 		autoJunkCount := 0
 		for _, file := range m.files {
 			scanner := NewScanner(m.config)
@@ -411,7 +415,7 @@ func (m Model) viewReviewing() string {
 	s.WriteString(titleStyle.Render(title))
 	s.WriteString("\n\n")
 
-	s.WriteString(fmt.Sprintf("File %d of %d\n", m.currentFile+1, len(m.files)))
+	s.WriteString(fmt.Sprintf("File %d of %d (Total size: %s)\n", m.currentFile+1, len(m.files), FormatFileSize(m.totalSize)))
 	s.WriteString(fmt.Sprintf("Progress: %.1f%%\n\n", float64(m.currentFile)/float64(len(m.files))*100))
 
 	if m.currentFile < len(m.files) {

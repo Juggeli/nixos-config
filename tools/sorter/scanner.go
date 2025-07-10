@@ -77,6 +77,14 @@ func (s *Scanner) ScanVideoFiles() ([]FileInfo, error) {
 	return files, nil
 }
 
+func (s *Scanner) CalculateTotalSize(files []FileInfo) int64 {
+	var totalSize int64
+	for _, file := range files {
+		totalSize += file.Size
+	}
+	return totalSize
+}
+
 func (s *Scanner) ScanJunkFiles() ([]string, error) {
 	var junkFiles []string
 
