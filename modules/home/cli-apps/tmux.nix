@@ -58,9 +58,9 @@ in
         bind -n S-Left  previous-window
         bind -n S-Right next-window
 
-        # Shift Alt vim keys to switch windows
-        bind -n M-H previous-window
-        bind -n M-L next-window
+        # Alt vim keys to switch windows (lowercase for easier access)
+        bind -n M-h previous-window
+        bind -n M-l next-window
 
         # keybindings
         bind-key -T copy-mode-vi v send-keys -X begin-selection
