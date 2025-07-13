@@ -10,14 +10,13 @@ This is a NixOS/Darwin dotfiles repository using Snowfall Lib for structured org
 
 ### Building Configurations
 ```bash
-# Build system configurations
-nix build .#nixosConfigurations.haruka
-nix build .#nixosConfigurations.noel
-nix build .#darwinConfigurations.Jukkas-MBP
+# Build system configurations (use config.system.build.toplevel)
+nix build .#nixosConfigurations.haruka.config.system.build.toplevel
+nix build .#nixosConfigurations.noel.config.system.build.toplevel
+nix build .#nixosConfigurations.orakuru.config.system.build.toplevel
 
-# Build home configurations  
-nix build .#homeConfigurations.juggeli@haruka
-nix build .#homeConfigurations.juggeli@noel
+# Note: Home configurations currently have missing home.stateVersion and cannot be built
+# Available home configs: juggeli@Jukkas-MBP, juggeli@haruka, juggeli@kuki, juggeli@noel
 ```
 
 ### Deployment
@@ -38,8 +37,8 @@ nix flake check
 # Show available outputs
 nix flake show
 
-# Enter development shell
-nix develop
+# Note: No default development shell is configured
+# Check available shells with: nix eval --json .#devShells.x86_64-linux --apply builtins.attrNames
 ```
 
 ## Architecture
