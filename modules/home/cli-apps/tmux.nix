@@ -34,7 +34,7 @@ in
             set -g @tokyo-night-tmux_show_path 1
             set -g @tokyo-night-tmux_path_format relative
             set -g @tokyo-night-tmux_window_id_style dsquare
-            set -g @tokyo-night-tmux_show_git 1
+            set -g @tokyo-night-tmux_show_git 0
           '';
         }
       ];
@@ -74,6 +74,9 @@ in
         # Custom split bindings
         bind | split-window -h -c "#{pane_current_path}"
         bind - split-window -v -c "#{pane_current_path}"
+
+        # Reload config
+        bind r source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded!"
 
         set-option -g default-command "${pkgs.fish}/bin/fish"
       '';
