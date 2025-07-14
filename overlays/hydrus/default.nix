@@ -1,7 +1,7 @@
-{ lib, ... }:
+{ lib, inputs, ... }:
 
 final: prev: {
-  hydrus = prev.hydrus.overrideAttrs (oldAttrs: {
+  hydrus = inputs.unstable.legacyPackages.${final.system}.hydrus.overrideAttrs (oldAttrs: {
     doInstallCheck = false;
   });
 }
