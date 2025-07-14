@@ -618,6 +618,7 @@ func (m Model) processOperations() tea.Cmd {
 	return tea.Cmd(func() tea.Msg {
 		err := m.processor.ProcessOperations(m.pendingOps)
 		if err != nil {
+			fmt.Printf("PROCESSING ERROR: %v\n", err)
 			return scanErrorMsg{err: err}
 		}
 		return scanCompleteMsg{files: []FileInfo{}}

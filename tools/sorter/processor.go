@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -41,14 +42,18 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 		switch op.Type {
 		case OpMove:
 			if err := p.moveFile(op.Source, op.Dest); err != nil {
-				return fmt.Errorf("failed to move file %s: %w", op.Source, err)
+				moveErr := fmt.Errorf("failed to move file %s: %w", op.Source, err)
+				fmt.Printf("ERROR: %v\n", moveErr)
+				return moveErr
 			}
 			if err := p.logger.LogOperation("MOVE", op.Source, op.Dest); err != nil {
 				fmt.Printf("Warning: failed to log move operation: %v\n", err)
 			}
 		case OpDelete:
 			if err := p.deleteFile(op.Source); err != nil {
-				return fmt.Errorf("failed to delete file %s: %w", op.Source, err)
+				deleteErr := fmt.Errorf("failed to delete file %s: %w", op.Source, err)
+				fmt.Printf("ERROR: %v\n", deleteErr)
+				return deleteErr
 			}
 			if err := p.logger.LogOperation("DELETE", op.Source, ""); err != nil {
 				fmt.Printf("Warning: failed to log delete operation: %v\n", err)
@@ -57,11 +62,15 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 	}
 
 	if err := p.cleanupJunkFiles(); err != nil {
-		return fmt.Errorf("failed to cleanup junk files: %w", err)
+		cleanupErr := fmt.Errorf("failed to cleanup junk files: %w", err)
+		fmt.Printf("ERROR: %v\n", cleanupErr)
+		return cleanupErr
 	}
 
 	if err := p.cleanupEmptyDirectories(); err != nil {
-		return fmt.Errorf("failed to cleanup empty directories: %w", err)
+		cleanupErr := fmt.Errorf("failed to cleanup empty directories: %w", err)
+		fmt.Printf("ERROR: %v\n", cleanupErr)
+		return cleanupErr
 	}
 
 	if err := p.logger.LogOperation("SESSION_END", "", ""); err != nil {
@@ -74,14 +83,51 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 
 func (p *Processor) moveFile(source, destDir string) error {
 	if err := os.MkdirAll(destDir, 0755); err != nil {
-		return fmt.Errorf("failed to create destination directory: %w", err)
+		return fmt.Errorf("failed to create destination directory %s: %w", destDir, err)
 	}
 
 	filename := filepath.Base(source)
 	destination := filepath.Join(destDir, filename)
 
 	if err := os.Rename(source, destination); err != nil {
-		return fmt.Errorf("failed to move file: %w", err)
+		if copyErr := p.copyFile(source, destination); copyErr != nil {
+			return fmt.Errorf("failed to move file from %s to %s: rename failed (%w) and copy failed (%w)", source, destination, err, copyErr)
+		}
+		if deleteErr := os.Remove(source); deleteErr != nil {
+			return fmt.Errorf("file copied from %s to %s but failed to delete source: %w", source, destination, deleteErr)
+		}
+		return nil
+	}
+
+	return nil
+}
+
+func (p *Processor) copyFile(src, dst string) error {
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return fmt.Errorf("failed to open source file: %w", err)
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(dst)
+	if err != nil {
+		return fmt.Errorf("failed to create destination file: %w", err)
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		return fmt.Errorf("failed to copy file contents: %w", err)
+	}
+
+	sourceInfo, err := os.Stat(src)
+	if err != nil {
+		return fmt.Errorf("failed to get source file info: %w", err)
+	}
+
+	err = os.Chmod(dst, sourceInfo.Mode())
+	if err != nil {
+		return fmt.Errorf("failed to set file permissions: %w", err)
 	}
 
 	return nil
@@ -103,7 +149,9 @@ func (p *Processor) cleanupJunkFiles() error {
 
 	for _, file := range junkFiles {
 		if err := p.deleteFile(file); err != nil {
-			return fmt.Errorf("failed to delete junk file %s: %w", file, err)
+			deleteErr := fmt.Errorf("failed to delete junk file %s: %w", file, err)
+			fmt.Printf("ERROR: %v\n", deleteErr)
+			return deleteErr
 		}
 		if err := p.logger.LogOperation("JUNK_DELETE", file, ""); err != nil {
 			fmt.Printf("Warning: failed to log junk file deletion: %v\n", err)
@@ -122,7 +170,9 @@ func (p *Processor) cleanupEmptyDirectories() error {
 
 	for _, dir := range emptyDirs {
 		if err := os.Remove(dir); err != nil {
-			return fmt.Errorf("failed to remove empty directory %s: %w", dir, err)
+			removeErr := fmt.Errorf("failed to remove empty directory %s: %w", dir, err)
+			fmt.Printf("ERROR: %v\n", removeErr)
+			return removeErr
 		}
 		if err := p.logger.LogOperation("EMPTY_DIR_DELETE", dir, ""); err != nil {
 			fmt.Printf("Warning: failed to log empty directory deletion: %v\n", err)

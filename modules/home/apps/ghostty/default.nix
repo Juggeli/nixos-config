@@ -33,7 +33,11 @@ let
     }
   );
 
-  ghosttyPackage = if pkgs.stdenv.isDarwin then inputs.unstable.legacyPackages.${pkgs.system}.ghostty-bin else pkgs.ghostty;
+  ghosttyPackage =
+    if pkgs.stdenv.isDarwin then
+      inputs.unstable.legacyPackages.${pkgs.system}.ghostty-bin
+    else
+      pkgs.ghostty;
 in
 {
   options.plusultra.apps.ghostty = with types; {
