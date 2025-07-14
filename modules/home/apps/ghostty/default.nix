@@ -33,7 +33,7 @@ let
     }
   );
 
-  ghosttyPackage = if pkgs.stdenv.isDarwin then unstableWithOverlay.ghostty-bin else pkgs.ghostty;
+  ghosttyPackage = if pkgs.stdenv.isDarwin then inputs.unstable.legacyPackages.${pkgs.system}.ghostty-bin else pkgs.ghostty;
 in
 {
   options.plusultra.apps.ghostty = with types; {
@@ -45,7 +45,7 @@ in
       "cursor_blaze_no_trail"
       "cursor_smear"
       "cursor_smear_fade"
-    ]) "cursor_smear" "Cursor shader to use.";
+    ]) "none" "Cursor shader to use.";
   };
 
   config = mkIf cfg.enable {
