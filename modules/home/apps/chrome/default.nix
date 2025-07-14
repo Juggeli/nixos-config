@@ -11,17 +11,22 @@ let
 in
 {
   options.plusultra.apps.chrome = with types; {
-    enable = mkBoolOpt false "Whether or not to enable Chrome.";
+    enable = mkBoolOpt false "Whether or not to enable ungoogled-chromium.";
   };
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      (google-chrome.override {
+      (ungoogled-chromium.override {
         commandLineArgs = [
           "--enable-features=WebUIDarkMode"
           "--force-dark-mode"
         ];
       })
+    ];
+
+    plusultra.user.impermanence.directories = [
+      ".config/chromium"
+      ".cache/chromium"
     ];
   };
 }
