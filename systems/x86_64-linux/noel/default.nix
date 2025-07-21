@@ -83,12 +83,18 @@ with lib.plusultra;
     wantedBy = [ "multi-user.target" ];
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
+    unitConfig = {
+      StartLimitIntervalSec = 300;
+    };
     serviceConfig = {
       Type = "oneshot";
       ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /home/juggeli/tank";
       ExecStart = "${pkgs.cifs-utils}/bin/mount.cifs //10.11.11.2/tank /home/juggeli/tank -o credentials=${config.age.secrets.smb.path},uid=1000,gid=100,iocharset=utf8";
       ExecStop = "${pkgs.util-linux}/bin/umount /home/juggeli/tank";
       RemainAfterExit = true;
+      Restart = "on-failure";
+      RestartSec = "30s";
+      StartLimitBurst = 3;
     };
   };
 
