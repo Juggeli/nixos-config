@@ -58,7 +58,6 @@ in
           {
             timeout = 300;
             on-timeout = "hyprlock";
-            on-resume = "${pkgs.doas}/bin/doas ${pkgs.kmod}/bin/modprobe -r hid-logitech-hidpp hid-logitech-dj && sleep 2 && ${pkgs.doas}/bin/doas ${pkgs.kmod}/bin/modprobe hid-logitech-dj hid-logitech-hidpp";
           }
           {
             timeout = 360;

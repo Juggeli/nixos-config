@@ -15,7 +15,10 @@ in
         _1password = enabled;
       };
       desktop = {
-        hyprland = enabled;
+        hyprland = {
+          enable = true;
+          logitech-mouse-resume = enabled;
+        };
       };
       feature = {
         flatpak = enabled;
