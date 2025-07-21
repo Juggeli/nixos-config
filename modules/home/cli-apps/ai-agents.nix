@@ -34,7 +34,6 @@ in
         ".codex"
         ".config/claude"
         ".gemini"
-        ".cache/opencode"
         ".local/share/opencode"
         ".local/state/opencode"
       ];
