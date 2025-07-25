@@ -40,7 +40,8 @@ in
         "documents"
         "games"
         "My Games"
-      ] ++ cfg.directories;
+      ]
+      ++ cfg.directories;
       files = cfg.files;
     };
   };

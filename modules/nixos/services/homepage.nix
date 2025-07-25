@@ -19,42 +19,40 @@ let
   generateServiceEntries =
     category: services:
     map (service: {
-      "${service.homepage.name}" =
-        {
-          icon = service.homepage.icon;
-          description = service.homepage.description or "";
-          href =
+      "${service.homepage.name}" = {
+        icon = service.homepage.icon;
+        description = service.homepage.description or "";
+        href =
+          if service.homepage ? url && service.homepage.url != null then
+            service.homepage.url
+          else
+            "http://${config.networking.hostName}:${toString service.homepage.port}";
+        siteMonitor =
+          if service.homepage ? url && service.homepage.url != null then
+            service.homepage.url
+          else
+            "http://${config.networking.hostName}:${toString service.homepage.port}";
+      }
+      // lib.optionalAttrs (service.homepage ? widget && service.homepage.widget.enable) {
+        widget = {
+          type = if service.homepage.widget ? type then service.homepage.widget.type else service._name;
+          url =
             if service.homepage ? url && service.homepage.url != null then
               service.homepage.url
             else
               "http://${config.networking.hostName}:${toString service.homepage.port}";
-          siteMonitor =
-            if service.homepage ? url && service.homepage.url != null then
-              service.homepage.url
-            else
-              "http://${config.networking.hostName}:${toString service.homepage.port}";
+          key = "{{HOMEPAGE_VAR_${lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] service._name)}_API_KEY}}";
         }
-        // lib.optionalAttrs (service.homepage ? widget && service.homepage.widget.enable) {
-          widget =
-            {
-              type = if service.homepage.widget ? type then service.homepage.widget.type else service._name;
-              url =
-                if service.homepage ? url && service.homepage.url != null then
-                  service.homepage.url
-                else
-                  "http://${config.networking.hostName}:${toString service.homepage.port}";
-              key = "{{HOMEPAGE_VAR_${lib.toUpper (lib.replaceStrings [ "-" ] [ "_" ] service._name)}_API_KEY}}";
-            }
-            // lib.optionalAttrs (service.homepage.widget ? fields) {
-              fields = service.homepage.widget.fields;
-            }
-            // lib.optionalAttrs (service.homepage.widget ? enableBlocks) {
-              enableBlocks = service.homepage.widget.enableBlocks;
-            }
-            // lib.optionalAttrs (service.homepage.widget ? slug) {
-              slug = service.homepage.widget.slug;
-            };
+        // lib.optionalAttrs (service.homepage.widget ? fields) {
+          fields = service.homepage.widget.fields;
+        }
+        // lib.optionalAttrs (service.homepage.widget ? enableBlocks) {
+          enableBlocks = service.homepage.widget.enableBlocks;
+        }
+        // lib.optionalAttrs (service.homepage.widget ? slug) {
+          slug = service.homepage.widget.slug;
         };
+      };
     }) services;
 
   # Generate misc service entries with widget support
@@ -73,31 +71,30 @@ let
             ;
         }
         // lib.optionalAttrs (service.widget != null) {
-          widget =
-            {
-              inherit (service.widget) type url;
-            }
-            // lib.optionalAttrs (service.widget.key != null) {
-              key = service.widget.key;
-            }
-            // lib.optionalAttrs (service.widget.username != null) {
-              username = service.widget.username;
-            }
-            // lib.optionalAttrs (service.widget.password != null) {
-              password = service.widget.password;
-            }
-            // lib.optionalAttrs (service.widget.fields != null) {
-              fields = service.widget.fields;
-            }
-            // lib.optionalAttrs (service.widget.enableBlocks != null) {
-              enableBlocks = service.widget.enableBlocks;
-            }
-            // lib.optionalAttrs (service.widget.enableNowPlaying != null) {
-              enableNowPlaying = service.widget.enableNowPlaying;
-            }
-            // lib.optionalAttrs (service.widget.slug != null) {
-              slug = service.widget.slug;
-            };
+          widget = {
+            inherit (service.widget) type url;
+          }
+          // lib.optionalAttrs (service.widget.key != null) {
+            key = service.widget.key;
+          }
+          // lib.optionalAttrs (service.widget.username != null) {
+            username = service.widget.username;
+          }
+          // lib.optionalAttrs (service.widget.password != null) {
+            password = service.widget.password;
+          }
+          // lib.optionalAttrs (service.widget.fields != null) {
+            fields = service.widget.fields;
+          }
+          // lib.optionalAttrs (service.widget.enableBlocks != null) {
+            enableBlocks = service.widget.enableBlocks;
+          }
+          // lib.optionalAttrs (service.widget.enableNowPlaying != null) {
+            enableNowPlaying = service.widget.enableNowPlaying;
+          }
+          // lib.optionalAttrs (service.widget.slug != null) {
+            slug = service.widget.slug;
+          };
         }
       ) serviceSet
     ) miscServices;
@@ -219,30 +216,29 @@ in
       '';
 
       settings = {
-        layout =
-          [
-            {
-              System = {
-                header = false;
-                style = "row";
-                columns = 4;
-              };
-            }
-          ]
-          ++ (map (category: {
-            "${category}" = {
+        layout = [
+          {
+            System = {
+              header = false;
+              style = "row";
+              columns = 4;
+            };
+          }
+        ]
+        ++ (map (category: {
+          "${category}" = {
+            header = true;
+            style = "column";
+          };
+        }) (lib.attrNames servicesByCategory))
+        ++ [
+          {
+            Ultra = {
               header = true;
               style = "column";
             };
-          }) (lib.attrNames servicesByCategory))
-          ++ [
-            {
-              Ultra = {
-                header = true;
-                style = "column";
-              };
-            }
-          ];
+          }
+        ];
         headerStyle = "clean";
         statusStyle = "dot";
         hideVersion = true;

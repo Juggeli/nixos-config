@@ -113,7 +113,8 @@ in
 
     systemd.tmpfiles.rules = [
       "d /tank/media/downloads 0775 root media -"
-    ] ++ (map (mapping: "d ${mapping.dest} 0775 root media -") cfg.mappings);
+    ]
+    ++ (map (mapping: "d ${mapping.dest} 0775 root media -") cfg.mappings);
 
     age.secrets.downloader-rclone-conf = {
       owner = "download-webhook";

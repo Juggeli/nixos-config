@@ -173,7 +173,8 @@ in
           "$mod Shift, L, movewindow, r"
           "$mod Shift, K, movewindow, u"
           "$mod Shift, J, movewindow, d"
-        ] ++ workspaces;
+        ]
+        ++ workspaces;
         bindm = [
           "$mod, mouse:272, movewindow"
           "$mod, mouse:273, resizewindow"

@@ -63,7 +63,9 @@ in
       extraGroups = [
         "wheel"
         "media"
-      ] ++ cfg.extraGroups;
-    } // cfg.extraOptions;
+      ]
+      ++ cfg.extraGroups;
+    }
+    // cfg.extraOptions;
   };
 }

@@ -130,9 +130,11 @@ in
             "/var/lib/nixos"
             "/var/lib/systemd/coredump"
             "/var/lib/NetworkManager/"
-          ] ++ cfg_impermanence.directories;
+          ]
+          ++ cfg_impermanence.directories;
           files = [
-          ] ++ cfg_impermanence.files;
+          ]
+          ++ cfg_impermanence.files;
         };
       };
 
