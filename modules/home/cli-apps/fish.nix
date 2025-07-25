@@ -42,6 +42,8 @@ in
         la = "LC_COLLATE=C eza -ablF --group";
         cat = "bat";
         lg = "lazygit";
+        docker = "podman";
+        docker-compose = "podman-compose";
       };
       shellAbbrs = {
         eza = "eza --group-directories-first --git";

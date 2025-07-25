@@ -17,6 +17,7 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [
       pkgs.lazydocker
+      pkgs.podman-compose
     ];
     virtualisation.oci-containers.backend = "podman";
 
