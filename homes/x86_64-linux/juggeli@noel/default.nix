@@ -20,6 +20,7 @@ with lib.plusultra;
       hydrus = enabled;
       obsidian = enabled;
       mpv.brightnessControl = true;
+      vscode = enabled;
     };
 
     cli-apps = {
