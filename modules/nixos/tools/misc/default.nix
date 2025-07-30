@@ -30,6 +30,8 @@ in
       pciutils
       grc
       smartmontools
+      iotop
+      htop
     ];
   };
 }
