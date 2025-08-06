@@ -37,7 +37,6 @@ in
         auto-optimise-store = true;
         trusted-users = users;
         allowed-users = users;
-        use-xdg-base-directories = true;
       };
 
       gc = {
