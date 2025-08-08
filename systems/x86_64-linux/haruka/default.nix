@@ -318,7 +318,7 @@ in
   };
 
   boot = {
-    kernelPackages = lib.mkForce pkgs.linuxPackages_6_14;
+    kernelPackages = lib.mkForce pkgs.linuxPackages_6_15;
     kernelParams = [
       # try to fix zfs oom issue
       "zfs.zfs_arc_shrinker_limit=0"
