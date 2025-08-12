@@ -124,6 +124,7 @@ in
     plusultra.desktop.hyprland = {
       hyprlock.enable = true;
       hypridle.enable = true;
+      wlsunset.enable = true;
     };
 
     environment.systemPackages = with pkgs; [
