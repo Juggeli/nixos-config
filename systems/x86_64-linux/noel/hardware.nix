@@ -29,7 +29,6 @@ in
     powerManagement.enable = true;
     open = true;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
   boot = {
@@ -41,7 +40,6 @@ in
       "usbhid"
       "aesni_intel"
     ];
-    kernelPackages = pkgs.linuxPackages_6_15;
 
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
