@@ -24,5 +24,11 @@ in
     plusultra.home.extraOptions = {
       home.sessionPath = [ "$HOME/.cargo/bin" ];
     };
+
+    environment.persistence."/persist-home" = {
+      users."${config.plusultra.user.name}".directories = [
+        ".rustup"
+      ];
+    };
   };
 }
