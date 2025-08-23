@@ -1,4 +1,10 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 with lib;
 with lib.plusultra;
@@ -15,6 +21,19 @@ in
       dock = {
         autohide = true;
         orientation = "left";
+        tilesize = 32;
+
+        # Show specified apps always, plus running apps
+        persistent-apps = [
+          "/Applications/Zen.app"
+          "${inputs.unstable.legacyPackages.${pkgs.system}.ghostty-bin}/Applications/Ghostty.app"
+          "/Applications/Discord.app"
+          "/System/Applications/System Settings.app"
+        ];
+
+        # Show running apps and process indicators
+        show-recents = false;
+        show-process-indicators = true;
 
         # Disable hot corners.
         wvous-bl-corner = 1;
