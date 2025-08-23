@@ -2,10 +2,11 @@
 
 {
   imports = [
-    ./yabai.nix
+    ./aerospace.nix
+    ./homebrew.nix
+    ./raycast.nix
     ./skhd.nix
     ./spacebar.nix
-    ./homebrew.nix
-    ./aerospace.nix
+    ./yabai.nix
   ];
 }

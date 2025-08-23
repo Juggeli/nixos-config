@@ -11,6 +11,9 @@ in
   };
 
   config = mkIf cfg.enable {
+    plusultra.home.extraOptions.home.sessionPath = [
+      "/opt/homebrew/bin"
+    ];
     homebrew = {
       enable = true;
       brews = [ "lutzifer/homebrew-tap/keyboardSwitcher" ];
@@ -18,6 +21,8 @@ in
       casks = [
         "obsidian"
         "zen-browser"
+        "1password"
+        "discord"
       ];
     };
   };

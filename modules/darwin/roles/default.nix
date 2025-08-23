@@ -11,6 +11,7 @@ in
 
   config = mkIf cfg.enable {
     programs.fish = enabled;
+    security.pam.services.sudo_local.touchIdAuth = true;
     plusultra = {
       desktop = {
         yabai = disabled;
@@ -18,6 +19,7 @@ in
         skhd = disabled;
         homebrew = enabled;
         aerospace = enabled;
+        raycast = enabled;
       };
       system = {
         nix = enabled;
