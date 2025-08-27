@@ -72,7 +72,7 @@ in
       };
       volumes = [
         "/mnt/appdata/radarr/:/config"
-        "/tank/media/:/mnt/pool/media/"
+        "/tank/media/:/data"
       ];
     };
   };

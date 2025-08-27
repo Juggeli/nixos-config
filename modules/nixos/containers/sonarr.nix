@@ -71,7 +71,7 @@ in
       };
       volumes = [
         "/mnt/appdata/sonarr/:/config/"
-        "/tank/media/:/mnt/pool/media/"
+        "/tank/media/:/data"
       ];
     };
   };

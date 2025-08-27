@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   ...
 }:
 {
@@ -29,22 +28,6 @@
       {
         src = "ultra:downloads/done/public/";
         dest = "/tank/media/downloads/random/";
-      }
-      {
-        src = "ultra:downloads/done/radarr/";
-        dest = "/tank/media/downloads/radarr/";
-      }
-      {
-        src = "ultra:downloads/done/radarr-anime/";
-        dest = "/tank/media/downloads/radarr-anime/";
-      }
-      {
-        src = "ultra:downloads/done/sonarr/";
-        dest = "/tank/media/downloads/sonarr/";
-      }
-      {
-        src = "ultra:downloads/done/sonarr-anime/";
-        dest = "/tank/media/downloads/sonarr-anime/";
       }
     ];
     webhook = {

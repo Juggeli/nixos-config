@@ -39,7 +39,6 @@ in
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
-      "podman-trilium.service"
       "podman-uptime-kuma.service"
     ];
     after = [
@@ -51,7 +50,6 @@ in
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
-      "podman-trilium.service"
       "podman-uptime-kuma.service"
     ];
   };
@@ -120,7 +118,14 @@ in
           };
         };
       };
-      qbittorrent = disabled;
+      qbittorrent = {
+        enable = true;
+        homepage = {
+          widget = {
+            enable = true;
+          };
+        };
+      };
       sonarr = {
         enable = true;
         homepage = {
@@ -158,7 +163,7 @@ in
         };
       };
       changedetection = disabled;
-      trilium = enabled;
+      trilium = disabled;
       grist = disabled;
       bazarr = {
         enable = true;

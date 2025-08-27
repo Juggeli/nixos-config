@@ -38,6 +38,23 @@ in
         default = 8080;
         description = "Port for homepage link";
       };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "leech"
+            "download"
+            "seed"
+            "upload"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 
@@ -50,19 +67,19 @@ in
         "io.containers.autoupdate" = "registry";
       };
       volumes = [
-        "/var/lib/qbittorrent:/config"
-        "/mnt/pool/:/mnt/pool/"
+        "/mnt/appdata/qbittorrent:/config"
+        "/tank/media:/data"
       ];
       environment = {
         VPN_ENABLED = "true";
         VPN_PROVIDER = "proton";
-        VPN_LAN_NETWORK = "100.64.0.0/10";
+        VPN_LAN_NETWORK = "10.11.11.0/24";
         VPN_CONF = "wg0";
         VPN_AUTO_PORT_FORWARD = "true";
         VPN_KEEP_LOCAL_DNS = "false";
         PRIVOXY_ENABLED = "false";
         PUID = "1000";
-        PGID = "100";
+        PGID = "983";
       };
       extraOptions = [
         "--cap-add=NET_ADMIN"
@@ -72,30 +89,30 @@ in
     };
     boot.kernel.sysctl."net.ipv4.conf.all.src_valid_mark" = 1;
 
-    environment.systemPackages = with pkgs; [
-      plusultra.qbit-manager
-    ];
+    # environment.systemPackages = with pkgs; [
+    # plusultra.qbit-manager
+    # ];
 
-    systemd.services.qbit-manager = {
-      description = "manage qbittorrent";
-      serviceConfig = {
-        User = "juggeli";
-        Type = "oneshot";
-      };
-      script = ''
-        ${pkgs.plusultra.qbit-manager}/bin/qbit-manager
-      '';
-    };
-    systemd.timers.qbit-manager = {
-      wantedBy = [ "timers.target" ];
-      after = [ "podman-qbittorrent.service" ];
-      partOf = [ "qbit-manager.service" ];
-      timerConfig = {
-        OnUnitActiveSec = "30s";
-        OnBootSec = "300s";
-        Unit = "qbit-manager.service";
-      };
-    };
+    # systemd.services.qbit-manager = {
+    #   description = "manage qbittorrent";
+    #   serviceConfig = {
+    #     User = "juggeli";
+    #     Type = "oneshot";
+    #   };
+    #   script = ''
+    #     ${pkgs.plusultra.qbit-manager}/bin/qbit-manager
+    #   '';
+    # };
+    # systemd.timers.qbit-manager = {
+    #   wantedBy = [ "timers.target" ];
+    #   after = [ "podman-qbittorrent.service" ];
+    #   partOf = [ "qbit-manager.service" ];
+    #   timerConfig = {
+    #     OnUnitActiveSec = "30s";
+    #     OnBootSec = "300s";
+    #     Unit = "qbit-manager.service";
+    #   };
+    # };
 
   };
 }

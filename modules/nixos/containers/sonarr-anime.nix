@@ -76,7 +76,7 @@ in
       };
       volumes = [
         "/mnt/appdata/sonarr-anime/:/config/"
-        "/tank/media/:/mnt/pool/media/"
+        "/tank/media/:/data"
       ];
     };
   };
