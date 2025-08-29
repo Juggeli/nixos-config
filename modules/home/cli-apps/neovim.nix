@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -16,7 +17,7 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      nvim-pkg
+      inputs.neovim.packages.${pkgs.system}.nvim
     ];
 
     home.sessionVariables = {

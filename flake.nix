@@ -46,7 +46,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    neovim.url = "github:Juggeli/neovim";
+    neovim = {
+      url = "github:Juggeli/neovim";
+      inputs.nixpkgs.follows = "unstable";
+    };
 
     impermanence.url = "github:nix-community/impermanence";
 
@@ -76,7 +79,6 @@
       };
 
       overlays = with inputs; [
-        neovim.overlays.default
       ];
 
       systems.modules.nixos = with inputs; [
@@ -85,6 +87,7 @@
         disko.nixosModules.disko
         impermanence.nixosModules.impermanence
         catppuccin.nixosModules.catppuccin
+        neovim.nixosModules.default
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
