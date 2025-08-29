@@ -10,6 +10,7 @@
     ./qbittorrent.nix
     ./radarr.nix
     ./radarr-anime.nix
+    ./recyclarr.nix
     ./sonarr.nix
     ./sonarr-anime.nix
     ./trilium.nix

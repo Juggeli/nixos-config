@@ -103,6 +103,7 @@ in
 
     containers = {
       prowlarr = disabled;
+      recyclarr = enabled;
       plex = {
         enable = true;
         homepage.widget = {

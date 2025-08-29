@@ -21,4 +21,5 @@ in
   "homepage-env.age".publicKeys = keys;
   "webhook-token.age".publicKeys = keys;
   "downloader-rclone-conf.age".publicKeys = keys;
+  "sonarr-api.age".publicKeys = keys;
 }
