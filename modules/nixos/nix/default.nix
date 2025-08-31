@@ -37,6 +37,7 @@ in
         auto-optimise-store = true;
         trusted-users = users;
         allowed-users = users;
+        download-buffer-size = 134217728;
       };
 
       gc = {
@@ -44,13 +45,18 @@ in
         dates = "weekly";
         options = "--delete-older-than 30d";
       };
-
       package = pkgs.nixVersions.latest;
 
       # flake-utils-plus
       generateRegistryFromInputs = true;
       generateNixPathFromInputs = true;
       linkInputs = true;
+    };
+
+    systemd.services.nix-gc = {
+      preStart = ''
+        ${pkgs.nix}/bin/nix-env --delete-generations 30d --profile /home/${config.plusultra.user.name}/.local/state/nix/profiles/home-manager || true
+      '';
     };
   };
 }

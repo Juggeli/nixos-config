@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -17,11 +16,104 @@ in
   config = mkIf cfg.enable {
     systemd.services.recyclarr.serviceConfig.LoadCredential = [
       "sonarr-api_key:${config.age.secrets.sonarr-api.path}"
+      "sonarr-anime-api_key:${config.age.secrets.sonarr-anime-api.path}"
     ];
     services.recyclarr = {
       enable = true;
       configuration = {
         sonarr = {
+          anime-sonarr-v4 = {
+            base_url = "http://haruka:8999";
+            api_key = {
+              _secret = "/run/credentials/recyclarr.service/sonarr-anime-api_key";
+            };
+
+            include = [
+              { template = "sonarr-quality-definition-anime"; }
+              { template = "sonarr-v4-custom-formats-anime"; }
+            ];
+
+            quality_profiles = [
+              {
+                name = "Remux-1080p - Anime";
+                reset_unmatched_scores = {
+                  enabled = true;
+                };
+                upgrade = {
+                  allowed = true;
+                  until_quality = "1080p";
+                  until_score = 10000;
+                };
+                min_format_score = 100;
+                score_set = "anime-sonarr";
+                quality_sort = "top";
+                qualities = [
+                  {
+                    name = "1080p";
+                    qualities = [
+                      "Bluray-1080p"
+                      "WEBDL-1080p"
+                      "WEBRip-1080p"
+                      "HDTV-1080p"
+                    ];
+                  }
+                  {
+                    name = "Bluray-720p";
+                  }
+                  {
+                    name = "WEB 720p";
+                    qualities = [
+                      "WEBDL-720p"
+                      "WEBRip-720p"
+                      "HDTV-720p"
+                    ];
+                  }
+                  {
+                    name = "Bluray-480p";
+                  }
+                  {
+                    name = "WEB 480p";
+                    qualities = [
+                      "WEBDL-480p"
+                      "WEBRip-480p"
+                    ];
+                  }
+                  {
+                    name = "DVD";
+                  }
+                  {
+                    name = "SDTV";
+                  }
+                ];
+              }
+            ];
+
+            custom_formats = [
+              {
+                trash_ids = [
+                  "026d5aadd1a6b4e550b134cb6c72b3ca" # Uncensored
+                ];
+                assign_scores_to = [
+                  {
+                    name = "Remux-1080p - Anime";
+                    score = 2000;
+                  }
+                ];
+              }
+              {
+                trash_ids = [
+                  "b2550eb333d27b75833e25b8c2557b38" # 10bit
+                ];
+                assign_scores_to = [
+                  {
+                    name = "Remux-1080p - Anime";
+                    score = 10;
+                  }
+                ];
+              }
+            ];
+          };
+
           web-2160p-v4 = {
             base_url = "http://haruka:8989/";
             api_key = {
