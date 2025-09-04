@@ -298,6 +298,19 @@ in
         ];
       };
       prometheus = disabled;
+      qbittorrent-manager = {
+        enable = true;
+        connection = {
+          host = "10.11.11.2";
+          port = 8080;
+          credentialsFile = config.age.secrets.qbittorrent-credentials.path;
+        };
+        limits = {
+          publicRatio = 2.0;
+          uploadLimitDownloading = 200000;
+        };
+        schedule = "minutely";
+      };
       nfs = disabled;
 
       samba = {

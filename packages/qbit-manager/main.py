@@ -1,106 +1,318 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import logging
+import os
+import sys
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import List, Optional
+
 import qbittorrentapi
 
-private_trackers = [
-    "empornium.sx",
-    "landof.tv",
-    "passthepopcorn.me",
-    "hdbits.org",
-    "animebytes.tv",
-]
+
+@dataclass
+class QBittorrentConfig:
+    host: str = "localhost"
+    port: int = 8080
+    username: str = "admin"
+    password: str = "admin"
+    public_ratio_limit: float = 2.0
+    upload_limit_downloading: int = 200000
+    arr_categories: List[str] = field(default_factory=lambda: ["sonarr-done", "sonarr-anime-done", "radarr-done", "radarr-anime-done"])
+    categorize_only: bool = False
+    dry_run: bool = False
 
 
-def main():
-    client = qbittorrentapi.Client("brr", 8080, "admin", "adminadmin")
+class QBittorrentManager:
+    def __init__(self, config: QBittorrentConfig):
+        self.config = config
+        self.client: Optional[qbittorrentapi.Client] = None
+        self.logger = logging.getLogger(__name__)
 
-    try:
-        client.auth_log_in()
-    except qbittorrentapi.LoginFailed as e:
-        print(e)
+    def connect(self) -> bool:
+        try:
+            self.client = qbittorrentapi.Client(
+                host=self.config.host,
+                port=self.config.port,
+                username=self.config.username,
+                password=self.config.password,
+            )
+            self.client.auth_log_in()
+            self.logger.info(f"Connected to qBittorrent at {self.config.host}:{self.config.port}")
+            return True
+        except qbittorrentapi.LoginFailed as e:
+            self.logger.error(f"Login failed: {e}")
+            return False
+        except Exception as e:
+            self.logger.error(f"Connection failed: {e}")
+            return False
 
-    print(f"Total torrents: {client.torrents_count()}")
+    def disconnect(self) -> None:
+        if self.client:
+            try:
+                self.client.auth_log_out()
+                self.logger.info("Disconnected from qBittorrent")
+            except Exception as e:
+                self.logger.warning(f"Error during logout: {e}")
 
-    # Check and create categories
-    categories = client.torrent_categories.categories
-    if "Public" not in categories.keys():
-        client.torrent_categories.create_category(name="Public")
-        print("Created Public category")
-    else:
-        print("Category Public exists")
-    if "Private" not in categories.keys():
-        client.torrent_categories.create_category(name="Private")
-        print("Created Private category")
-    else:
-        print("Category Private exists")
+    def ensure_categories(self) -> None:
+        if not self.client:
+            raise RuntimeError("Client not connected")
+        
+        categories = self.client.torrent_categories.categories
+        
+        for category in ["Public", "Private"]:
+            if category not in categories:
+                if not self.config.dry_run:
+                    self.client.torrent_categories.create_category(name=category)
+                self.logger.info(f"{'Would create' if self.config.dry_run else 'Created'} {category} category")
+            else:
+                self.logger.debug(f"Category {category} already exists")
 
-    # Categorize uncategorized torrents
-    uncategorized_torrents = client.torrents_info(category="")
-    print(f"Uncategorized torrents: {len(uncategorized_torrents)}")
-    for uncategorized in uncategorized_torrents:
-        trackers = client.torrents_trackers(uncategorized.hash)
-        # DHT, PeX and LSD count as tracker so the fourth is the real tracker
-        has_only_one_tracker = len(trackers) == 4
-        has_private_tracker = False
+    def categorize_torrents(self) -> None:
+        if not self.client:
+            raise RuntimeError("Client not connected")
+        
+        uncategorized_torrents = self.client.torrents_info(category="")
+        self.logger.info(f"Found {len(uncategorized_torrents)} uncategorized torrents")
+        
+        for torrent in uncategorized_torrents:
+            is_private = torrent.private if hasattr(torrent, 'private') else False
+            category = "Private" if is_private else "Public"
+            
+            if not self.config.dry_run:
+                self.client.torrents_set_category(category, torrent.hash)
+            
+            self.logger.info(
+                f"{'Would set' if self.config.dry_run else 'Set'} {category} category for {torrent.name}"
+            )
 
-        for tracker in trackers:
-            for private_tracker in private_trackers:
-                if private_tracker in tracker.url:
-                    has_private_tracker = True
+    def manage_share_limits(self) -> None:
+        if not self.client:
+            raise RuntimeError("Client not connected")
+        
+        public_torrents = self.client.torrents_info(category="Public")
+        self.logger.info(f"Setting share limits for {len(public_torrents)} public torrents")
+        
+        if public_torrents and not self.config.dry_run:
+            self.client.torrents_set_share_limits(
+                ratio_limit=self.config.public_ratio_limit,
+                inactive_seeding_time_limit=-1,
+                seeding_time_limit=-1,
+                torrent_hashes=[t.hash for t in public_torrents],
+            )
 
-        if has_only_one_tracker and has_private_tracker:
-            print(f"Setting Private category to {uncategorized.name}")
-            client.torrents_set_category("Private", uncategorized.hash)
+    def manage_upload_limits(self) -> None:
+        if not self.client:
+            raise RuntimeError("Client not connected")
+        
+        downloading_public = self.client.torrents_info(
+            category="Public", status_filter="downloading"
+        )
+        self.logger.info(f"Setting upload limits for {len(downloading_public)} downloading public torrents")
+        
+        if downloading_public and not self.config.dry_run:
+            self.client.torrents_set_upload_limit(
+                limit=self.config.upload_limit_downloading,
+                torrent_hashes=[t.hash for t in downloading_public],
+            )
+        
+        seeding_public = self.client.torrents_info(
+            category="Public", status_filter="seeding"
+        )
+        self.logger.info(f"Removing upload limits for {len(seeding_public)} seeding public torrents")
+        
+        if seeding_public and not self.config.dry_run:
+            self.client.torrents_set_upload_limit(
+                limit=-1, torrent_hashes=[t.hash for t in seeding_public]
+            )
+
+    def cleanup_completed_torrents(self) -> None:
+        if not self.client:
+            raise RuntimeError("Client not connected")
+        
+        categories_to_clean = ["Public"] + self.config.arr_categories
+        total_removed = 0
+        
+        for category in categories_to_clean:
+            # Get all torrents in category, then filter by completion states
+            all_torrents = self.client.torrents_info(category=category)
+            
+            # Filter for torrents that should be removed (only stopped torrents)
+            completed_states = ["stoppedUP"]
+            completed_torrents = [t for t in all_torrents if t.state in completed_states and t.progress == 1.0]
+            
+            if completed_torrents:
+                # For Public category, keep files; for arr categories, delete files
+                delete_files = category != "Public"
+                files_action = "files deleted" if delete_files else "files kept"
+                
+                self.logger.info(
+                    f"{'Would remove' if self.config.dry_run else 'Removing'} "
+                    f"{len(completed_torrents)} completed torrents from category '{category}' ({files_action})"
+                )
+                
+                # Log each torrent that will be removed
+                for t in completed_torrents:
+                    self.logger.info(
+                        f"  - {t.name[:80]}..."
+                    )
+                
+                if not self.config.dry_run:
+                    # For Public category, keep files; for arr categories, delete files
+                    delete_files = category != "Public"
+                    self.client.torrents_delete(
+                        delete_files=delete_files,
+                        torrent_hashes=[t.hash for t in completed_torrents],
+                    )
+                    
+                    action = "files deleted" if delete_files else "files kept"
+                    self.logger.info(f"Removed {len(completed_torrents)} torrents from '{category}' ({action})")
+                
+                total_removed += len(completed_torrents)
+            else:
+                self.logger.info(f"No completed torrents found in category '{category}'")
+        
+        if total_removed > 0:
+            self.logger.info(f"Total completed torrents {'would be' if self.config.dry_run else ''} removed: {total_removed}")
         else:
-            print(f"Setting Public category to {uncategorized.name}")
-            client.torrents_set_category("Public", uncategorized.hash)
+            self.logger.info("No completed torrents found for cleanup")
 
-    # Set share limit for public torrents
-    public_torrents = client.torrents_info(category="Public")
-    print(f"Public torrents: {len(public_torrents)}")
-    client.torrents_set_share_limits(
-        ratio_limit=2,
-        inactive_seeding_time_limit=-1,
-        seeding_time_limit=-1,
-        torrent_hashes=map(lambda x: x.hash, public_torrents),
+    def prioritize_private_torrents(self) -> None:
+        if not self.client:
+            raise RuntimeError("Client not connected")
+        
+        private_torrents = self.client.torrents_info(category="Private")
+        self.logger.info(f"Setting high priority for {len(private_torrents)} private torrents")
+        
+        if private_torrents and not self.config.dry_run:
+            self.client.torrents_top_priority([t.hash for t in private_torrents])
+
+    def run_management_cycle(self) -> None:
+        if not self.connect():
+            sys.exit(1)
+        
+        try:
+            total_torrents = self.client.torrents_count()
+            self.logger.info(f"Managing {total_torrents} total torrents")
+            
+            self.ensure_categories()
+            self.categorize_torrents()
+            
+            if self.config.categorize_only:
+                self.manage_share_limits()
+                self.prioritize_private_torrents()
+                self.logger.info("Categorization and setup completed successfully")
+            else:
+                self.manage_share_limits()
+                self.manage_upload_limits()
+                self.cleanup_completed_torrents()
+                self.prioritize_private_torrents()
+                self.logger.info("Management cycle completed successfully")
+            
+        except Exception as e:
+            self.logger.error(f"Error during management cycle: {e}")
+            raise
+        finally:
+            self.disconnect()
+
+
+def load_config_from_file(config_path: Path) -> dict:
+    if not config_path.exists():
+        return {}
+    
+    with open(config_path) as f:
+        return json.load(f)
+
+
+def load_config_from_env() -> dict:
+    config = {}
+    env_mappings = {
+        'QBIT_HOST': 'host',
+        'QBIT_PORT': 'port',
+        'QBIT_USERNAME': 'username',
+        'QBIT_PASSWORD': 'password',
+        'QBIT_PUBLIC_RATIO': 'public_ratio_limit',
+        'QBIT_UPLOAD_LIMIT': 'upload_limit_downloading',
+        'QBIT_ARR_CATEGORIES': 'arr_categories',
+    }
+    
+    for env_var, config_key in env_mappings.items():
+        value = os.environ.get(env_var)
+        if value:
+            if config_key in ['port', 'upload_limit_downloading']:
+                config[config_key] = int(value)
+            elif config_key == 'public_ratio_limit':
+                config[config_key] = float(value)
+            elif config_key == 'arr_categories':
+                config[config_key] = [cat.strip() for cat in value.split(',')]
+            else:
+                config[config_key] = value
+    
+    return config
+
+
+def setup_logging(verbose: bool = False, quiet: bool = False) -> None:
+    level = logging.WARNING if quiet else (logging.DEBUG if verbose else logging.INFO)
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
     )
 
-    # Set upload speed limit for downloading public torrents
-    downloading_public_torrents = client.torrents_info(
-        category="Public", status_filter="downloading"
-    )
-    print(f"Downloading public torrents: {len(downloading_public_torrents)}")
-    client.torrents_set_upload_limit(
-        limit=200000,
-        torrent_hashes=map(lambda x: x.hash, downloading_public_torrents),
-    )
 
-    # Set remove upload speed limit for seeding public torrents
-    seeding_public_torrents = client.torrents_info(
-        category="Public", status_filter="seeding"
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="qBittorrent management tool for categorization and automation"
     )
-    print(f"Seeding public torrents: {len(seeding_public_torrents)}")
-    client.torrents_set_upload_limit(
-        limit=-1, torrent_hashes=map(lambda x: x.hash, seeding_public_torrents)
+    parser.add_argument(
+        "-c", "--config",
+        type=Path,
+        help="Path to JSON configuration file"
     )
-
-    # Remove finished public torrents
-    completed_public_torrents = client.torrents_info(
-        category="Public", status_filter="paused"
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be done without making changes"
     )
-    completed_public_torrents = list(
-        filter(lambda x: x.state == "pausedUP", completed_public_torrents)
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose logging"
     )
-    print(f"Completed public torrents: {len(completed_public_torrents)}")
-    client.torrents_delete(
-        delete_files=True,
-        torrent_hashes=map(lambda x: x.hash, completed_public_torrents),
+    parser.add_argument(
+        "-q", "--quiet",
+        action="store_true",
+        help="Only log warnings and errors"
     )
-
-    # Set private torrents higher priority
-    private_torrents = client.torrents_info(category="Private")
-    print(f"Private torrents: {len(private_torrents)}")
-    client.torrents_top_priority(map(lambda x: x.hash, private_torrents))
-
-    client.auth_log_out()
+    parser.add_argument(
+        "--categorize-only",
+        action="store_true",
+        help="Only run categorization, skip cleanup and other management tasks"
+    )
+    
+    args = parser.parse_args()
+    setup_logging(verbose=args.verbose, quiet=args.quiet)
+    
+    config_dict = {}
+    
+    if args.config:
+        config_dict.update(load_config_from_file(args.config))
+    
+    config_dict.update(load_config_from_env())
+    
+    if args.dry_run:
+        config_dict['dry_run'] = True
+    
+    if args.categorize_only:
+        config_dict['categorize_only'] = True
+    
+    config = QBittorrentConfig(**config_dict)
+    
+    manager = QBittorrentManager(config)
+    manager.run_management_cycle()
 
 
 if __name__ == "__main__":

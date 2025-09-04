@@ -1,24 +1,31 @@
 { lib, python3Packages }:
 
-python3Packages.buildPythonPackage {
+python3Packages.buildPythonApplication {
   pname = "qbit-manager";
-  version = "0.1";
+  version = "1.0.0";
+  format = "other";
 
   src = ./.;
 
-  nativeBuildInputs = [
-    python3Packages.setuptools
+  propagatedBuildInputs = with python3Packages; [
+    qbittorrent-api
   ];
 
-  propagatedBuildInputs = [
-    python3Packages.qbittorrent-api
-  ];
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p $out/bin
+    cp main.py $out/bin/qbit-manager
+    chmod +x $out/bin/qbit-manager
+
+    runHook postInstall
+  '';
 
   meta = with lib; {
-    homepage = "";
-    description = "Python script to manage qbittorrent";
-    license = lib.licenses.gpl3;
-    platforms = platforms.all;
+    description = "qBittorrent management tool for automated categorization and cleanup";
+    homepage = "https://github.com/user/dotfiles";
+    license = licenses.mit;
     maintainers = [ ];
+    platforms = platforms.linux;
   };
 }

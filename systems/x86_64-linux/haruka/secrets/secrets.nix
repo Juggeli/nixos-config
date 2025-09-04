@@ -23,4 +23,5 @@ in
   "downloader-rclone-conf.age".publicKeys = keys;
   "sonarr-api.age".publicKeys = keys;
   "sonarr-anime-api.age".publicKeys = keys;
+  "qbittorrent-credentials.age".publicKeys = keys;
 }
