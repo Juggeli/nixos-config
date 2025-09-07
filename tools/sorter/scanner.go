@@ -4,13 +4,16 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
+	"time"
 )
 
 type FileInfo struct {
 	Path     string
 	Name     string
 	Size     int64
+	ModTime  time.Time
 	Action   string
 	Category string
 }
@@ -54,10 +57,11 @@ func (s *Scanner) ScanVideoFiles() ([]FileInfo, error) {
 		ext := strings.ToLower(filepath.Ext(path))
 		if s.videoExts[ext] {
 			fileInfo := FileInfo{
-				Path:   path,
-				Name:   info.Name(),
-				Size:   info.Size(),
-				Action: "pending",
+				Path:    path,
+				Name:    info.Name(),
+				Size:    info.Size(),
+				ModTime: info.ModTime(),
+				Action:  "pending",
 			}
 			
 			if s.IsJunkVideoFile(path) {
@@ -73,6 +77,11 @@ func (s *Scanner) ScanVideoFiles() ([]FileInfo, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to scan directory %s: %w", s.config.BaseDir, err)
 	}
+
+	// Sort files by modification time (oldest to newest)
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].ModTime.Before(files[j].ModTime)
+	})
 
 	return files, nil
 }
