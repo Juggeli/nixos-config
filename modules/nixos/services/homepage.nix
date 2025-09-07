@@ -305,10 +305,57 @@ in
                     };
                   };
                 }
+                {
+                  "tank/backup" = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "fs:/tank/backup";
+                      chart = false;
+                      version = 4;
+                      diskUnits = "bytes";
+                    };
+                  };
+                }
+                {
+                  "tank/documents" = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "fs:/tank/documents";
+                      chart = false;
+                      version = 4;
+                      diskUnits = "bytes";
+                    };
+                  };
+                }
+                {
+                  "tank/media" = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "fs:/tank/media";
+                      chart = false;
+                      version = 4;
+                      diskUnits = "bytes";
+                    };
+                  };
+                }
+                {
+                  "tank/sorted" = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "fs:/tank/sorted";
+                      chart = false;
+                      version = 4;
+                      diskUnits = "bytes";
+                    };
+                  };
+                }
               ];
           }
         ];
     };
-
   };
 }
