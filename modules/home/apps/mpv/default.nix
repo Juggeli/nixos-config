@@ -32,8 +32,10 @@ in
         WHEEL_UP seek 10
         WHEEL_RIGHT add volume 2
         WHEEL_LEFT add volume -2
+        i script-binding show-position-info
       '';
       "mpv/scripts/delete_file.lua".source = ./delete_file.lua;
+      "mpv/scripts/position_info.lua".source = ./position_info.lua;
     }
     // lib.optionalAttrs cfg.brightnessControl {
       "mpv/scripts/brightness_control.lua".source = ./brightness_control.lua;
