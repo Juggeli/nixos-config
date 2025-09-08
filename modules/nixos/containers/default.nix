@@ -5,6 +5,7 @@
     ./changedetection.nix
     ./grist.nix
     ./jellyfin.nix
+    ./lanraragi.nix
     ./plex.nix
     ./prowlarr.nix
     ./qbittorrent.nix

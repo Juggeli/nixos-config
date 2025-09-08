@@ -173,6 +173,7 @@ in
         };
       };
       stash = disabled;
+      lanraragi = enabled;
       uptime-kuma = {
         enable = true;
         homepage.widget = {
