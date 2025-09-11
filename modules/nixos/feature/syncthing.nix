@@ -61,6 +61,14 @@ in
                 "noel"
               ];
             };
+            "src" = {
+              path = "${config.services.syncthing.dataDir}/src";
+              devices = [
+                "air"
+                "haruka"
+                "noel"
+              ];
+            };
           };
         };
       };
