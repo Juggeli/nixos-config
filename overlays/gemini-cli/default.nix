@@ -1,5 +1,5 @@
 { channels, inputs, ... }:
 
 final: prev: {
-  codex = channels.unstable.codex;
+  gemini-cli = channels.unstable.gemini-cli;
 }

@@ -18,19 +18,16 @@ in
     home.packages = with pkgs; [
       claude-code
       codex
-      aider-chat
       uv
-      plusultra.task-master-ai
       nodejs
-      plusultra.gemini-cli
-      plusultra.opencode
+      gemini-cli
+      opencode
     ];
     plusultra.user.impermanence = {
       directories = [
         ".claude"
         ".local/share/uv"
         ".cache/uv"
-        ".aider"
         ".codex"
         ".config/claude"
         ".gemini"
