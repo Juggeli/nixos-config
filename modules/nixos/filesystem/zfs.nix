@@ -74,41 +74,5 @@ in
       secret=$(cat "${config.age.secrets.ntfy-topic.path}")
       ${pkgs.gnused}/bin/sed -i "s#@ntfy-topic@#$secret#" "$configFile"
     '';
-
-    systemd.services = mkIf cfg.autoSnapshot {
-      "zfs-snapshot-tank-media-downloads" = {
-        description = "ZFS snapshot tank/media (frequent)";
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.zfs}/bin/zfs snapshot tank/media@zfs-auto-snap-$(${pkgs.coreutils}/bin/date -u +%%Y-%%m-%%d-%%H%%M%%S)'";
-        };
-      };
-      "zfs-snapshot-tank-sorted" = {
-        description = "ZFS snapshot tank/sorted (frequent)";
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.zfs}/bin/zfs snapshot tank/sorted@zfs-auto-snap-$(${pkgs.coreutils}/bin/date -u +%%Y-%%m-%%d-%%H%%M%%S)'";
-        };
-      };
-    };
-
-    systemd.timers = mkIf cfg.autoSnapshot {
-      "zfs-snapshot-tank-media-downloads" = {
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnCalendar = "*:0/15";
-          Persistent = true;
-          RandomizedDelaySec = "5m";
-        };
-      };
-      "zfs-snapshot-tank-sorted" = {
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnCalendar = "hourly";
-          Persistent = true;
-          RandomizedDelaySec = "5m";
-        };
-      };
-    };
   };
 }
