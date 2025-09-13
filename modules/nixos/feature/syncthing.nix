@@ -69,9 +69,31 @@ in
                 "noel"
               ];
             };
+            "orcaslicer" = {
+              path = "${config.services.syncthing.dataDir}/.var/app/io.github.softfever.OrcaSlicer/config/OrcaSlicer";
+              devices = [
+                "air"
+                "haruka"
+                "noel"
+              ];
+            };
+            "superslicer" = {
+              path = "${config.services.syncthing.dataDir}/.config/SuperSlicer";
+              devices = [
+                "air"
+                "haruka"
+                "noel"
+              ];
+            };
           };
         };
       };
+    };
+
+    # Ensure Syncthing waits for impermanence mounts
+    systemd.services.syncthing = mkIf cfg.enable {
+      after = [ "local-fs.target" ];
+      wants = [ "local-fs.target" ];
     };
 
     plusultra.filesystem.impermanence.directories = [ "/var/lib/syncthing" ];

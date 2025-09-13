@@ -40,6 +40,9 @@ in
         "documents"
         "games"
         "My Games"
+        ".npm"
+        ".var/app" # Flatpak apps
+        ".config/SuperSlicer"
       ]
       ++ cfg.directories;
       files = cfg.files;
