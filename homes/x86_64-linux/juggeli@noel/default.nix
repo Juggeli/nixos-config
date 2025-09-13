@@ -19,6 +19,7 @@ with lib.plusultra;
       crypto = enabled;
       hydrus = enabled;
       obsidian = enabled;
+      anytype = enabled;
       mpv.brightnessControl = true;
       vscode = enabled;
     };
