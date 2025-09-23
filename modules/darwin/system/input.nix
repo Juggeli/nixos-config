@@ -92,29 +92,28 @@ in
         profiles = [
           {
             name = "Default profile";
-            parameters = {
-              delay_milliseconds_before_open_device = 1000;
-            };
             selected = true;
-            simple_modifications = [ ];
             virtual_hid_keyboard = {
               country_code = 0;
-              mouse_key_xy_scale = 100;
+              keyboard_type_v2 = "ansi";
             };
             complex_modifications = {
               parameters = {
-                basic.simultaneous_threshold_milliseconds = 50;
-                basic.to_delayed_action_delay_milliseconds = 500;
-                basic.to_if_alone_timeout_milliseconds = 1000;
-                basic.to_if_held_down_threshold_milliseconds = 500;
-                mouse_motion_to_scroll.speed = 100;
+                basic = {
+                  simultaneous_threshold_milliseconds = 50;
+                  to_delayed_action_delay_milliseconds = 500;
+                  to_if_alone_timeout_milliseconds = 1000;
+                  to_if_held_down_threshold_milliseconds = 500;
+                };
+                mouse_motion_to_scroll = {
+                  speed = 100;
+                };
               };
               rules = [
                 {
                   description = "Change caps_lock to command+control+option+shift if pressed with other keys, to escape if pressed alone.";
                   manipulators = [
                     {
-                      type = "basic";
                       from = {
                         key_code = "caps_lock";
                         modifiers = {
@@ -131,13 +130,12 @@ in
                           key_code = "escape";
                         }
                       ];
+                      type = "basic";
                     }
                   ];
                 }
               ];
             };
-            devices = [ ];
-            fn_function_keys = [ ];
           }
         ];
       };
