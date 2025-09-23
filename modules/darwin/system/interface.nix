@@ -95,6 +95,14 @@ in
           # Keep folders at the top of the Finder lists.
           _FXSortFoldersFirst = true;
         };
+        # Disable Siri
+        "com.apple.assistant.support" = {
+          "Assistant Enabled" = false;
+        };
+        "com.apple.Siri" = {
+          StatusMenuVisible = false;
+          UserHasDeclinedEnable = true;
+        };
       };
     };
 
