@@ -23,6 +23,8 @@ in
         "zen-browser"
         "1password"
         "discord"
+        "balenaetcher"
+        "todoist-app"
       ];
     };
   };
