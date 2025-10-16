@@ -53,7 +53,7 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
-    catppuccin.url = "github:catppuccin/nix";
+    catppuccin.url = "github:catppuccin/nix/release-25.05";
   };
 
   outputs =
