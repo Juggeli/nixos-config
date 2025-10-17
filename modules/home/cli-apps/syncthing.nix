@@ -59,6 +59,7 @@ in
               "noel"
               "kuro"
             ];
+            ignorePatterns = [ "dotfiles" ];
           };
           "orcaslicer" = {
             path =

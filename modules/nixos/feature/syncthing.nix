@@ -68,6 +68,7 @@ in
                 "noel"
                 "kuro"
               ];
+              ignorePatterns = [ "dotfiles" ];
             };
             "orcaslicer" = {
               path = "${config.services.syncthing.dataDir}/.var/app/io.github.softfever.OrcaSlicer/config/OrcaSlicer";
