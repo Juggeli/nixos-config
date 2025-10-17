@@ -18,6 +18,14 @@ in
             FirstClickThreshold = 0;
           };
           CustomUserPreferences = {
+            "com.apple.driver.AppleBluetoothMultitouch.trackpad" = {
+              TrackpadThreeFingerVertSwipeGesture = 0;
+              TrackpadFourFingerVertSwipeGesture = 0;
+            };
+            "com.apple.AppleMultitouchTrackpad" = {
+              TrackpadThreeFingerVertSwipeGesture = 0;
+              TrackpadFourFingerVertSwipeGesture = 0;
+            };
             "com.apple.symbolichotkeys" = {
               AppleSymbolicHotKeys = {
                 "60" = {
