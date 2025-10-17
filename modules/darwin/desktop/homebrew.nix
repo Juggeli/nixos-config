@@ -25,6 +25,7 @@ in
         "discord"
         "balenaetcher"
         "todoist-app"
+        "bettertouchtool"
       ];
     };
   };
