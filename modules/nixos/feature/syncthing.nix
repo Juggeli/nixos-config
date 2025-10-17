@@ -34,55 +34,55 @@ in
         overrideFolders = true;
         settings = {
           devices = {
-            "air" = {
-              id = "TDYWB6T-LY5VAOF-X25VOXH-H6L3RUU-CN3ZFDM-NCM7YDY-NAI2P6H-723IBQZ";
-            };
             "haruka" = {
               id = "45RLMRL-COTJJV7-QXRIMZC-E2UR3P5-X5DV62Q-X6EO5HY-I4RJISU-BTPXIAB";
             };
             "noel" = {
               id = "7WH7YG3-7UCT4KC-R27XT6G-RC6C7OF-JFQJJEH-JNVDCZJ-ZUZFFK4-3O25GQT";
             };
+            "kuro" = {
+              id = "UOFUCBZ-U7MBVHS-76CW6Z3-M2U4ANF-B7O3JAV-L7N75Z3-BIEDFDK-XSDWKA7";
+            };
           };
           folders = {
             "documents" = {
               path = "${config.services.syncthing.dataDir}/documents";
               devices = [
-                "air"
                 "haruka"
                 "noel"
+                "kuro"
               ];
             };
             "downloads" = {
               path = "${config.services.syncthing.dataDir}/downloads";
               devices = [
-                "air"
                 "haruka"
                 "noel"
+                "kuro"
               ];
             };
             "src" = {
               path = "${config.services.syncthing.dataDir}/src";
               devices = [
-                "air"
                 "haruka"
                 "noel"
+                "kuro"
               ];
             };
             "orcaslicer" = {
               path = "${config.services.syncthing.dataDir}/.var/app/io.github.softfever.OrcaSlicer/config/OrcaSlicer";
               devices = [
-                "air"
                 "haruka"
                 "noel"
+                "kuro"
               ];
             };
             "superslicer" = {
               path = "${config.services.syncthing.dataDir}/.config/SuperSlicer";
               devices = [
-                "air"
                 "haruka"
                 "noel"
+                "kuro"
               ];
             };
           };

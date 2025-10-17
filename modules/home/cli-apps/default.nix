@@ -16,6 +16,7 @@
     ./rclone.nix
     ./speedtestpp.nix
     ./sshfs.nix
+    ./syncthing.nix
     ./tmux.nix
     ./yazi.nix
   ];
