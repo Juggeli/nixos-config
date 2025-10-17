@@ -20,12 +20,14 @@ in
       taps = [ "lutzifer/tap" ];
       casks = [
         "obsidian"
-        "zen-browser"
+        "zen"
         "1password"
         "discord"
         "balenaetcher"
         "todoist-app"
         "bettertouchtool"
+        "orcaslicer"
+        "superslicer"
       ];
     };
   };
