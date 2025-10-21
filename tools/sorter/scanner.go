@@ -121,6 +121,28 @@ func (s *Scanner) ScanJunkFiles() ([]string, error) {
 	return junkFiles, nil
 }
 
+func (s *Scanner) ScanJunkFilesInDir(dir string) ([]string, error) {
+	var junkFiles []string
+
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read directory %s: %w", dir, err)
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+
+		ext := strings.ToLower(filepath.Ext(entry.Name()))
+		if s.junkExts[ext] {
+			junkFiles = append(junkFiles, filepath.Join(dir, entry.Name()))
+		}
+	}
+
+	return junkFiles, nil
+}
+
 func (s *Scanner) FindEmptyDirectories() ([]string, error) {
 	var emptyDirs []string
 
@@ -154,6 +176,19 @@ func (s *Scanner) FindEmptyDirectories() ([]string, error) {
 	}
 
 	return emptyDirs, nil
+}
+
+func (s *Scanner) FindEmptyDirectoriesInDir(dir string) ([]string, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read directory %s: %w", dir, err)
+	}
+
+	if len(entries) == 0 {
+		return []string{dir}, nil
+	}
+
+	return []string{}, nil
 }
 
 func FormatFileSize(size int64) string {

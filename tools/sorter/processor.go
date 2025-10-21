@@ -38,7 +38,12 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 		fmt.Printf("Warning: failed to log session start: %v\n", err)
 	}
 
+	affectedDirs := make(map[string]bool)
+
 	for _, op := range operations {
+		sourceDir := filepath.Dir(op.Source)
+		affectedDirs[sourceDir] = true
+
 		switch op.Type {
 		case OpMove:
 			if err := p.moveFile(op.Source, op.Dest); err != nil {
@@ -61,13 +66,13 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 		}
 	}
 
-	if err := p.cleanupJunkFiles(); err != nil {
+	if err := p.cleanupJunkFiles(affectedDirs); err != nil {
 		cleanupErr := fmt.Errorf("failed to cleanup junk files: %w", err)
 		fmt.Printf("ERROR: %v\n", cleanupErr)
 		return cleanupErr
 	}
 
-	if err := p.cleanupEmptyDirectories(); err != nil {
+	if err := p.cleanupEmptyDirectories(affectedDirs); err != nil {
 		cleanupErr := fmt.Errorf("failed to cleanup empty directories: %w", err)
 		fmt.Printf("ERROR: %v\n", cleanupErr)
 		return cleanupErr
@@ -140,42 +145,48 @@ func (p *Processor) deleteFile(path string) error {
 	return nil
 }
 
-func (p *Processor) cleanupJunkFiles() error {
+func (p *Processor) cleanupJunkFiles(affectedDirs map[string]bool) error {
 	scanner := NewScanner(p.config)
-	junkFiles, err := scanner.ScanJunkFiles()
-	if err != nil {
-		return err
-	}
 
-	for _, file := range junkFiles {
-		if err := p.deleteFile(file); err != nil {
-			deleteErr := fmt.Errorf("failed to delete junk file %s: %w", file, err)
-			fmt.Printf("ERROR: %v\n", deleteErr)
-			return deleteErr
+	for dir := range affectedDirs {
+		junkFiles, err := scanner.ScanJunkFilesInDir(dir)
+		if err != nil {
+			return err
 		}
-		if err := p.logger.LogOperation("JUNK_DELETE", file, ""); err != nil {
-			fmt.Printf("Warning: failed to log junk file deletion: %v\n", err)
+
+		for _, file := range junkFiles {
+			if err := p.deleteFile(file); err != nil {
+				deleteErr := fmt.Errorf("failed to delete junk file %s: %w", file, err)
+				fmt.Printf("ERROR: %v\n", deleteErr)
+				return deleteErr
+			}
+			if err := p.logger.LogOperation("JUNK_DELETE", file, ""); err != nil {
+				fmt.Printf("Warning: failed to log junk file deletion: %v\n", err)
+			}
 		}
 	}
 
 	return nil
 }
 
-func (p *Processor) cleanupEmptyDirectories() error {
+func (p *Processor) cleanupEmptyDirectories(affectedDirs map[string]bool) error {
 	scanner := NewScanner(p.config)
-	emptyDirs, err := scanner.FindEmptyDirectories()
-	if err != nil {
-		return err
-	}
 
-	for _, dir := range emptyDirs {
-		if err := os.Remove(dir); err != nil {
-			removeErr := fmt.Errorf("failed to remove empty directory %s: %w", dir, err)
-			fmt.Printf("ERROR: %v\n", removeErr)
-			return removeErr
+	for dir := range affectedDirs {
+		emptyDirs, err := scanner.FindEmptyDirectoriesInDir(dir)
+		if err != nil {
+			return err
 		}
-		if err := p.logger.LogOperation("EMPTY_DIR_DELETE", dir, ""); err != nil {
-			fmt.Printf("Warning: failed to log empty directory deletion: %v\n", err)
+
+		for _, emptyDir := range emptyDirs {
+			if err := os.Remove(emptyDir); err != nil {
+				removeErr := fmt.Errorf("failed to remove empty directory %s: %w", emptyDir, err)
+				fmt.Printf("ERROR: %v\n", removeErr)
+				return removeErr
+			}
+			if err := p.logger.LogOperation("EMPTY_DIR_DELETE", emptyDir, ""); err != nil {
+				fmt.Printf("Warning: failed to log empty directory deletion: %v\n", err)
+			}
 		}
 	}
 
