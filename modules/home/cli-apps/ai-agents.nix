@@ -25,11 +25,13 @@ in
     ];
     plusultra.user.impermanence = {
       directories = [
+        ".cache/opencode"
         ".claude"
         ".local/share/uv"
         ".cache/uv"
         ".codex"
         ".config/claude"
+        ".config/opencode"
         ".gemini"
         ".local/share/opencode"
         ".local/state/opencode"
