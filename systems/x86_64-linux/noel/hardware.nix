@@ -1,8 +1,6 @@
 {
-  pkgs,
   modulesPath,
   inputs,
-  config,
   ...
 }:
 
@@ -48,7 +46,7 @@ in
     ];
   };
 
-  networking.interfaces.enp5s0.useDHCP = false;
+  networking.interfaces.enp5s0.useDHCP = true;
 
   hardware.enableRedistributableFirmware = true;
 
