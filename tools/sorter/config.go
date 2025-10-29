@@ -19,6 +19,17 @@ type CategoryConfig struct {
 	Hotkey string `yaml:"hotkey"`
 }
 
+type GUIConfig struct {
+	WindowWidth      int    `yaml:"window_width"`
+	WindowHeight     int    `yaml:"window_height"`
+	ButtonHeight     int    `yaml:"button_height"`
+	FontSize         int    `yaml:"font_size"`
+	ThumbnailCache   string `yaml:"thumbnail_cache"`
+	AutoPlay         bool   `yaml:"auto_play"`
+	PlayerPath       string `yaml:"player_path"`
+	PlayerFullscreen bool   `yaml:"player_fullscreen"`
+}
+
 type Config struct {
 	BaseDir           string                    `yaml:"base_dir"`
 	Categories        map[string]CategoryConfig `yaml:"categories"`
@@ -26,6 +37,7 @@ type Config struct {
 	JunkExts          []string                  `yaml:"junk_extensions"`
 	JunkVideoPatterns []string                  `yaml:"junk_video_patterns"`
 	LogFile           string                    `yaml:"log_file"`
+	GUI               GUIConfig                 `yaml:"gui"`
 	ConfigDir         string                    `yaml:"-"`
 }
 
@@ -98,7 +110,7 @@ func (c *Config) ExpandPaths() error {
 	if err != nil {
 		return fmt.Errorf("failed to expand base directory: %w", err)
 	}
-	
+
 	if err := validatePath(expandedBase); err != nil {
 		return fmt.Errorf("invalid base directory: %w", err)
 	}
@@ -109,13 +121,21 @@ func (c *Config) ExpandPaths() error {
 		if err != nil {
 			return fmt.Errorf("failed to expand category path %s: %w", key, err)
 		}
-		
+
 		if err := validatePath(expanded); err != nil {
 			return fmt.Errorf("invalid category path %s: %w", key, err)
 		}
-		
+
 		category.Path = expanded
 		c.Categories[key] = category
+	}
+
+	if c.GUI.ThumbnailCache != "" {
+		expandedCache, err := homedir.Expand(c.GUI.ThumbnailCache)
+		if err != nil {
+			return fmt.Errorf("failed to expand thumbnail cache path: %w", err)
+		}
+		c.GUI.ThumbnailCache = expandedCache
 	}
 
 	return nil
@@ -149,15 +169,23 @@ func validatePath(path string) error {
 	if err != nil {
 		return fmt.Errorf("failed to get absolute path: %w", err)
 	}
-	
+
 	cleanPath := filepath.Clean(absPath)
 	if absPath != cleanPath {
 		return fmt.Errorf("path contains invalid elements: %s", path)
 	}
-	
+
 	if strings.Contains(path, "..") {
 		return fmt.Errorf("path contains directory traversal elements: %s", path)
 	}
-	
+
 	return nil
+}
+
+func expandPath(path string) (string, error) {
+	expanded, err := homedir.Expand(path)
+	if err != nil {
+		return "", fmt.Errorf("failed to expand path: %w", err)
+	}
+	return expanded, nil
 }

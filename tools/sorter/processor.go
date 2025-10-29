@@ -46,7 +46,7 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 
 		switch op.Type {
 		case OpMove:
-			if err := p.moveFile(op.Source, op.Dest); err != nil {
+			if err := p.MoveFile(op.Source, op.Dest); err != nil {
 				moveErr := fmt.Errorf("failed to move file %s: %w", op.Source, err)
 				fmt.Printf("ERROR: %v\n", moveErr)
 				return moveErr
@@ -55,7 +55,7 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 				fmt.Printf("Warning: failed to log move operation: %v\n", err)
 			}
 		case OpDelete:
-			if err := p.deleteFile(op.Source); err != nil {
+			if err := p.DeleteFile(op.Source); err != nil {
 				deleteErr := fmt.Errorf("failed to delete file %s: %w", op.Source, err)
 				fmt.Printf("ERROR: %v\n", deleteErr)
 				return deleteErr
@@ -86,13 +86,19 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 }
 
 
-func (p *Processor) moveFile(source, destDir string) error {
+func (p *Processor) MoveFile(source, destDir string) error {
 	if err := os.MkdirAll(destDir, 0755); err != nil {
 		return fmt.Errorf("failed to create destination directory %s: %w", destDir, err)
 	}
 
 	filename := filepath.Base(source)
 	destination := filepath.Join(destDir, filename)
+
+	if _, err := os.Stat(destination); err == nil {
+		if err := os.Remove(destination); err != nil {
+			return fmt.Errorf("failed to remove existing file at %s: %w", destination, err)
+		}
+	}
 
 	if err := os.Rename(source, destination); err != nil {
 		if copyErr := p.copyFile(source, destination); copyErr != nil {
@@ -138,7 +144,7 @@ func (p *Processor) copyFile(src, dst string) error {
 	return nil
 }
 
-func (p *Processor) deleteFile(path string) error {
+func (p *Processor) DeleteFile(path string) error {
 	if err := os.Remove(path); err != nil {
 		return fmt.Errorf("failed to delete file: %w", err)
 	}
@@ -155,7 +161,7 @@ func (p *Processor) cleanupJunkFiles(affectedDirs map[string]bool) error {
 		}
 
 		for _, file := range junkFiles {
-			if err := p.deleteFile(file); err != nil {
+			if err := p.DeleteFile(file); err != nil {
 				deleteErr := fmt.Errorf("failed to delete junk file %s: %w", file, err)
 				fmt.Printf("ERROR: %v\n", deleteErr)
 				return deleteErr
