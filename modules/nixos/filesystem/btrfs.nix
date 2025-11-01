@@ -11,6 +11,11 @@ in
       type = with types; bool;
       description = "Enables settings for a BTRFS installation including snapshots";
     };
+    snapshots = mkOption {
+      default = true;
+      type = with types; bool;
+      description = "Enable automatic snapshots with btrbk";
+    };
     autoscrub = mkOption {
       default = true;
       type = with types; bool;
@@ -26,7 +31,7 @@ in
     };
 
     services = {
-      btrbk = {
+      btrbk = mkIf cfg.snapshots {
         instances."btrbak" = {
           onCalendar = "*-*-* *:00:00";
           settings = {

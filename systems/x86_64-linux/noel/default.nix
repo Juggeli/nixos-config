@@ -44,7 +44,10 @@ with lib.plusultra;
       };
     };
     filesystem = {
-      btrfs = enabled;
+      btrfs = {
+        enable = true;
+        snapshots = false;
+      };
       encryption = enabled;
       impermanence = enabled;
       tmpfs = enabled;
