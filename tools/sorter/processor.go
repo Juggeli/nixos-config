@@ -85,7 +85,6 @@ func (p *Processor) ProcessOperations(operations []Operation) error {
 	return nil
 }
 
-
 func (p *Processor) MoveFile(source, destDir string) error {
 	if err := os.MkdirAll(destDir, 0755); err != nil {
 		return fmt.Errorf("failed to create destination directory %s: %w", destDir, err)
@@ -200,6 +199,8 @@ func (p *Processor) cleanupEmptyDirectories(affectedDirs map[string]bool) error 
 }
 
 func (p *Processor) PlayFile(path string) error {
-	cmd := exec.Command("mpv", "--really-quiet", path)
+	// Sanitize path to prevent command injection
+	sanitizedPath := sanitizePath(path)
+	cmd := exec.Command("mpv", "--really-quiet", sanitizedPath)
 	return cmd.Run()
 }

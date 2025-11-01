@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os/exec"
+	"sync"
 )
 
 type VideoPlayer struct {
@@ -11,19 +12,47 @@ type VideoPlayer struct {
 	fullscreen  bool
 	autoPlay    bool
 	currentFile string
+	mutex       sync.RWMutex
 }
 
 func NewVideoPlayer(playerPath string, fullscreen bool, autoPlay bool) *VideoPlayer {
+	// Validate player path for security
+	if err := validatePlayerPath(playerPath); err != nil {
+		// Fall back to default mpv if invalid
+		playerPath = "mpv"
+	}
+
+	// Check if the player exists before using it
+	if _, err := exec.LookPath(playerPath); err != nil {
+		// If the specified player doesn't exist, try mpv as fallback
+		if playerPath != "mpv" {
+			if _, mpvErr := exec.LookPath("mpv"); mpvErr == nil {
+				playerPath = "mpv"
+			} else {
+				// If neither the specified player nor mpv exists, we'll let the error
+				// occur at runtime when trying to play a video
+			}
+		}
+	}
+
 	return &VideoPlayer{
-		playerPath: playerPath,
+		playerPath: sanitizePath(playerPath),
 		fullscreen: fullscreen,
 		autoPlay:   autoPlay,
 	}
 }
 
 func (vp *VideoPlayer) Play(videoPath string) error {
+	vp.mutex.Lock()
+	defer vp.mutex.Unlock()
+
+	// Sanitize the video path to prevent command injection
+	sanitizedPath := sanitizePath(videoPath)
+
+	// Stop any existing playback
 	if vp.cmd != nil && vp.cmd.Process != nil {
-		vp.Stop()
+		// Call stop without mutex since we already hold the lock
+		vp.stopUnsafe()
 	}
 
 	args := []string{
@@ -38,7 +67,7 @@ func (vp *VideoPlayer) Play(videoPath string) error {
 		args = append(args, "--geometry=50%")
 	}
 
-	args = append(args, videoPath)
+	args = append(args, sanitizedPath)
 
 	vp.cmd = exec.Command(vp.playerPath, args...)
 	vp.currentFile = videoPath
@@ -51,6 +80,12 @@ func (vp *VideoPlayer) Play(videoPath string) error {
 }
 
 func (vp *VideoPlayer) Stop() error {
+	vp.mutex.Lock()
+	defer vp.mutex.Unlock()
+	return vp.stopUnsafe()
+}
+
+func (vp *VideoPlayer) stopUnsafe() error {
 	if vp.cmd == nil || vp.cmd.Process == nil {
 		return nil
 	}
@@ -74,9 +109,13 @@ func (vp *VideoPlayer) Stop() error {
 }
 
 func (vp *VideoPlayer) IsPlaying() bool {
+	vp.mutex.RLock()
+	defer vp.mutex.RUnlock()
 	return vp.cmd != nil && vp.cmd.Process != nil
 }
 
 func (vp *VideoPlayer) GetCurrentFile() string {
+	vp.mutex.RLock()
+	defer vp.mutex.RUnlock()
 	return vp.currentFile
 }

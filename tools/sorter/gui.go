@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"log"
 	"sort"
+	"sync"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -34,6 +35,10 @@ type GUI struct {
 	progressLabel    *widget.Label
 	categoryButtons  *fyne.Container
 	actionButtons    *fyne.Container
+
+	// Synchronization
+	mutex        sync.RWMutex
+	isProcessing bool
 }
 
 func NewGUI(config *Config, files []FileInfo, dryRun bool) (*GUI, error) {
@@ -215,6 +220,12 @@ func (g *GUI) createActionButtons() *fyne.Container {
 }
 
 func (g *GUI) updateDisplay() {
+	g.mutex.Lock()
+	defer g.mutex.Unlock()
+	g.updateDisplayUnsafe()
+}
+
+func (g *GUI) updateDisplayUnsafe() {
 	if g.currentIndex >= len(g.files) {
 		g.currentIndex = len(g.files) - 1
 		if g.currentIndex < 0 {
@@ -228,6 +239,7 @@ func (g *GUI) updateDisplay() {
 	g.progressLabel.SetText(fmt.Sprintf("File %d of %d", g.currentIndex+1, len(g.files)))
 	g.fileInfoLabel.SetText(fmt.Sprintf("%s\n%s", file.Name, FormatFileSize(file.Size)))
 
+	// Start thumbnail loading in goroutine with proper synchronization
 	go g.loadThumbnail(file.Path)
 
 	if g.player.autoPlay {
@@ -244,46 +256,98 @@ func (g *GUI) loadThumbnail(videoPath string) {
 	if err != nil {
 		log.Printf("Failed to get thumbnail: %v", err)
 		fyne.Do(func() {
+			// Use minimal lock for UI update only
+			g.mutex.Lock()
 			g.thumbnailImage.File = ""
+			g.mutex.Unlock()
 			g.thumbnailImage.Refresh()
 		})
 		return
 	}
 
 	fyne.Do(func() {
+		// Use minimal lock for UI update only
+		g.mutex.Lock()
 		g.thumbnailImage.File = thumbnailPath
+		g.mutex.Unlock()
 		g.thumbnailImage.Refresh()
 	})
 }
 
 func (g *GUI) categorizeFile(category string) {
-	g.files[g.currentIndex].Action = "move"
-	g.files[g.currentIndex].Category = category
-	g.player.Stop()
+	// Use write lock only for the critical section that modifies shared state
+	g.mutex.Lock()
+	if g.currentIndex < len(g.files) {
+		g.files[g.currentIndex].Action = "move"
+		g.files[g.currentIndex].Category = category
+	}
 	g.currentIndex++
+	g.mutex.Unlock()
+
+	g.player.Stop()
+
+	// Update display without holding the lock
 	g.updateDisplay()
+
+	// If we skipped to next file, ensure we're not accessing out of bounds
+	g.mutex.RLock()
+	if g.currentIndex >= len(g.files) {
+		g.currentIndex = len(g.files) - 1
+	}
+	g.mutex.RUnlock()
 }
 
 func (g *GUI) deleteFile() {
-	g.files[g.currentIndex].Action = "delete"
-	g.player.Stop()
+	// Use write lock only for the critical section that modifies shared state
+	g.mutex.Lock()
+	if g.currentIndex < len(g.files) {
+		g.files[g.currentIndex].Action = "delete"
+	}
 	g.currentIndex++
+	g.mutex.Unlock()
+
+	g.player.Stop()
 	g.updateDisplay()
+
+	// Ensure we're not accessing out of bounds
+	g.mutex.RLock()
+	if g.currentIndex >= len(g.files) {
+		g.currentIndex = len(g.files) - 1
+	}
+	g.mutex.RUnlock()
 }
 
 func (g *GUI) nextFile() {
-	if g.files[g.currentIndex].Action == "pending" {
+	// Use write lock only for the critical section that modifies shared state
+	g.mutex.Lock()
+	if g.currentIndex < len(g.files) && g.files[g.currentIndex].Action == "pending" {
 		g.files[g.currentIndex].Action = "skip"
 	}
-	g.player.Stop()
 	g.currentIndex++
+	g.mutex.Unlock()
+
+	g.player.Stop()
 	g.updateDisplay()
+
+	// Ensure we're not accessing out of bounds
+	g.mutex.RLock()
+	if g.currentIndex >= len(g.files) {
+		g.currentIndex = len(g.files) - 1
+	}
+	g.mutex.RUnlock()
 }
 
 func (g *GUI) previousFile() {
-	if g.currentIndex > 0 {
-		g.player.Stop()
+	// Use write lock only for the critical section that modifies shared state
+	g.mutex.Lock()
+	canGoBack := g.currentIndex > 0
+	if canGoBack {
 		g.currentIndex--
+	}
+	g.mutex.Unlock()
+
+	if canGoBack {
+		g.player.Stop()
 		g.updateDisplay()
 	}
 }
@@ -302,7 +366,17 @@ func (g *GUI) toggleFullscreen() {
 }
 
 func (g *GUI) quitApp() {
+	g.mutex.Lock()
+	defer g.mutex.Unlock()
+
 	g.player.Stop()
+
+	// Cleanup thumbnail cache
+	if g.thumbnailCache != nil {
+		// Note: We don't clear the cache on exit as it's useful for next run
+		// But we could add a config option for this if needed
+	}
+
 	g.window.Close()
 }
 
@@ -342,14 +416,34 @@ func (g *GUI) showConfirmation() {
 }
 
 func (g *GUI) processFiles() {
+	g.mutex.Lock()
+	if g.isProcessing {
+		g.mutex.Unlock()
+		return
+	}
+	g.isProcessing = true
+	g.mutex.Unlock()
+
 	progress := dialog.NewProgressInfinite("Processing", "Processing files...", g.window)
 	progress.Show()
 
 	go func() {
+		defer func() {
+			g.mutex.Lock()
+			g.isProcessing = false
+			g.mutex.Unlock()
+		}()
+
 		stats := &ProcessingStats{}
 
+		// Create a snapshot of files to avoid race conditions
+		g.mutex.RLock()
+		filesSnapshot := make([]FileInfo, len(g.files))
+		copy(filesSnapshot, g.files)
+		g.mutex.RUnlock()
+
 		if g.dryRun {
-			for _, file := range g.files {
+			for _, file := range filesSnapshot {
 				switch file.Action {
 				case "move":
 					categoryPath := g.config.Categories[file.Category].Path
@@ -365,7 +459,7 @@ func (g *GUI) processFiles() {
 		} else {
 			var operations []Operation
 
-			for _, file := range g.files {
+			for _, file := range filesSnapshot {
 				switch file.Action {
 				case "move":
 					categoryPath := g.config.Categories[file.Category].Path

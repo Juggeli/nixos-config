@@ -61,14 +61,18 @@ func (tc *ThumbnailCache) generateThumbnail(videoPath, thumbnailPath string) err
 
 	seekTime := fmt.Sprintf("%.2f", midpoint)
 
+	// Sanitize paths to prevent command injection
+	sanitizedVideoPath := sanitizePath(videoPath)
+	sanitizedThumbnailPath := sanitizePath(thumbnailPath)
+
 	cmd := exec.Command("ffmpeg",
 		"-ss", seekTime,
-		"-i", videoPath,
+		"-i", sanitizedVideoPath,
 		"-vframes", "1",
 		"-vf", "scale=320:-1",
 		"-loglevel", "error",
 		"-y",
-		thumbnailPath,
+		sanitizedThumbnailPath,
 	)
 
 	output, err := cmd.CombinedOutput()
@@ -84,11 +88,14 @@ func (tc *ThumbnailCache) generateThumbnail(videoPath, thumbnailPath string) err
 }
 
 func (tc *ThumbnailCache) getVideoDuration(videoPath string) (float64, error) {
+	// Sanitize path to prevent command injection
+	sanitizedVideoPath := sanitizePath(videoPath)
+
 	cmd := exec.Command("ffprobe",
 		"-v", "error",
 		"-show_entries", "format=duration",
 		"-of", "default=noprint_wrappers=1:nokey=1",
-		videoPath,
+		sanitizedVideoPath,
 	)
 
 	output, err := cmd.CombinedOutput()
@@ -116,6 +123,37 @@ func (tc *ThumbnailCache) Clear() error {
 			path := filepath.Join(tc.cacheDir, entry.Name())
 			if err := os.Remove(path); err != nil {
 				return fmt.Errorf("failed to remove thumbnail %s: %w", entry.Name(), err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func (tc *ThumbnailCache) Cleanup() error {
+	// Remove any corrupted or incomplete thumbnail files
+	entries, err := os.ReadDir(tc.cacheDir)
+	if err != nil {
+		return fmt.Errorf("failed to read cache directory: %w", err)
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".jpg" {
+			path := filepath.Join(tc.cacheDir, entry.Name())
+
+			// Check if file is empty (corrupted)
+			info, err := os.Stat(path)
+			if err != nil {
+				// Remove if we can't stat the file
+				os.Remove(path)
+				continue
+			}
+
+			if info.Size() == 0 {
+				// Remove empty files
+				if err := os.Remove(path); err != nil {
+					return fmt.Errorf("failed to remove corrupted thumbnail %s: %w", entry.Name(), err)
+				}
 			}
 		}
 	}

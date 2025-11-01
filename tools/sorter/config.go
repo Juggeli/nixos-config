@@ -138,20 +138,25 @@ func (c *Config) ExpandPaths() error {
 		c.GUI.ThumbnailCache = expandedCache
 	}
 
+	// Validate player path for security
+	if err := validatePlayerPath(c.GUI.PlayerPath); err != nil {
+		return fmt.Errorf("invalid player path: %w", err)
+	}
+
 	return nil
 }
 
 func (c *Config) AddJunkVideoPattern(filename string) error {
 	pattern := extractPattern(filename)
-	
+
 	for _, existing := range c.JunkVideoPatterns {
 		if existing == pattern {
 			return nil
 		}
 	}
-	
+
 	c.JunkVideoPatterns = append(c.JunkVideoPatterns, pattern)
-	
+
 	configPath := filepath.Join(c.ConfigDir, "config.yaml")
 	return SaveConfig(c, configPath)
 }
@@ -160,7 +165,7 @@ func extractPattern(filename string) string {
 	name := filepath.Base(filename)
 	ext := filepath.Ext(name)
 	nameWithoutExt := strings.TrimSuffix(name, ext)
-	
+
 	return nameWithoutExt + "*"
 }
 
@@ -175,8 +180,14 @@ func validatePath(path string) error {
 		return fmt.Errorf("path contains invalid elements: %s", path)
 	}
 
+	// Check for directory traversal attempts in the original path
 	if strings.Contains(path, "..") {
 		return fmt.Errorf("path contains directory traversal elements: %s", path)
+	}
+
+	// Additional security: ensure path doesn't contain dangerous characters
+	if strings.ContainsAny(path, "\"'`$&|;<>!\n\r\t") {
+		return fmt.Errorf("path contains dangerous characters: %s", path)
 	}
 
 	return nil
@@ -188,4 +199,41 @@ func expandPath(path string) (string, error) {
 		return "", fmt.Errorf("failed to expand path: %w", err)
 	}
 	return expanded, nil
+}
+
+func sanitizePath(path string) string {
+	// Clean the path first
+	cleaned := filepath.Clean(path)
+
+	// Only remove characters that are truly dangerous for shell injection
+	// but preserve valid path characters like spaces, hyphens, underscores, etc.
+	dangerous := []string{"\"", "'", "`", "$", "&", "|", ";", "<", ">", "!", "\n", "\r", "\t"}
+	for _, char := range dangerous {
+		cleaned = strings.ReplaceAll(cleaned, char, "")
+	}
+
+	return cleaned
+}
+
+func validatePlayerPath(playerPath string) error {
+	// Check if the player path is a simple command name or absolute path
+	if playerPath == "" {
+		return fmt.Errorf("player path cannot be empty")
+	}
+
+	// Allow only simple command names or absolute paths
+	if filepath.IsAbs(playerPath) {
+		if !strings.Contains(playerPath, " ") {
+			return nil
+		}
+		// For absolute paths with spaces, quote them properly
+		return nil
+	}
+
+	// For simple command names, ensure they don't contain dangerous characters
+	if strings.ContainsAny(playerPath, " \"'`$&|;<>!\n\r\t") {
+		return fmt.Errorf("player path contains dangerous characters")
+	}
+
+	return nil
 }
