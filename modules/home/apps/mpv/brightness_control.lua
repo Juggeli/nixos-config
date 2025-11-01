@@ -20,12 +20,18 @@ function get_current_brightness()
     return nil
 end
 
-function set_brightness(value)
-    utils.subprocess({
+function set_brightness(value, blocking)
+    local params = {
         args = {"ddcutil", "setvcp", "10", tostring(value)},
         capture_stdout = true,
         capture_stderr = true
-    })
+    }
+    
+    if blocking then
+        utils.subprocess(params)
+    else
+        utils.subprocess_detached(params)
+    end
 end
 
 function on_fullscreen_change()
@@ -47,6 +53,12 @@ function on_fullscreen_change()
 end
 
 mp.observe_property("fullscreen", "bool", on_fullscreen_change)
+
+mp.add_hook("on_unload", 50, function()
+    if original_brightness then
+        os.execute(string.format("ddcutil setvcp 10 %d", original_brightness))
+    end
+end)
 
 mp.add_key_binding("Ctrl+WHEEL_UP", "increase-fullscreen-brightness", function()
     if is_fullscreen then
