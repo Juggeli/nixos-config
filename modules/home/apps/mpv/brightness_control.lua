@@ -54,7 +54,7 @@ end
 
 mp.observe_property("fullscreen", "bool", on_fullscreen_change)
 
-mp.add_hook("on_unload", 50, function()
+mp.register_event("shutdown", function()
     if original_brightness then
         os.execute(string.format("ddcutil setvcp 10 %d", original_brightness))
     end
