@@ -32,6 +32,17 @@ with lib.plusultra;
       tmux = enabled;
       ab-av1 = enabled;
       nushell = enabled;
+      ai-agents = {
+        enable = true;
+        ccg = {
+          enable = true;
+          secretPath = ../../shared/secrets/zai.age;
+        };
+        ccm = {
+          enable = true;
+          secretPath = ../../shared/secrets/minimax.age;
+        };
+      };
     };
 
     desktop = {
