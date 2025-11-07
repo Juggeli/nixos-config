@@ -32,7 +32,8 @@ with lib.plusultra;
       tmux = enabled;
       ab-av1 = enabled;
       nushell = enabled;
-      ai-agents = {
+      ai-agents = enabled;
+      claude-code = {
         enable = true;
         ccg = {
           enable = true;

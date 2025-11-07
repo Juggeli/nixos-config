@@ -38,6 +38,8 @@ in
         trusted-users = users;
         allowed-users = users;
         download-buffer-size = 134217728;
+        substituters = [ "https://claude-code.cachix.org" ];
+        trusted-public-keys = [ "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk=" ];
       };
 
       gc = {

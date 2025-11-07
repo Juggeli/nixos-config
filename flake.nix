@@ -54,6 +54,11 @@
     impermanence.url = "github:nix-community/impermanence";
 
     catppuccin.url = "github:catppuccin/nix/release-25.05";
+
+    claude-code-nix = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "unstable";
+    };
   };
 
   outputs =
@@ -79,6 +84,7 @@
       };
 
       overlays = with inputs; [
+        claude-code-nix.overlays.default
       ];
 
       systems.modules.nixos = with inputs; [
