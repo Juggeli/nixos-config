@@ -51,6 +51,10 @@ in
             enable = true;
             secretPath = ../../../homes/shared/secrets/minimax.age;
           };
+          chutes = {
+            enable = true;
+            secretPath = ../../../homes/shared/secrets/chutes.age;
+          };
         };
         tmux = enabled;
       };

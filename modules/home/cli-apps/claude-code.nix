@@ -20,6 +20,10 @@ in
       enable = mkBoolOpt false "Whether or not to enable ccm wrapper for minimax.";
       secretPath = mkOpt types.path null "Path to the minimax.age secret file.";
     };
+    chutes = {
+      enable = mkBoolOpt false "Whether or not to enable ccc wrapper for chutes.ai.";
+      secretPath = mkOpt types.path null "Path to the chutes.age secret file.";
+    };
   };
 
   config = mkMerge [
@@ -108,6 +112,21 @@ in
         (pkgs.writeShellScriptBin "ccm" ''
           MINIMAX_TOKEN=$(cat ${config.age.secrets.minimax.path})
           exec ${pkgs.claude-code}/bin/claude --settings "{\"env\": {\"ANTHROPIC_BASE_URL\": \"https://api.minimax.io/anthropic\",\"ANTHROPIC_AUTH_TOKEN\": \"$MINIMAX_TOKEN\",\"API_TIMEOUT_MS\": \"3000000\",\"CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC\": \"1\",\"ANTHROPIC_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_SMALL_FAST_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_DEFAULT_SONNET_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_DEFAULT_OPUS_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_DEFAULT_HAIKU_MODEL\": \"MiniMax-M2\"}}" "$@"
+        '')
+      ];
+    })
+
+    (mkIf (cfg.enable && cfg.chutes.enable) {
+      age.identityPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
+
+      age.secrets.chutes = {
+        file = cfg.chutes.secretPath;
+      };
+
+      home.packages = with pkgs; [
+        (pkgs.writeShellScriptBin "ccc" ''
+          CHUTES_TOKEN=$(cat ${config.age.secrets.chutes.path})
+          exec ${pkgs.claude-code}/bin/claude --settings "{\"env\": {\"ANTHROPIC_AUTH_TOKEN\": \"$CHUTES_TOKEN\",\"ANTHROPIC_BASE_URL\": \"https://claude.chutes.ai\",\"API_TIMEOUT_MS\": \"6000000\",\"CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC\": \"1\"}}" "$@"
         '')
       ];
     })
