@@ -41,6 +41,17 @@ in
         yazi = enabled;
         bat = enabled;
         ai-agents = enabled;
+        claude-code = {
+          enable = true;
+          ccg = {
+            enable = true;
+            secretPath = ../../../homes/shared/secrets/zai.age;
+          };
+          ccm = {
+            enable = true;
+            secretPath = ../../../homes/shared/secrets/minimax.age;
+          };
+        };
         tmux = enabled;
       };
       tools = {
