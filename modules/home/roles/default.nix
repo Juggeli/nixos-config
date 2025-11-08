@@ -43,17 +43,14 @@ in
         ai-agents = enabled;
         claude-code = {
           enable = true;
-          ccg = {
+          glm = {
             enable = true;
-            secretPath = ../../../homes/shared/secrets/zai.age;
           };
-          ccm = {
+          minimax = {
             enable = true;
-            secretPath = ../../../homes/shared/secrets/minimax.age;
           };
           chutes = {
             enable = true;
-            secretPath = ../../../homes/shared/secrets/chutes.age;
           };
         };
         tmux = enabled;

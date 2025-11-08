@@ -12,17 +12,14 @@ in
 {
   options.plusultra.cli-apps.claude-code = with types; {
     enable = mkBoolOpt false "Whether or not to enable claude-code.";
-    ccg = {
-      enable = mkBoolOpt false "Whether or not to enable ccg wrapper for z.ai.";
-      secretPath = mkOpt types.path null "Path to the zai.age secret file.";
+    glm = {
+      enable = mkBoolOpt false "Whether or not to enable glm wrapper for z.ai.";
     };
-    ccm = {
-      enable = mkBoolOpt false "Whether or not to enable ccm wrapper for minimax.";
-      secretPath = mkOpt types.path null "Path to the minimax.age secret file.";
+    minimax = {
+      enable = mkBoolOpt false "Whether or not to enable minimax wrapper for minimax.";
     };
     chutes = {
       enable = mkBoolOpt false "Whether or not to enable ccc wrapper for chutes.ai.";
-      secretPath = mkOpt types.path null "Path to the chutes.age secret file.";
     };
   };
 
@@ -68,10 +65,8 @@ in
           import json
           import sys
 
-          # Define the additional context to inject
           context = "Unless otherwise specified: DRY, YAGNI, KISS, Pragmatic. Ask questions for clarifications. When doing a plan or research-like request, present your findings and halt for confirmation. Use raggy first to find documentation. Speak the facts, don't sugar coat statements. Your opinion matters. End all responses with an emoji of an animal"
 
-          # Output the hook response in correct JSON format
           response = {
               "hookSpecificOutput": {
                   "hookEventName": "UserPromptSubmit",
@@ -86,47 +81,42 @@ in
       };
     })
 
-    (mkIf (cfg.enable && cfg.ccg.enable) {
-      age.identityPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-
-      age.secrets.zai = {
-        file = cfg.ccg.secretPath;
+    # Enable agenix for any AI provider that needs secrets
+    (mkIf (cfg.enable && (cfg.glm.enable || cfg.minimax.enable || cfg.chutes.enable)) {
+      plusultra.user.agenix = {
+        enable = true;
+        enabledSecrets =
+          (optional cfg.glm.enable "zai.age")
+          ++ (optional cfg.minimax.enable "minimax.age")
+          ++ (optional cfg.chutes.enable "chutes.age");
+        enableAll = false;
       };
+    })
 
+    # Create wrapper scripts for each provider
+    (mkIf cfg.glm.enable {
       home.packages = with pkgs; [
         (pkgs.writeShellScriptBin "ccg" ''
           ZAI_TOKEN=$(cat ${config.age.secrets.zai.path})
-          exec ${pkgs.claude-code}/bin/claude --settings "{\"env\": {\"ANTHROPIC_AUTH_TOKEN\": \"$ZAI_TOKEN\",\"ANTHROPIC_BASE_URL\": \"https://api.z.ai/api/anthropic\"}}" "$@"
+          exec ${pkgs.claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_AUTH_TOKEN": "'"$ZAI_TOKEN"'", "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic"}}' "$@"
         '')
       ];
     })
 
-    (mkIf (cfg.enable && cfg.ccm.enable) {
-      age.identityPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-
-      age.secrets.minimax = {
-        file = cfg.ccm.secretPath;
-      };
-
+    (mkIf cfg.minimax.enable {
       home.packages = with pkgs; [
         (pkgs.writeShellScriptBin "ccm" ''
           MINIMAX_TOKEN=$(cat ${config.age.secrets.minimax.path})
-          exec ${pkgs.claude-code}/bin/claude --settings "{\"env\": {\"ANTHROPIC_BASE_URL\": \"https://api.minimax.io/anthropic\",\"ANTHROPIC_AUTH_TOKEN\": \"$MINIMAX_TOKEN\",\"API_TIMEOUT_MS\": \"3000000\",\"CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC\": \"1\",\"ANTHROPIC_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_SMALL_FAST_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_DEFAULT_SONNET_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_DEFAULT_OPUS_MODEL\": \"MiniMax-M2\",\"ANTHROPIC_DEFAULT_HAIKU_MODEL\": \"MiniMax-M2\"}}" "$@"
+          exec ${pkgs.claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_BASE_URL": "https://api.minimax.io/anthropic", "ANTHROPIC_AUTH_TOKEN": "'"$MINIMAX_TOKEN"'", "API_TIMEOUT_MS": "3000000", "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1", "ANTHROPIC_MODEL": "MiniMax-M2", "ANTHROPIC_SMALL_FAST_MODEL": "MiniMax-M2", "ANTHROPIC_DEFAULT_SONNET_MODEL": "MiniMax-M2", "ANTHROPIC_DEFAULT_OPUS_MODEL": "MiniMax-M2", "ANTHROPIC_DEFAULT_HAIKU_MODEL": "MiniMax-M2"}}' "$@"
         '')
       ];
     })
 
-    (mkIf (cfg.enable && cfg.chutes.enable) {
-      age.identityPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-
-      age.secrets.chutes = {
-        file = cfg.chutes.secretPath;
-      };
-
+    (mkIf cfg.chutes.enable {
       home.packages = with pkgs; [
         (pkgs.writeShellScriptBin "ccc" ''
           CHUTES_TOKEN=$(cat ${config.age.secrets.chutes.path})
-          exec ${pkgs.claude-code}/bin/claude --settings "{\"env\": {\"ANTHROPIC_AUTH_TOKEN\": \"$CHUTES_TOKEN\",\"ANTHROPIC_BASE_URL\": \"https://claude.chutes.ai\",\"API_TIMEOUT_MS\": \"6000000\",\"CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC\": \"1\"}}" "$@"
+          exec ${pkgs.claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_AUTH_TOKEN": "'"$CHUTES_TOKEN"'", "ANTHROPIC_BASE_URL": "https://claude.chutes.ai", "API_TIMEOUT_MS": "6000000", "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"}}' "$@"
         '')
       ];
     })

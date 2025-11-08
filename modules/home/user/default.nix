@@ -21,6 +21,7 @@ in
 {
   imports = [
     ./impermanence.nix
+    ./agenix.nix
   ];
   options.plusultra.user = {
     enable = mkOpt types.bool false "Whether to configure the user account.";
