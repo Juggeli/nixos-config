@@ -154,20 +154,6 @@ in
       };
 
       programs.fuse.userAllowOther = true;
-
-      services = mkIf cfg_impermanence.enable {
-        btrbk = {
-          instances."btrbak" = {
-            settings = {
-              volume."/persist" = {
-                snapshot_create = "always";
-                subvolume = ".";
-                snapshot_dir = ".snapshots";
-              };
-            };
-          };
-        };
-      };
     }
   ];
 }
