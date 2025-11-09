@@ -1,5 +1,5 @@
 let
-  rawdisk1 = "/dev/nvme1n1"; # CHANGE
+  rawdisk1 = "/dev/nvme0n1";
 in
 {
   disko.devices = {
@@ -26,94 +26,84 @@ in
               size = "100%";
               content = {
                 type = "luks";
-                name = "pool0_0";
+                name = "root";
                 extraOpenArgs = [ "--allow-discards" ];
-                passwordFile = "/tmp/secret.key"; # Interactive
+                passwordFile = "/tmp/secret.key";
                 content = {
-                  type = "btrfs";
-                  extraArgs = [ "-f" ];
-                  subvolumes = {
-                    "/root" = {
-                      mountpoint = "/";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/root-blank" = {
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/persist-home" = {
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/persist-home/active" = {
-                      mountpoint = "/persist-home";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/persist-home/snapshots" = {
-                      mountpoint = "/persist-home/.snapshots";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/hydrus" = {
-                      mountpoint = "/hydrus";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/nix" = {
-                      mountpoint = "/nix";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/persist" = {
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/persist/active" = {
-                      mountpoint = "/persist";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/persist/snapshots" = {
-                      mountpoint = "/persist/.snapshots";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/var_log" = {
-                      mountpoint = "/var/log";
-                      mountOptions = [
-                        "compress=zstd"
-                        "noatime"
-                      ];
-                    };
-                    "/swap" = {
-                      mountpoint = "/.swapvol";
-                      swap.swapfile.size = "64G";
-                    };
-                  };
+                  type = "zfs";
+                  pool = "rpool";
                 };
               };
+            };
+          };
+        };
+      };
+    };
+    zpool = {
+      rpool = {
+        type = "zpool";
+        options = {
+          ashift = "12";
+          autotrim = "on";
+        };
+        rootFsOptions = {
+          compression = "zstd";
+          acltype = "posixacl";
+          xattr = "sa";
+          atime = "off";
+          "com.sun:auto-snapshot" = "false";
+        };
+        datasets = {
+          "nixos" = {
+            type = "zfs_fs";
+            options.mountpoint = "none";
+          };
+          "nixos/root" = {
+            type = "zfs_fs";
+            options.mountpoint = "legacy";
+            mountpoint = "/";
+            postCreateHook = "zfs snapshot rpool/nixos/root@blank";
+          };
+          "nixos/nix" = {
+            type = "zfs_fs";
+            options.mountpoint = "legacy";
+            mountpoint = "/nix";
+          };
+          "nixos/persist" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "legacy";
+              "com.sun:auto-snapshot" = "true";
+            };
+            mountpoint = "/persist";
+          };
+          "nixos/persist-home" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "legacy";
+              "com.sun:auto-snapshot" = "true";
+            };
+            mountpoint = "/persist-home";
+          };
+          "nixos/hydrus" = {
+            type = "zfs_fs";
+            options.mountpoint = "legacy";
+            mountpoint = "/hydrus";
+          };
+          "nixos/var" = {
+            type = "zfs_fs";
+            options.mountpoint = "none";
+          };
+          "nixos/var/log" = {
+            type = "zfs_fs";
+            options.mountpoint = "legacy";
+            mountpoint = "/var/log";
+          };
+          "nixos/swap" = {
+            type = "zfs_volume";
+            size = "64G";
+            content = {
+              type = "swap";
             };
           };
         };

@@ -46,7 +46,10 @@ in
     ];
   };
 
-  networking.interfaces.enp5s0.useDHCP = true;
+  networking = {
+    interfaces.enp5s0.useDHCP = true;
+    hostId = "cc5b25a0";
+  };
 
   hardware.enableRedistributableFirmware = true;
 

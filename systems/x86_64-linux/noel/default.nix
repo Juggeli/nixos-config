@@ -44,9 +44,9 @@ with lib.plusultra;
       };
     };
     filesystem = {
-      btrfs = {
+      zfs = {
         enable = true;
-        snapshots = false;
+        zed = false;
       };
       encryption = enabled;
       impermanence = enabled;
