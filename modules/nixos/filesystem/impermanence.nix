@@ -72,6 +72,7 @@ in
             "zfs-import-${cfg_impermanence.pool}.service"
           ];
         before = [ "sysroot.mount" ];
+        path = [ pkgs.zfs ];
         unitConfig.DefaultDependencies = "no";
         serviceConfig.Type = "oneshot";
         script = ''

@@ -48,7 +48,6 @@ with lib.plusultra;
         enable = true;
         zed = false;
       };
-      encryption = enabled;
       impermanence = enabled;
       tmpfs = enabled;
     };

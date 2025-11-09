@@ -21,18 +21,12 @@ in
                 mountpoint = "/boot";
               };
             };
-            luks = {
-              label = "encrypted";
+            zfs = {
+              label = "zfs";
               size = "100%";
               content = {
-                type = "luks";
-                name = "root";
-                extraOpenArgs = [ "--allow-discards" ];
-                passwordFile = "/tmp/secret.key";
-                content = {
-                  type = "zfs";
-                  pool = "rpool";
-                };
+                type = "zfs";
+                pool = "rpool";
               };
             };
           };
@@ -52,6 +46,9 @@ in
           xattr = "sa";
           atime = "off";
           "com.sun:auto-snapshot" = "false";
+          encryption = "aes-256-gcm";
+          keyformat = "passphrase";
+          keylocation = "prompt";
         };
         datasets = {
           "nixos" = {
