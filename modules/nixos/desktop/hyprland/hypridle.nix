@@ -12,12 +12,16 @@ let
   waitSuspend = pkgs.writeShellScriptBin "wait-suspend" ''
     #!/usr/bin/env bash
     CHECK_INTERVAL=5
-    trap 'exit 0' INT TERM          # quit cleanly if hypridle kills us
+    trap 'exit 0' INT TERM
 
     while busctl get-property \
             org.freedesktop.login1 /org/freedesktop/login1 \
             org.freedesktop.login1.Manager BlockInhibited |
           grep -q sleep; do
+        sleep "$CHECK_INTERVAL"
+    done
+
+    while ${pkgs.playerctl}/bin/playerctl status 2>/dev/null | grep -q Playing; do
         sleep "$CHECK_INTERVAL"
     done
 
