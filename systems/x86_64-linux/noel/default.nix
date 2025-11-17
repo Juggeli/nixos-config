@@ -80,6 +80,10 @@ with lib.plusultra;
 
   programs.nix-ld.enable = true;
 
+  systemd.tmpfiles.rules = [
+    "Z /hydrus 0755 juggeli users -"
+  ];
+
   systemd.services.mount-tank = {
     description = "Mount tank network share for juggeli";
     wantedBy = [ "multi-user.target" ];
