@@ -17,6 +17,7 @@ with lib.plusultra;
       ab-av1 = enabled;
       yazi = enabled;
       ai-agents = enabled;
+      opencode = enabled;
       bat = enabled;
     };
 

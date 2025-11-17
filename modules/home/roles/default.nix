@@ -41,6 +41,7 @@ in
         yazi = enabled;
         bat = enabled;
         ai-agents = enabled;
+        opencode = enabled;
         claude-code = {
           enable = true;
           glm = {

@@ -20,18 +20,13 @@ in
       uv
       nodejs
       gemini-cli
-      opencode
     ];
     plusultra.user.impermanence = {
       directories = [
-        ".cache/opencode"
         ".local/share/uv"
         ".cache/uv"
         ".codex"
-        ".config/opencode"
         ".gemini"
-        ".local/share/opencode"
-        ".local/state/opencode"
       ];
     };
   };

@@ -14,6 +14,7 @@
     ./lazygit.nix
     ./neovim.nix
     ./nushell.nix
+    ./opencode.nix
     ./rclone.nix
     ./speedtestpp.nix
     ./sshfs.nix
