@@ -48,9 +48,15 @@ in
       shellAbbrs = {
         eza = "eza --group-directories-first --git";
         tree = "eza --tree";
-        nixsw = "${rebuildCommand} build --flake .# && ${sudoCommand} ${rebuildCommand} switch --flake .# --fast";
-        nixup = "${rebuildCommand} build --flake .# --recreate-lock-file && ${sudoCommand} ${rebuildCommand} switch --flake .# --fast";
-        nixed = "nvim && ${rebuildCommand} build --flake .# && ${sudoCommand} ${rebuildCommand} switch --flake .# --fast";
+        nixsw =
+          "${rebuildCommand} build --flake .# && ${sudoCommand} ${rebuildCommand} switch --flake .#"
+          + lib.optionalString pkgs.stdenv.isLinux " --fast";
+        nixup =
+          "${rebuildCommand} build --flake .# --recreate-lock-file && ${sudoCommand} ${rebuildCommand} switch --flake .#"
+          + lib.optionalString pkgs.stdenv.isLinux " --fast";
+        nixed =
+          "nvim && ${rebuildCommand} build --flake .# && ${sudoCommand} ${rebuildCommand} switch --flake .#"
+          + lib.optionalString pkgs.stdenv.isLinux " --fast";
         scs = "doas systemctl start";
         scr = "doas systemctl restart";
         sce = "doas systemctl stop";
