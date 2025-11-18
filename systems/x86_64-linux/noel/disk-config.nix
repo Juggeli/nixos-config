@@ -1,5 +1,7 @@
 let
   rawdisk1 = "/dev/nvme0n1";
+  diskSizeGB = 931.5;
+  reservationPercent = 0.2;
 in
 {
   disko.devices = {
@@ -101,6 +103,13 @@ in
             size = "64G";
             content = {
               type = "swap";
+            };
+          };
+          "nixos/reserved" = {
+            type = "zfs_fs";
+            options = {
+              mountpoint = "none";
+              reservation = "${toString (diskSizeGB * reservationPercent)}G";
             };
           };
         };
