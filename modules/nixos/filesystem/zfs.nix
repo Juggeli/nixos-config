@@ -14,7 +14,7 @@ in
     enable = mkOption {
       default = false;
       type = with types; bool;
-      description = "Enables support for non root ZFS filesystems";
+      description = "Enables support for ZFS filesystems";
     };
     autoscrub = mkOption {
       default = true;
@@ -69,7 +69,7 @@ in
       };
     };
 
-    system.activationScripts."ntfy-topic" = ''
+    system.activationScripts."ntfy-topic" = mkIf cfg.zed ''
       configFile=/etc/zfs/zed.d/zed.rc
       secret=$(cat "${config.age.secrets.ntfy-topic.path}")
       ${pkgs.gnused}/bin/sed -i "s#@ntfy-topic@#$secret#" "$configFile"

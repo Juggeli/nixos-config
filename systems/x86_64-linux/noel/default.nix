@@ -44,11 +44,10 @@ with lib.plusultra;
       };
     };
     filesystem = {
-      btrfs = {
+      zfs = {
         enable = true;
-        snapshots = false;
+        zed = false;
       };
-      encryption = enabled;
       impermanence = enabled;
       tmpfs = enabled;
     };
@@ -80,6 +79,10 @@ with lib.plusultra;
   };
 
   programs.nix-ld.enable = true;
+
+  systemd.tmpfiles.rules = [
+    "Z /hydrus 0755 juggeli users -"
+  ];
 
   systemd.services.mount-tank = {
     description = "Mount tank network share for juggeli";

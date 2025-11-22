@@ -21,17 +21,9 @@ in
 
     xdg.desktopEntries.hydrus-client = {
       name = "Hydrus Client";
-      exec = "${pkgs.hydrus}/bin/hydrus-client -d /home/${config.plusultra.user.name}/hydrus";
+      exec = "${pkgs.hydrus}/bin/hydrus-client -d /hydrus";
       icon = "hydrus-client";
       comment = "Hydrus Client - A personal booru application";
-    };
-
-    home.persistence."/hydrus" = {
-      removePrefixDirectory = false;
-      allowOther = true;
-      directories = [
-        "hydrus"
-      ];
     };
   };
 }
