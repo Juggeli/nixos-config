@@ -28,6 +28,7 @@ in
       neofetch
       screen
       ripgrep
+      zoxide
     ];
     programs.fish = {
       enable = true;
@@ -106,21 +107,22 @@ in
           src = pkgs.fishPlugins.pure.src;
         }
         {
-          name = "z";
-          src = pkgs.fishPlugins.z.src;
-        }
-        {
           name = "fzf-fish";
           src = pkgs.fishPlugins.fzf-fish.src;
         }
       ];
     };
 
+    programs.zoxide = {
+      enable = true;
+      enableFishIntegration = true;
+    };
+
     catppuccin.fish.enable = true;
 
     plusultra.user.impermanence.directories = [
       ".local/share/fish"
-      ".local/share/z"
+      ".local/share/zoxide"
       ".cache/fish"
     ];
   };
