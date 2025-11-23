@@ -1,5 +1,5 @@
-{ channels, inputs, ... }:
+{ inputs, ... }:
 
 final: prev: {
-  opencode = channels.unstable.opencode;
+  opencode = inputs.opencode.packages.${prev.system}.default;
 }

@@ -59,6 +59,11 @@
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    opencode = {
+      url = "github:sst/opencode/dev";
+      inputs.nixpkgs.follows = "unstable";
+    };
   };
 
   outputs =
