@@ -19,7 +19,7 @@ in
       enable = true;
       mouse = true;
       keyMode = "vi";
-      prefix = "C-Space";
+      prefix = "C-a";
       baseIndex = 1;
       shell = "${pkgs.fish}/bin/fish";
 
@@ -27,6 +27,13 @@ in
         sensible
         vim-tmux-navigator
         yank
+        {
+          plugin = tmux-sessionx;
+          extraConfig = ''
+            set -g @sessionx-bind 'o'
+            set -g @sessionx-zoxide-mode 'on'
+          '';
+        }
         {
           plugin = tokyo-night-tmux;
           extraConfig = ''
@@ -41,6 +48,9 @@ in
 
       extraConfig = ''
         set-option -sa terminal-overrides ",xterm*:Tc"
+
+        # Send C-a through to shell when pressed twice
+        bind a send-prefix
 
         # Vim style pane selection
         bind h select-pane -L
