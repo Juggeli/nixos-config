@@ -65,7 +65,7 @@ in
           import json
           import sys
 
-          context = "Unless otherwise specified: DRY, YAGNI, KISS, Pragmatic. Ask questions for clarifications. When doing a plan or research-like request, present your findings and halt for confirmation. Use raggy first to find documentation. Speak the facts, don't sugar coat statements. Your opinion matters. End all responses with an emoji of an animal"
+          context = "Unless otherwise specified: DRY, YAGNI, KISS, Pragmatic. Ask questions for clarifications. When doing a plan or research-like request, present your findings and halt for confirmation. Speak the facts, don't sugar coat statements. Your opinion matters. All your code will be reviewed by another AI agent. Shortcuts, simplifications, placeholders, fallbacks are not allowed. It’s wasting time doing those because another AI agent will review and you’ll have to redo. End all responses with an emoji of an animal"
 
           response = {
               "hookSpecificOutput": {
