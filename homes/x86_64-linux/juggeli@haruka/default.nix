@@ -19,6 +19,7 @@ with lib.plusultra;
       ai-agents = enabled;
       opencode = enabled;
       bat = enabled;
+      tmux = enabled;
     };
 
     tools = {
