@@ -47,6 +47,12 @@ in
       ];
 
       extraConfig = ''
+        # Enable OSC 52 clipboard support
+        set -s set-clipboard on
+
+        # Allow passthrough for nested tmux (tmux 3.3+)
+        set -g allow-passthrough on
+
         set-option -sa terminal-overrides ",xterm*:Tc"
 
         # Send C-a through to shell when pressed twice
