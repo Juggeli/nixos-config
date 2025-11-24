@@ -9,6 +9,30 @@ with lib.plusultra;
 let
   cfg = config.plusultra.desktop.hyprland.hypridle;
 
+  waitLock = pkgs.writeShellScriptBin "wait-lock" ''
+    #!/usr/bin/env bash
+    CHECK_INTERVAL=5
+    trap 'exit 0' INT TERM
+
+    while ${pkgs.playerctl}/bin/playerctl status 2>/dev/null | grep -q Playing; do
+        sleep "$CHECK_INTERVAL"
+    done
+
+    pidof hyprlock || hyprlock -q
+  '';
+
+  waitDpmsOff = pkgs.writeShellScriptBin "wait-dpms-off" ''
+    #!/usr/bin/env bash
+    CHECK_INTERVAL=5
+    trap 'exit 0' INT TERM
+
+    while ${pkgs.playerctl}/bin/playerctl status 2>/dev/null | grep -q Playing; do
+        sleep "$CHECK_INTERVAL"
+    done
+
+    hyprctl dispatch dpms off
+  '';
+
   waitSuspend = pkgs.writeShellScriptBin "wait-suspend" ''
     #!/usr/bin/env bash
     CHECK_INTERVAL=5
@@ -36,8 +60,28 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       playerctl
+      waitLock
+      waitDpmsOff
       waitSuspend
     ];
+
+    systemd.user.services.idle-wait-lock = {
+      description = "Wait until media stops, then lock";
+      serviceConfig = {
+        ExecStart = "${waitLock}/bin/wait-lock";
+        KillMode = "mixed";
+        Type = "simple";
+      };
+    };
+
+    systemd.user.services.idle-wait-dpms-off = {
+      description = "Wait until media stops, then turn off display";
+      serviceConfig = {
+        ExecStart = "${waitDpmsOff}/bin/wait-dpms-off";
+        KillMode = "mixed";
+        Type = "simple";
+      };
+    };
 
     systemd.user.services.idle-wait-suspend = {
       description = "Wait until block inhibitors clear, then suspend";
@@ -61,12 +105,13 @@ in
         listener = [
           {
             timeout = 300;
-            on-timeout = "hyprlock";
+            on-timeout = "systemctl --user start idle-wait-lock.service";
+            on-resume = "systemctl --user stop idle-wait-lock.service";
           }
           {
             timeout = 360;
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
+            on-timeout = "systemctl --user start idle-wait-dpms-off.service";
+            on-resume = "systemctl --user stop idle-wait-dpms-off.service && hyprctl dispatch dpms on";
           }
           {
             timeout = 1800;
