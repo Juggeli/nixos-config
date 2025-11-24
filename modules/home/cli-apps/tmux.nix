@@ -88,6 +88,23 @@ in
         # Reload config
         bind r source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded!"
 
+        # F12 toggle for nested tmux sessions
+        bind -T root F12 \
+          set prefix None \;\
+          set key-table off \;\
+          set status-style "fg=#565f89,bg=#16161e" \;\
+          set window-status-current-style "fg=#565f89,bg=#16161e" \;\
+          set status-left "#[fg=#f7768e,bg=#16161e,bold] OFF " \;\
+          refresh-client -S
+
+        bind -T off F12 \
+          set -u prefix \;\
+          set -u key-table \;\
+          set -u status-style \;\
+          set -u window-status-current-style \;\
+          set -u status-left \;\
+          refresh-client -S
+
         set-option -g default-command "${pkgs.fish}/bin/fish"
       '';
     };
