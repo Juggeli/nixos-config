@@ -40,8 +40,10 @@ in
       home.file.".claude/settings.json".text = builtins.toJSON {
         enabledPlugins = {
           "superpowers@superpowers-marketplace" = true;
+          # "claude-opus-4-5-migration@claude-code-plugins"= true;
+          "frontend-design@claude-code-plugins" = true;
         };
-        alwaysThinkingEnabled = true;
+        alwaysThinkingEnabled = false;
         cleanupPeriodDays = 99999;
         includeCoAuthoredBy = false;
         gitAttribution = false;
