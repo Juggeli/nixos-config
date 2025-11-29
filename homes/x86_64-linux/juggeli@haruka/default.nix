@@ -18,6 +18,7 @@ with lib.plusultra;
       yazi = enabled;
       ai-agents = enabled;
       opencode = enabled;
+      claude-code = enabled;
       bat = enabled;
       tmux = enabled;
     };

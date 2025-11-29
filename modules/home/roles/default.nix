@@ -42,18 +42,7 @@ in
         bat = enabled;
         ai-agents = enabled;
         opencode = enabled;
-        claude-code = {
-          enable = true;
-          glm = {
-            enable = true;
-          };
-          minimax = {
-            enable = true;
-          };
-          chutes = {
-            enable = true;
-          };
-        };
+        claude-code = enabled;
         tmux = enabled;
       };
       tools = {

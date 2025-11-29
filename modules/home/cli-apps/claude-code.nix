@@ -13,13 +13,7 @@ in
   options.plusultra.cli-apps.claude-code = with types; {
     enable = mkBoolOpt false "Whether or not to enable claude-code.";
     glm = {
-      enable = mkBoolOpt false "Whether or not to enable glm wrapper for z.ai.";
-    };
-    minimax = {
-      enable = mkBoolOpt false "Whether or not to enable minimax wrapper for minimax.";
-    };
-    chutes = {
-      enable = mkBoolOpt false "Whether or not to enable ccc wrapper for chutes.ai.";
+      enable = mkBoolOpt true "Whether or not to enable glm wrapper for z.ai.";
     };
   };
 
@@ -84,41 +78,20 @@ in
     })
 
     # Enable agenix for any AI provider that needs secrets
-    (mkIf (cfg.enable && (cfg.glm.enable || cfg.minimax.enable || cfg.chutes.enable)) {
+    (mkIf (cfg.enable && (cfg.glm.enable)) {
       plusultra.user.agenix = {
         enable = true;
-        enabledSecrets =
-          (optional cfg.glm.enable "zai.age")
-          ++ (optional cfg.minimax.enable "minimax.age")
-          ++ (optional cfg.chutes.enable "chutes.age");
+        enabledSecrets = optional cfg.glm.enable "zai.age";
         enableAll = false;
       };
     })
 
     # Create wrapper scripts for each provider
     (mkIf cfg.glm.enable {
-      home.packages = with pkgs; [
+      home.packages = [
         (pkgs.writeShellScriptBin "ccg" ''
           ZAI_TOKEN=$(cat ${config.age.secrets.zai.path})
           exec ${pkgs.claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_AUTH_TOKEN": "'"$ZAI_TOKEN"'", "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic"}}' "$@"
-        '')
-      ];
-    })
-
-    (mkIf cfg.minimax.enable {
-      home.packages = with pkgs; [
-        (pkgs.writeShellScriptBin "ccm" ''
-          MINIMAX_TOKEN=$(cat ${config.age.secrets.minimax.path})
-          exec ${pkgs.claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_BASE_URL": "https://api.minimax.io/anthropic", "ANTHROPIC_AUTH_TOKEN": "'"$MINIMAX_TOKEN"'", "API_TIMEOUT_MS": "3000000", "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1", "ANTHROPIC_MODEL": "MiniMax-M2", "ANTHROPIC_SMALL_FAST_MODEL": "MiniMax-M2", "ANTHROPIC_DEFAULT_SONNET_MODEL": "MiniMax-M2", "ANTHROPIC_DEFAULT_OPUS_MODEL": "MiniMax-M2", "ANTHROPIC_DEFAULT_HAIKU_MODEL": "MiniMax-M2"}}' "$@"
-        '')
-      ];
-    })
-
-    (mkIf cfg.chutes.enable {
-      home.packages = with pkgs; [
-        (pkgs.writeShellScriptBin "ccc" ''
-          CHUTES_TOKEN=$(cat ${config.age.secrets.chutes.path})
-          exec ${pkgs.claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_AUTH_TOKEN": "'"$CHUTES_TOKEN"'", "ANTHROPIC_BASE_URL": "https://claude.chutes.ai", "API_TIMEOUT_MS": "6000000", "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"}}' "$@"
         '')
       ];
     })

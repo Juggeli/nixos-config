@@ -10,6 +10,4 @@ let
 in
 {
   "zai.age".publicKeys = keys;
-  "minimax.age".publicKeys = keys;
-  "chutes.age".publicKeys = keys;
 }
