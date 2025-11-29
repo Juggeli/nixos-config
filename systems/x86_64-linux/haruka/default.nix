@@ -312,6 +312,11 @@ in
         };
         schedule = "minutely";
       };
+      markdown-viewer = {
+        enable = true;
+        dataDir = "/mnt/appdata/second-brain";
+        passwordFile = config.age.secrets.markdown-viewer-password.path;
+      };
       nfs = disabled;
 
       samba = {
