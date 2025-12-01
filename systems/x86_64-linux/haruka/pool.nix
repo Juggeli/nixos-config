@@ -7,7 +7,6 @@
     btrfs-progs
     cryptsetup
     hdparm
-    rclone
   ];
 
   powerManagement.powerUpCommands = with pkgs; ''
@@ -17,27 +16,4 @@
       fi
     done
   '';
-
-  plusultra.services.remote-downloader = {
-    enable = true;
-    mappings = [
-      {
-        src = "ultra:downloads/done/private/";
-        dest = "/tank/media/downloads/random/";
-      }
-      {
-        src = "ultra:downloads/done/public/";
-        dest = "/tank/media/downloads/random/";
-      }
-    ];
-    webhook = {
-      enable = true;
-      port = 8081;
-    };
-    timer = {
-      interval = "5m";
-    };
-  };
-
-  system.fsPackages = [ pkgs.rclone ];
 }

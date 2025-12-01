@@ -14,7 +14,6 @@
     ./printing.nix
     ./prometheus.nix
     ./qbittorrent-manager.nix
-    ./remote-downloader.nix
     ./samba.nix
     ./tailscale.nix
   ];
