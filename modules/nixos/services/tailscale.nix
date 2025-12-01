@@ -35,6 +35,9 @@ in
       authKeyFile = mkIf cfg.autoconnect.enable cfg.autoconnect.key;
     };
 
+    # TODO: Remove this when tailscale fixes their logging
+    systemd.services.tailscaled.serviceConfig.StandardOutput = "null";
+
     plusultra.filesystem.impermanence.directories = [
       "/var/lib/tailscale"
     ];
