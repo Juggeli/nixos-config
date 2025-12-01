@@ -40,6 +40,7 @@ in
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
       "podman-uptime-kuma.service"
+      "podman-prowlarr.service"
     ];
     after = [
       "zfs-mount.service"
@@ -51,6 +52,7 @@ in
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
       "podman-uptime-kuma.service"
+      "podman-prowlarr.service"
     ];
   };
 
@@ -102,7 +104,10 @@ in
     };
 
     containers = {
-      prowlarr = disabled;
+      prowlarr = {
+        enable = true;
+        homepage.widget.enable = true;
+      };
       recyclarr = enabled;
       plex = {
         enable = true;
@@ -243,19 +248,7 @@ in
               };
             };
           }
-          {
-            "Prowlarr" = {
-              description = "Indexer manager";
-              href = "https://sweatpants.aiko.usbx.me/prowlarr";
-              siteMonitor = "https://sweatpants.aiko.usbx.me/prowlarr";
-              icon = "prowlarr.png";
-              widget = {
-                type = "prowlarr";
-                url = "https://sweatpants.aiko.usbx.me/prowlarr";
-                key = "{{HOMEPAGE_VAR_ULTRA_PROWLARR_API_KEY}}";
-              };
-            };
-          }
+
           {
             "qBittorrent" = {
               description = "BitTorrent client";

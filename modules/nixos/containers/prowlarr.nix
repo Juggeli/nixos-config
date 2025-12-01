@@ -6,7 +6,7 @@ let
 in
 {
   options.plusultra.containers.prowlarr = with types; {
-    enable = mkBoolOpt false "Whether or not to prowlarr service.";
+    enable = mkBoolOpt false "Whether or not to enable prowlarr service.";
     homepage = {
       name = mkOption {
         type = str;
@@ -33,21 +33,41 @@ in
         default = 9696;
         description = "Port for homepage link";
       };
+      widget = {
+        enable = mkOption {
+          type = bool;
+          default = false;
+          description = "Enable API widget for homepage";
+        };
+        fields = mkOption {
+          type = listOf str;
+          default = [
+            "numberOfGrabs"
+            "numberOfQueries"
+            "numberOfFailGrabs"
+            "numberOfFailQueries"
+          ];
+          description = "Widget fields to display";
+        };
+      };
     };
   };
 
   config = mkIf cfg.enable {
     virtualisation.oci-containers.containers.prowlarr = {
       image = "ghcr.io/hotio/prowlarr";
-      autoStart = true;
+      autoStart = false;
       ports = [ "9696:9696" ];
       labels = {
         "io.containers.autoupdate" = "registry";
       };
+      environment = {
+        PUID = "1000";
+        PGID = "983";
+      };
       volumes = [
-        "/mnt/appdata/prowlarr/:/config"
+        "/mnt/appdata/prowlarr:/config"
       ];
     };
-
   };
 }
