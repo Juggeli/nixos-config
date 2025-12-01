@@ -40,7 +40,7 @@ class QBittorrentManager:
                 password=self.config.password,
             )
             self.client.auth_log_in()
-            self.logger.info(f"Connected to qBittorrent at {self.config.host}:{self.config.port}")
+            self.logger.debug(f"Connected to qBittorrent at {self.config.host}:{self.config.port}")
             return True
         except qbittorrentapi.LoginFailed as e:
             self.logger.error(f"Login failed: {e}")
@@ -53,7 +53,7 @@ class QBittorrentManager:
         if self.client:
             try:
                 self.client.auth_log_out()
-                self.logger.info("Disconnected from qBittorrent")
+                self.logger.debug("Disconnected from qBittorrent")
             except Exception as e:
                 self.logger.warning(f"Error during logout: {e}")
 
@@ -76,6 +76,11 @@ class QBittorrentManager:
             raise RuntimeError("Client not connected")
         
         uncategorized_torrents = self.client.torrents_info(category="")
+        
+        if not uncategorized_torrents:
+            self.logger.debug("No uncategorized torrents found")
+            return
+        
         self.logger.info(f"Found {len(uncategorized_torrents)} uncategorized torrents")
         
         for torrent in uncategorized_torrents:
@@ -94,9 +99,9 @@ class QBittorrentManager:
             raise RuntimeError("Client not connected")
         
         public_torrents = self.client.torrents_info(category="Public")
-        self.logger.info(f"Setting share limits for {len(public_torrents)} public torrents")
         
         if public_torrents and not self.config.dry_run:
+            self.logger.debug(f"Setting share limits for {len(public_torrents)} public torrents")
             self.client.torrents_set_share_limits(
                 ratio_limit=self.config.public_ratio_limit,
                 inactive_seeding_time_limit=-1,
@@ -111,9 +116,9 @@ class QBittorrentManager:
         downloading_public = self.client.torrents_info(
             category="Public", status_filter="downloading"
         )
-        self.logger.info(f"Setting upload limits for {len(downloading_public)} downloading public torrents")
         
         if downloading_public and not self.config.dry_run:
+            self.logger.debug(f"Setting upload limits for {len(downloading_public)} downloading public torrents")
             self.client.torrents_set_upload_limit(
                 limit=self.config.upload_limit_downloading,
                 torrent_hashes=[t.hash for t in downloading_public],
@@ -122,9 +127,9 @@ class QBittorrentManager:
         seeding_public = self.client.torrents_info(
             category="Public", status_filter="seeding"
         )
-        self.logger.info(f"Removing upload limits for {len(seeding_public)} seeding public torrents")
         
         if seeding_public and not self.config.dry_run:
+            self.logger.debug(f"Removing upload limits for {len(seeding_public)} seeding public torrents")
             self.client.torrents_set_upload_limit(
                 limit=-1, torrent_hashes=[t.hash for t in seeding_public]
             )
@@ -137,15 +142,12 @@ class QBittorrentManager:
         total_removed = 0
         
         for category in categories_to_clean:
-            # Get all torrents in category, then filter by completion states
             all_torrents = self.client.torrents_info(category=category)
             
-            # Filter for torrents that should be removed (only stopped torrents)
             completed_states = ["stoppedUP"]
             completed_torrents = [t for t in all_torrents if t.state in completed_states and t.progress == 1.0]
             
             if completed_torrents:
-                # For Public category, keep files; for arr categories, delete files
                 delete_files = category != "Public"
                 files_action = "files deleted" if delete_files else "files kept"
                 
@@ -154,40 +156,31 @@ class QBittorrentManager:
                     f"{len(completed_torrents)} completed torrents from category '{category}' ({files_action})"
                 )
                 
-                # Log each torrent that will be removed
                 for t in completed_torrents:
-                    self.logger.info(
-                        f"  - {t.name[:80]}..."
-                    )
+                    self.logger.info(f"  - {t.name[:80]}...")
                 
                 if not self.config.dry_run:
-                    # For Public category, keep files; for arr categories, delete files
                     delete_files = category != "Public"
                     self.client.torrents_delete(
                         delete_files=delete_files,
                         torrent_hashes=[t.hash for t in completed_torrents],
                     )
-                    
-                    action = "files deleted" if delete_files else "files kept"
-                    self.logger.info(f"Removed {len(completed_torrents)} torrents from '{category}' ({action})")
                 
                 total_removed += len(completed_torrents)
-            else:
-                self.logger.info(f"No completed torrents found in category '{category}'")
         
         if total_removed > 0:
-            self.logger.info(f"Total completed torrents {'would be' if self.config.dry_run else ''} removed: {total_removed}")
+            self.logger.info(f"Total completed torrents removed: {total_removed}")
         else:
-            self.logger.info("No completed torrents found for cleanup")
+            self.logger.debug("No completed torrents found for cleanup")
 
     def prioritize_private_torrents(self) -> None:
         if not self.client:
             raise RuntimeError("Client not connected")
         
         private_torrents = self.client.torrents_info(category="Private")
-        self.logger.info(f"Setting high priority for {len(private_torrents)} private torrents")
         
         if private_torrents and not self.config.dry_run:
+            self.logger.debug(f"Setting high priority for {len(private_torrents)} private torrents")
             self.client.torrents_top_priority([t.hash for t in private_torrents])
 
     def run_management_cycle(self) -> None:
@@ -195,22 +188,17 @@ class QBittorrentManager:
             sys.exit(1)
         
         try:
-            total_torrents = self.client.torrents_count()
-            self.logger.info(f"Managing {total_torrents} total torrents")
-            
             self.ensure_categories()
             self.categorize_torrents()
             
             if self.config.categorize_only:
                 self.manage_share_limits()
                 self.prioritize_private_torrents()
-                self.logger.info("Categorization and setup completed successfully")
             else:
                 self.manage_share_limits()
                 self.manage_upload_limits()
                 self.cleanup_completed_torrents()
                 self.prioritize_private_torrents()
-                self.logger.info("Management cycle completed successfully")
             
         except Exception as e:
             self.logger.error(f"Error during management cycle: {e}")
