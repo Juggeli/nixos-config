@@ -37,7 +37,7 @@ in
           # "claude-opus-4-5-migration@claude-code-plugins"= true;
           "frontend-design@claude-code-plugins" = true;
         };
-        alwaysThinkingEnabled = false;
+        alwaysThinkingEnabled = true;
         cleanupPeriodDays = 99999;
         includeCoAuthoredBy = false;
         gitAttribution = false;
