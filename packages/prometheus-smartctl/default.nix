@@ -23,7 +23,7 @@ stdenv.mkDerivation {
   buildInputs = [
     (pkgs.python3.withPackages (
       p: with p; [
-        prometheus_client
+        prometheus-client
       ]
     ))
   ];

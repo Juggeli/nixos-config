@@ -30,8 +30,8 @@ in
           noto-fonts
           noto-fonts-cjk-sans
           noto-fonts-cjk-serif
-          noto-fonts-emoji
-          ubuntu_font_family
+          noto-fonts-color-emoji
+          ubuntu-classic
           nerd-fonts.jetbrains-mono
           nerd-fonts.symbols-only
           plusultra.comic-code

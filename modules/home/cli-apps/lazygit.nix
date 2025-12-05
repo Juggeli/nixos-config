@@ -20,7 +20,11 @@ in
         gui = {
           nerdFontsVersion = "3";
         };
-        git.paging.pager = "delta --dark --paging=never";
+        git.pagers = [
+          {
+            pager = "delta --dark --paging=never";
+          }
+        ];
       };
     };
     catppuccin.lazygit.enable = true;

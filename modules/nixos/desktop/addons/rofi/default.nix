@@ -17,7 +17,7 @@ in
   config = mkIf cfg.enable {
     plusultra.home.extraOptions.programs.rofi = {
       enable = true;
-      package = pkgs.rofi-wayland;
+      package = pkgs.rofi;
       theme = ./catppuccin-mocha.rasi;
       terminal = "kitty";
       plugins = with pkgs; [

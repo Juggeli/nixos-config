@@ -21,7 +21,7 @@ in
       grc
       eza
       fzf
-      du-dust
+      dust
       gum
       (mkIf pkgs.stdenv.isLinux trashy)
       dua

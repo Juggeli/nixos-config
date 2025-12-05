@@ -17,7 +17,7 @@ in
         let
           host = hosts.${name};
           user = host.config.plusultra.user.name or null;
-          inherit (host.pkgs) system;
+          system = host.pkgs.stdenv.hostPlatform.system;
         in
         result
         // {

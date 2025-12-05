@@ -17,16 +17,12 @@ in
   config = mkIf cfg.enable {
     programs.git = {
       enable = true;
-      delta = {
-        enable = true;
-        options = {
-          navigate = true;
-          dark = true;
-        };
-      };
-      inherit (cfg) userName userEmail;
       lfs = enabled;
-      extraConfig = {
+      settings = {
+        user = {
+          name = cfg.userName;
+          email = cfg.userEmail;
+        };
         init = {
           defaultBranch = "main";
         };
@@ -47,6 +43,14 @@ in
         };
       };
       ignores = [ ".nvim.lua" ];
+    };
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        navigate = true;
+        dark = true;
+      };
     };
     catppuccin.delta.enable = true;
   };
