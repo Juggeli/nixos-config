@@ -42,6 +42,9 @@ let
     "md.obsidian")
       switch_to_finnish
       ;;
+    "com.microsoft.teams2")
+      switch_to_finnish
+      ;;
     *)
       # Default layout if the app is not recognized
       switch_to_us
