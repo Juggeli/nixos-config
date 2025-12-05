@@ -179,6 +179,7 @@ in
       };
       stash = disabled;
       lanraragi = enabled;
+      sillytavern = enabled;
       uptime-kuma = {
         enable = true;
         homepage.widget = {

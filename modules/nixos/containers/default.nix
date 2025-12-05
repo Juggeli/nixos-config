@@ -12,6 +12,7 @@
     ./radarr.nix
     ./radarr-anime.nix
     ./recyclarr.nix
+    ./sillytavern.nix
     ./sonarr.nix
     ./sonarr-anime.nix
     ./trilium.nix
