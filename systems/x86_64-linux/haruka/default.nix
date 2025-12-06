@@ -336,6 +336,10 @@ in
     ];
   };
 
+  # Media group used by container services (sonarr, radarr, etc.) for shared file access
+  users.groups.media.gid = 983;
+  plusultra.user.extraGroups = [ "media" ];
+
   boot = {
     kernelParams = [
       # try to fix zfs oom issue
