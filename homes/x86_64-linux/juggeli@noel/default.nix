@@ -28,7 +28,6 @@ with lib.plusultra;
       ffmpeg = enabled;
       imv = enabled;
       sshfs = enabled;
-      speedtestpp = enabled;
       tmux = enabled;
       ab-av1 = enabled;
       nushell = enabled;

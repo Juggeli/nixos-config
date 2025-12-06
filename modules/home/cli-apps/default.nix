@@ -16,7 +16,6 @@
     ./nushell.nix
     ./opencode.nix
     ./rclone.nix
-    ./speedtestpp.nix
     ./sshfs.nix
     ./syncthing.nix
     ./tmux.nix
