@@ -47,7 +47,7 @@ in
               hooks = [
                 {
                   type = "command";
-                  command = "~/.claude/hooks/user_prompt_context.py";
+                  command = "~/.claude/hooks/user_prompt_context.sh";
                   timeout = 5;
                 }
               ];
@@ -55,23 +55,12 @@ in
           ];
         };
       };
-      home.file.".claude/hooks/user_prompt_context.py" = {
+      home.file.".claude/hooks/user_prompt_context.sh" = {
         text = ''
-          #!/usr/bin/env python3
-          import json
-          import sys
-
-          context = "Unless otherwise specified: DRY, YAGNI, KISS, Pragmatic. Ask questions for clarifications. When doing a plan or research-like request, present your findings and halt for confirmation. Speak the facts, don't sugar coat statements. Your opinion matters. All your code will be reviewed by another AI agent. Shortcuts, simplifications, placeholders, fallbacks are not allowed. It’s wasting time doing those because another AI agent will review and you’ll have to redo. End all responses with an emoji of an animal"
-
-          response = {
-              "hookSpecificOutput": {
-                  "hookEventName": "UserPromptSubmit",
-                  "additionalContext": context,
-              }
-          }
-
-          print(json.dumps(response))
-          sys.exit(0)
+          #!/usr/bin/env bash
+          cat <<'EOF'
+          {"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"Unless otherwise specified: DRY, YAGNI, KISS, Pragmatic. Ask questions for clarifications. When doing a plan or research-like request, present your findings and halt for confirmation. Speak the facts, don't sugar coat statements. Your opinion matters. All your code will be reviewed by another AI agent. Shortcuts, simplifications, placeholders, fallbacks are not allowed. It's wasting time doing those because another AI agent will review and you'll have to redo. End all responses with an emoji of an animal"}}
+          EOF
         '';
         executable = true;
       };
