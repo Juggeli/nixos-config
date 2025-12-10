@@ -23,4 +23,5 @@ in
   "sonarr-anime-api.age".publicKeys = keys;
   "qbittorrent-credentials.age".publicKeys = keys;
   "markdown-viewer-password.age".publicKeys = keys;
+  "openrouter-api.age".publicKeys = keys;
 }

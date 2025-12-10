@@ -7,6 +7,7 @@
     ./cockpit.nix
     ./grafana.nix
     ./homepage.nix
+    ./log-analyzer.nix
     ./markdown-viewer.nix
     ./kdeconnect.nix
     ./nfs.nix

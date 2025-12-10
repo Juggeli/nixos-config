@@ -293,6 +293,7 @@ in
         ];
       };
       prometheus = disabled;
+      log-analyzer = enabled;
       qbittorrent-manager = {
         enable = true;
         connection = {
