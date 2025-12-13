@@ -17,7 +17,7 @@ with lib.plusultra;
       via = enabled;
       pdf = enabled;
       crypto = enabled;
-      # hydrus = enabled; # Disabled: aggdraw build fails with Python 3.13 + Pillow 12.0.0, use flatpak instead
+      hydrus = enabled;
       obsidian = enabled;
       anytype = enabled;
       mpv.brightnessControl = true;
