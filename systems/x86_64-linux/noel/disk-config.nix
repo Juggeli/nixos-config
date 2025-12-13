@@ -1,6 +1,7 @@
 let
   rawdisk1 = "/dev/nvme0n1";
-  diskSizeGB = 931.5;
+  rawdisk2 = "/dev/nvme1n1";
+  diskSizeGB = 476.9;
   reservationPercent = 0.2;
 in
 {
@@ -20,7 +21,6 @@ in
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot";
               };
             };
             zfs = {
@@ -34,10 +34,38 @@ in
           };
         };
       };
+      ${rawdisk2} = {
+        device = "${rawdisk2}";
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            ESP = {
+              label = "EFI2";
+              name = "ESP";
+              size = "1024M";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+              };
+            };
+            zfs = {
+              label = "zfs2";
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "rpool";
+              };
+            };
+          };
+        };
+      };
     };
     zpool = {
       rpool = {
         type = "zpool";
+        mode = "mirror";
         options = {
           ashift = "12";
           autotrim = "on";

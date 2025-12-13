@@ -30,7 +30,6 @@ in
   };
 
   boot = {
-
     initrd.availableKernelModules = [
       "xhci_pci"
       "ahci"
@@ -44,6 +43,27 @@ in
       "mitigations=off"
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     ];
+
+    loader.grub.mirroredBoots = [
+      {
+        devices = [ "nodev" ];
+        path = "/boot";
+      }
+      {
+        devices = [ "nodev" ];
+        path = "/boot-fallback";
+      }
+    ];
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/7B72-0BC4";
+    fsType = "vfat";
+  };
+
+  fileSystems."/boot-fallback" = {
+    device = "/dev/disk/by-uuid/E74E-4B34";
+    fsType = "vfat";
   };
 
   networking = {
