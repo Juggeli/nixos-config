@@ -112,6 +112,7 @@ with lib.plusultra;
   '';
 
   hardware.i2c.enable = true;
+  plusultra.user.extraGroups = [ "i2c" ];
   environment.systemPackages = with pkgs; [ ddcutil ];
 
   # This value determines the NixOS release from which the default
