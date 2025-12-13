@@ -6,6 +6,7 @@
     ./grist.nix
     ./jellyfin.nix
     ./lanraragi.nix
+    ./maintainerr.nix
     ./plex.nix
     ./prowlarr.nix
     ./qbittorrent.nix

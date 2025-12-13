@@ -39,6 +39,7 @@ in
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
+      "podman-maintainerr.service"
       "podman-uptime-kuma.service"
       "podman-prowlarr.service"
     ];
@@ -51,6 +52,7 @@ in
       "podman-sonarr.service"
       "podman-sonarr-anime.service"
       "podman-bazarr.service"
+      "podman-maintainerr.service"
       "podman-uptime-kuma.service"
       "podman-prowlarr.service"
     ];
@@ -179,6 +181,7 @@ in
       };
       stash = disabled;
       lanraragi = enabled;
+      maintainerr = enabled;
       sillytavern = enabled;
       uptime-kuma = {
         enable = true;
