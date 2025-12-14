@@ -1,5 +1,5 @@
 {
-  description = "Sorter - Interactive Media File Organizer";
+  description = "Sorter - Interactive TUI Media File Organizer";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -30,20 +30,7 @@
             golint
             delve
 
-            pkg-config
-            gcc
-
-            ffmpeg
             mpv
-
-            xorg.libX11
-            xorg.libXcursor
-            xorg.libXrandr
-            xorg.libXinerama
-            xorg.libXi
-            xorg.libXxf86vm
-            libGL
-            libGLU
           ];
 
           shellHook = ''
@@ -52,8 +39,7 @@
             echo ""
             echo "Available commands:"
             echo "  go build -o sorter    # Build the application"
-            echo "  go run .              # Run the application (TUI mode)"
-            echo "  go run . --gui        # Run the application (GUI mode)"
+            echo "  go run .              # Run the application"
             echo "  go mod tidy           # Update dependencies"
             echo "  ./sorter --help       # Show application help"
           '';
@@ -63,28 +49,10 @@
           pname = "sorter";
           version = "1.0.0";
           src = ./.;
-          vendorHash = "sha256-kVrz8FYO/2lkW1oVG8bmA2J+8aHqx/YFpIpi25QTw2I=";
-
-          nativeBuildInputs = with pkgs; [
-            pkg-config
-            gcc
-          ];
-
-          buildInputs = with pkgs; [
-            ffmpeg
-            mpv
-            xorg.libX11
-            xorg.libXcursor
-            xorg.libXrandr
-            xorg.libXinerama
-            xorg.libXi
-            xorg.libXxf86vm
-            libGL
-            libGLU
-          ];
+          vendorHash = "sha256-bISowpqJ0zMaX4bmzPu0d7XuZqjdoCe5zPnFKiCGjN4=";
 
           meta = with pkgs.lib; {
-            description = "Interactive TUI/GUI media file organizer";
+            description = "Interactive TUI media file organizer";
             homepage = "https://github.com/plusultra/sorter";
             license = licenses.mit;
             maintainers = [ maintainers.plusultra ];

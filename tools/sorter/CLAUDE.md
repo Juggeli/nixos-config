@@ -19,10 +19,6 @@ nix-shell -p go --run "go build -o sorter"
 # Run the application
 ./sorter
 
-# Run in dry-run mode (preview operations without executing)
-./sorter --dry-run
-./sorter -n
-
 # Test configuration loading
 ./sorter --test-config
 
@@ -85,11 +81,10 @@ go run .  # Run without building binary
 ## Development Notes
 
 ### No Test Suite
-This project currently has no test files. Any testing is done manually through the `--test-config` and `--dry-run` flags.
+This project currently has no test files. Any testing is done manually through the `--test-config` flag.
 
 ### File Operations
 - All file operations are logged to `~/.config/sorter/operations.log`
-- Dry-run mode provides detailed operation previews without modifications
 - Automatic cleanup of empty directories and junk files
 - Pattern-based junk video detection with dynamic pattern addition
 

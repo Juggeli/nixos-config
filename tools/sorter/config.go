@@ -19,17 +19,6 @@ type CategoryConfig struct {
 	Hotkey string `yaml:"hotkey"`
 }
 
-type GUIConfig struct {
-	WindowWidth      int    `yaml:"window_width"`
-	WindowHeight     int    `yaml:"window_height"`
-	ButtonHeight     int    `yaml:"button_height"`
-	FontSize         int    `yaml:"font_size"`
-	ThumbnailCache   string `yaml:"thumbnail_cache"`
-	AutoPlay         bool   `yaml:"auto_play"`
-	PlayerPath       string `yaml:"player_path"`
-	PlayerFullscreen bool   `yaml:"player_fullscreen"`
-}
-
 type Config struct {
 	BaseDir           string                    `yaml:"base_dir"`
 	Categories        map[string]CategoryConfig `yaml:"categories"`
@@ -37,7 +26,6 @@ type Config struct {
 	JunkExts          []string                  `yaml:"junk_extensions"`
 	JunkVideoPatterns []string                  `yaml:"junk_video_patterns"`
 	LogFile           string                    `yaml:"log_file"`
-	GUI               GUIConfig                 `yaml:"gui"`
 	ConfigDir         string                    `yaml:"-"`
 }
 
@@ -130,19 +118,6 @@ func (c *Config) ExpandPaths() error {
 		c.Categories[key] = category
 	}
 
-	if c.GUI.ThumbnailCache != "" {
-		expandedCache, err := homedir.Expand(c.GUI.ThumbnailCache)
-		if err != nil {
-			return fmt.Errorf("failed to expand thumbnail cache path: %w", err)
-		}
-		c.GUI.ThumbnailCache = expandedCache
-	}
-
-	// Validate player path for security
-	if err := validatePlayerPath(c.GUI.PlayerPath); err != nil {
-		return fmt.Errorf("invalid player path: %w", err)
-	}
-
 	return nil
 }
 
@@ -180,12 +155,10 @@ func validatePath(path string) error {
 		return fmt.Errorf("path contains invalid elements: %s", path)
 	}
 
-	// Check for directory traversal attempts in the original path
 	if strings.Contains(path, "..") {
 		return fmt.Errorf("path contains directory traversal elements: %s", path)
 	}
 
-	// Additional security: ensure path doesn't contain dangerous characters
 	if strings.ContainsAny(path, "\"'`$&|;<>!\n\r\t") {
 		return fmt.Errorf("path contains dangerous characters: %s", path)
 	}
@@ -202,38 +175,12 @@ func expandPath(path string) (string, error) {
 }
 
 func sanitizePath(path string) string {
-	// Clean the path first
 	cleaned := filepath.Clean(path)
 
-	// Only remove characters that are truly dangerous for shell injection
-	// but preserve valid path characters like spaces, hyphens, underscores, etc.
 	dangerous := []string{"\"", "'", "`", "$", "&", "|", ";", "<", ">", "!", "\n", "\r", "\t"}
 	for _, char := range dangerous {
 		cleaned = strings.ReplaceAll(cleaned, char, "")
 	}
 
 	return cleaned
-}
-
-func validatePlayerPath(playerPath string) error {
-	// Check if the player path is a simple command name or absolute path
-	if playerPath == "" {
-		return fmt.Errorf("player path cannot be empty")
-	}
-
-	// Allow only simple command names or absolute paths
-	if filepath.IsAbs(playerPath) {
-		if !strings.Contains(playerPath, " ") {
-			return nil
-		}
-		// For absolute paths with spaces, quote them properly
-		return nil
-	}
-
-	// For simple command names, ensure they don't contain dangerous characters
-	if strings.ContainsAny(playerPath, " \"'`$&|;<>!\n\r\t") {
-		return fmt.Errorf("player path contains dangerous characters")
-	}
-
-	return nil
 }

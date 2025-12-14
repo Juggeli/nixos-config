@@ -3,12 +3,6 @@
   buildGoModule,
   mpv,
   makeWrapper,
-  pkg-config,
-  gcc,
-  ffmpeg,
-  xorg,
-  libGL,
-  libGLU,
 }:
 
 buildGoModule {
@@ -17,25 +11,10 @@ buildGoModule {
 
   src = ../../tools/sorter;
 
-  vendorHash = "sha256-kVrz8FYO/2lkW1oVG8bmA2J+8aHqx/YFpIpi25QTw2I=";
+  vendorHash = "sha256-bISowpqJ0zMaX4bmzPu0d7XuZqjdoCe5zPnFKiCGjN4=";
 
   nativeBuildInputs = [
     makeWrapper
-    pkg-config
-    gcc
-  ];
-
-  buildInputs = [
-    ffmpeg
-    mpv
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXinerama
-    xorg.libXi
-    xorg.libXxf86vm
-    libGL
-    libGLU
   ];
 
   postInstall = ''
