@@ -21,6 +21,7 @@ with lib.plusultra;
       claude-code = enabled;
       bat = enabled;
       tmux = enabled;
+      yuki-memory = enabled;
     };
 
     tools = {

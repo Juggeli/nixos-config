@@ -20,5 +20,6 @@
     ./syncthing.nix
     ./tmux.nix
     ./yazi.nix
+    ./yuki-memory.nix
   ];
 }
