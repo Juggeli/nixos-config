@@ -20,5 +20,6 @@
     ./bazarr.nix
     ./stash.nix
     ./uptime-kuma.nix
+    ./watchstate.nix
   ];
 }

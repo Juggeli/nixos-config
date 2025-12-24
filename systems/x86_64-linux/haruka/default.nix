@@ -42,6 +42,7 @@ in
       "podman-maintainerr.service"
       "podman-uptime-kuma.service"
       "podman-prowlarr.service"
+      "podman-watchstate.service"
     ];
     after = [
       "zfs-mount.service"
@@ -55,6 +56,7 @@ in
       "podman-maintainerr.service"
       "podman-uptime-kuma.service"
       "podman-prowlarr.service"
+      "podman-watchstate.service"
     ];
   };
 
@@ -183,6 +185,7 @@ in
       lanraragi = enabled;
       maintainerr = enabled;
       sillytavern = enabled;
+      watchstate = enabled;
       uptime-kuma = {
         enable = true;
         homepage.widget = {
