@@ -10,4 +10,5 @@ let
 in
 {
   "zai.age".publicKeys = keys;
+  "brave-api-key.age".publicKeys = keys;
 }
