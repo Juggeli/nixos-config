@@ -9,6 +9,7 @@ with lib.plusultra;
 
     cli-apps = {
       fish = enabled;
+      nh = enabled;
       neovim = enabled;
       btop = enabled;
       rclone = enabled;

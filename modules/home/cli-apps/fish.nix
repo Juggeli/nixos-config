@@ -49,10 +49,6 @@ in
       shellAbbrs = {
         eza = "eza --group-directories-first --git";
         tree = "eza --tree";
-        nixsw =
-          lib.optionalString pkgs.stdenv.isLinux "${rebuildCommand} build --flake .# && "
-          + "${sudoCommand} ${rebuildCommand} switch --flake .#"
-          + lib.optionalString pkgs.stdenv.isLinux " --fast";
         scs = "doas systemctl start";
         scr = "doas systemctl restart";
         sce = "doas systemctl stop";

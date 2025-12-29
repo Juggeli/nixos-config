@@ -34,6 +34,7 @@ in
       };
       cli-apps = {
         fish = enabled;
+        nh = enabled;
         neovim = enabled;
         btop = enabled;
         lazygit = enabled;
