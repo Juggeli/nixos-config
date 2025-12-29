@@ -50,13 +50,8 @@ in
         eza = "eza --group-directories-first --git";
         tree = "eza --tree";
         nixsw =
-          "${rebuildCommand} build --flake .# && ${sudoCommand} ${rebuildCommand} switch --flake .#"
-          + lib.optionalString pkgs.stdenv.isLinux " --fast";
-        nixup =
-          "${rebuildCommand} build --flake .# --recreate-lock-file && ${sudoCommand} ${rebuildCommand} switch --flake .#"
-          + lib.optionalString pkgs.stdenv.isLinux " --fast";
-        nixed =
-          "nvim && ${rebuildCommand} build --flake .# && ${sudoCommand} ${rebuildCommand} switch --flake .#"
+          lib.optionalString pkgs.stdenv.isLinux "${rebuildCommand} build --flake .# && "
+          + "${sudoCommand} ${rebuildCommand} switch --flake .#"
           + lib.optionalString pkgs.stdenv.isLinux " --fast";
         scs = "doas systemctl start";
         scr = "doas systemctl restart";
