@@ -5,6 +5,7 @@
     ./changedetection.nix
     ./grist.nix
     ./jellyfin.nix
+    ./memos.nix
     ./lanraragi.nix
     ./maintainerr.nix
     ./plex.nix

@@ -184,6 +184,7 @@ in
       stash = disabled;
       lanraragi = enabled;
       maintainerr = enabled;
+      memos = enabled;
       sillytavern = enabled;
       watchstate = enabled;
       uptime-kuma = {
