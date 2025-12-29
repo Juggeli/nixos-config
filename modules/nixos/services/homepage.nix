@@ -55,131 +55,10 @@ let
       };
     }) services;
 
-  # Generate misc service entries with widget support
-  generateMiscServiceEntries =
-    miscServices:
-    map (
-      serviceSet:
-      lib.mapAttrs (
-        name: service:
-        {
-          inherit (service)
-            description
-            href
-            siteMonitor
-            icon
-            ;
-        }
-        // lib.optionalAttrs (service.widget != null) {
-          widget = {
-            inherit (service.widget) type url;
-          }
-          // lib.optionalAttrs (service.widget.key != null) {
-            key = service.widget.key;
-          }
-          // lib.optionalAttrs (service.widget.username != null) {
-            username = service.widget.username;
-          }
-          // lib.optionalAttrs (service.widget.password != null) {
-            password = service.widget.password;
-          }
-          // lib.optionalAttrs (service.widget.fields != null) {
-            fields = service.widget.fields;
-          }
-          // lib.optionalAttrs (service.widget.enableBlocks != null) {
-            enableBlocks = service.widget.enableBlocks;
-          }
-          // lib.optionalAttrs (service.widget.enableNowPlaying != null) {
-            enableNowPlaying = service.widget.enableNowPlaying;
-          }
-          // lib.optionalAttrs (service.widget.slug != null) {
-            slug = service.widget.slug;
-          };
-        }
-      ) serviceSet
-    ) miscServices;
 in
 {
   options.plusultra.services.homepage = with types; {
     enable = mkBoolOpt false "Whether or not to enable homepage dashboard service.";
-
-    misc = mkOption {
-      default = [ ];
-      type = listOf (
-        attrsOf (submodule {
-          options = {
-            description = mkOption {
-              type = str;
-              description = "Service description";
-            };
-            href = mkOption {
-              type = str;
-              description = "Service URL";
-            };
-            siteMonitor = mkOption {
-              type = str;
-              description = "URL for site monitoring";
-            };
-            icon = mkOption {
-              type = str;
-              description = "Icon for the service";
-            };
-            widget = mkOption {
-              type = nullOr (submodule {
-                options = {
-                  type = mkOption {
-                    type = str;
-                    description = "Widget type";
-                  };
-                  url = mkOption {
-                    type = str;
-                    description = "Widget URL";
-                  };
-                  key = mkOption {
-                    type = nullOr str;
-                    default = null;
-                    description = "API key for the widget";
-                  };
-                  username = mkOption {
-                    type = nullOr str;
-                    default = null;
-                    description = "Username for authentication";
-                  };
-                  password = mkOption {
-                    type = nullOr str;
-                    default = null;
-                    description = "Password for authentication";
-                  };
-                  fields = mkOption {
-                    type = nullOr (listOf str);
-                    default = null;
-                    description = "Widget fields to display";
-                  };
-                  enableBlocks = mkOption {
-                    type = nullOr bool;
-                    default = null;
-                    description = "Enable blocks in widget";
-                  };
-                  enableNowPlaying = mkOption {
-                    type = nullOr bool;
-                    default = null;
-                    description = "Enable now playing in widget";
-                  };
-                  slug = mkOption {
-                    type = nullOr str;
-                    default = null;
-                    description = "Widget slug";
-                  };
-                };
-              });
-              default = null;
-              description = "Widget configuration for the service";
-            };
-          };
-        })
-      );
-      description = "Additional miscellaneous services to display";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -230,15 +109,7 @@ in
             header = true;
             style = "column";
           };
-        }) (lib.attrNames servicesByCategory))
-        ++ [
-          {
-            Ultra = {
-              header = true;
-              style = "column";
-            };
-          }
-        ];
+        }) (lib.attrNames servicesByCategory));
         headerStyle = "clean";
         statusStyle = "dot";
         hideVersion = true;
@@ -251,8 +122,6 @@ in
         (map (category: {
           "${category}" = generateServiceEntries category servicesByCategory.${category};
         }) (lib.attrNames servicesByCategory))
-        # Misc services
-        ++ lib.optional (cfg.misc != [ ]) { Ultra = generateMiscServiceEntries cfg.misc; }
         # System monitoring
         ++ [
           {
