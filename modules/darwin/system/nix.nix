@@ -47,15 +47,6 @@ in
           extra-nix-path = "nixpkgs=flake:nixpkgs";
           build-users-group = "nixbld";
         };
-        optimise.automatic = true;
-
-        gc = {
-          automatic = true;
-          interval = {
-            Day = 7;
-          };
-          options = "--delete-older-than 30d";
-        };
 
         # flake-utils-plus
         generateRegistryFromInputs = true;

@@ -34,7 +34,6 @@ in
         warn-dirty = false;
         log-lines = 50;
         sandbox = "relaxed";
-        auto-optimise-store = true;
         trusted-users = users;
         allowed-users = users;
         download-buffer-size = 134217728;
@@ -42,23 +41,12 @@ in
         trusted-public-keys = [ "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk=" ];
       };
 
-      gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 30d";
-      };
       package = pkgs.nixVersions.latest;
 
       # flake-utils-plus
       generateRegistryFromInputs = true;
       generateNixPathFromInputs = true;
       linkInputs = true;
-    };
-
-    systemd.services.nix-gc = {
-      preStart = ''
-        ${pkgs.nix}/bin/nix-env --delete-generations 30d --profile /home/${config.plusultra.user.name}/.local/state/nix/profiles/home-manager || true
-      '';
     };
   };
 }
