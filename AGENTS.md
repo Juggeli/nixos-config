@@ -15,7 +15,7 @@ nix build .#nixosConfigurations.haruka.config.system.build.toplevel
 nix build .#nixosConfigurations.noel.config.system.build.toplevel
 
 # Note: Home configurations currently have missing home.stateVersion and cannot be built
-# Available home configs: juggeli@Jukkas-MBP, juggeli@haruka, juggeli@kuki, juggeli@noel
+# Available home configs: juggeli@Jukkas-MBP, juggeli@haruka, juggeli@noel
 ```
 
 ### Deployment
