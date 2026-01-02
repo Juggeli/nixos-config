@@ -50,6 +50,7 @@ in
         git = enabled;
         direnv = enabled;
         devtools = enabled;
+        hdd-scraper = enabled;
       };
     };
     catppuccin = {

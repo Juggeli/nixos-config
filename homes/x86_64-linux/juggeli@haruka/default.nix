@@ -29,6 +29,7 @@ with lib.plusultra;
       git = enabled;
       direnv = enabled;
       devtools = enabled;
+      hdd-scraper = enabled;
     };
   };
 
