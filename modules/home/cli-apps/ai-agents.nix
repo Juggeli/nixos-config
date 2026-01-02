@@ -19,7 +19,6 @@ in
       codex
       uv
       nodejs
-      gemini-cli
     ];
     plusultra.user.impermanence = {
       directories = [
