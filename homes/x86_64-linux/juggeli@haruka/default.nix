@@ -28,6 +28,7 @@ with lib.plusultra;
     tools = {
       git = enabled;
       direnv = enabled;
+      devtools = enabled;
     };
   };
 

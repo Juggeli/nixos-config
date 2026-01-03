@@ -49,6 +49,7 @@ in
       tools = {
         git = enabled;
         direnv = enabled;
+        devtools = enabled;
       };
     };
     catppuccin = {
