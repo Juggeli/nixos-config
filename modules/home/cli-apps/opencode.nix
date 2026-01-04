@@ -14,162 +14,6 @@ let
     export BRAVE_API_KEY="$(cat ${config.age.secrets.brave-api-key.path})"
     exec ${pkgs.nodejs}/bin/npx -y @brave/brave-search-mcp-server "$@"
   '';
-
-  mkModel =
-    {
-      id,
-      name,
-      reasoningEffort,
-      reasoningSummary ? "auto",
-      textVerbosity ? "medium",
-    }:
-    {
-      ${id} = {
-        inherit name;
-        limit = {
-          context = 272000;
-          output = 128000;
-        };
-        modalities = {
-          input = [
-            "text"
-            "image"
-          ];
-          output = [ "text" ];
-        };
-        options = {
-          inherit reasoningEffort reasoningSummary textVerbosity;
-          include = [ "reasoning.encrypted_content" ];
-          store = false;
-        };
-      };
-    };
-
-  models = lib.foldl' (acc: model: acc // (mkModel model)) { } [
-    {
-      id = "gpt-5.2-none";
-      name = "GPT 5.2 None (OAuth)";
-      reasoningEffort = "none";
-    }
-    {
-      id = "gpt-5.2-low";
-      name = "GPT 5.2 Low (OAuth)";
-      reasoningEffort = "low";
-    }
-    {
-      id = "gpt-5.2-medium";
-      name = "GPT 5.2 Medium (OAuth)";
-      reasoningEffort = "medium";
-    }
-    {
-      id = "gpt-5.2-high";
-      name = "GPT 5.2 High (OAuth)";
-      reasoningEffort = "high";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.2-xhigh";
-      name = "GPT 5.2 Extra High (OAuth)";
-      reasoningEffort = "xhigh";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.2-codex-low";
-      name = "GPT 5.2 Codex Low (OAuth)";
-      reasoningEffort = "low";
-    }
-    {
-      id = "gpt-5.2-codex-medium";
-      name = "GPT 5.2 Codex Medium (OAuth)";
-      reasoningEffort = "medium";
-    }
-    {
-      id = "gpt-5.2-codex-high";
-      name = "GPT 5.2 Codex High (OAuth)";
-      reasoningEffort = "high";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.2-codex-xhigh";
-      name = "GPT 5.2 Codex Extra High (OAuth)";
-      reasoningEffort = "xhigh";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.1-codex-max-low";
-      name = "GPT 5.1 Codex Max Low (OAuth)";
-      reasoningEffort = "low";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.1-codex-max-medium";
-      name = "GPT 5.1 Codex Max Medium (OAuth)";
-      reasoningEffort = "medium";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.1-codex-max-high";
-      name = "GPT 5.1 Codex Max High (OAuth)";
-      reasoningEffort = "high";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.1-codex-max-xhigh";
-      name = "GPT 5.1 Codex Max Extra High (OAuth)";
-      reasoningEffort = "xhigh";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.1-codex-low";
-      name = "GPT 5.1 Codex Low (OAuth)";
-      reasoningEffort = "low";
-    }
-    {
-      id = "gpt-5.1-codex-medium";
-      name = "GPT 5.1 Codex Medium (OAuth)";
-      reasoningEffort = "medium";
-    }
-    {
-      id = "gpt-5.1-codex-high";
-      name = "GPT 5.1 Codex High (OAuth)";
-      reasoningEffort = "high";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.1-codex-mini-medium";
-      name = "GPT 5.1 Codex Mini Medium (OAuth)";
-      reasoningEffort = "medium";
-    }
-    {
-      id = "gpt-5.1-codex-mini-high";
-      name = "GPT 5.1 Codex Mini High (OAuth)";
-      reasoningEffort = "high";
-      reasoningSummary = "detailed";
-    }
-    {
-      id = "gpt-5.1-none";
-      name = "GPT 5.1 None (OAuth)";
-      reasoningEffort = "none";
-    }
-    {
-      id = "gpt-5.1-low";
-      name = "GPT 5.1 Low (OAuth)";
-      reasoningEffort = "low";
-      textVerbosity = "low";
-    }
-    {
-      id = "gpt-5.1-medium";
-      name = "GPT 5.1 Medium (OAuth)";
-      reasoningEffort = "medium";
-    }
-    {
-      id = "gpt-5.1-high";
-      name = "GPT 5.1 High (OAuth)";
-      reasoningEffort = "high";
-      reasoningSummary = "detailed";
-      textVerbosity = "high";
-    }
-  ];
 in
 {
   options.plusultra.cli-apps.opencode = with types; {
@@ -195,17 +39,114 @@ in
 
     home.file.".config/opencode/opencode.json".text = builtins.toJSON {
       "$schema" = "https://opencode.ai/config.json";
-      plugin = [ "opencode-openai-codex-auth@4.2.0" ];
+      plugin = [
+        "oh-my-opencode"
+        "opencode-antigravity-auth@1.2.7"
+        "opencode-openai-codex-auth"
+      ];
       provider = {
-        openai = {
-          options = {
-            reasoningEffort = "medium";
-            reasoningSummary = "auto";
-            textVerbosity = "medium";
-            include = [ "reasoning.encrypted_content" ];
-            store = false;
+        google = {
+          name = "Google";
+          models = {
+            "gemini-3-pro-high" = {
+              name = "Gemini 3 Pro High (Antigravity)";
+              attachment = true;
+              limit = {
+                context = 1048576;
+                output = 65535;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                  "pdf"
+                ];
+                output = [ "text" ];
+              };
+            };
+            "gemini-3-pro-medium" = {
+              name = "Gemini 3 Pro Medium (Antigravity)";
+              attachment = true;
+              limit = {
+                context = 1048576;
+                output = 65535;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                  "pdf"
+                ];
+                output = [ "text" ];
+              };
+            };
+            "gemini-3-pro-low" = {
+              name = "Gemini 3 Pro Low (Antigravity)";
+              attachment = true;
+              limit = {
+                context = 1048576;
+                output = 65535;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                  "pdf"
+                ];
+                output = [ "text" ];
+              };
+            };
+            "gemini-3-flash" = {
+              name = "Gemini 3 Flash (Antigravity)";
+              attachment = true;
+              limit = {
+                context = 1048576;
+                output = 65536;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                  "pdf"
+                ];
+                output = [ "text" ];
+              };
+            };
+            "gemini-3-flash-lite" = {
+              name = "Gemini 3 Flash Lite (Antigravity)";
+              attachment = true;
+              limit = {
+                context = 1048576;
+                output = 65536;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                  "pdf"
+                ];
+                output = [ "text" ];
+              };
+            };
           };
-          inherit models;
+        };
+        openai = {
+          api = "codex";
+          name = "OpenAI";
+          models = {
+            "gpt-5.2" = {
+              name = "GPT-5.2";
+            };
+            "o3" = {
+              name = "o3";
+            };
+            "o4-mini" = {
+              name = "o4-mini";
+            };
+            "codex-1" = {
+              name = "Codex-1";
+            };
+          };
         };
       };
       mcp = {
