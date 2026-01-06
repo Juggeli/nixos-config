@@ -24,4 +24,7 @@ in
   "qbittorrent-credentials.age".publicKeys = keys;
   "markdown-viewer-password.age".publicKeys = keys;
   "openrouter-api.age".publicKeys = keys;
+  "letta-password.age".publicKeys = keys;
+  "openai-api.age".publicKeys = keys;
+  "anthropic-api.age".publicKeys = keys;
 }

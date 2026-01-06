@@ -186,6 +186,13 @@ in
       maintainerr = enabled;
       memos = enabled;
       sillytavern = enabled;
+      letta = {
+        enable = true;
+        environment.anthropicApiKeyFile = config.age.secrets.anthropic-api.path;
+        environment.openaiApiKeyFile = config.age.secrets.openai-api.path;
+        environment.secure = true;
+        environment.passwordFile = config.age.secrets.letta-password.path;
+      };
       watchstate = enabled;
       uptime-kuma = {
         enable = true;
