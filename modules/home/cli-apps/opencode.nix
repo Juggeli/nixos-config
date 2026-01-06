@@ -9,10 +9,34 @@ with lib.plusultra;
 let
   cfg = config.plusultra.cli-apps.opencode;
   secretsDir = ../../../homes/shared/secrets;
+  configFile = "${config.home.homeDirectory}/.config/opencode/opencode.json";
 
   braveSearchWrapper = pkgs.writeShellScript "brave-search-mcp" ''
     export BRAVE_API_KEY="$(cat ${config.age.secrets.brave-api-key.path})"
     exec ${pkgs.nodejs}/bin/npx -y @brave/brave-search-mcp-server "$@"
+  '';
+
+  braveSearchMcp = {
+    type = "local";
+    command = [ "${braveSearchWrapper}" ];
+  };
+
+  patchOpencodeConfig = pkgs.writeShellScript "patch-opencode-config" ''
+    CONFIG_FILE="${configFile}"
+
+    if [ ! -f "$CONFIG_FILE" ]; then
+      echo "opencode.json not found, skipping brave-search MCP injection"
+      exit 0
+    fi
+
+    if ${pkgs.jq}/bin/jq -e '.mcp."brave-search"' "$CONFIG_FILE" > /dev/null 2>&1; then
+      echo "brave-search MCP already configured"
+      exit 0
+    fi
+
+    echo "Adding brave-search MCP to opencode.json"
+    ${pkgs.jq}/bin/jq '.mcp."brave-search" = ${builtins.toJSON braveSearchMcp}' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
+      && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
   '';
 in
 {
@@ -37,124 +61,8 @@ in
       ];
     };
 
-    home.file.".config/opencode/opencode.json".text = builtins.toJSON {
-      "$schema" = "https://opencode.ai/config.json";
-      plugin = [
-        "oh-my-opencode"
-        "opencode-antigravity-auth@1.2.7"
-        "opencode-openai-codex-auth"
-      ];
-      provider = {
-        google = {
-          name = "Google";
-          models = {
-            "gemini-3-pro-high" = {
-              name = "Gemini 3 Pro High (Antigravity)";
-              attachment = true;
-              limit = {
-                context = 1048576;
-                output = 65535;
-              };
-              modalities = {
-                input = [
-                  "text"
-                  "image"
-                  "pdf"
-                ];
-                output = [ "text" ];
-              };
-            };
-            "gemini-3-pro-medium" = {
-              name = "Gemini 3 Pro Medium (Antigravity)";
-              attachment = true;
-              limit = {
-                context = 1048576;
-                output = 65535;
-              };
-              modalities = {
-                input = [
-                  "text"
-                  "image"
-                  "pdf"
-                ];
-                output = [ "text" ];
-              };
-            };
-            "gemini-3-pro-low" = {
-              name = "Gemini 3 Pro Low (Antigravity)";
-              attachment = true;
-              limit = {
-                context = 1048576;
-                output = 65535;
-              };
-              modalities = {
-                input = [
-                  "text"
-                  "image"
-                  "pdf"
-                ];
-                output = [ "text" ];
-              };
-            };
-            "gemini-3-flash" = {
-              name = "Gemini 3 Flash (Antigravity)";
-              attachment = true;
-              limit = {
-                context = 1048576;
-                output = 65536;
-              };
-              modalities = {
-                input = [
-                  "text"
-                  "image"
-                  "pdf"
-                ];
-                output = [ "text" ];
-              };
-            };
-            "gemini-3-flash-lite" = {
-              name = "Gemini 3 Flash Lite (Antigravity)";
-              attachment = true;
-              limit = {
-                context = 1048576;
-                output = 65536;
-              };
-              modalities = {
-                input = [
-                  "text"
-                  "image"
-                  "pdf"
-                ];
-                output = [ "text" ];
-              };
-            };
-          };
-        };
-        openai = {
-          api = "codex";
-          name = "OpenAI";
-          models = {
-            "gpt-5.2" = {
-              name = "GPT-5.2";
-            };
-            "o3" = {
-              name = "o3";
-            };
-            "o4-mini" = {
-              name = "o4-mini";
-            };
-            "codex-1" = {
-              name = "Codex-1";
-            };
-          };
-        };
-      };
-      mcp = {
-        brave-search = {
-          type = "local";
-          command = [ "${braveSearchWrapper}" ];
-        };
-      };
-    };
+    home.activation.patchOpencodeConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      ${patchOpencodeConfig}
+    '';
   };
 }
