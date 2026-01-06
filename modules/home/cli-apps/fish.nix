@@ -57,7 +57,16 @@ in
       interactiveShellInit = ''
         # Auto-start tmux if not already inside tmux and in a terminal
         if status is-interactive; and not set -q TMUX; and test "$TERM_PROGRAM" != "vscode"
-          tmux new-session -A -s main
+          if tmux has-session -t main 2>/dev/null
+            set attached (tmux display-message -t main -p '#{session_attached}')
+            if test "$attached" -eq 0
+              tmux attach -t main
+            else
+              tmux new-session -s "term-$fish_pid"
+            end
+          else
+            tmux new-session -s main
+          end
         end
 
         function bind_bang
