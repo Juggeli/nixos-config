@@ -32,6 +32,37 @@ let
         fi
       done
   '';
+
+  zfs-clean-snapshots = pkgs.writeShellScriptBin "zfs-clean-snapshots" ''
+    set -euo pipefail
+
+    BLANK_SNAP="${cfg_impermanence.pool}/${cfg_impermanence.root-dataset}@blank"
+
+    echo "Finding snapshots to delete (preserving $BLANK_SNAP)..."
+
+    SNAPSHOTS=$(${pkgs.zfs}/bin/zfs list -H -t snapshot -o name | grep -v "^$BLANK_SNAP$" || true)
+
+    if [ -z "$SNAPSHOTS" ]; then
+      echo "No snapshots to delete."
+      exit 0
+    fi
+
+    echo "Will delete:"
+    echo "$SNAPSHOTS"
+    echo ""
+    read -p "Proceed? [y/N] " -n 1 -r
+    echo
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      echo "$SNAPSHOTS" | while read -r snap; do
+        echo "Destroying $snap..."
+        ${pkgs.zfs}/bin/zfs destroy "$snap"
+      done
+      echo "Done."
+    else
+      echo "Aborted."
+    fi
+  '';
 in
 {
   options.plusultra.filesystem.impermanence = with types; {
@@ -85,6 +116,7 @@ in
       systemPackages = [
         pkgs.zfs
         impermanence-fsdiff
+        zfs-clean-snapshots
       ];
 
       persistence."/persist" = {
