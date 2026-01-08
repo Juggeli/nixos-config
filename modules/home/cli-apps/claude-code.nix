@@ -8,10 +8,33 @@ with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.cli-apps.claude-code;
+  configFile = "${config.home.homeDirectory}/.claude/settings.json";
+
+  managedSettings = {
+    alwaysThinkingEnabled = true;
+    cleanupPeriodDays = 99999;
+    includeCoAuthoredBy = false;
+    gitAttribution = false;
+  } // optionalAttrs (cfg.hooks != { }) { hooks = cfg.hooks; };
+
+  patchClaudeSettings = pkgs.writeShellScript "patch-claude-settings" ''
+    CONFIG_FILE="${configFile}"
+    MANAGED_SETTINGS='${builtins.toJSON managedSettings}'
+
+    mkdir -p "$(dirname "$CONFIG_FILE")"
+
+    if [ ! -f "$CONFIG_FILE" ]; then
+      echo "{}" > "$CONFIG_FILE"
+    fi
+
+    ${pkgs.jq}/bin/jq --argjson managed "$MANAGED_SETTINGS" '. * $managed' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
+      && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+  '';
 in
 {
   options.plusultra.cli-apps.claude-code = with types; {
     enable = mkBoolOpt false "Whether or not to enable claude-code.";
+    hooks = mkOpt (attrsOf anything) { } "Claude Code hooks configuration.";
     glm = {
       enable = mkBoolOpt true "Whether or not to enable glm wrapper for z.ai.";
     };
@@ -31,28 +54,23 @@ in
           ".claude.json"
         ];
       };
-      home.file.".claude/settings.json".text = builtins.toJSON {
-        enabledPlugins = {
-          "superpowers@superpowers-marketplace" = true;
-        };
-        alwaysThinkingEnabled = true;
-        cleanupPeriodDays = 99999;
-        includeCoAuthoredBy = false;
-        gitAttribution = false;
-        hooks = {
-          UserPromptSubmit = [
-            {
-              hooks = [
-                {
-                  type = "command";
-                  command = "~/.claude/hooks/user_prompt_context.sh";
-                  timeout = 5;
-                }
-              ];
-            }
-          ];
-        };
+      plusultra.cli-apps.claude-code.hooks = {
+        UserPromptSubmit = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "~/.claude/hooks/user_prompt_context.sh";
+                timeout = 5;
+              }
+            ];
+          }
+        ];
       };
+
+      home.activation.patchClaudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        ${patchClaudeSettings}
+      '';
       home.file.".claude/hooks/user_prompt_context.sh" = {
         text = ''
           #!/usr/bin/env bash
