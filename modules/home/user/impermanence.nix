@@ -1,17 +1,16 @@
 {
   config,
+  options,
   lib,
-  inputs,
   ...
 }:
 with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.user.impermanence;
+  hasImpermanence = options.home ? persistence;
 in
 {
-  imports = [ (inputs.impermanence + "/home-manager.nix") ];
-
   options.plusultra.user.impermanence = with types; {
     enable = mkBoolOpt false "Whether or not to enable impermanence.";
     directories = mkOption {
@@ -26,26 +25,30 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    home.persistence."/persist-home" = {
-      removePrefixDirectory = false;
-      allowOther = true;
-      directories = [
-        ".ssh"
-        ".local/share/direnv"
-        ".local/state/wireplumber"
-        ".config/1Password"
-        "src"
-        "downloads"
-        "documents"
-        "games"
-        "My Games"
-        ".npm"
-        ".var/app" # Flatpak apps
-        ".config/SuperSlicer"
-      ]
-      ++ cfg.directories;
-      files = cfg.files;
-    };
-  };
+  config =
+    if hasImpermanence then
+      mkIf cfg.enable {
+        home.persistence."/persist-home" = {
+          removePrefixDirectory = false;
+          allowOther = true;
+          directories = [
+            ".ssh"
+            ".local/share/direnv"
+            ".local/state/wireplumber"
+            ".config/1Password"
+            "src"
+            "downloads"
+            "documents"
+            "games"
+            "My Games"
+            ".npm"
+            ".var/app"
+            ".config/SuperSlicer"
+          ]
+          ++ cfg.directories;
+          files = cfg.files;
+        };
+      }
+    else
+      { };
 }
