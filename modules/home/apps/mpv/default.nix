@@ -17,7 +17,10 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      (mpv.override { scripts = [ ]; })
+      (mpv.override {
+        scripts = [ ];
+        youtubeSupport = false;
+      })
     ];
 
     xdg.configFile = {
