@@ -189,7 +189,7 @@ in
       letta = {
         enable = true;
         environment.anthropicApiKeyFile = config.age.secrets.anthropic-api.path;
-        environment.openaiApiKeyFile = config.age.secrets.openai-api.path;
+        environment.openaiApiKeyFile = config.age.secrets.synthetic-api.path;
         environment.secure = true;
         environment.passwordFile = config.age.secrets.letta-password.path;
       };
@@ -226,6 +226,12 @@ in
         enable = true;
         dataDir = "/mnt/appdata/second-brain";
         passwordFile = config.age.secrets.markdown-viewer-password.path;
+      };
+      todoist-poller = {
+        enable = true;
+        todoistApiKeyFile = config.age.secrets.todoist-api.path;
+        lettaPasswordFile = config.age.secrets.letta-password.path;
+        agentIdsFile = config.age.secrets.todoist-agent-ids.path;
       };
       nfs = disabled;
 

@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -9,6 +8,7 @@ with lib.plusultra;
 let
   cfg = config.plusultra.containers.letta;
   secretsDir = "/mnt/appdata/letta/secrets";
+  streamPatch = ./letta-stream-patch.py;
 in
 {
   options.plusultra.containers.letta = with types; {
@@ -45,6 +45,11 @@ in
         type = nullOr path;
         default = null;
         description = "Path to file containing OpenAI API key (used for embeddings if openrouterApiKeyFile is set)";
+      };
+      openaiApiBaseUrl = mkOption {
+        type = nullOr str;
+        default = "https://api.synthetic.new/openai/v1";
+        description = "OpenAI API base URL";
       };
       openrouterApiKeyFile = mkOption {
         type = nullOr path;
@@ -109,6 +114,9 @@ in
           ${optionalString (cfg.environment.openaiApiKeyFile != null) ''
             echo "OPENAI_API_KEY=$(cat ${cfg.environment.openaiApiKeyFile})"
           ''}
+          ${optionalString (cfg.environment.openaiApiBaseUrl != null) ''
+            echo "OPENAI_API_BASE=${cfg.environment.openaiApiBaseUrl}"
+          ''}
           ${optionalString (cfg.environment.openrouterApiKeyFile != null) ''
             echo "OPENROUTER_API_KEY=$(cat ${cfg.environment.openrouterApiKeyFile})"
           ''}
@@ -147,7 +155,11 @@ in
       };
       volumes = [
         "/mnt/appdata/letta/pgdata:/var/lib/postgresql/data"
+        "${streamPatch}:/opt/letta-patches/sitecustomize.py:ro"
       ];
+      environment = {
+        PYTHONPATH = "/opt/letta-patches";
+      };
       environmentFiles = [ "${secretsDir}/letta.env" ];
     };
   };
