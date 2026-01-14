@@ -62,7 +62,7 @@ in
       };
       extraOptions = [
         ''--group-add="303"''
-        ''--device=/dev/dri/renderD128''
+        "--device=/dev/dri/renderD128"
       ];
       volumes = [
         "/mnt/appdata/plex/:/config"

@@ -62,9 +62,9 @@ in
           };
 
           clock = {
-            format = ''{:%H:%M}'';
-            format-alt = ''{:%d.%m.%Y}'';
-            tooltip-format = ''<tt>{calendar}</tt>'';
+            format = "{:%H:%M}";
+            format-alt = "{:%d.%m.%Y}";
+            tooltip-format = "<tt>{calendar}</tt>";
             calendar = {
               mode = "month";
               mode-mon-col = 3;
