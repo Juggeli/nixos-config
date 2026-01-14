@@ -29,8 +29,6 @@ in
     if hasImpermanence then
       mkIf cfg.enable {
         home.persistence."/persist-home" = {
-          removePrefixDirectory = false;
-          allowOther = true;
           directories = [
             ".ssh"
             ".local/share/direnv"

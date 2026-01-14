@@ -139,9 +139,6 @@ in
       "/persist-home" = {
         neededForBoot = true;
       };
-      "/etc/ssh" = {
-        neededForBoot = true;
-      };
       "/nix" = {
         neededForBoot = true;
       };
