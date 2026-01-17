@@ -8,7 +8,6 @@
     ./letta.nix
     ./memos.nix
     ./lanraragi.nix
-    ./maintainerr.nix
     ./plex.nix
     ./prowlarr.nix
     ./qbittorrent.nix
