@@ -41,7 +41,6 @@ in
       "podman-bazarr.service"
       "podman-uptime-kuma.service"
       "podman-prowlarr.service"
-      "podman-watchstate.service"
     ];
     after = [
       "zfs-mount.service"
@@ -54,7 +53,6 @@ in
       "podman-bazarr.service"
       "podman-uptime-kuma.service"
       "podman-prowlarr.service"
-      "podman-watchstate.service"
     ];
   };
 
@@ -190,7 +188,6 @@ in
         environment.secure = true;
         environment.passwordFile = config.age.secrets.letta-password.path;
       };
-      watchstate = enabled;
       uptime-kuma = {
         enable = true;
         homepage.widget = {
