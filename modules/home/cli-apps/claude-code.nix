@@ -15,7 +15,8 @@ let
     cleanupPeriodDays = 99999;
     includeCoAuthoredBy = false;
     gitAttribution = false;
-  } // optionalAttrs (cfg.hooks != { }) { hooks = cfg.hooks; };
+  }
+  // optionalAttrs (cfg.hooks != { }) { hooks = cfg.hooks; };
 
   patchClaudeSettings = pkgs.writeShellScript "patch-claude-settings" ''
     CONFIG_FILE="${configFile}"
