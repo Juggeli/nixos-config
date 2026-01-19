@@ -5,7 +5,6 @@
     ./changedetection.nix
     ./grist.nix
     ./jellyfin.nix
-    ./letta.nix
     ./memos.nix
     ./lanraragi.nix
     ./plex.nix
