@@ -216,6 +216,46 @@ in
       };
       nfs = disabled;
 
+      sonarr-cleanup = {
+        enable = true;
+        sonarr = {
+          url = "http://10.11.11.2:8989";
+          apiKeyFile = config.age.secrets.sonarr-api.path;
+        };
+        jellyfin = {
+          enable = true;
+          url = "http://10.11.11.2:8096";
+          apiKeyFile = config.age.secrets.jellyfin-api.path;
+        };
+        plex = {
+          enable = true;
+          url = "http://10.11.11.2:32400";
+          tokenFile = config.age.secrets.plex-token.path;
+        };
+        ntfy.topicFile = config.age.secrets.ntfy-topic.path;
+        dryRun = false;
+      };
+
+      radarr-cleanup = {
+        enable = true;
+        radarr = {
+          url = "http://10.11.11.2:7878";
+          apiKeyFile = config.age.secrets.radarr-api.path;
+        };
+        jellyfin = {
+          enable = true;
+          url = "http://10.11.11.2:8096";
+          apiKeyFile = config.age.secrets.jellyfin-api.path;
+        };
+        plex = {
+          enable = true;
+          url = "http://10.11.11.2:32400";
+          tokenFile = config.age.secrets.plex-token.path;
+        };
+        ntfy.topicFile = config.age.secrets.ntfy-topic.path;
+        dryRun = false;
+      };
+
       samba = {
         enable = true;
         shares = {

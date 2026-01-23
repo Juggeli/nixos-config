@@ -27,4 +27,7 @@ in
   "openai-api.age".publicKeys = keys;
   "anthropic-api.age".publicKeys = keys;
   "synthetic-api.age".publicKeys = keys;
+  "jellyfin-api.age".publicKeys = keys;
+  "plex-token.age".publicKeys = keys;
+  "radarr-api.age".publicKeys = keys;
 }
