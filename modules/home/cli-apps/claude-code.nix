@@ -46,6 +46,7 @@ in
       home.packages = with pkgs; [
         claude-code
       ];
+      home.shellAliases.cc = "claude --dangerously-skip-permissions";
       plusultra.user.impermanence = {
         directories = [
           ".claude"
