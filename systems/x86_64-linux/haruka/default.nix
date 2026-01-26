@@ -254,6 +254,10 @@ in
         };
         ntfy.topicFile = config.age.secrets.ntfy-topic.path;
         dryRun = false;
+        whitelist = [
+          "Survive Style 5+"
+          "Battle Royale"
+        ];
       };
 
       samba = {

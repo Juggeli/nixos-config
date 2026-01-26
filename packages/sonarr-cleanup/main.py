@@ -309,6 +309,7 @@ class CleanupManager:
         threshold_days: int,
         grace_days: int,
         dry_run: bool,
+        whitelist: set[str],
     ):
         self.sonarr = sonarr
         self.jellyfin = jellyfin
@@ -318,6 +319,7 @@ class CleanupManager:
         self.threshold_days = threshold_days
         self.grace_days = grace_days
         self.dry_run = dry_run
+        self.whitelist = whitelist
         self.logger = logging.getLogger("cleanup")
 
     def get_last_watched(self, series_title: str) -> Optional[WatchInfo]:
@@ -364,6 +366,14 @@ class CleanupManager:
     def process_series(self, series: SeriesInfo) -> str:
         if series.size_on_disk == 0:
             return "skipped_no_files"
+
+        if series.title.lower() in self.whitelist:
+            if series.id in self.state.pending:
+                self.logger.info(f"'{series.title}' is whitelisted, removing from deletion queue")
+                self.state.remove(series.id)
+            else:
+                self.logger.debug(f"'{series.title}' is whitelisted, skipping")
+            return "skipped_whitelisted"
 
         watch_info = self.get_last_watched(series.title)
 
@@ -432,6 +442,7 @@ class CleanupManager:
             "rescued": 0,
             "skipped_no_files": 0,
             "skipped_new": 0,
+            "skipped_whitelisted": 0,
             "errors": 0,
         }
 
@@ -484,6 +495,7 @@ def main() -> None:
     parser.add_argument("--plex-token-file", type=str, help="Path to Plex token file")
     parser.add_argument("--state-file", type=str, help="Path to state file")
     parser.add_argument("--ntfy-topic-file", type=str, help="Path to ntfy topic file")
+    parser.add_argument("--whitelist-file", type=str, help="Path to whitelist file (one title per line)")
 
     args = parser.parse_args()
 
@@ -502,6 +514,7 @@ def main() -> None:
     plex_token_file = args.plex_token_file or os.environ.get("PLEX_TOKEN_FILE")
     state_file = args.state_file or os.environ.get("STATE_FILE", "/var/lib/sonarr-cleanup/state.json")
     ntfy_topic_file = args.ntfy_topic_file or os.environ.get("NTFY_TOPIC_FILE")
+    whitelist_file = args.whitelist_file or os.environ.get("WHITELIST_FILE")
 
     threshold = args.threshold or int(os.environ.get("THRESHOLD_DAYS", "730"))
     grace_period = args.grace_period or int(os.environ.get("GRACE_PERIOD_DAYS", "7"))
@@ -539,6 +552,12 @@ def main() -> None:
     state = StateManager(Path(state_file))
     logger.info(f"State file: {state_file} ({len(state.pending)} pending deletions)")
 
+    whitelist: set[str] = set()
+    if whitelist_file and Path(whitelist_file).exists():
+        with open(whitelist_file) as f:
+            whitelist = {line.strip().lower() for line in f if line.strip()}
+        logger.info(f"Loaded {len(whitelist)} whitelisted titles")
+
     manager = CleanupManager(
         sonarr=sonarr,
         jellyfin=jellyfin,
@@ -548,6 +567,7 @@ def main() -> None:
         threshold_days=threshold,
         grace_days=grace_period,
         dry_run=dry_run,
+        whitelist=whitelist,
     )
 
     if dry_run:
@@ -563,14 +583,15 @@ def main() -> None:
 
     logger.info("=" * 50)
     logger.info("Summary:")
-    logger.info(f"  Watched (kept):     {stats['watched']}")
-    logger.info(f"  Newly marked:       {stats['marked']}")
-    logger.info(f"  Pending deletion:   {stats['pending']}")
-    logger.info(f"  Deleted:            {stats['deleted']}")
-    logger.info(f"  Rescued:            {stats['rescued']}")
-    logger.info(f"  Skipped (no files): {stats['skipped_no_files']}")
-    logger.info(f"  Skipped (new):      {stats['skipped_new']}")
-    logger.info(f"  Errors:             {stats['errors']}")
+    logger.info(f"  Watched (kept):       {stats['watched']}")
+    logger.info(f"  Newly marked:         {stats['marked']}")
+    logger.info(f"  Pending deletion:     {stats['pending']}")
+    logger.info(f"  Deleted:              {stats['deleted']}")
+    logger.info(f"  Rescued:              {stats['rescued']}")
+    logger.info(f"  Skipped (no files):   {stats['skipped_no_files']}")
+    logger.info(f"  Skipped (new):        {stats['skipped_new']}")
+    logger.info(f"  Skipped (whitelisted):{stats['skipped_whitelisted']}")
+    logger.info(f"  Errors:               {stats['errors']}")
 
 
 if __name__ == "__main__":

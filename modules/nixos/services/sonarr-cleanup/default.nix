@@ -8,6 +8,7 @@ with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.services.sonarr-cleanup;
+  whitelistFile = pkgs.writeText "sonarr-cleanup-whitelist" (concatStringsSep "\n" cfg.whitelist);
 in
 {
   options.plusultra.services.sonarr-cleanup = with types; {
@@ -87,6 +88,16 @@ in
     };
 
     dryRun = mkBoolOpt true "Run in dry-run mode (no actual deletions). Set to false to enable real deletions.";
+
+    whitelist = mkOption {
+      type = listOf str;
+      default = [ ];
+      description = "List of series titles to exclude from cleanup (case-insensitive)";
+      example = [
+        "Breaking Bad"
+        "The Office"
+      ];
+    };
   };
 
   config = mkIf cfg.enable {
@@ -117,26 +128,28 @@ in
         Type = "oneshot";
         ExecStart = "${pkgs.plusultra.sonarr-cleanup}/bin/sonarr-cleanup";
         StateDirectory = "sonarr-cleanup";
-        Environment =
-          [
-            "SONARR_URL=${cfg.sonarr.url}"
-            "SONARR_API_KEY_FILE=${cfg.sonarr.apiKeyFile}"
-            "THRESHOLD_DAYS=${toString cfg.threshold}"
-            "GRACE_PERIOD_DAYS=${toString cfg.gracePeriod}"
-            "STATE_FILE=${cfg.stateFile}"
-            "DRY_RUN=${if cfg.dryRun then "true" else "false"}"
-          ]
-          ++ optionals cfg.jellyfin.enable [
-            "JELLYFIN_URL=${cfg.jellyfin.url}"
-            "JELLYFIN_API_KEY_FILE=${cfg.jellyfin.apiKeyFile}"
-          ]
-          ++ optionals cfg.plex.enable [
-            "PLEX_URL=${cfg.plex.url}"
-            "PLEX_TOKEN_FILE=${cfg.plex.tokenFile}"
-          ]
-          ++ optionals cfg.ntfy.enable [
-            "NTFY_TOPIC_FILE=${cfg.ntfy.topicFile}"
-          ];
+        Environment = [
+          "SONARR_URL=${cfg.sonarr.url}"
+          "SONARR_API_KEY_FILE=${cfg.sonarr.apiKeyFile}"
+          "THRESHOLD_DAYS=${toString cfg.threshold}"
+          "GRACE_PERIOD_DAYS=${toString cfg.gracePeriod}"
+          "STATE_FILE=${cfg.stateFile}"
+          "DRY_RUN=${if cfg.dryRun then "true" else "false"}"
+        ]
+        ++ optionals cfg.jellyfin.enable [
+          "JELLYFIN_URL=${cfg.jellyfin.url}"
+          "JELLYFIN_API_KEY_FILE=${cfg.jellyfin.apiKeyFile}"
+        ]
+        ++ optionals cfg.plex.enable [
+          "PLEX_URL=${cfg.plex.url}"
+          "PLEX_TOKEN_FILE=${cfg.plex.tokenFile}"
+        ]
+        ++ optionals cfg.ntfy.enable [
+          "NTFY_TOPIC_FILE=${cfg.ntfy.topicFile}"
+        ]
+        ++ optionals (cfg.whitelist != [ ]) [
+          "WHITELIST_FILE=${whitelistFile}"
+        ];
       };
     };
 
