@@ -7,6 +7,7 @@
     ./bat.nix
     ./btop.nix
     ./claude-code.nix
+    ./cw.nix
     ./ffmpeg.nix
     ./fish.nix
     ./imv.nix

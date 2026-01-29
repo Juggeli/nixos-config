@@ -45,6 +45,7 @@ in
         opencode = enabled;
         claude-code = enabled;
         tmux = enabled;
+        cw = enabled;
       };
       tools = {
         git = enabled;
