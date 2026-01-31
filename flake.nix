@@ -53,7 +53,7 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
-    catppuccin.url = "github:catppuccin/nix/main";
+    catppuccin.url = "github:catppuccin/nix/release-25.11";
 
     claude-code-nix = {
       url = "github:sadjow/claude-code-nix";
