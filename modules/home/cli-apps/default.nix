@@ -10,6 +10,7 @@
     ./cw.nix
     ./ffmpeg.nix
     ./fish.nix
+    ./gh.nix
     ./imv.nix
     ./jq.nix
     ./lazygit.nix
