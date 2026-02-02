@@ -13,6 +13,7 @@ let
   user = config.plusultra.user;
   secretsDir = ../../../../systems/x86_64-linux + "/${config.networking.hostName}/secrets";
   secretsFile = secretsDir + "/secrets.nix";
+  impermanenceEnabled = config.plusultra.filesystem.impermanence.enable;
 in
 {
   imports = [ ];
@@ -24,6 +25,10 @@ in
     environment.systemPackages = with pkgs; [
       inputs.agenix.packages."${system}".default
     ];
+
+    boot.initrd.secrets = mkIf impermanenceEnabled {
+      "/etc/ssh/ssh_host_ed25519_key" = "/persist/etc/ssh/ssh_host_ed25519_key";
+    };
 
     age = {
       secrets =
