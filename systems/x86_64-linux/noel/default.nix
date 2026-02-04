@@ -18,6 +18,7 @@ with lib.plusultra;
       boot = enabled;
       theming = enabled;
       syncthing = enabled;
+      earlyoom = enabled;
       borgmatic = {
         enable = true;
         backups = {
@@ -77,6 +78,10 @@ with lib.plusultra;
       kdeconnect = enabled;
     };
   };
+
+  boot.kernelParams = [ "zfs.zfs_arc_max=8589934592" ];
+
+  services.journald.extraConfig = "Storage=persistent";
 
   programs.nix-ld.enable = true;
 
