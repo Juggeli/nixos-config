@@ -26,10 +26,6 @@ in
       inputs.agenix.packages."${system}".default
     ];
 
-    boot.initrd.secrets = mkIf impermanenceEnabled {
-      "/etc/ssh/ssh_host_ed25519_key" = "/persist/etc/ssh/ssh_host_ed25519_key";
-    };
-
     age = {
       secrets =
         if pathExists secretsFile then
@@ -43,7 +39,10 @@ in
         else
           { };
       identityPaths =
-        options.age.identityPaths.default
+        optionals impermanenceEnabled [
+          "/persist/etc/ssh/ssh_host_ed25519_key"
+        ]
+        ++ options.age.identityPaths.default
         ++ (filter pathExists [
           "${config.users.users.${user.name}.home}/.ssh/id_ed25519"
         ]);
