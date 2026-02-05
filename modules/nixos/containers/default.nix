@@ -3,6 +3,7 @@
 {
   imports = [
     ./changedetection.nix
+    ./convex.nix
     ./grist.nix
     ./jellyfin.nix
     ./memos.nix

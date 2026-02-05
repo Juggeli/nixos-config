@@ -180,6 +180,11 @@ in
       stash = disabled;
       lanraragi = enabled;
       memos = enabled;
+      convex = {
+        enable = true;
+        externalHost = "haruka.tailac5b0.ts.net";
+        homepage.url = "http://haruka.tailac5b0.ts.net:6791";
+      };
       sillytavern = enabled;
       uptime-kuma = {
         enable = true;
