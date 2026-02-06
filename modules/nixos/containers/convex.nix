@@ -200,6 +200,13 @@ in
           ISOLATE_IDLE_TIMEOUT_SECONDS = "86400";
           ISOLATE_MAX_LIFETIME_SECONDS = "604800";
           DOCUMENT_RETENTION_DELAY = "172800";
+          V8_THREADS = "8";
+          RUNTIME_WORKER_THREADS = "8";
+          MODULE_CACHE_MAX_SIZE_BYTES = "200000000";
+          FUNRUN_CODE_CACHE_SIZE = "1000000000";
+          UDF_CACHE_MAX_SIZE = "209715200";
+          APPLICATION_MAX_CONCURRENT_QUERIES = "64";
+          APPLICATION_MAX_CONCURRENT_MUTATIONS = "64";
         }
         // optionalAttrs (cfg.externalHost != null && cfg.tailscale.enable) {
           CONVEX_CLOUD_ORIGIN = "https://${cfg.externalHost}";
