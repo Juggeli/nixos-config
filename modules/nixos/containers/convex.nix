@@ -15,9 +15,6 @@ let
         "443" = {
           HTTPS = true;
         };
-        "3211" = {
-          HTTPS = true;
-        };
         "6791" = {
           HTTPS = true;
         };
@@ -28,14 +25,9 @@ let
             Proxy = "http://127.0.0.1:3210";
           };
         };
-        "\${TS_CERT_DOMAIN}:3211" = {
-          Handlers."/" = {
-            Proxy = "http://127.0.0.1:3211";
-          };
-        };
         "\${TS_CERT_DOMAIN}:6791" = {
           Handlers."/" = {
-            Proxy = "http://127.0.0.1:6791";
+            Proxy = "http://127.0.0.1:16791";
           };
         };
       };
