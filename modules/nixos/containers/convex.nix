@@ -9,24 +9,38 @@ with lib.plusultra;
 let
   cfg = config.plusultra.containers.convex;
 
-  serveConfig = pkgs.writeText "convex-tailscale-serve.json" (builtins.toJSON {
-    TCP = {
-      "443" = { HTTPS = true; };
-      "3211" = { HTTPS = true; };
-      "6791" = { HTTPS = true; };
-    };
-    Web = {
-      "\${TS_CERT_DOMAIN}:443" = {
-        Handlers."/" = { Proxy = "http://127.0.0.1:3210"; };
+  serveConfig = pkgs.writeText "convex-tailscale-serve.json" (
+    builtins.toJSON {
+      TCP = {
+        "443" = {
+          HTTPS = true;
+        };
+        "3211" = {
+          HTTPS = true;
+        };
+        "6791" = {
+          HTTPS = true;
+        };
       };
-      "\${TS_CERT_DOMAIN}:3211" = {
-        Handlers."/" = { Proxy = "http://127.0.0.1:3211"; };
+      Web = {
+        "\${TS_CERT_DOMAIN}:443" = {
+          Handlers."/" = {
+            Proxy = "http://127.0.0.1:3210";
+          };
+        };
+        "\${TS_CERT_DOMAIN}:3211" = {
+          Handlers."/" = {
+            Proxy = "http://127.0.0.1:3211";
+          };
+        };
+        "\${TS_CERT_DOMAIN}:6791" = {
+          Handlers."/" = {
+            Proxy = "http://127.0.0.1:6791";
+          };
+        };
       };
-      "\${TS_CERT_DOMAIN}:6791" = {
-        Handlers."/" = { Proxy = "http://127.0.0.1:6791"; };
-      };
-    };
-  });
+    }
+  );
 in
 {
   options.plusultra.containers.convex = with types; {
@@ -171,7 +185,8 @@ in
           "--health-interval=5s"
           "--health-timeout=5s"
           "--health-retries=3"
-        ] ++ optionals cfg.tailscale.enable [
+        ]
+        ++ optionals cfg.tailscale.enable [
           "--network=container:tailscale-convex"
         ];
         dependsOn = mkIf cfg.tailscale.enable [ "tailscale-convex" ];
@@ -188,13 +203,9 @@ in
         };
         environment = {
           CONVEX_BACKEND_URL =
-            if cfg.tailscale.enable
-            then "http://127.0.0.1:3210"
-            else "http://convex-backend:3210";
+            if cfg.tailscale.enable then "http://127.0.0.1:3210" else "http://convex-backend:3210";
         };
-        dependsOn =
-          [ "convex-backend" ]
-          ++ optionals cfg.tailscale.enable [ "tailscale-convex" ];
+        dependsOn = [ "convex-backend" ] ++ optionals cfg.tailscale.enable [ "tailscale-convex" ];
         extraOptions = optionals cfg.tailscale.enable [
           "--network=container:tailscale-convex"
         ];
@@ -205,9 +216,10 @@ in
       podman-convex-backend = mkIf cfg.tailscale.enable {
         after = [ "podman-tailscale-convex.service" ];
       };
-      podman-convex-dashboard.after =
-        [ "podman-convex-backend.service" ]
-        ++ optionals cfg.tailscale.enable [ "podman-tailscale-convex.service" ];
+      podman-convex-dashboard.after = [
+        "podman-convex-backend.service"
+      ]
+      ++ optionals cfg.tailscale.enable [ "podman-tailscale-convex.service" ];
     };
   };
 }
