@@ -187,6 +187,7 @@ in
           enable = true;
           authKeyFile = config.age.secrets.tailscale-convex.path;
         };
+        postgres.enable = true;
         homepage.url = "https://convex.tailac5b0.ts.net:6791";
       };
       sillytavern = enabled;

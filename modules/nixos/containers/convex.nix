@@ -85,6 +85,9 @@ in
         description = "Tailscale hostname for the sidecar.";
       };
     };
+    postgres = {
+      enable = mkBoolOpt false "Whether to use Postgres instead of SQLite.";
+    };
     homepage = {
       name = mkOption {
         type = str;
@@ -153,6 +156,32 @@ in
         };
       };
 
+      convex-postgres = mkIf cfg.postgres.enable {
+        image = "docker.io/library/postgres:17";
+        autoStart = true;
+        environment = {
+          POSTGRES_USER = "convex";
+          POSTGRES_PASSWORD = "convex";
+          POSTGRES_DB = "convex_self_hosted";
+        };
+        volumes = [
+          "${cfg.dataDir}/postgres:/var/lib/postgresql/data"
+        ];
+        extraOptions = [
+          "--health-cmd=pg_isready -U convex -d convex_self_hosted"
+          "--health-interval=5s"
+          "--health-timeout=5s"
+          "--health-retries=5"
+        ]
+        ++ optionals cfg.tailscale.enable [
+          "--network=container:tailscale-convex"
+        ];
+        dependsOn = optionals cfg.tailscale.enable [ "tailscale-convex" ];
+        labels = {
+          "io.containers.autoupdate" = "registry";
+        };
+      };
+
       convex-backend = {
         image = "ghcr.io/get-convex/convex-backend:latest";
         autoStart = true;
@@ -179,6 +208,10 @@ in
         // optionalAttrs (cfg.externalHost != null && !cfg.tailscale.enable) {
           CONVEX_CLOUD_ORIGIN = "http://${cfg.externalHost}:${toString cfg.ports.backend}";
           CONVEX_SITE_ORIGIN = "http://${cfg.externalHost}:${toString cfg.ports.siteProxy}";
+        }
+        // optionalAttrs cfg.postgres.enable {
+          POSTGRES_URL = "postgresql://convex:convex@127.0.0.1:5432";
+          DO_NOT_REQUIRE_SSL = "1";
         };
         extraOptions = [
           "--health-cmd=curl -f http://localhost:3210/version || exit 1"
@@ -189,7 +222,9 @@ in
         ++ optionals cfg.tailscale.enable [
           "--network=container:tailscale-convex"
         ];
-        dependsOn = mkIf cfg.tailscale.enable [ "tailscale-convex" ];
+        dependsOn =
+          optionals cfg.tailscale.enable [ "tailscale-convex" ]
+          ++ optionals cfg.postgres.enable [ "convex-postgres" ];
       };
 
       convex-dashboard = {
@@ -213,8 +248,18 @@ in
     };
 
     systemd.services = {
-      podman-convex-backend = mkIf cfg.tailscale.enable {
-        after = [ "podman-tailscale-convex.service" ];
+      podman-convex-postgres = mkIf cfg.postgres.enable {
+        after = optionals cfg.tailscale.enable [ "podman-tailscale-convex.service" ];
+        path = [ pkgs.e2fsprogs ];
+        preStart = ''
+          mkdir -p ${cfg.dataDir}/postgres
+          chattr +C ${cfg.dataDir}/postgres
+        '';
+      };
+      podman-convex-backend = mkIf (cfg.tailscale.enable || cfg.postgres.enable) {
+        after =
+          optionals cfg.tailscale.enable [ "podman-tailscale-convex.service" ]
+          ++ optionals cfg.postgres.enable [ "podman-convex-postgres.service" ];
       };
       podman-convex-dashboard.after = [
         "podman-convex-backend.service"
