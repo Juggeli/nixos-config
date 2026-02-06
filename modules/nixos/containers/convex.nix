@@ -238,14 +238,18 @@ in
         image = "ghcr.io/get-convex/convex-dashboard:latest";
         autoStart = true;
         ports = mkIf (!cfg.tailscale.enable) [
-          "${toString cfg.ports.dashboard}:6791"
+          "${toString cfg.ports.dashboard}:16791"
         ];
         labels = {
           "io.containers.autoupdate" = "registry";
         };
         environment = {
+          PORT = "16791";
           CONVEX_BACKEND_URL =
             if cfg.tailscale.enable then "http://127.0.0.1:3210" else "http://convex-backend:3210";
+        }
+        // optionalAttrs (cfg.externalHost != null && cfg.tailscale.enable) {
+          NEXT_PUBLIC_DEPLOYMENT_URL = "https://${cfg.externalHost}";
         };
         dependsOn = [ "convex-backend" ] ++ optionals cfg.tailscale.enable [ "tailscale-convex" ];
         extraOptions = optionals cfg.tailscale.enable [
