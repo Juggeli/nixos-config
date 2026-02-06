@@ -88,6 +88,9 @@ in
       ];
       environment = {
         CONVEX_SITE_PROXY_PORT = "3211";
+        ISOLATE_IDLE_TIMEOUT_SECONDS = "86400";
+        ISOLATE_MAX_LIFETIME_SECONDS = "604800";
+        DOCUMENT_RETENTION_DELAY = "172800";
       }
       // optionalAttrs (cfg.externalHost != null) {
         CONVEX_CLOUD_ORIGIN = "http://${cfg.externalHost}:${toString cfg.ports.backend}";
