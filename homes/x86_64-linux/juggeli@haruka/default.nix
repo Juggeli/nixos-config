@@ -22,6 +22,7 @@ with lib.plusultra;
       claude-code = enabled;
       bat = enabled;
       tmux = enabled;
+      gh = enabled;
     };
 
     tools = {
