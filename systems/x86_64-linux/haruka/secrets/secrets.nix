@@ -31,4 +31,5 @@ in
   "plex-token.age".publicKeys = keys;
   "radarr-api.age".publicKeys = keys;
   "tailscale-convex.age".publicKeys = keys;
+  "yuki-agent-env.age".publicKeys = keys;
 }

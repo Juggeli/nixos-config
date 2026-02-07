@@ -197,6 +197,29 @@ in
           enable = true;
         };
       };
+      yuki-agent = {
+        enable = true;
+        environmentFile = config.age.secrets.yuki-agent-env.path;
+        tailscale = {
+          enable = true;
+          authKeyFile = config.age.secrets.tailscale-convex.path;
+        };
+        settings = {
+          dataDir = "/mnt/appdata/agents";
+          embedding = {
+            baseUrl = "https://api.openai.com/v1";
+            apiKeyEnv = "EMBEDDING_API_KEY";
+            model = "hf:nomic-ai/nomic-embed-text-v1.5";
+          };
+          exaApiKeyEnv = "EXA_API_KEY";
+          todoistApiKeyEnv = "TODOIST_API_KEY";
+          defaultAgent = "yuki";
+          webServer = {
+            enabled = true;
+            port = 9847;
+          };
+        };
+      };
     };
 
     services = {
