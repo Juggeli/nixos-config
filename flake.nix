@@ -64,6 +64,8 @@
       url = "github:sst/opencode/dev";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    comfyui-nix.url = "github:utensils/comfyui-nix";
   };
 
   outputs =
