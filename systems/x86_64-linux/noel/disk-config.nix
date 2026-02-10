@@ -114,7 +114,11 @@ in
           };
           "nixos/hydrus" = {
             type = "zfs_fs";
-            options.mountpoint = "legacy";
+            options = {
+              mountpoint = "legacy";
+              recordsize = "8K";
+              logbias = "throughput";
+            };
             mountpoint = "/hydrus";
           };
           "nixos/var" = {
