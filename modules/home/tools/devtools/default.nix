@@ -20,6 +20,7 @@ in
       nodejs
       typescript
       bun
+      oxlint
       python3
       pipx
       uv
