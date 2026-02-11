@@ -20,6 +20,7 @@ in
       nodejs
       typescript
       bun
+      biome
       oxlint
       python3
       pipx
