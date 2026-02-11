@@ -11,7 +11,7 @@ let
   cfg = config.plusultra.apps.comfyui;
   comfyuiPkg = inputs.comfyui-nix.packages.${pkgs.system}.cuda;
   comfyuiWrapper = pkgs.writeShellScriptBin "comfyui" ''
-    exec ${comfyuiPkg}/bin/comfyui --listen 0.0.0.0 --enable-cors-header --enable-manager --lowvram "$@"
+    exec ${comfyuiPkg}/bin/comfyui --enable-cors-header --enable-manager --lowvram "$@"
   '';
 in
 {
