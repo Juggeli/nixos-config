@@ -7,11 +7,11 @@
 with lib;
 with lib.plusultra;
 let
-  cfg = config.plusultra.containers.yuki-agent;
+  cfg = config.plusultra.containers.koto;
 
-  configFile = pkgs.writeText "config.jsonc" (builtins.toJSON cfg.settings);
+  configFile = pkgs.writeText "config.json" (builtins.toJSON cfg.settings);
 
-  serveConfig = pkgs.writeText "yuki-agent-tailscale-serve.json" (
+  serveConfig = pkgs.writeText "koto-tailscale-serve.json" (
     builtins.toJSON {
       TCP = {
         "443" = {
@@ -29,8 +29,8 @@ let
   );
 in
 {
-  options.plusultra.containers.yuki-agent = with types; {
-    enable = mkBoolOpt false "Whether or not to enable yuki-agent.";
+  options.plusultra.containers.koto = with types; {
+    enable = mkBoolOpt false "Whether or not to enable koto.";
     environmentFile = mkOption {
       type = nullOr path;
       default = null;
@@ -39,7 +39,7 @@ in
     settings = mkOption {
       type = attrs;
       default = { };
-      description = "Yuki Agent configuration (serialized to config.jsonc).";
+      description = "Koto configuration (serialized to config.jsonc).";
     };
     tailscale = {
       enable = mkBoolOpt false "Whether to add a Tailscale sidecar container.";
@@ -50,14 +50,14 @@ in
       };
       hostname = mkOption {
         type = str;
-        default = "yuki-agent";
+        default = "koto";
         description = "Tailscale hostname for the sidecar.";
       };
     };
     homepage = {
       name = mkOption {
         type = str;
-        default = "Yuki Agent";
+        default = "Koto";
         description = "Service name for homepage";
       };
       description = mkOption {
@@ -99,12 +99,12 @@ in
     assertions = [
       {
         assertion = cfg.tailscale.enable -> cfg.tailscale.authKeyFile != null;
-        message = "plusultra.containers.yuki-agent.tailscale.authKeyFile must be set when tailscale is enabled.";
+        message = "plusultra.containers.koto.tailscale.authKeyFile must be set when tailscale is enabled.";
       }
     ];
 
     virtualisation.oci-containers.containers = {
-      tailscale-yuki-agent = mkIf cfg.tailscale.enable {
+      tailscale-koto = mkIf cfg.tailscale.enable {
         image = "docker.io/tailscale/tailscale:latest";
         autoStart = true;
         environment = {
@@ -115,7 +115,7 @@ in
           TS_USERSPACE = "false";
         };
         volumes = [
-          "/mnt/appdata/yuki-agent/tailscale:/var/lib/tailscale"
+          "/mnt/appdata/koto/tailscale:/var/lib/tailscale"
           "${serveConfig}:/config/serve.json:ro"
           "${cfg.tailscale.authKeyFile}:/run/secrets/tailscale-authkey:ro"
         ];
@@ -129,28 +129,28 @@ in
         };
       };
 
-      yuki-agent = {
-        image = "ghcr.io/juggeli/yuki-agent:latest";
+      koto = {
+        image = "ghcr.io/juggeli/koto:latest";
         autoStart = true;
         extraOptions =
           if cfg.tailscale.enable then
-            [ "--network=container:tailscale-yuki-agent" ]
+            [ "--network=container:tailscale-koto" ]
           else
             [ "--network=host" ];
         labels = {
           "io.containers.autoupdate" = "registry";
         };
         volumes = [
-          "/mnt/appdata/agents:/mnt/appdata/agents"
-          "${configFile}:/app/config.jsonc:ro"
+          "/mnt/appdata/koto:/mnt/appdata/koto"
+          "${configFile}:/app/config.json:ro"
         ];
         environmentFiles = mkIf (cfg.environmentFile != null) [ cfg.environmentFile ];
-        dependsOn = optionals cfg.tailscale.enable [ "tailscale-yuki-agent" ];
+        dependsOn = optionals cfg.tailscale.enable [ "tailscale-koto" ];
       };
     };
 
     systemd.services = mkIf cfg.tailscale.enable {
-      podman-yuki-agent.after = [ "podman-tailscale-yuki-agent.service" ];
+      podman-koto.after = [ "podman-tailscale-koto.service" ];
     };
   };
 }

@@ -21,6 +21,6 @@
     ./bazarr.nix
     ./stash.nix
     ./uptime-kuma.nix
-    ./yuki-agent.nix
+    ./koto.nix
   ];
 }
