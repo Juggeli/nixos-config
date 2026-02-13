@@ -20,5 +20,7 @@ in
         git_protocol = "ssh";
       };
     };
+
+    xdg.configFile."gh/config.yml".force = true;
   };
 }
