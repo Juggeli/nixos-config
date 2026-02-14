@@ -18,6 +18,7 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       nodejs
+      typescript
       bun
       python3
       pipx
