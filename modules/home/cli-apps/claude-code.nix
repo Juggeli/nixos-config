@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.cli-apps.claude-code;
+  claude-code = inputs.llm-agents.packages.${pkgs.system}.claude-code;
   configFile = "${config.home.homeDirectory}/.claude/settings.json";
 
   managedSettings = {
@@ -43,7 +45,7 @@ in
 
   config = mkMerge [
     (mkIf cfg.enable {
-      home.packages = with pkgs; [
+      home.packages = [
         claude-code
       ];
       home.shellAliases.cc = "claude --dangerously-skip-permissions";
@@ -98,7 +100,7 @@ in
       home.packages = [
         (pkgs.writeShellScriptBin "ccg" ''
           ZAI_TOKEN=$(cat ${config.age.secrets.zai.path})
-          exec ${pkgs.claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_AUTH_TOKEN": "'"$ZAI_TOKEN"'", "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic", "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-4.5-air", "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-4.7", "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-4.7"}}' "$@"
+          exec ${claude-code}/bin/claude --settings '{"env": {"ANTHROPIC_AUTH_TOKEN": "'"$ZAI_TOKEN"'", "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic", "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-4.5-air", "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-4.7", "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-4.7"}}' "$@"
         '')
       ];
     })

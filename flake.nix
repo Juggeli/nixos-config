@@ -55,9 +55,8 @@
 
     catppuccin.url = "github:catppuccin/nix/release-25.11";
 
-    claude-code-nix = {
-      url = "github:sadjow/claude-code-nix";
-      inputs.nixpkgs.follows = "unstable";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
     };
 
     opencode = {
@@ -91,7 +90,6 @@
       };
 
       overlays = with inputs; [
-        claude-code-nix.overlays.default
       ];
 
       systems.modules.nixos = with inputs; [
