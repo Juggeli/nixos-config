@@ -23,6 +23,8 @@ in
       python3
       pipx
       uv
+      husky
+      typescript-go
     ];
   };
 }
