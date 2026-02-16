@@ -53,9 +53,9 @@ in
         enable = true;
         flags = "-k -p --utc";
         frequent = 4;
-        hourly = 48;
-        daily = 30;
-        weekly = 12;
+        hourly = 24;
+        daily = 14;
+        weekly = 4;
         monthly = 0;
       };
       zed = mkIf cfg.zed {
