@@ -13,4 +13,5 @@ in
   "brave-api-key.age".publicKeys = keys;
   "synthetic-api.age".publicKeys = keys;
   "exa-api-key.age".publicKeys = keys;
+  "openrouter-api-key.age".publicKeys = keys;
 }
