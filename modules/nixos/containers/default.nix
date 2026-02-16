@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./av1an.nix
     ./changedetection.nix
     ./convex.nix
     ./grist.nix

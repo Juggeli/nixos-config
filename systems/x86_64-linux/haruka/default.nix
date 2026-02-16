@@ -104,6 +104,10 @@ in
     };
 
     containers = {
+      av1an = {
+        enable = true;
+        sonarr.apiKeyFile = config.age.secrets.sonarr-anime-api.path;
+      };
       prowlarr = {
         enable = true;
         homepage.widget.enable = true;
