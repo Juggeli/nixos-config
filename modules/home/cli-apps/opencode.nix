@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.cli-apps.opencode;
+  llm-agents = inputs.llm-agents.packages.${pkgs.system};
 in
 {
   options.plusultra.cli-apps.opencode = with types; {
@@ -15,9 +17,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      opencode
-      nodejs
+    home.packages = [
+      llm-agents.opencode
     ];
 
     plusultra.user.impermanence = {
