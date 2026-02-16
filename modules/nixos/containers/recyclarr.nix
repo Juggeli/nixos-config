@@ -14,10 +14,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    systemd.services.recyclarr.serviceConfig.LoadCredential = [
-      "sonarr-api_key:${config.age.secrets.sonarr-api.path}"
-      "sonarr-anime-api_key:${config.age.secrets.sonarr-anime-api.path}"
-    ];
     services.recyclarr = {
       enable = true;
       configuration = {
@@ -25,7 +21,7 @@ in
           anime-sonarr-v4 = {
             base_url = "http://haruka:8999";
             api_key = {
-              _secret = "/run/credentials/recyclarr.service/sonarr-anime-api_key";
+              _secret = config.age.secrets.sonarr-anime-api.path;
             };
 
             include = [
@@ -117,7 +113,7 @@ in
           web-2160p-v4 = {
             base_url = "http://haruka:8989/";
             api_key = {
-              _secret = "/run/credentials/recyclarr.service/sonarr-api_key";
+              _secret = config.age.secrets.sonarr-api.path;
             };
 
             include = [
