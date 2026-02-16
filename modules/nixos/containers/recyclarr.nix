@@ -126,6 +126,35 @@ in
               { template = "sonarr-v4-custom-formats-web-2160p"; }
             ];
 
+            quality_profiles = [
+              {
+                name = "WEB-2160p";
+                upgrade = {
+                  allowed = true;
+                  until_quality = "WEB 2160p";
+                  until_score = 10000;
+                };
+                min_format_score = 0;
+                quality_sort = "top";
+                qualities = [
+                  {
+                    name = "WEB 2160p";
+                    qualities = [
+                      "WEBDL-2160p"
+                      "WEBRip-2160p"
+                    ];
+                  }
+                  {
+                    name = "WEB 1080p";
+                    qualities = [
+                      "WEBDL-1080p"
+                      "WEBRip-1080p"
+                    ];
+                  }
+                ];
+              }
+            ];
+
             custom_formats = [
               # HDR Formats
               {
@@ -169,13 +198,10 @@ in
                   { name = "WEB-2160p"; }
                 ];
               }
-              # Optional SDR
-              # Only ever use ONE of the following custom formats:
-              # SDR - block ALL SDR releases
-              # SDR (no WEBDL) - block UHD/4k Remux and Bluray encode SDR releases, but allow SDR WEB#
+              # Block SDR for UHD/4k Remux and Bluray but allow SDR WEB releases as fallback
               {
                 trash_ids = [
-                  "2016d1676f5ee13a5b7257ff86ac9a93"
+                  "83304f261cf516bb208c18c54c0adf97" # SDR (no WEBDL)
                 ];
                 assign_scores_to = [
                   { name = "WEB-2160p"; }
