@@ -34,7 +34,12 @@ in
 
     plusultra.user.agenix = {
       enable = true;
-      enabledSecrets = [ "synthetic-api.age" "exa-api-key.age" "zai.age" "openrouter-api-key.age" ];
+      enabledSecrets = [
+        "synthetic-api.age"
+        "exa-api-key.age"
+        "zai.age"
+        "openrouter-api-key.age"
+      ];
       enableAll = false;
     };
 

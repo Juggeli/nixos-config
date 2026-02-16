@@ -133,10 +133,7 @@ in
         image = "ghcr.io/juggeli/koto:latest";
         autoStart = true;
         extraOptions =
-          if cfg.tailscale.enable then
-            [ "--network=container:tailscale-koto" ]
-          else
-            [ "--network=host" ];
+          if cfg.tailscale.enable then [ "--network=container:tailscale-koto" ] else [ "--network=host" ];
         labels = {
           "io.containers.autoupdate" = "registry";
         };
