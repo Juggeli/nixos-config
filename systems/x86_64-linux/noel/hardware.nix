@@ -58,11 +58,13 @@ in
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/7B72-0BC4";
     fsType = "vfat";
+    options = [ "nofail" ];
   };
 
   fileSystems."/boot-fallback" = {
     device = "/dev/disk/by-uuid/E74E-4B34";
     fsType = "vfat";
+    options = [ "nofail" ];
   };
 
   networking = {
