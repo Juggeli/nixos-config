@@ -30,6 +30,6 @@ in
   "jellyfin-api.age".publicKeys = keys;
   "plex-token.age".publicKeys = keys;
   "radarr-api.age".publicKeys = keys;
-  "tailscale-convex.age".publicKeys = keys;
+  "tailscale-auth.age".publicKeys = keys;
   "koto-env.age".publicKeys = keys;
 }

@@ -184,16 +184,6 @@ in
       stash = disabled;
       lanraragi = enabled;
       memos = enabled;
-      convex = {
-        enable = true;
-        externalHost = "convex.tailac5b0.ts.net";
-        tailscale = {
-          enable = true;
-          authKeyFile = config.age.secrets.tailscale-convex.path;
-        };
-        postgres.enable = true;
-        homepage.url = "https://convex.tailac5b0.ts.net:6791";
-      };
       sillytavern = enabled;
       uptime-kuma = {
         enable = true;
@@ -206,7 +196,7 @@ in
         environmentFile = config.age.secrets.koto-env.path;
         tailscale = {
           enable = true;
-          authKeyFile = config.age.secrets.tailscale-convex.path;
+          authKeyFile = config.age.secrets.tailscale-auth.path;
         };
         settings = {
           dataDir = "/mnt/appdata/koto";
