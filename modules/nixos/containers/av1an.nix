@@ -41,9 +41,10 @@ in
       encode-anime =
         let
           sonarrKeyArg =
-            if cfg.sonarr.apiKeyFile != null
-            then ''-e SONARR_API_KEY="$(cat ${cfg.sonarr.apiKeyFile})"''
-            else "";
+            if cfg.sonarr.apiKeyFile != null then
+              ''-e SONARR_API_KEY="$(cat ${cfg.sonarr.apiKeyFile})"''
+            else
+              "";
         in
         concatStringsSep " " [
           "sudo podman run -it --rm"
