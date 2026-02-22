@@ -67,6 +67,13 @@ in
       syncthing = {
         enable = true;
         dataDir = "/mnt/appdata/syncthing";
+        versioning = {
+          type = "staggered";
+          params = {
+            cleanInterval = "3600";
+            maxAge = "2592000";
+          };
+        };
       };
       borgmatic = {
         enable = true;

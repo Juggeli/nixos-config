@@ -11,11 +11,20 @@ let
   syncthing-browser = pkgs.writeShellScriptBin "syncthing-browser" ''
     xdg-open http://${config.services.syncthing.guiAddress}
   '';
+
+  versioningAttr = lib.optionalAttrs (cfg.versioning != null) {
+    versioning = cfg.versioning;
+  };
 in
 {
   options.plusultra.feature.syncthing = with types; {
     enable = mkBoolOpt false "Whether or not to enable syncthing service.";
     dataDir = mkOpt types.str "/home/${config.plusultra.user.name}" "Data dir location.";
+    versioning = mkOption {
+      type = types.nullOr types.attrs;
+      default = null;
+      description = "Versioning configuration applied to all folders.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -52,7 +61,7 @@ in
                 "noel"
                 "kuro"
               ];
-            };
+            } // versioningAttr;
             "downloads" = {
               path = "${config.services.syncthing.dataDir}/downloads";
               devices = [
@@ -60,7 +69,7 @@ in
                 "noel"
                 "kuro"
               ];
-            };
+            } // versioningAttr;
             "src" = {
               path = "${config.services.syncthing.dataDir}/src";
               devices = [
@@ -69,7 +78,7 @@ in
                 "kuro"
               ];
               ignorePatterns = [ "dotfiles" ];
-            };
+            } // versioningAttr;
             "orcaslicer" = {
               path = "${config.services.syncthing.dataDir}/.var/app/io.github.softfever.OrcaSlicer/config/OrcaSlicer";
               devices = [
@@ -77,7 +86,7 @@ in
                 "noel"
                 "kuro"
               ];
-            };
+            } // versioningAttr;
             "superslicer" = {
               path = "${config.services.syncthing.dataDir}/.config/SuperSlicer";
               devices = [
@@ -85,7 +94,7 @@ in
                 "noel"
                 "kuro"
               ];
-            };
+            } // versioningAttr;
           };
         };
       };
