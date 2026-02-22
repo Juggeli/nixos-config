@@ -87,3 +87,4 @@ equals to { enabled = true; }, do not try to set just boolean values to enabled
 - Remember to git add any new files, no need to add changed files
 - Don't leave code comments, unless the code is not obvious
 - Don't add unrelated things to same commit, make separate commits for those
+- Before working on configs, checking logs, or debugging: always check which machine you are on first (`hostname`). This repo manages multiple hosts and the current machine determines which config applies and where to look for issues
