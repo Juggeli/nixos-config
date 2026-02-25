@@ -61,7 +61,8 @@ in
                 "noel"
                 "kuro"
               ];
-            } // versioningAttr;
+            }
+            // versioningAttr;
             "downloads" = {
               path = "${config.services.syncthing.dataDir}/downloads";
               devices = [
@@ -69,7 +70,8 @@ in
                 "noel"
                 "kuro"
               ];
-            } // versioningAttr;
+            }
+            // versioningAttr;
             "src" = {
               path = "${config.services.syncthing.dataDir}/src";
               devices = [
@@ -78,7 +80,8 @@ in
                 "kuro"
               ];
               ignorePatterns = [ "dotfiles" ];
-            } // versioningAttr;
+            }
+            // versioningAttr;
             "orcaslicer" = {
               path = "${config.services.syncthing.dataDir}/.var/app/io.github.softfever.OrcaSlicer/config/OrcaSlicer";
               devices = [
@@ -86,7 +89,8 @@ in
                 "noel"
                 "kuro"
               ];
-            } // versioningAttr;
+            }
+            // versioningAttr;
             "superslicer" = {
               path = "${config.services.syncthing.dataDir}/.config/SuperSlicer";
               devices = [
@@ -94,7 +98,8 @@ in
                 "noel"
                 "kuro"
               ];
-            } // versioningAttr;
+            }
+            // versioningAttr;
           };
         };
       };
