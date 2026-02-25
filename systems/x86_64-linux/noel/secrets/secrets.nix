@@ -12,7 +12,9 @@ in
   "tailscale.age".publicKeys = keys;
   "syncthing-key.age".publicKeys = keys;
   "syncthing-cert.age".publicKeys = keys;
-  "borg-healthcheck.age".publicKeys = keys;
   "storagebox-url.age".publicKeys = keys;
+  "storagebox-hydrus-url.age".publicKeys = keys;
+  "borg-healthcheck.age".publicKeys = keys;
   "borg-hydrus-healthcheck.age".publicKeys = keys;
+  "borg-hydrus-offsite-healthcheck.age".publicKeys = keys;
 }

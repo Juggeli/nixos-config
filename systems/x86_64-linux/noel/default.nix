@@ -41,6 +41,19 @@ with lib.plusultra;
             };
             healthcheck_url_path = config.age.secrets.borg-hydrus-healthcheck.path;
           };
+          hydrus-offsite = {
+            directories = [ "/hydrus" ];
+            repository = {
+              url_path = config.age.secrets.storagebox-hydrus-url.path;
+              label = "storagebox-hydrus";
+            };
+            healthcheck_url_path = config.age.secrets.borg-hydrus-offsite-healthcheck.path;
+            exclude_patterns = [
+              "*/client.caches.db*"
+              "*/client.mappings.db*"
+              "*/.Trash-1000/*"
+            ];
+          };
         };
       };
     };
