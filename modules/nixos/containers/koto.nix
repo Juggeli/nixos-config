@@ -147,7 +147,12 @@ in
     };
 
     systemd.services = mkIf cfg.tailscale.enable {
-      podman-koto.after = [ "podman-tailscale-koto.service" ];
+      podman-koto = {
+        after = [ "podman-tailscale-koto.service" ];
+        serviceConfig.ExecStartPre = [
+          "${pkgs.bash}/bin/bash -c 'for i in $(seq 1 30); do ${pkgs.libressl.nc}/bin/nc -z -w1 10.88.0.1 53 && exit 0; sleep 1; done; echo \"aardvark-dns not ready after 30s\"; exit 1'"
+        ];
+      };
     };
   };
 }
