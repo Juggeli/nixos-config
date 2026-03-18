@@ -10,7 +10,6 @@ with lib.plusultra;
 let
   cfg = config.plusultra.cli-apps.ai-agents;
   llm-agents = inputs.llm-agents.packages.${pkgs.system};
-  pi-mono = inputs.pi-mono.packages.${pkgs.system};
 in
 {
   options.plusultra.cli-apps.ai-agents = with types; {
@@ -25,7 +24,8 @@ in
         export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
         export ZAI_API_KEY=$(cat ${config.age.secrets.zai.path})
         export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
-        exec ${pi-mono.pi}/bin/pi "$@"
+        export OLLAMA_API_KEY=$(cat ${config.age.secrets.ollama-api-key.path})
+        exec ${llm-agents.pi}/bin/pi "$@"
       '')
       llm-agents.agent-browser
       pkgs.uv
@@ -39,13 +39,9 @@ in
         "exa-api-key.age"
         "zai.age"
         "openrouter-api-key.age"
+        "ollama-api-key.age"
       ];
       enableAll = false;
-    };
-
-    home.file.".pi/agent/extensions" = {
-      source = "${pi-mono.pi-extensions}";
-      recursive = true;
     };
 
     plusultra.user.impermanence = {

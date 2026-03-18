@@ -59,16 +59,6 @@
       url = "github:numtide/llm-agents.nix";
     };
 
-    pi-mono = {
-      url = "github:Juggeli/pi-mono/dev";
-      inputs.nixpkgs.follows = "unstable";
-    };
-
-    opencode = {
-      url = "github:sst/opencode/dev";
-      inputs.nixpkgs.follows = "unstable";
-    };
-
     comfyui-nix.url = "github:utensils/comfyui-nix";
   };
 
