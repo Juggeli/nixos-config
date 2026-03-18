@@ -53,6 +53,8 @@ in
         # Allow passthrough for nested tmux (tmux 3.3+)
         set -g allow-passthrough on
 
+        set -g extended-keys on
+
         set-option -sa terminal-overrides ",xterm*:Tc"
 
         # Vim style pane selection
