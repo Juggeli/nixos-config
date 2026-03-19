@@ -1,0 +1,21 @@
+{
+	"name": "@juggeli/pi-extensions",
+	"private": true,
+	"workspaces": ["packages/*"],
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.5",
+		"@mariozechner/pi-coding-agent": "^0.60.0",
+		"@mariozechner/pi-ai": "^0.60.0",
+		"@sinclair/typebox": "^0.34.48",
+		"typescript": "^5.5.0",
+		"vitest": "^4.0.18"
+	},
+	"scripts": {
+		"check": "tsc --noEmit && biome check .",
+		"check:ci": "tsc --noEmit && biome ci .",
+		"test": "vitest run",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"typecheck": "tsc --noEmit"
+	}
+}

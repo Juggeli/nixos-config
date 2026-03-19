@@ -18,6 +18,7 @@
     ./nushell.nix
     ./nh.nix
     ./opencode.nix
+    ./pi.nix
     ./rclone.nix
     ./sshfs.nix
     ./syncthing.nix

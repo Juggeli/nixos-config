@@ -43,6 +43,7 @@ in
         yazi = enabled;
         bat = enabled;
         ai-agents = enabled;
+        pi = enabled;
         opencode = enabled;
         claude-code = enabled;
         tmux = enabled;
