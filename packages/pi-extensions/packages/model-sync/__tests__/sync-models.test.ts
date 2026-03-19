@@ -58,6 +58,12 @@ describe("syncProviderModels", () => {
 						api: "openai-completions",
 						models: [{ id: "hf:cached/model" }],
 					},
+					ollama: {
+						baseUrl: "https://ollama.com/v1",
+						apiKey: "OLLAMA_API_KEY",
+						api: "openai-completions",
+						models: [{ id: "llama3.2:latest" }],
+					},
 				},
 			}),
 		);

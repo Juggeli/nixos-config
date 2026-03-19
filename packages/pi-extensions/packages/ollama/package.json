@@ -1,0 +1,13 @@
+{
+	"name": "@juggeli/pi-ollama",
+	"version": "1.0.0",
+	"description": "Ollama cloud provider extension for pi",
+	"type": "module",
+	"main": "extensions/index.ts",
+	"license": "MIT",
+	"peerDependencies": {
+		"@mariozechner/pi-coding-agent": ">=0.60.0",
+		"@mariozechner/pi-ai": ">=0.60.0",
+		"@sinclair/typebox": ">=0.34.48"
+	}
+}

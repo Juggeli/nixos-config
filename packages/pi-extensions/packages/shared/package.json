@@ -1,0 +1,7 @@
+{
+	"name": "@juggeli/pi-shared",
+	"version": "1.0.0",
+	"description": "Shared utilities for pi extensions",
+	"type": "module",
+	"license": "MIT"
+}

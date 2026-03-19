@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { readJson } from "../shared/sync-utils.mjs";
 
 const PROVIDER_SOURCES = [
 	{
@@ -8,22 +9,15 @@ const PROVIDER_SOURCES = [
 		packageName: "synthetic",
 		syncFnName: "syncSyntheticModels",
 	},
+	{
+		name: "ollama",
+		packageName: "ollama",
+		syncFnName: "syncOllamaModels",
+	},
 ];
 
 function getAgentDir() {
 	return process.env.PI_AGENT_DIR ?? path.join(process.env.HOME ?? "", ".pi", "agent");
-}
-
-function readJson(filePath, fallback) {
-	try {
-		if (!fs.existsSync(filePath)) {
-			return fallback;
-		}
-
-		return JSON.parse(fs.readFileSync(filePath, "utf-8"));
-	} catch {
-		return fallback;
-	}
 }
 
 function getConfiguredProviders(agentDir) {

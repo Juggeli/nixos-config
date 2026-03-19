@@ -32,7 +32,7 @@ in
         export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
         export OLLAMA_API_KEY=$(cat ${config.age.secrets.ollama-api-key.path})
         ${pkgs.nodejs}/bin/node ${packagesDir}/model-sync/sync-models.mjs --if-missing || true
-        exec ${llm-agents.pi}/bin/pi -e ${packagesDir}/synthetic "$@"
+        exec ${llm-agents.pi}/bin/pi -e ${packagesDir}/synthetic -e ${packagesDir}/ollama "$@"
       '')
       (pkgs.writeShellScriptBin "pi-sync-models" ''
         export PI_AGENT_DIR="${config.home.homeDirectory}/.pi/agent"
@@ -46,13 +46,8 @@ in
       pkgs.nodejs
     ];
 
-    home.file.".pi/agent/packages/model-sync" = {
-      source = filterTests ../../../packages/pi-extensions/packages/model-sync;
-      recursive = true;
-    };
-
-    home.file.".pi/agent/packages/synthetic" = {
-      source = filterTests ../../../packages/pi-extensions/packages/synthetic;
+    home.file.".pi/agent/packages" = {
+      source = filterTests ../../../packages/pi-extensions/packages;
       recursive = true;
     };
 

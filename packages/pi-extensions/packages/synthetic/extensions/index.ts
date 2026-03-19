@@ -1,7 +1,11 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
 import type { ExtensionAPI, ExtensionContext, ProviderModelConfig } from "@mariozechner/pi-coding-agent";
-import { PROVIDER_NAME, SYNTHETIC_API_BASE_URL, createPlaceholderModel } from "../shared.mjs";
+import {
+	getCachedModels,
+	getDefaultModelId,
+	getRestorableModelId,
+	haveSameModels,
+} from "../../shared/extension-utils.mjs";
+import { createPlaceholderModel, PROVIDER_NAME, SYNTHETIC_API_BASE_URL } from "../shared.mjs";
 import { getSyntheticApiKey } from "./auth.js";
 import { SYNTHETIC_QUOTAS_ENDPOINT } from "./config.js";
 import { fetchSyntheticModels } from "./models.js";
@@ -21,96 +25,6 @@ function registerSyntheticProvider(
 		api: "openai-completions",
 		models,
 	});
-}
-
-function isProviderModelConfigArray(value: unknown): value is ProviderModelConfig[] {
-	if (!Array.isArray(value)) {
-		return false;
-	}
-
-	return value.every((model) => {
-		if (!model || typeof model !== "object") {
-			return false;
-		}
-
-		const candidate = model as Record<string, unknown>;
-		const cost = candidate.cost;
-		const input = candidate.input;
-
-		return (
-			typeof candidate.id === "string" &&
-			typeof candidate.name === "string" &&
-			typeof candidate.reasoning === "boolean" &&
-			Array.isArray(input) &&
-			input.every((item) => item === "text" || item === "image") &&
-			typeof candidate.contextWindow === "number" &&
-			typeof candidate.maxTokens === "number" &&
-			!!cost &&
-			typeof cost === "object" &&
-			typeof (cost as Record<string, unknown>).input === "number" &&
-			typeof (cost as Record<string, unknown>).output === "number" &&
-			typeof (cost as Record<string, unknown>).cacheRead === "number" &&
-			typeof (cost as Record<string, unknown>).cacheWrite === "number"
-		);
-	});
-}
-
-function getCachedSyntheticModels(ctx: ExtensionContext): ProviderModelConfig[] {
-	const branch = ctx.sessionManager.getBranch();
-
-	for (let index = branch.length - 1; index >= 0; index -= 1) {
-		const entry = branch[index];
-		if (entry.type !== "custom" || entry.customType !== MODELS_CACHE_KEY) {
-			continue;
-		}
-
-		return isProviderModelConfigArray(entry.data) ? entry.data : [];
-	}
-
-	return [];
-}
-
-function getRestorableSyntheticModelId(ctx: ExtensionContext): string | undefined {
-	const branch = ctx.sessionManager.getBranch();
-
-	for (let index = branch.length - 1; index >= 0; index -= 1) {
-		const entry = branch[index];
-		if (entry.type !== "model_change") {
-			continue;
-		}
-
-		return entry.provider === PROVIDER_NAME ? entry.modelId : undefined;
-	}
-
-	return undefined;
-}
-
-function getDefaultSyntheticModelId(): string | undefined {
-	const agentDir = process.env.PI_AGENT_DIR ?? path.join(process.env.HOME ?? "", ".pi", "agent");
-	const settingsPath = path.join(agentDir, "settings.json");
-
-	try {
-		if (!fs.existsSync(settingsPath)) {
-			return undefined;
-		}
-
-		const settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8")) as {
-			defaultProvider?: string;
-			defaultModel?: string;
-		};
-
-		if (settings.defaultProvider !== PROVIDER_NAME || !settings.defaultModel) {
-			return undefined;
-		}
-
-		return settings.defaultModel;
-	} catch {
-		return undefined;
-	}
-}
-
-function haveSameModels(left: ProviderModelConfig[], right: ProviderModelConfig[]): boolean {
-	return JSON.stringify(left) === JSON.stringify(right);
 }
 
 export async function updateQuotaStatus(ctx: ExtensionContext, fetchFn: FetchFn, lastUpdate: number): Promise<number> {
@@ -166,12 +80,12 @@ export default function (pi: ExtensionAPI, fetchFn: FetchFn = globalThis.fetch) 
 	let lastUpdate = 0;
 
 	pi.on("session_start", async (_event, ctx) => {
-		const cachedModels = getCachedSyntheticModels(ctx);
+		const cachedModels = getCachedModels(ctx, MODELS_CACHE_KEY);
 		if (cachedModels.length > 0) {
 			registerSyntheticProvider(pi.registerProvider.bind(pi), cachedModels);
 		}
 
-		const targetModelId = getRestorableSyntheticModelId(ctx) ?? getDefaultSyntheticModelId();
+		const targetModelId = getRestorableModelId(ctx, PROVIDER_NAME) ?? getDefaultModelId(PROVIDER_NAME);
 		const apiKey = await getSyntheticApiKey(ctx);
 		const liveModels = await fetchSyntheticModels(apiKey, fetchFn);
 		const models =
