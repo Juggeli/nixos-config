@@ -19,6 +19,7 @@ in
       brews = [ "lutzifer/homebrew-tap/keyboardSwitcher" ];
       taps = [ "lutzifer/tap" ];
       casks = [
+        "cmux"
         "obsidian"
         "zen"
         "1password"
