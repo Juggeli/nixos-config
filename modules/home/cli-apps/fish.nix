@@ -55,14 +55,16 @@ in
         scd = "doas systemctl status";
       };
       interactiveShellInit = ''
-        # Auto-start tmux if not already inside tmux and in a terminal
-        if status is-interactive; and not set -q TMUX; and test "$TERM_PROGRAM" != "vscode"
-          if tmux has-session -t main 2>/dev/null
-            tmux new-session -t main
-          else
-            tmux new-session -s main
+        ${lib.optionalString pkgs.stdenv.isLinux ''
+          # Auto-start tmux if not already inside tmux and in a terminal
+          if status is-interactive; and not set -q TMUX; and test "$TERM_PROGRAM" != "vscode"
+            if tmux has-session -t main 2>/dev/null
+              tmux new-session -t main
+            else
+              tmux new-session -s main
+            end
           end
-        end
+        ''}
 
         function bind_bang
           switch (commandline -t)
