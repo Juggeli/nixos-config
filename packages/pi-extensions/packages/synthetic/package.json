@@ -4,6 +4,9 @@
 	"description": "Synthetic provider quota status extension for pi",
 	"type": "module",
 	"main": "extensions/index.ts",
+	"pi": {
+		"extensions": ["extensions/index.ts"]
+	},
 	"license": "MIT",
 	"peerDependencies": {
 		"@mariozechner/pi-coding-agent": ">=0.60.0",
