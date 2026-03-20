@@ -1,0 +1,16 @@
+{
+	"name": "@juggeli/pi-grep-code-search",
+	"version": "1.0.0",
+	"description": "Grep.app code search tool extension for pi",
+	"type": "module",
+	"main": "extensions/index.ts",
+	"pi": {
+		"extensions": ["extensions/index.ts"]
+	},
+	"license": "MIT",
+	"peerDependencies": {
+		"@mariozechner/pi-coding-agent": ">=0.60.0",
+		"@mariozechner/pi-tui": ">=0.60.0",
+		"@sinclair/typebox": ">=0.34.48"
+	}
+}
