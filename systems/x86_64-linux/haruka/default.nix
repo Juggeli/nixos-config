@@ -266,6 +266,21 @@ in
         dryRun = false;
       };
 
+      sonarr-anime-cleanup = {
+        enable = true;
+        sonarr = {
+          url = "http://10.11.11.2:8999";
+          apiKeyFile = config.age.secrets.sonarr-anime-api.path;
+        };
+        jellyfin = {
+          url = "http://10.11.11.2:8096";
+          apiKeyFile = config.age.secrets.jellyfin-api.path;
+          username = "juggeli";
+        };
+        ntfy.topicFile = config.age.secrets.ntfy-topic.path;
+        dryRun = false;
+      };
+
       radarr-cleanup = {
         enable = true;
         radarr = {
