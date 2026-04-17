@@ -151,7 +151,7 @@ writeShellScriptBin "luks-backup" ''
   ################################################################################
 
   echo "Copying data from ''${SOURCE_DIR} to ''${MERGED_MOUNT}..."
-  ''${SUDO_CMD} rsync -avhP --delete "''${SOURCE_DIR}/" "''${MERGED_MOUNT}/"
+  ''${SUDO_CMD} rsync -avhP --delete --exclude='.zfs' "''${SOURCE_DIR}/" "''${MERGED_MOUNT}/"
 
   ################################################################################
   # 4. CLEANUP AND EXIT
