@@ -11,11 +11,12 @@ let
   cfg = config.plusultra.cli-apps.pi;
   llm-agents = inputs.llm-agents.packages.${pkgs.system};
   extensionsDir = "${config.home.homeDirectory}/.pi/agent/extensions";
-  filterTests = src: lib.cleanSourceWith {
-    inherit src;
-    filter = path: _type:
-      !(builtins.baseNameOf path == "__tests__");
-  };
+  filterTests =
+    src:
+    lib.cleanSourceWith {
+      inherit src;
+      filter = path: _type: !(builtins.baseNameOf path == "__tests__");
+    };
 in
 {
   options.plusultra.cli-apps.pi = with types; {

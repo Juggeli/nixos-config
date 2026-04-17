@@ -8,7 +8,9 @@ with lib;
 with lib.plusultra;
 let
   cfg = config.plusultra.services.sonarr-anime-cleanup;
-  whitelistFile = pkgs.writeText "sonarr-anime-cleanup-whitelist" (concatStringsSep "\n" cfg.whitelist);
+  whitelistFile = pkgs.writeText "sonarr-anime-cleanup-whitelist" (
+    concatStringsSep "\n" cfg.whitelist
+  );
 in
 {
   options.plusultra.services.sonarr-anime-cleanup = with types; {
