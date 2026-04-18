@@ -6,6 +6,7 @@
     modules = with self.nixosModules; [
       nix-settings
       users-juggeli
+      home-manager
       networking
       boot
       zfs
@@ -19,10 +20,26 @@
       tools-misc
       hardware-audio
       hardware-storage
+      hardware-logitech
       system-fonts
       system-locale
       system-time
       services-printing
+      theming
+      graphical
+      hyprland
+      hyprlock
+      hypridle
+      wlsunset
+      logitech-mouse-resume
+      desktop-gtk
+      desktop-qt
+      desktop-mako
+      desktop-rofi
+      desktop-electron
+      onepassword
+      avahi
+      flatpak
       ../../hosts/noel
     ];
   };

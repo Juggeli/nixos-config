@@ -31,10 +31,7 @@ in
       enable = true;
       onBoot = "ignore";
       onShutdown = "shutdown";
-      qemu = {
-        ovmf.enable = true;
-        runAsRoot = true;
-      };
+      qemu.runAsRoot = true;
     };
 
     programs.dconf.enable = true;

@@ -11,13 +11,20 @@
         inherit system;
         specialArgs = { inherit inputs self; };
         modules = [
+          {
+            networking.hostName = hostName;
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.overlays = [
+              inputs.nur.overlays.default
+              self.overlays.default
+            ];
+          }
           inputs.home-manager.nixosModules.home-manager
           inputs.agenix.nixosModules.default
           inputs.disko.nixosModules.disko
           inputs.impermanence.nixosModules.impermanence
           inputs.catppuccin.nixosModules.catppuccin
           inputs.neovim.nixosModules.default
-          { networking.hostName = hostName; }
         ] ++ modules;
       };
 
@@ -31,10 +38,17 @@
         inherit system;
         specialArgs = { inherit inputs self; };
         modules = [
+          {
+            networking.hostName = hostName;
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.overlays = [
+              inputs.nur.overlays.default
+              self.overlays.default
+            ];
+          }
           inputs.home-manager.darwinModules.home-manager
           inputs.agenix.darwinModules.default
           inputs.catppuccin.darwinModules.catppuccin
-          { networking.hostName = hostName; }
         ] ++ modules;
       };
   };
