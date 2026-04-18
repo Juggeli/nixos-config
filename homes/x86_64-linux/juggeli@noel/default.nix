@@ -23,6 +23,7 @@ with lib.plusultra;
       mpv.brightnessControl = true;
       vscode = enabled;
       comfyui = enabled;
+      lmstudio = enabled;
     };
 
     cli-apps = {
