@@ -1,11 +1,11 @@
 {
   flake.nixosModules.desktop-rofi =
-    { pkgs, ... }:
+    { lib, pkgs, ... }:
     {
       home-manager.users.juggeli.programs.rofi = {
         enable = true;
         package = pkgs.rofi;
-        theme = ./_theme.rasi;
+        theme = lib.mkForce ./_theme.rasi;
         terminal = "kitty";
         plugins = with pkgs; [
           rofi-power-menu

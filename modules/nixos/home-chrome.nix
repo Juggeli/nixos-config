@@ -1,0 +1,21 @@
+{
+  flake.nixosModules.home-chrome =
+    { pkgs, ... }:
+    {
+      home-manager.users.juggeli.home.packages = with pkgs; [
+        (ungoogled-chromium.override {
+          commandLineArgs = [
+            "--enable-features=WebUIDarkMode"
+            "--force-dark-mode"
+          ];
+        })
+      ];
+
+      environment.persistence."/persist-home" = {
+        users.juggeli.directories = [
+          ".config/chromium"
+          ".cache/chromium"
+        ];
+      };
+    };
+}

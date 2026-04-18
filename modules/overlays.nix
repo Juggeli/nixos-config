@@ -19,5 +19,7 @@
     sonarr-anime-cleanup = prev.callPackage ../packages/sonarr-anime-cleanup { };
     sonarr-cleanup = prev.callPackage ../packages/sonarr-cleanup { };
     sorter = prev.callPackage ../packages/sorter { };
+
+    lmstudio = final.unstable.lmstudio;
   };
 }

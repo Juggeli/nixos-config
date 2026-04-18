@@ -1,0 +1,75 @@
+@import "mocha.css";
+
+* {
+	font-family: Ubuntu Mono;
+	font-size: 20px;
+	min-height: 0px;
+  border: none;
+  border-radius: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+window#waybar {
+    background-color: @base;
+    border-radius: 4px;
+}
+
+#custom-logo {
+  font-size: 24px;
+  margin: 0;
+  margin-left: 12px;
+  margin-right: 20px;
+  padding: 0;
+}
+
+#workspaces button {
+	color: @text;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+#workspaces button.active {
+	background-color: @surface1;
+}
+
+#workspaces button:hover {
+	background-color: @surface2;
+}
+
+#tray,
+#clock,
+#pulseaudio,
+#idle_inhibitor {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#clock {
+	color: @text;
+}
+
+#pulseaudio {
+	color: @pink;
+}
+
+#pulseaudio.muted {
+	color: @red;
+}
+
+#idle_inhibitor {
+	color: @yellow;
+}
+
+#idle_inhibitor.activated {
+	color: @green;
+}
+
+tooltip {
+	background: @base;
+	border: 1px solid @pink;
+}
+
+tooltip label {
+	color: @text;
+}

@@ -15,6 +15,7 @@
       openssh
       tailscale
       agenix
+      agenix-shared
       doas
       podman
       tools-misc
@@ -45,6 +46,48 @@
       gaming
       kdeconnect
       dev-rust
+
+      home-fish
+      home-tmux
+      home-bat
+      home-btop
+      home-jq
+      home-yazi
+      home-lazygit
+      home-gh
+      home-nh
+      home-ai-agents
+      home-pi
+      home-opencode
+      home-claude-code
+      home-cw
+      home-ffmpeg
+      home-imv
+      home-sshfs
+      home-ab-av1
+      home-nushell
+      home-neovim
+      home-git
+      home-direnv
+      home-devtools
+      home-hdd-scraper
+      home-sorter
+      home-kitty
+      home-mpv
+      home-discord
+      home-firefox
+      home-chrome
+      home-via
+      home-pdf
+      home-crypto
+      home-hydrus
+      home-obsidian
+      home-anytype
+      home-vscode
+      home-comfyui
+      home-lmstudio
+      home-waybar
+
       ../../hosts/noel
     ];
   };
