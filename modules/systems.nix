@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, self, ... }:
 {
   systems = [
     "x86_64-linux"
@@ -13,12 +13,7 @@
         config.allowUnfree = true;
         overlays = [
           inputs.nur.overlays.default
-          (final: prev: {
-            unstable = import inputs.unstable {
-              inherit system;
-              config.allowUnfree = true;
-            };
-          })
+          self.overlays.default
         ];
       };
     };

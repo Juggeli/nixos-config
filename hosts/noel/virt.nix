@@ -25,7 +25,7 @@ in
     };
     virtualisation.spiceUSBRedirection.enable = true;
 
-    plusultra.user.extraGroups = [ "libvirtd" ];
+    users.users.juggeli.extraGroups = [ "libvirtd" ];
 
     virtualisation.libvirtd = {
       enable = true;
