@@ -40,6 +40,11 @@
       onepassword
       avahi
       flatpak
+      syncthing
+      earlyoom
+      gaming
+      kdeconnect
+      dev-rust
       ../../hosts/noel
     ];
   };

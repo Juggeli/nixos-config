@@ -5,6 +5,7 @@
     ./disk.nix
     ./autologin.nix
     ./virt.nix
+    ./borgmatic.nix
   ];
 
   networking.hostId = "cc5b25a0";
