@@ -2,7 +2,7 @@
   flake.nixosModules.agenix-shared =
     { lib, ... }:
     let
-      secretsDir = ../../hosts/shared/secrets;
+      secretsDir = ./_secrets;
       secretsFile = secretsDir + "/secrets.nix";
     in
     {
