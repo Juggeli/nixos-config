@@ -20,6 +20,15 @@
     sonarr-cleanup = prev.callPackage ../packages/sonarr-cleanup { };
     sorter = prev.callPackage ../packages/sorter { };
 
+    bun = final.unstable.bun;
+    cloudflared = final.unstable.cloudflared;
+    hydrus = final.unstable.hydrus.overrideAttrs (oldAttrs: {
+      doCheck = false;
+      doInstallCheck = false;
+      propagatedBuildInputs = builtins.filter (
+        dep: dep != final.python3Packages.psd-tools
+      ) oldAttrs.propagatedBuildInputs;
+    });
     lmstudio = final.unstable.lmstudio;
   };
 }
