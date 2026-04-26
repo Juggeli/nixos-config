@@ -47,6 +47,10 @@
       kdeconnect
       dev-rust
 
+      home-impermanence
+      home-process-anime
+      home-ghostty
+      home-wezterm
       home-fish
       home-tmux
       home-bat

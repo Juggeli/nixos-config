@@ -15,6 +15,13 @@
             package = pkgs.gnome-themes-extra;
           };
         };
+        home.pointerCursor = {
+          x11.enable = true;
+          gtk.enable = true;
+          package = pkgs.banana-cursor-dreams;
+          size = 64;
+          name = "Banana-Catppuccin-Mocha";
+        };
       };
     };
 }
