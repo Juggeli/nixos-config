@@ -1,7 +1,7 @@
 let
   rawdisk1 = "/dev/nvme0n1";
   rawdisk2 = "/dev/nvme1n1";
-  diskSizeGB = 476.9;
+  diskSizeGB = 931.5;
   reservationPercent = 0.2;
 in
 {
