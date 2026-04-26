@@ -100,6 +100,15 @@
         };
 
         catppuccin.fish.enable = true;
+
+        xdg.configFile = {
+          "fish/functions/enc-all.fish".source = ./_assets/enc-all.fish;
+          "fish/functions/enc-anime-all.fish".source = ./_assets/enc-anime-all.fish;
+          "fish/functions/enc-anime.fish".source = ./_assets/enc-anime.fish;
+          "fish/functions/enc-auto.fish".source = ./_assets/enc-auto.fish;
+          "fish/functions/enc-crf.fish".source = ./_assets/enc-crf.fish;
+          "fish/functions/javrter.fish".source = ./_assets/javrter.fish;
+        };
       };
 
       environment.persistence."/persist-home".users.juggeli.directories = [
