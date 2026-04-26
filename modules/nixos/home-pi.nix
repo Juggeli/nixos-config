@@ -22,7 +22,6 @@
         home.packages = [
           (pkgs.writeShellScriptBin "pi" ''
             export PI_AGENT_DIR="/home/juggeli/.pi/agent"
-            export SYNTHETIC_API_KEY=$(cat ${config.age.secrets.synthetic-api.path})
             export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
             export ZAI_API_KEY=$(cat ${config.age.secrets.zai.path})
             export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
@@ -32,7 +31,6 @@
           '')
           (pkgs.writeShellScriptBin "pi-sync-models" ''
             export PI_AGENT_DIR="/home/juggeli/.pi/agent"
-            export SYNTHETIC_API_KEY=$(cat ${config.age.secrets.synthetic-api.path})
             export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
             export ZAI_API_KEY=$(cat ${config.age.secrets.zai.path})
             export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
