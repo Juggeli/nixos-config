@@ -13,7 +13,7 @@ let
   ];
 in
 {
-  "zai.age".publicKeys = keys;
+  "zai-api-key.age".publicKeys = keys;
   "brave-api-key.age".publicKeys = keys;
   "exa-api-key.age".publicKeys = keys;
   "openrouter-api-key.age".publicKeys = keys;
