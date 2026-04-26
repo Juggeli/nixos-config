@@ -27,7 +27,6 @@
       system-time
       services-printing
       theming
-      graphical
       hyprland
       hyprlock
       hypridle
