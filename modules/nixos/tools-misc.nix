@@ -19,9 +19,5 @@
         htop
         list-iommu
       ];
-
-      environment.sessionVariables.WGETRC = "$XDG_CONFIG_HOME/wgetrc";
-
-      home-manager.users.juggeli.xdg.configFile."wgetrc".text = "";
     };
 }
