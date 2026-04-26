@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ./av1an.nix
     ./changedetection.nix
     ./grist.nix
     ./jellyfin.nix
