@@ -40,17 +40,17 @@ describe("syncOllamaModels", () => {
 		fs.rmSync(TEST_AGENT_DIR, { recursive: true, force: true });
 	});
 
-	it("writes ollama models and preserves other providers", async () => {
+	it("writes ollama models and overwrites existing ollama models", async () => {
 		fs.mkdirSync(TEST_AGENT_DIR, { recursive: true });
 		fs.writeFileSync(
 			path.join(TEST_AGENT_DIR, "models.json"),
 			JSON.stringify({
 				providers: {
-					synthetic: {
-						baseUrl: "https://api.synthetic.new/openai/v1",
-						apiKey: "SYNTHETIC_API_KEY",
+					ollama: {
+						baseUrl: "https://ollama.com/v1",
+						apiKey: "OLLAMA_API_KEY",
 						api: "openai-completions",
-						models: [{ id: "hf:test/model", name: "Test Model" }],
+						models: [{ id: "ollama:test", name: "Test Model" }],
 					},
 				},
 			}),
@@ -68,7 +68,6 @@ describe("syncOllamaModels", () => {
 		});
 
 		const config = readModelsJson();
-		expect(config.providers.synthetic.models).toHaveLength(1);
 		expect(config.providers.ollama.models).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({

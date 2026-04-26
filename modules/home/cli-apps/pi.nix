@@ -27,7 +27,6 @@ in
     home.packages = [
       (pkgs.writeShellScriptBin "pi" ''
         export PI_AGENT_DIR="${config.home.homeDirectory}/.pi/agent"
-        export SYNTHETIC_API_KEY=$(cat ${config.age.secrets.synthetic-api.path})
         export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
         export ZAI_API_KEY=$(cat ${config.age.secrets.zai.path})
         export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
@@ -37,7 +36,6 @@ in
       '')
       (pkgs.writeShellScriptBin "pi-sync-models" ''
         export PI_AGENT_DIR="${config.home.homeDirectory}/.pi/agent"
-        export SYNTHETIC_API_KEY=$(cat ${config.age.secrets.synthetic-api.path})
         export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
         export ZAI_API_KEY=$(cat ${config.age.secrets.zai.path})
         export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
@@ -55,7 +53,6 @@ in
     plusultra.user.agenix = {
       enable = true;
       enabledSecrets = [
-        "synthetic-api.age"
         "exa-api-key.age"
         "zai.age"
         "openrouter-api-key.age"

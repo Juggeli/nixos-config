@@ -13,7 +13,7 @@ export const createLibrarianAgent: AgentFactory = () => ({
 	description:
 		"External library research — finds documentation, source code, issues, and usage examples using web search, GitHub code search, GitHub CLI, and temporary repo clones.",
 	mode: "subagent",
-	model: "synthetic/hf:MiniMaxAI/MiniMax-M2.1",
+	model: undefined,
 	systemPrompt: [
 		"You are Librarian, a research agent for external libraries, frameworks, tools, and upstream repositories. Find trustworthy sources, inspect upstream code when needed, and answer with evidence-backed links.",
 		"",

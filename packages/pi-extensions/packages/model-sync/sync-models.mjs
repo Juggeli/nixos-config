@@ -5,11 +5,6 @@ import { readJson } from "../shared/sync-utils.mjs";
 
 const PROVIDER_SOURCES = [
 	{
-		name: "synthetic",
-		packageName: "synthetic",
-		syncFnName: "syncSyntheticModels",
-	},
-	{
 		name: "ollama",
 		packageName: "ollama",
 		syncFnName: "syncOllamaModels",
@@ -68,8 +63,8 @@ function printHelp() {
 	console.log("Examples:");
 	console.log("  pi-sync-models");
 	console.log("  pi-sync-models --if-missing");
-	console.log("  pi-sync-models synthetic");
-	console.log("  pi-sync-models --provider synthetic");
+	console.log("  pi-sync-models ollama");
+	console.log("  pi-sync-models --provider ollama");
 }
 
 async function loadProviderSyncer(agentDir, provider) {

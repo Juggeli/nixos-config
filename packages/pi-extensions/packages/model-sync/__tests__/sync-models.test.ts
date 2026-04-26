@@ -18,31 +18,34 @@ describe("syncProviderModels", () => {
 	});
 
 	it("syncs all configured provider syncers by default", async () => {
+		fs.mkdirSync(TEST_AGENT_DIR, { recursive: true });
+
 		await syncProviderModels({
 			agentDir: TEST_AGENT_DIR,
-			fetchFn: async () =>
-				({
-					ok: true,
-					json: async () => ({
-						data: [
-							{
-								id: "hf:MiniMaxAI/MiniMax-M2.5",
-								hugging_face_id: "MiniMaxAI/MiniMax-M2.5",
-								name: "MiniMax M2.5",
-								input_modalities: ["text"],
-								context_length: 128000,
-								max_output_length: 32768,
-								pricing: { prompt: "$0.55", completion: "$2.19" },
-								supported_features: ["reasoning", "tools"],
-								always_on: true,
-							},
-						],
-					}),
-				}) as Response,
+			fetchFn: async (url: string, _options?: RequestInit) => {
+				if (url.includes("/api/tags")) {
+					return {
+						ok: true,
+						json: async () => ({
+							models: [{ name: "gemma3", model: "gemma3:27b" }],
+						}),
+					} as Response;
+				}
+				if (url.includes("/api/show")) {
+					return {
+						ok: true,
+						json: async () => ({
+							capabilities: ["completion", "vision"],
+							model_info: { "gemma3.context_length": 131072, "general.parameter_count": 27000000000 },
+						}),
+					} as Response;
+				}
+				return { ok: false } as Response;
+			},
 		});
 
-		expect(readModelsJson().providers.synthetic.models).toEqual(
-			expect.arrayContaining([expect.objectContaining({ id: "hf:MiniMaxAI/MiniMax-M2.5" })]),
+		expect(readModelsJson().providers.ollama.models).toEqual(
+			expect.arrayContaining([expect.objectContaining({ id: "gemma3:27b" })]),
 		);
 	});
 
@@ -52,12 +55,6 @@ describe("syncProviderModels", () => {
 			path.join(TEST_AGENT_DIR, "models.json"),
 			JSON.stringify({
 				providers: {
-					synthetic: {
-						baseUrl: "https://api.synthetic.new/openai/v1",
-						apiKey: "SYNTHETIC_API_KEY",
-						api: "openai-completions",
-						models: [{ id: "hf:cached/model" }],
-					},
 					ollama: {
 						baseUrl: "https://ollama.com/v1",
 						apiKey: "OLLAMA_API_KEY",
@@ -77,6 +74,6 @@ describe("syncProviderModels", () => {
 		});
 
 		expect(result).toEqual({ updated: false, syncedProviders: [] });
-		expect(readModelsJson().providers.synthetic.models).toEqual([{ id: "hf:cached/model" }]);
+		expect(readModelsJson().providers.ollama.models).toEqual([{ id: "llama3.2:latest" }]);
 	});
 });

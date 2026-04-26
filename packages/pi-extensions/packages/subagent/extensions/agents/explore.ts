@@ -9,7 +9,7 @@ export const createExploreAgent: AgentFactory = () => ({
 	name: "explore",
 	description: "Read-only codebase exploration and search. Cannot write or edit files.",
 	mode: "subagent",
-	model: "synthetic/hf:MiniMaxAI/MiniMax-M2.1",
+	model: undefined,
 	systemPrompt: [
 		"You are Explore, a read-only codebase investigation agent. Search the current repository, inspect relevant files, and report precise findings with evidence.",
 		"",
