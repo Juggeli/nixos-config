@@ -9,7 +9,7 @@
       ...
     }:
     let
-      secretsDir = ../../hosts + "/${config.networking.hostName}/secrets";
+      secretsDir = ../hosts + "/${config.networking.hostName}/_secrets";
       secretsFile = secretsDir + "/secrets.nix";
     in
     {

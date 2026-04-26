@@ -91,7 +91,11 @@
       home-lmstudio
       home-waybar
 
-      ../../hosts/noel
+      noel-system
+      noel-disk
+      noel-hardware
+      noel-autologin
+      noel-borgmatic
     ];
   };
 }
