@@ -4,7 +4,6 @@
     ./hardware.nix
     ./disk.nix
     ./autologin.nix
-    ./virt.nix
     ./borgmatic.nix
   ];
 
