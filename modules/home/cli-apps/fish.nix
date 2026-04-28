@@ -59,7 +59,9 @@ in
           # Auto-start tmux if not already inside tmux and in a terminal
           if status is-interactive; and not set -q TMUX; and test "$TERM_PROGRAM" != "vscode"
             if tmux has-session -t main 2>/dev/null
-              tmux new-session -t main
+              if not tmux list-clients -t main 2>/dev/null | grep -q .
+                tmux new-session -t main
+              end
             else
               tmux new-session -s main
             end
