@@ -25,7 +25,8 @@
           inputs.impermanence.nixosModules.impermanence
           inputs.catppuccin.nixosModules.catppuccin
           inputs.neovim.nixosModules.default
-        ] ++ modules;
+        ]
+        ++ modules;
       };
 
     mkDarwin =
@@ -49,7 +50,8 @@
           inputs.home-manager.darwinModules.home-manager
           inputs.agenix.darwinModules.default
           inputs.catppuccin.darwinModules.catppuccin
-        ] ++ modules;
+        ]
+        ++ modules;
       };
   };
 }

@@ -2,98 +2,98 @@
   flake.nixosModules.home-waybar =
     { lib, ... }:
     {
-    home-manager.users.juggeli = {
-      programs.waybar = {
-        enable = true;
-        style = lib.mkForce (builtins.readFile ./_assets/style.css);
-        systemd.enable = true;
-        settings = {
-          mainBar = {
-            layer = "top";
-            position = "bottom";
-            margin-top = 6;
-            margin-left = 1200;
-            margin-right = 1200;
-            margin-bottom = 6;
-            height = 40;
-            modules-left = [
-              "custom/logo"
-              "hyprland/workspaces"
-            ];
-            modules-right = [
-              "idle_inhibitor"
-              "pulseaudio"
-              "tray"
-              "clock"
-            ];
-
-            "custom/logo" = {
-              format = "";
-              tooltip = false;
-            };
-
-            "hyprland/workspaces" = {
-              disable-scroll = true;
-              persistent_workspaces = {
-                "1" = [ ];
-                "2" = [ ];
-                "3" = [ ];
-                "4" = [ ];
-              };
-              disable-click = true;
-            };
-
-            pulseaudio = {
-              format = " {icon} ";
-              format-muted = "";
-              format-icons = [
-                ""
-                "󰖀"
-                "󰕾"
+      home-manager.users.juggeli = {
+        programs.waybar = {
+          enable = true;
+          style = lib.mkForce (builtins.readFile ./_assets/style.css);
+          systemd.enable = true;
+          settings = {
+            mainBar = {
+              layer = "top";
+              position = "bottom";
+              margin-top = 6;
+              margin-left = 1200;
+              margin-right = 1200;
+              margin-bottom = 6;
+              height = 40;
+              modules-left = [
+                "custom/logo"
+                "hyprland/workspaces"
               ];
-              tooltip = true;
-              tooltip-format = "{volume}%";
-            };
+              modules-right = [
+                "idle_inhibitor"
+                "pulseaudio"
+                "tray"
+                "clock"
+              ];
 
-            clock = {
-              format = "{:%H:%M}";
-              format-alt = "{:%d.%m.%Y}";
-              tooltip-format = "<tt>{calendar}</tt>";
-              calendar = {
-                mode = "month";
-                mode-mon-col = 3;
-                weeks-pos = "right";
-                on-scroll = 1;
-                format = {
-                  months = "<span color='#bac2de'><b>{}</b></span>";
-                  days = "<span color='#cdd6f4'><b>{}</b></span>";
-                  weeks = "<span color='#f9e2af'><b>W{}</b></span>";
-                  weekdays = "<span color='#a6adc8'><b>{}</b></span>";
-                  today = "<span color='#f38ba8'><b><u>{}</u></b></span>";
+              "custom/logo" = {
+                format = "";
+                tooltip = false;
+              };
+
+              "hyprland/workspaces" = {
+                disable-scroll = true;
+                persistent_workspaces = {
+                  "1" = [ ];
+                  "2" = [ ];
+                  "3" = [ ];
+                  "4" = [ ];
+                };
+                disable-click = true;
+              };
+
+              pulseaudio = {
+                format = " {icon} ";
+                format-muted = "";
+                format-icons = [
+                  ""
+                  "󰖀"
+                  "󰕾"
+                ];
+                tooltip = true;
+                tooltip-format = "{volume}%";
+              };
+
+              clock = {
+                format = "{:%H:%M}";
+                format-alt = "{:%d.%m.%Y}";
+                tooltip-format = "<tt>{calendar}</tt>";
+                calendar = {
+                  mode = "month";
+                  mode-mon-col = 3;
+                  weeks-pos = "right";
+                  on-scroll = 1;
+                  format = {
+                    months = "<span color='#bac2de'><b>{}</b></span>";
+                    days = "<span color='#cdd6f4'><b>{}</b></span>";
+                    weeks = "<span color='#f9e2af'><b>W{}</b></span>";
+                    weekdays = "<span color='#a6adc8'><b>{}</b></span>";
+                    today = "<span color='#f38ba8'><b><u>{}</u></b></span>";
+                  };
                 };
               };
-            };
 
-            idle_inhibitor = {
-              format = "{icon}";
-              format-icons = {
-                activated = "";
-                deactivated = "";
+              idle_inhibitor = {
+                format = "{icon}";
+                format-icons = {
+                  activated = "";
+                  deactivated = "";
+                };
+                tooltip = true;
+                tooltip-format-activated = "Idle inhibitor active";
+                tooltip-format-deactivated = "Idle inhibitor inactive";
               };
-              tooltip = true;
-              tooltip-format-activated = "Idle inhibitor active";
-              tooltip-format-deactivated = "Idle inhibitor inactive";
-            };
 
-            tray = {
-              icon-size = 21;
-              spacing = 10;
+              tray = {
+                icon-size = 21;
+                spacing = 10;
+              };
             };
           };
         };
-      };
 
-      xdg.configFile."waybar/mocha.css".source = ./_assets/mocha.css;
+        xdg.configFile."waybar/mocha.css".source = ./_assets/mocha.css;
+      };
     };
-  };
 }
