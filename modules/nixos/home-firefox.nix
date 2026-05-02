@@ -91,6 +91,8 @@
     in
     {
       home-manager.users.juggeli = {
+        catppuccin.firefox.profiles.juggeli.enable = false;
+
         programs.firefox = {
           enable = true;
           package = pkgs.firefox-bin;
@@ -99,7 +101,6 @@
             extraConfig = "";
             userChrome = "";
             settings = defaultSettings;
-            extensions.force = true;
             id = 0;
             name = "juggeli";
           };
