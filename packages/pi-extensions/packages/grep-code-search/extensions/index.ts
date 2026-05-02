@@ -172,7 +172,7 @@ function isGrepResponse(data: unknown): data is GrepResponse {
 /** Main extension entry point */
 export default function (pi: ExtensionAPI) {
 	pi.registerTool({
-		name: "grep_code_search",
+		name: "github_code_search",
 		label: "Grep Code Search",
 		description: `Search code across millions of GitHub repositories using grep.app.
 
@@ -188,9 +188,9 @@ Search tips:
 - Filter by path: "config path:webpack"
 - Language is auto-detected from file extension
 - Results include syntax-highlighted snippets with line numbers`,
-		promptSnippet: "Search code across GitHub repos via grep.app",
+		promptSnippet: "Search code across GitHub repos",
 		promptGuidelines: [
-			"Use grep_code_search to find real-world usage examples and implementation patterns across GitHub",
+			"Use github_code_search to find real-world usage examples and implementation patterns across GitHub",
 		],
 
 		parameters: Type.Object({
@@ -242,7 +242,7 @@ Search tips:
 		renderCall(args, theme) {
 			const params = args as unknown as SearchParams;
 			const query = params.query ?? "";
-			const text = `${theme.bold("grep_code_search")}: "${query.slice(0, 40)}${query.length > 40 ? "..." : ""}"`;
+			const text = `${theme.bold("github_code_search")}: "${query.slice(0, 40)}${query.length > 40 ? "..." : ""}"`;
 			return new Text(text, 0, 0);
 		},
 

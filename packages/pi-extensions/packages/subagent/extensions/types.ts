@@ -34,7 +34,7 @@ export interface AgentConfig {
 	systemPrompt: string;
 	tools: AgentToolRestrictions;
 	category?: string;
-	/** When true, load extensions in the child session (gives access to exa_search, grep_code_search, etc.) */
+	/** When true, load extensions in the child session (gives access to exa_search, github_code_search, etc.) */
 	loadExtensions?: boolean;
 	/** Optional bash safety profile. Use "read-only" or "research" for allowlisted commands only. */
 	bashPolicy?: BashPolicy;

@@ -1,7 +1,7 @@
 /**
  * Librarian agent — external library research specialist.
  *
- * Uses web search (exa_search/exa_contents), GitHub code search (grep_code_search),
+ * Uses web search (exa_search/exa_contents), GitHub code search (github_code_search),
  * and bash (gh CLI, git) to find documentation, source code, and usage examples.
  */
 
@@ -34,7 +34,7 @@ export const createLibrarianAgent: AgentFactory = () => ({
 		"",
 		"- **exa_search**: Find official docs, release notes, changelogs, and current information.",
 		"- **exa_contents**: Read specific pages you already identified.",
-		"- **grep_code_search**: Find public code examples and upstream implementation entry points across GitHub.",
+		"- **github_code_search**: Find public code examples and upstream implementation entry points across GitHub.",
 		"- **bash**: Use research-safe `gh` and `git` commands, including cloning upstream repos into `/tmp` and inspecting issues, PRs, and releases.",
 		"- **grep/find/read/ls**: Inspect cloned upstream repos locally once you know where to look.",
 		"",

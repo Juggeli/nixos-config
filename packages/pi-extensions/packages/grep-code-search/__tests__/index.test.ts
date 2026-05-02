@@ -55,7 +55,7 @@ describe("grep-code-search extension", () => {
 
 	describe("tool registration", () => {
 		it("registers with correct name and label", () => {
-			expect(registeredTool.name).toBe("grep_code_search");
+			expect(registeredTool.name).toBe("github_code_search");
 			expect(registeredTool.label).toBe("Grep Code Search");
 		});
 
@@ -289,7 +289,7 @@ describe("grep-code-search extension", () => {
 			const theme = createTheme();
 			const result = registeredTool.renderCall({ query: "useEffect cleanup" }, theme);
 
-			expect(result.text).toContain("grep_code_search");
+			expect(result.text).toContain("github_code_search");
 			expect(result.text).toContain("useEffect cleanup");
 		});
 
