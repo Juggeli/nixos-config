@@ -65,7 +65,7 @@ describe("grep-code-search extension", () => {
 		});
 
 		it("has promptSnippet for system prompt", () => {
-			expect(registeredTool.promptSnippet).toBe("Search code across GitHub repos via grep.app");
+			expect(registeredTool.promptSnippet).toBe("Search code across GitHub repos");
 		});
 
 		it("has promptGuidelines", () => {
