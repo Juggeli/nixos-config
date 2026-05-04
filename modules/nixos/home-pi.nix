@@ -16,6 +16,14 @@
           inherit src;
           filter = path: _type: !(builtins.baseNameOf path == "__tests__");
         };
+      pi = llm-agents.pi.overrideAttrs (old: {
+        postInstall = (old.postInstall or "") + ''
+          substituteInPlace $out/lib/node_modules/@mariozechner/pi-coding-agent/dist/core/tools/read.js \
+            --replace-fail \
+              'text.setText(formatReadResult(context.args, result, options, theme, context.showImages));' \
+              'text.setText("");'
+        '';
+      });
     in
     {
       home-manager.users.juggeli = {
@@ -27,7 +35,7 @@
             export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
             export OLLAMA_API_KEY=$(cat ${config.age.secrets.ollama-api-key.path})
             ${pkgs.nodejs}/bin/node ${extensionsDir}/model-sync/sync-models.mjs --if-missing || true
-            exec ${llm-agents.pi}/bin/pi "$@"
+            exec ${pi}/bin/pi "$@"
           '')
           (pkgs.writeShellScriptBin "pi-sync-models" ''
             export PI_AGENT_DIR="/home/juggeli/.pi/agent"
