@@ -2,14 +2,15 @@ import { describe, expect, it } from "vitest";
 import {
 	ALL_TOOL_NAMES,
 	EXPLORE_RESTRICTIONS,
+	resolveBuiltinToolNames,
+	resolveCustomBashTool,
 	resolveToolNames,
-	resolveTools,
 	SUBAGENT_DEFAULTS,
 } from "../extensions/tool-restrictions.js";
 
 describe("resolveToolNames", () => {
 	it("returns all tools when restrictions are empty", () => {
-		expect(resolveToolNames({})).toEqual(ALL_TOOL_NAMES);
+		expect(resolveToolNames({})).toEqual([...ALL_TOOL_NAMES]);
 	});
 
 	it("excludes tools set to false", () => {
@@ -29,7 +30,7 @@ describe("resolveToolNames", () => {
 
 	it("ignores unknown tool names in restrictions", () => {
 		const result = resolveToolNames({ unknownTool: false });
-		expect(result).toEqual(ALL_TOOL_NAMES);
+		expect(result).toEqual([...ALL_TOOL_NAMES]);
 	});
 
 	it("returns empty array when all tools denied", () => {
@@ -46,7 +47,7 @@ describe("SUBAGENT_DEFAULTS", () => {
 
 	it("allows all built-in tools (subagent is not a built-in)", () => {
 		const result = resolveToolNames(SUBAGENT_DEFAULTS);
-		expect(result).toEqual(ALL_TOOL_NAMES);
+		expect(result).toEqual([...ALL_TOOL_NAMES]);
 	});
 });
 
@@ -69,13 +70,35 @@ describe("EXPLORE_RESTRICTIONS", () => {
 	});
 });
 
-describe("resolveTools", () => {
-	it("wraps bash in read-only mode when requested", async () => {
-		const tools = resolveTools(process.cwd(), EXPLORE_RESTRICTIONS, "read-only");
-		const bashTool = tools.find((tool) => tool.name === "bash");
-		if (!bashTool) throw new Error("bash tool was not resolved");
-		await expect(bashTool.execute("test", { command: "touch /tmp/should-not-exist" })).rejects.toThrow(
-			"Command blocked by read-only bash policy",
-		);
+describe("resolveBuiltinToolNames", () => {
+	it("excludes bash when bash policy is non-default", () => {
+		const names = resolveBuiltinToolNames(EXPLORE_RESTRICTIONS, "read-only");
+		expect(names).not.toContain("bash");
+		expect(names).toContain("read");
+	});
+
+	it("keeps bash when bash policy is default", () => {
+		const names = resolveBuiltinToolNames(EXPLORE_RESTRICTIONS, "default");
+		expect(names).toContain("bash");
+	});
+});
+
+describe("resolveCustomBashTool", () => {
+	it("returns a custom bash tool for read-only policy", async () => {
+		const tool = resolveCustomBashTool(process.cwd(), EXPLORE_RESTRICTIONS, "read-only");
+		if (!tool) throw new Error("expected custom bash tool");
+		expect(tool.name).toBe("bash");
+		await expect(tool.execute("test", { command: "touch /tmp/should-not-exist" }, undefined, undefined, {} as never))
+			.rejects.toThrow("Command blocked by read-only bash policy");
+	});
+
+	it("returns undefined for default policy", () => {
+		const tool = resolveCustomBashTool(process.cwd(), EXPLORE_RESTRICTIONS, "default");
+		expect(tool).toBeUndefined();
+	});
+
+	it("returns undefined when bash is denied", () => {
+		const tool = resolveCustomBashTool(process.cwd(), { bash: false }, "read-only");
+		expect(tool).toBeUndefined();
 	});
 });

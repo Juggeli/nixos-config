@@ -41,9 +41,15 @@ describe("validateReadOnlyBashCommand", () => {
 describe("createReadOnlyBashTool", () => {
 	it("rejects blocked commands before execution", async () => {
 		const tool = createReadOnlyBashTool(process.cwd());
-		await expect(tool.execute("test", { command: "echo hello > /tmp/read-only-bash-test.txt" })).rejects.toThrow(
-			"Command blocked by read-only bash policy",
-		);
+		await expect(
+			tool.execute(
+				"test",
+				{ command: "echo hello > /tmp/read-only-bash-test.txt" },
+				undefined,
+				undefined,
+				{} as never,
+			),
+		).rejects.toThrow("Command blocked by read-only bash policy");
 	});
 });
 
@@ -76,8 +82,8 @@ describe("validateResearchBashCommand", () => {
 describe("createResearchBashTool", () => {
 	it("rejects writes to the user repo before execution", async () => {
 		const tool = createResearchBashTool(process.cwd());
-		await expect(tool.execute("test", { command: "touch ./should-not-write" })).rejects.toThrow(
-			"Command blocked by research bash policy",
-		);
+		await expect(
+			tool.execute("test", { command: "touch ./should-not-write" }, undefined, undefined, {} as never),
+		).rejects.toThrow("Command blocked by research bash policy");
 	});
 });

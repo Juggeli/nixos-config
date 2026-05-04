@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveTools } from "../extensions/tool-restrictions.js";
+import { resolveCustomBashTool } from "../extensions/tool-restrictions.js";
 import { createLibrarianAgent } from "../extensions/agents/librarian.js";
 
 describe("createLibrarianAgent", () => {
@@ -22,21 +22,21 @@ describe("createLibrarianAgent", () => {
 
 	it("blocks destructive bash commands", async () => {
 		const agent = createLibrarianAgent();
-		const tools = resolveTools(process.cwd(), agent.tools, agent.bashPolicy);
-		const bashTool = tools.find((tool) => tool.name === "bash");
+		const bashTool = resolveCustomBashTool(process.cwd(), agent.tools, agent.bashPolicy);
 		if (!bashTool) throw new Error("bash tool was not resolved");
 
-		await expect(bashTool.execute("test", { command: "touch /tmp/librarian-should-not-write" })).rejects.toThrow(
-			"Command blocked by research bash policy",
-		);
+		await expect(
+			bashTool.execute("test", { command: "touch /tmp/librarian-should-not-write" }, undefined, undefined, {} as never),
+		).rejects.toThrow("Command blocked by research bash policy");
 	});
 
 	it("allows safe research bash commands", async () => {
 		const agent = createLibrarianAgent();
-		const tools = resolveTools(process.cwd(), agent.tools, agent.bashPolicy);
-		const bashTool = tools.find((tool) => tool.name === "bash");
+		const bashTool = resolveCustomBashTool(process.cwd(), agent.tools, agent.bashPolicy);
 		if (!bashTool) throw new Error("bash tool was not resolved");
 
-		await expect(bashTool.execute("test", { command: "pwd" })).resolves.toBeDefined();
+		await expect(
+			bashTool.execute("test", { command: "pwd" }, undefined, undefined, {} as never),
+		).resolves.toBeDefined();
 	});
 });

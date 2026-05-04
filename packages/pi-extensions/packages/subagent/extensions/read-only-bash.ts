@@ -1,4 +1,4 @@
-import { createBashTool } from "@mariozechner/pi-coding-agent";
+import { createBashToolDefinition } from "@mariozechner/pi-coding-agent";
 
 const CONTROL_OPERATOR_PATTERN = /&&|\|\||;|`|\$\(|\n|\r/;
 
@@ -138,7 +138,7 @@ function createPolicyBashTool(
 	policyName: string,
 	descriptionSuffix: string,
 ) {
-	const bashTool = createBashTool(cwd);
+	const bashTool = createBashToolDefinition(cwd);
 	type Execute = typeof bashTool.execute;
 
 	const execute: Execute = async (...args) => {

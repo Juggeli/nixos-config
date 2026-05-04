@@ -12,6 +12,7 @@ import {
 	createAgentSession,
 	DefaultResourceLoader,
 	type ExtensionContext,
+	getAgentDir,
 	SessionManager,
 	SettingsManager,
 } from "@mariozechner/pi-coding-agent";
@@ -24,7 +25,7 @@ import {
 	type ToolCallWindow,
 } from "./loop-detector.js";
 import { getModelOverride } from "./model-config.js";
-import { resolveTools } from "./tool-restrictions.js";
+import { resolveBuiltinToolNames, resolveCustomBashTool } from "./tool-restrictions.js";
 import type { AgentConfig, OnAgentEventCallback, SingleResult, TaskResult, UsageStats } from "./types.js";
 import { emptyUsage } from "./types.js";
 
@@ -73,8 +74,9 @@ export async function runAgent(
 		if (found) model = found;
 	}
 
-	// Build filtered tools
-	const tools = resolveTools(cwd, agentConfig.tools, agentConfig.bashPolicy ?? "default");
+	const bashPolicy = agentConfig.bashPolicy ?? "default";
+	const toolNames = resolveBuiltinToolNames(agentConfig.tools, bashPolicy);
+	const customBash = resolveCustomBashTool(cwd, agentConfig.tools, bashPolicy);
 
 	// Set PI_SUBAGENT to prevent fork-bombing when extensions are loaded
 	if (agentConfig.loadExtensions) {
@@ -84,6 +86,7 @@ export async function runAgent(
 	// Create resource loader — load extensions only when the agent requires them
 	const resourceLoader = new DefaultResourceLoader({
 		cwd,
+		agentDir: getAgentDir(),
 		noExtensions: !agentConfig.loadExtensions,
 		noSkills: true,
 		noPromptTemplates: true,
@@ -92,12 +95,12 @@ export async function runAgent(
 	});
 	await resourceLoader.reload();
 
-	// Create the child session
 	const sessionOptions: CreateAgentSessionOptions = {
 		cwd,
 		modelRegistry: ctx.modelRegistry,
 		model,
-		tools,
+		tools: toolNames,
+		customTools: customBash ? [customBash] : undefined,
 		resourceLoader,
 		sessionManager: SessionManager.inMemory(cwd),
 		settingsManager: SettingsManager.create(cwd),
