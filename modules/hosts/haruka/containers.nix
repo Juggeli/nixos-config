@@ -253,6 +253,10 @@
         ];
       };
 
+      systemd.services.podman-qbittorrent.serviceConfig.ExecStartPre = [
+        "${pkgs.coreutils}/bin/rm -f /mnt/appdata/qbittorrent/config/ipc-socket /mnt/appdata/qbittorrent/config/lockfile"
+      ];
+
       boot.kernel.sysctl."net.ipv4.conf.all.src_valid_mark" = 1;
 
       services.recyclarr = {
