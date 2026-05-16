@@ -4,7 +4,7 @@
  * Replaces the old subprocess-based execution with createAgentSession().
  */
 
-import type { AssistantMessage, Message } from "@mariozechner/pi-ai";
+import type { AssistantMessage, Message } from "@earendil-works/pi-ai";
 import {
 	type AgentSession,
 	type AgentSessionEvent,
@@ -15,7 +15,7 @@ import {
 	getAgentDir,
 	SessionManager,
 	SettingsManager,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 import {
 	detectTextLoop,
 	detectToolLoop,
@@ -24,10 +24,45 @@ import {
 	type TextDeltaWindow,
 	type ToolCallWindow,
 } from "./loop-detector.js";
+import { logSubagentDebug } from "./debug-log.js";
 import { getModelOverride } from "./model-config.js";
 import { resolveBuiltinToolNames, resolveCustomBashTool } from "./tool-restrictions.js";
 import type { AgentConfig, OnAgentEventCallback, SingleResult, TaskResult, UsageStats } from "./types.js";
 import { emptyUsage } from "./types.js";
+
+const CHILD_SUBAGENT_BOUNDARY_INSTRUCTIONS = [
+	"You are a child subagent, not the parent orchestrator.",
+	"Complete only the assigned role-specific task with the tools available to you.",
+	"Do not propose or run subagents.",
+	"If you need to edit files, call actual edit/write tools. Do not print tool-call syntax, patches, or pseudo-tool calls as text.",
+].join("\n");
+
+function buildSubagentPrompt(agentConfig: AgentConfig): string {
+	return `${CHILD_SUBAGENT_BOUNDARY_INSTRUCTIONS}\n\n${agentConfig.systemPrompt}`;
+}
+
+let piSubagentEnvQueue: Promise<void> = Promise.resolve();
+
+async function withPiSubagentEnv<T>(enabled: boolean | undefined, fn: () => Promise<T>): Promise<T> {
+	if (!enabled) return fn();
+
+	const previous = piSubagentEnvQueue.catch(() => undefined);
+	let release!: () => void;
+	piSubagentEnvQueue = previous.then(() => new Promise<void>((resolve) => {
+		release = resolve;
+	}));
+
+	await previous;
+	const previousPiSubagent = process.env.PI_SUBAGENT;
+	process.env.PI_SUBAGENT = "1";
+	try {
+		return await fn();
+	} finally {
+		if (previousPiSubagent === undefined) delete process.env.PI_SUBAGENT;
+		else process.env.PI_SUBAGENT = previousPiSubagent;
+		release();
+	}
+}
 
 /**
  * Run an agent using the in-process SDK.
@@ -43,6 +78,7 @@ export async function runAgent(
 	onEvent?: OnAgentEventCallback,
 ): Promise<{ result: TaskResult; session: AgentSession }> {
 	const cwd = ctx.cwd;
+	const runId = `${agentConfig.name}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 	// Resolve model from registry if specified, with persisted override taking priority.
 	// Matching mirrors the main model-resolver: case-insensitive, provider/id then id-only fallback.
@@ -75,13 +111,26 @@ export async function runAgent(
 	}
 
 	const bashPolicy = agentConfig.bashPolicy ?? "default";
-	const toolNames = resolveBuiltinToolNames(agentConfig.tools, bashPolicy);
+	const systemPromptMode = agentConfig.systemPromptMode ?? "replace";
+	const inheritProjectContext = agentConfig.inheritProjectContext ?? false;
+	const subagentPrompt = buildSubagentPrompt(agentConfig);
+	const builtinToolNames = resolveBuiltinToolNames(agentConfig.tools, bashPolicy);
 	const customBash = resolveCustomBashTool(cwd, agentConfig.tools, bashPolicy);
-
-	// Set PI_SUBAGENT to prevent fork-bombing when extensions are loaded
-	if (agentConfig.loadExtensions) {
-		process.env.PI_SUBAGENT = "1";
-	}
+	const toolNames = customBash && !builtinToolNames.includes("bash") ? [...builtinToolNames, "bash"] : builtinToolNames;
+	logSubagentDebug("run_start", {
+		runId,
+		agent: agentConfig.name,
+		cwd,
+		model: effectiveModelId || "parent",
+		bashPolicy,
+		systemPromptMode,
+		inheritProjectContext,
+		toolNames,
+		customBash: Boolean(customBash),
+		loadExtensions: Boolean(agentConfig.loadExtensions),
+		task,
+		systemPrompt: subagentPrompt,
+	});
 
 	// Create resource loader — load extensions only when the agent requires them
 	const resourceLoader = new DefaultResourceLoader({
@@ -91,9 +140,11 @@ export async function runAgent(
 		noSkills: true,
 		noPromptTemplates: true,
 		noThemes: true,
-		systemPrompt: agentConfig.systemPrompt,
+		noContextFiles: !inheritProjectContext,
+		systemPrompt: systemPromptMode === "replace" ? subagentPrompt : undefined,
+		appendSystemPrompt: systemPromptMode === "append" ? [subagentPrompt] : undefined,
 	});
-	await resourceLoader.reload();
+	await withPiSubagentEnv(agentConfig.loadExtensions, () => resourceLoader.reload());
 
 	const sessionOptions: CreateAgentSessionOptions = {
 		cwd,
@@ -108,6 +159,7 @@ export async function runAgent(
 	};
 
 	const { session } = await createAgentSession(sessionOptions);
+	logSubagentDebug("session_created", { runId, agent: agentConfig.name });
 
 	// Subscribe to events for real-time updates
 	let unsubscribe: (() => void) | undefined;
@@ -119,6 +171,11 @@ export async function runAgent(
 	let loopWindow: ToolCallWindow | undefined;
 	let textLoopWindow: TextDeltaWindow | undefined;
 	let loopErrorMessage: string | undefined;
+	let parentAbortRequested = false;
+
+	const debugUnsub = session.subscribe((event: AgentSessionEvent) => {
+		logSubagentDebug("session_event", { runId, agent: agentConfig.name, event });
+	});
 
 	// Track usage from events
 	const usageUnsub = session.subscribe((event: AgentSessionEvent) => {
@@ -168,6 +225,7 @@ export async function runAgent(
 		let abortHandler: (() => void) | undefined;
 		if (signal) {
 			abortHandler = () => {
+				parentAbortRequested = true;
 				session.abort();
 			};
 			signal.addEventListener("abort", abortHandler, { once: true });
@@ -184,6 +242,7 @@ export async function runAgent(
 
 		// Extract final output from messages
 		const messages = session.messages as Message[];
+		logSubagentDebug("run_success", { runId, agent: agentConfig.name, messages });
 		const finalOutput = extractFinalOutput(messages);
 		const lastAssistant = findLastAssistant(messages);
 
@@ -198,7 +257,15 @@ export async function runAgent(
 		return { result, session };
 	} catch (error) {
 		const messages = session.messages as Message[];
-		const errorMessage = loopErrorMessage ?? (error instanceof Error ? error.message : String(error));
+		const rawErrorMessage = error instanceof Error ? error.message : String(error);
+		logSubagentDebug("run_error", { runId, agent: agentConfig.name, rawErrorMessage, loopErrorMessage, messages });
+		const errorMessage =
+			loopErrorMessage ??
+			(parentAbortRequested || signal?.aborted
+				? `Parent aborted subagent: ${rawErrorMessage}`
+				: rawErrorMessage === "Request was aborted"
+					? "Subagent session was aborted by the SDK/provider without an explicit reason."
+					: rawErrorMessage);
 
 		return {
 			result: {
@@ -212,6 +279,7 @@ export async function runAgent(
 		};
 	} finally {
 		unsubscribe?.();
+		debugUnsub();
 		usageUnsub();
 		loopUnsub();
 	}
@@ -226,6 +294,8 @@ export async function resumeAgent(
 	signal?: AbortSignal,
 	onEvent?: OnAgentEventCallback,
 ): Promise<TaskResult> {
+	const runId = `resume-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+	logSubagentDebug("resume_start", { runId, task });
 	let unsubscribe: (() => void) | undefined;
 	if (onEvent) {
 		unsubscribe = session.subscribe(onEvent);
@@ -235,6 +305,10 @@ export async function resumeAgent(
 	let loopWindow: ToolCallWindow | undefined;
 	let textLoopWindow: TextDeltaWindow | undefined;
 	let loopErrorMessage: string | undefined;
+	let parentAbortRequested = false;
+	const debugUnsub = session.subscribe((event: AgentSessionEvent) => {
+		logSubagentDebug("resume_event", { runId, event });
+	});
 	const usageUnsub = session.subscribe((event: AgentSessionEvent) => {
 		if (event.type === "message_end" && event.message?.role === "assistant") {
 			const msg = event.message;
@@ -279,6 +353,7 @@ export async function resumeAgent(
 		let abortHandler: (() => void) | undefined;
 		if (signal) {
 			abortHandler = () => {
+				parentAbortRequested = true;
 				session.abort();
 			};
 			signal.addEventListener("abort", abortHandler, { once: true });
@@ -293,6 +368,7 @@ export async function resumeAgent(
 		}
 
 		const messages = session.messages as Message[];
+		logSubagentDebug("resume_success", { runId, messages });
 		const finalOutput = extractFinalOutput(messages);
 		const lastAssistant = findLastAssistant(messages);
 
@@ -305,15 +381,24 @@ export async function resumeAgent(
 		};
 	} catch (error) {
 		const messages = session.messages as Message[];
+		const rawErrorMessage = error instanceof Error ? error.message : String(error);
+		logSubagentDebug("resume_error", { runId, rawErrorMessage, loopErrorMessage, messages });
 		return {
 			exitCode: 1,
 			messages,
 			usage,
 			finalOutput: "",
-			errorMessage: loopErrorMessage ?? (error instanceof Error ? error.message : String(error)),
+			errorMessage:
+				loopErrorMessage ??
+				(parentAbortRequested || signal?.aborted
+					? `Parent aborted subagent: ${rawErrorMessage}`
+					: rawErrorMessage === "Request was aborted"
+						? "Subagent session was aborted by the SDK/provider without an explicit reason."
+						: rawErrorMessage),
 		};
 	} finally {
 		unsubscribe?.();
+		debugUnsub();
 		usageUnsub();
 		loopUnsub();
 	}

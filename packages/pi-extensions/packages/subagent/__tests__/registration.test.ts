@@ -17,17 +17,39 @@ interface RegisteredTool {
 	execute?: (...args: any[]) => Promise<any>;
 }
 
+interface RegisteredCommand {
+	handler: (
+		args: string,
+		ctx: { isIdle: () => boolean; ui: { notify: (message: string, level: string) => void } },
+	) => Promise<void>;
+}
+
+interface SentMessage {
+	message: unknown;
+	options?: unknown;
+}
+
 describe("subagent extension registration", () => {
 	let registeredTool: RegisteredTool;
+	let registeredCommands: Record<string, RegisteredCommand>;
+	let sentMessages: SentMessage[];
 
 	beforeEach(() => {
 		registeredTool = undefined as unknown as RegisteredTool;
+		registeredCommands = {};
+		sentMessages = [];
+		delete process.env.PI_SUBAGENT;
 
 		const mockPi = {
 			registerTool: vi.fn((tool: RegisteredTool) => {
 				registeredTool = tool;
 			}),
-			registerCommand: vi.fn(),
+			registerCommand: vi.fn((name: string, command: RegisteredCommand) => {
+				registeredCommands[name] = command;
+			}),
+			sendUserMessage: vi.fn((message: unknown, options?: unknown) => {
+				sentMessages.push({ message, options });
+			}),
 			on: vi.fn(),
 		};
 
@@ -37,13 +59,13 @@ describe("subagent extension registration", () => {
 	it("registers the subagent tool", () => {
 		expect(registeredTool.name).toBe("subagent");
 		expect(registeredTool.label).toBe("Subagent");
-		expect(registeredTool.description).toContain("Built-in agents: explore, librarian.");
+		expect(registeredTool.description).toContain("Built-in agents: explore, librarian, review.");
 		expect(registeredTool.description).not.toContain("call without parameters");
 	});
 
 	it("has a prompt snippet for the system prompt", () => {
 		expect(registeredTool.promptSnippet).toBe(
-			"Use subagent for focused investigation: explore for this repo, librarian for external docs/code",
+			"Use subagent for focused investigation: explore for this repo, librarian for external docs/code, review for changed-code review",
 		);
 	});
 
@@ -60,6 +82,12 @@ describe("subagent extension registration", () => {
 		);
 		expect(registeredTool.promptGuidelines).toContain(
 			"Use the librarian agent for external libraries, frameworks, API docs, upstream source code, GitHub issues, and evidence-backed research outside the local repo.",
+		);
+		expect(registeredTool.promptGuidelines).toContain(
+			"Use the review agent for read-only reviews of current changes, diffs, branches, commits, or files when the user asks for code quality, bug-risk, maintainability, overengineering, or regression review.",
+		);
+		expect(registeredTool.promptGuidelines).toContain(
+			"When you need multiple independent subagent investigations, call subagent once with tasks[] so they run in parallel; do not make sequential subagent calls unless later tasks depend on earlier results.",
 		);
 		expect(registeredTool.promptGuidelines).toContain(
 			"Prefer tasks[] when you have multiple independent search angles or questions to ask at once.",
@@ -102,6 +130,35 @@ describe("subagent extension registration", () => {
 		expect(result?.content?.[0]?.text).toContain("Missing parameters. Use agent + task, or tasks[]");
 		expect(result?.content?.[0]?.text).toContain('"explore"');
 		expect(result?.content?.[0]?.text).toContain('"librarian"');
+		expect(result?.content?.[0]?.text).toContain('"review"');
+	});
+
+	it("registers a review command that delegates to the review subagent", async () => {
+		await registeredCommands.review.handler("HEAD~1..HEAD", {
+			isIdle: () => true,
+			ui: { notify: vi.fn() },
+		});
+
+		expect(sentMessages).toEqual([
+			{
+				message:
+					'Use the subagent tool with agent "review" for this task. Do not perform the review yourself.\n\nHEAD~1..HEAD',
+				options: undefined,
+			},
+		]);
+	});
+
+	it("queues review command as a follow-up when the agent is busy", async () => {
+		const notify = vi.fn();
+
+		await registeredCommands.review.handler("", {
+			isIdle: () => false,
+			ui: { notify },
+		});
+
+		expect(notify).toHaveBeenCalledWith("Agent is busy. Review queued as a follow-up.", "info");
+		expect(sentMessages[0].options).toEqual({ deliverAs: "followUp" });
+		expect(sentMessages[0].message).toContain("Review the current working tree changes");
 	});
 
 	it("shows more of the final answer for compact agents in collapsed results", () => {

@@ -1,4 +1,4 @@
-import type { ExtensionContext, ProviderModelConfig } from "@mariozechner/pi-coding-agent";
+import type { ExtensionContext, ProviderModelConfig } from "@earendil-works/pi-coding-agent";
 
 export function isProviderModelConfigArray(value: unknown): value is ProviderModelConfig[];
 export function getCachedModels(ctx: ExtensionContext, cacheKey: string): ProviderModelConfig[];

@@ -20,12 +20,14 @@ describe("buildLivePreviewText", () => {
 		});
 
 		const lines = text.split("\n");
-		expect(lines).toHaveLength(5);
-		expect(lines[0]).toContain("Thinking line one");
-		expect(lines[1]).toContain("Thinking line two");
-		expect(lines[2]).toContain("→ read");
-		expect(lines[3]).toContain("First output line");
-		expect(lines[4]).toContain("Second output line");
+		expect(lines).toHaveLength(7);
+		expect(lines[0]).toBe("Task:");
+		expect(lines[1]).toBe("Inspect the repo");
+		expect(lines[2]).toContain("Thinking line one");
+		expect(lines[3]).toContain("Thinking line two");
+		expect(lines[4]).toContain("→ read");
+		expect(lines[5]).toContain("First output line");
+		expect(lines[6]).toContain("Second output line");
 	});
 
 	it("renders only the latest tool line in compact mode", () => {
@@ -43,6 +45,6 @@ describe("buildLivePreviewText", () => {
 			],
 		});
 
-		expect(text).toBe("→ read ~/src/pi-mono/packages/coding-agent/src/index.ts");
+		expect(text).toBe("Task:\nInspect the repo\n→ read ~/src/pi-mono/packages/coding-agent/src/index.ts");
 	});
 });

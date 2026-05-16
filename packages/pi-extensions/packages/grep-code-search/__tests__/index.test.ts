@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import grepCodeSearchExtension from "../extensions/index.js";
 
 // Mock dependencies
-vi.mock("@mariozechner/pi-tui", () => ({
+vi.mock("@earendil-works/pi-tui", () => ({
 	Text: vi.fn().mockImplementation(function (this: { text: string }, text: string) {
 		this.text = text;
 	}),

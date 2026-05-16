@@ -13,8 +13,19 @@ describe("validateReadOnlyBashCommand", () => {
 		expect(validateReadOnlyBashCommand("git config --get remote.origin.url")).toEqual({ allowed: true });
 	});
 
+	it("allows read-only git commands with -C", () => {
+		expect(validateReadOnlyBashCommand("git -C /tmp/repo status")).toEqual({ allowed: true });
+		expect(validateReadOnlyBashCommand("git -C /home/user/repo diff HEAD")).toEqual({ allowed: true });
+	});
+
 	it("blocks command chaining", () => {
 		const result = validateReadOnlyBashCommand("git status; touch /tmp/pwned");
+		expect(result.allowed).toBe(false);
+		expect(result.reason).toContain("chaining");
+	});
+
+	it("blocks pipelines", () => {
+		const result = validateReadOnlyBashCommand("grep foo file | sh");
 		expect(result.allowed).toBe(false);
 		expect(result.reason).toContain("chaining");
 	});

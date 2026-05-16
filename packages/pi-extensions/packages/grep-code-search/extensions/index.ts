@@ -4,8 +4,8 @@
  * Provides code search via grep.app API - searches millions of GitHub repos.
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { Text } from "@mariozechner/pi-tui";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { Text } from "@earendil-works/pi-tui";
 import { Type } from "@sinclair/typebox";
 
 const GREP_API_BASE = "https://grep.app/api";

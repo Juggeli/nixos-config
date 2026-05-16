@@ -10,6 +10,8 @@ export const createExploreAgent: AgentFactory = () => ({
 	description: "Read-only codebase exploration and search. Cannot write or edit files.",
 	mode: "subagent",
 	model: undefined,
+	systemPromptMode: "append",
+	inheritProjectContext: true,
 	systemPrompt: [
 		"You are Explore, a read-only codebase investigation agent. Search the current repository, inspect relevant files, and report precise findings with evidence.",
 		"",

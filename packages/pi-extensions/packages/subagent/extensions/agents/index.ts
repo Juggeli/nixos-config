@@ -5,12 +5,10 @@
 import type { AgentConfig, AgentFactory, AgentMode } from "../types.js";
 import { createExploreAgent } from "./explore.js";
 import { createLibrarianAgent } from "./librarian.js";
+import { createReviewAgent } from "./review.js";
 
 /** All built-in agent factories */
-const BUILTIN_FACTORIES: AgentFactory[] = [
-	createExploreAgent,
-	createLibrarianAgent,
-];
+const BUILTIN_FACTORIES: AgentFactory[] = [createExploreAgent, createLibrarianAgent, createReviewAgent];
 
 /** Create and cache the built-in agents map */
 let cachedAgents: Map<string, AgentConfig> | undefined;

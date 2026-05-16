@@ -1,6 +1,6 @@
-import { createBashToolDefinition } from "@mariozechner/pi-coding-agent";
+import { createBashToolDefinition } from "@earendil-works/pi-coding-agent";
 
-const CONTROL_OPERATOR_PATTERN = /&&|\|\||;|`|\$\(|\n|\r/;
+const CONTROL_OPERATOR_PATTERN = /&&|\|\||\||;|`|\$\(|\n|\r/;
 
 const DESTRUCTIVE_PATTERNS = [
 	/\brm\b/i,
@@ -61,11 +61,17 @@ const SAFE_PATTERNS = [
 	/^\s*whoami\b/i,
 	/^\s*date\b/i,
 	/^\s*git\s+(status|log|diff|show|blame|grep|rev-parse|ls-files|cat-file|describe)\b/i,
+	/^\s*git\s+-C\s+\S+\s+(status|log|diff|show|blame|grep|rev-parse|ls-files|cat-file|describe)\b/i,
 	/^\s*git\s+branch\b(\s+--list)?/i,
+	/^\s*git\s+-C\s+\S+\s+branch\b(\s+--list)?/i,
 	/^\s*git\s+tag\s+--list\b/i,
+	/^\s*git\s+-C\s+\S+\s+tag\s+--list\b/i,
 	/^\s*git\s+remote\b(\s+-v)?/i,
+	/^\s*git\s+-C\s+\S+\s+remote\b(\s+-v)?/i,
 	/^\s*git\s+config\s+--get\b/i,
+	/^\s*git\s+-C\s+\S+\s+config\s+--get\b/i,
 	/^\s*git\s+reflog\s+show\b/i,
+	/^\s*git\s+-C\s+\S+\s+reflog\s+show\b/i,
 ];
 
 const RESEARCH_PATTERNS = [

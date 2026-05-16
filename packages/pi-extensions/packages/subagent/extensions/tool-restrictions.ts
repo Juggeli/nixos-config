@@ -6,7 +6,7 @@
  * passed via `customTools`.
  */
 
-import type { ToolDefinition } from "@mariozechner/pi-coding-agent";
+import type { ToolDefinition } from "@earendil-works/pi-coding-agent";
 import { createReadOnlyBashTool, createResearchBashTool } from "./read-only-bash.js";
 import type { AgentToolRestrictions, BashPolicy } from "./types.js";
 

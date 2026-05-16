@@ -14,6 +14,8 @@ export const createLibrarianAgent: AgentFactory = () => ({
 		"External library research — finds documentation, source code, issues, and usage examples using web search, GitHub code search, GitHub CLI, and temporary repo clones.",
 	mode: "subagent",
 	model: undefined,
+	systemPromptMode: "append",
+	inheritProjectContext: true,
 	systemPrompt: [
 		"You are Librarian, a research agent for external libraries, frameworks, tools, and upstream repositories. Find trustworthy sources, inspect upstream code when needed, and answer with evidence-backed links.",
 		"",

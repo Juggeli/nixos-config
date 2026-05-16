@@ -6,10 +6,10 @@
  */
 
 import * as os from "node:os";
-import type { Message } from "@mariozechner/pi-ai";
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { type AgentSession, type AgentSessionEvent, getMarkdownTheme } from "@mariozechner/pi-coding-agent";
-import { Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
+import type { Message } from "@earendil-works/pi-ai";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { type AgentSession, type AgentSessionEvent, getMarkdownTheme } from "@earendil-works/pi-coding-agent";
+import { Container, Markdown, Spacer, Text } from "@earendil-works/pi-tui";
 import { Type } from "@sinclair/typebox";
 import { getAgent, listAgents } from "./agents/index.js";
 import { resumeAgent, runAgent } from "./executor.js";
@@ -161,6 +161,28 @@ function formatTaskPreview(task: string, maxLines = 2, maxLineLength = 72): stri
 	return lines.join("\n");
 }
 
+function formatTaskDiagnostics(result: SingleResult, theme: any): string {
+	const task = result.task.trim();
+	return task ? `${theme.fg("muted", "Task:")}\n${theme.fg("dim", task)}` : "";
+}
+
+function formatFailureDiagnostics(result: SingleResult, theme: any): string {
+	const lines: string[] = [];
+	const task = formatTaskDiagnostics(result, theme);
+	if (task) lines.push(task);
+
+	const tools = result.recentToolCalls?.slice(-5) || [];
+	if (tools.length > 0) {
+		lines.push(theme.fg("muted", "Last tools:"));
+		for (const tool of tools) {
+			lines.push(theme.fg("muted", "→ ") + formatToolCall(tool.name, tool.args, theme.fg.bind(theme)));
+		}
+	}
+
+	if (result.sessionId) lines.push(theme.fg("dim", `Session: ${result.sessionId}`));
+	return lines.join("\n");
+}
+
 function getDisplayItems(messages: Message[]): DisplayItem[] {
 	const items: DisplayItem[] = [];
 	for (const msg of messages) {
@@ -231,6 +253,9 @@ function upsertActivityLine(result: SingleResult, key: string, text: string): vo
 }
 
 export function buildLivePreviewText(result: SingleResult): string {
+	const task = result.task.trim();
+	const taskText = task ? `Task:\n${task}` : "";
+
 	if (result.compactLivePreview) {
 		const toolLine =
 			result.recentActivityLines
@@ -238,15 +263,16 @@ export function buildLivePreviewText(result: SingleResult): string {
 				.reverse()
 				.find((line) => line.key === "tool")?.text ||
 			(result.lastToolCall ? `→ ${formatToolCallPlain(result.lastToolCall.name, result.lastToolCall.args)}` : undefined);
-		if (toolLine) return toolLine;
+		if (toolLine) return taskText ? `${taskText}\n${toolLine}` : toolLine;
 	}
 
 	const lines = result.recentActivityLines?.map((line) => line.text).slice(-5) || [];
 	if (lines.length > 0) {
-		return lines.join("\n");
+		return taskText ? `${taskText}\n${lines.join("\n")}` : lines.join("\n");
 	}
 
-	if (result.errorMessage) return result.errorMessage;
+	if (result.errorMessage) return taskText ? `${taskText}\n${result.errorMessage}` : result.errorMessage;
+	if (taskText && result.exitCode === -1) return taskText;
 	if (result.currentActivity) return result.currentActivity;
 	return result.exitCode === -1 ? "(running...)" : "(no output)";
 }
@@ -303,7 +329,7 @@ export default function (pi: ExtensionAPI) {
 	// =========================================================================
 
 	const allAgentConfigs = listAgents();
-	let cachedModelRegistry: import("@mariozechner/pi-coding-agent").ModelRegistry | undefined;
+	let cachedModelRegistry: import("@earendil-works/pi-coding-agent").ModelRegistry | undefined;
 	pi.registerCommand("agent-models", {
 		description: "View or set subagent model overrides",
 		getArgumentCompletions: (prefix: string) => {
@@ -396,6 +422,26 @@ export default function (pi: ExtensionAPI) {
 	});
 
 	// =========================================================================
+	// /review command
+	// =========================================================================
+
+	pi.registerCommand("review", {
+		description: "Review current changes with the review subagent",
+		handler: async (args, ctx) => {
+			const target = args.trim() || "Review the current working tree changes, including staged and unstaged changes.";
+			const message = `Use the subagent tool with agent "review" for this task. Do not perform the review yourself.\n\n${target}`;
+
+			if (!ctx.isIdle()) {
+				ctx.ui.notify("Agent is busy. Review queued as a follow-up.", "info");
+				pi.sendUserMessage(message, { deliverAs: "followUp" });
+				return;
+			}
+
+			pi.sendUserMessage(message);
+		},
+	});
+
+	// =========================================================================
 	// Subagent tool
 	// =========================================================================
 
@@ -411,15 +457,18 @@ export default function (pi: ExtensionAPI) {
 			"",
 			"Resume: pass session ID (from previous result) to continue a conversation.",
 			"",
-			"Built-in agents: explore, librarian.",
+			"Built-in agents: explore, librarian, review.",
 		].join("\n"),
-		promptSnippet: "Use subagent for focused investigation: explore for this repo, librarian for external docs/code",
+		promptSnippet:
+			"Use subagent for focused investigation: explore for this repo, librarian for external docs/code, review for changed-code review",
 		promptGuidelines: [
 			"Use subagent for self-contained investigation or evidence gathering, not for trivial work that is faster to do directly.",
 			"Treat explore and librarian as read-only peer tools for research, not as fallback after you have already done the same search yourself.",
 			"Use the explore agent for read-only codebase search, architecture tracing, finding files, symbols, usages, and git history in the current repository.",
 			"Use direct tools instead of explore when you already know the exact file or exact command you need and delegation would add overhead.",
 			"Use the librarian agent for external libraries, frameworks, API docs, upstream source code, GitHub issues, and evidence-backed research outside the local repo.",
+			"Use the review agent for read-only reviews of current changes, diffs, branches, commits, or files when the user asks for code quality, bug-risk, maintainability, overengineering, or regression review.",
+			"When you need multiple independent subagent investigations, call subagent once with tasks[] so they run in parallel; do not make sequential subagent calls unless later tasks depend on earlier results.",
 			"Prefer tasks[] when you have multiple independent search angles or questions to ask at once.",
 			"Use tasks[] to gather several independent findings in one subagent call instead of making multiple separate subagent calls.",
 			"Use session to resume an existing subagent conversation for follow-up questions, refinements, or retrying with the same context instead of starting over.",
@@ -795,7 +844,11 @@ export default function (pi: ExtensionAPI) {
 				let text = "";
 				if (isError && r.errorMessage) {
 					text += theme.fg("error", `✗ ${r.errorMessage}`);
+					const diagnostics = formatFailureDiagnostics(r, theme);
+					if (diagnostics) text += `\n${diagnostics}`;
 				} else if (r.compactLivePreview && finalOutput) {
+					const task = formatTaskDiagnostics(r, theme);
+					if (task) text += `${task}\n`;
 					const lines = finalOutput.trim().split("\n");
 					const preview = lines.slice(0, 6).join("\n");
 					text += theme.fg("toolOutput", preview);
@@ -803,11 +856,15 @@ export default function (pi: ExtensionAPI) {
 						text += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
 					}
 				} else if (displayItems.length > 0) {
+					const task = formatTaskDiagnostics(r, theme);
+					if (task) text += `${task}\n`;
 					text += renderDisplayItems(displayItems, COLLAPSED_ITEM_COUNT);
 					if (displayItems.length > COLLAPSED_ITEM_COUNT) {
 						text += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
 					}
 				} else if (finalOutput) {
+					const task = formatTaskDiagnostics(r, theme);
+					if (task) text += `${task}\n`;
 					const preview = finalOutput.trim().split("\n").slice(0, COLLAPSED_ITEM_COUNT).join("\n");
 					text += theme.fg("toolOutput", preview);
 					if (finalOutput.trim().split("\n").length > COLLAPSED_ITEM_COUNT) {
@@ -910,9 +967,20 @@ export default function (pi: ExtensionAPI) {
 								: theme.fg("error", "✗");
 					const displayItems = getDisplayItems(r.messages);
 					text += `\n\n${theme.fg("muted", "─── ")}${theme.fg("accent", r.agent)} ${rIcon}`;
-					if (r.exitCode === -1) text += `\n${buildLivePreviewText(r)}`;
-					else if (displayItems.length === 0) text += `\n${theme.fg("muted", "(no output)")}`;
-					else text += `\n${renderDisplayItems(displayItems, 5)}`;
+					if (r.exitCode === -1) {
+						text += `\n${buildLivePreviewText(r)}`;
+					} else {
+						const task = formatTaskDiagnostics(r, theme);
+						if (task) text += `\n${task}`;
+					}
+					if (r.exitCode !== -1) {
+						if (r.exitCode > 0 && r.errorMessage) {
+							text += `\n${theme.fg("error", r.errorMessage)}`;
+							const diagnostics = formatFailureDiagnostics(r, theme);
+							if (diagnostics) text += `\n${diagnostics}`;
+						} else if (displayItems.length === 0) text += `\n${theme.fg("muted", "(no output)")}`;
+						else text += `\n${renderDisplayItems(displayItems, 5)}`;
+					}
 				}
 				const totalUsage = formatUsage(aggregateUsage(details.results), { includeContext: false });
 				if (totalUsage) text += `\n${theme.fg("dim", `Total: ${totalUsage}`)}`;

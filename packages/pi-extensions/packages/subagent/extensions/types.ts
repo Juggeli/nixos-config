@@ -2,9 +2,9 @@
  * Shared types for the subagent extension.
  */
 
-import type { ThinkingLevel } from "@mariozechner/pi-agent-core";
-import type { Message } from "@mariozechner/pi-ai";
-import type { AgentSessionEvent } from "@mariozechner/pi-coding-agent";
+import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
+import type { Message } from "@earendil-works/pi-ai";
+import type { AgentSessionEvent } from "@earendil-works/pi-coding-agent";
 
 // =============================================================================
 // Agent Configuration
@@ -15,6 +15,7 @@ export type AgentMode = "primary" | "subagent" | "all";
 
 /** Bash execution policy for an agent */
 export type BashPolicy = "default" | "read-only" | "research";
+export type SystemPromptMode = "replace" | "append";
 
 /**
  * Per-agent tool restrictions.
@@ -32,6 +33,8 @@ export interface AgentConfig {
 	model?: string;
 	thinkingLevel?: ThinkingLevel;
 	systemPrompt: string;
+	systemPromptMode?: SystemPromptMode;
+	inheritProjectContext?: boolean;
 	tools: AgentToolRestrictions;
 	category?: string;
 	/** When true, load extensions in the child session (gives access to exa_search, github_code_search, etc.) */
