@@ -73,6 +73,8 @@
         hostId = "cc5b25a0";
       };
 
+      zramSwap.enable = true;
+
       hardware.enableRedistributableFirmware = true;
 
       hardware.cpu.intel.updateMicrocode = true;

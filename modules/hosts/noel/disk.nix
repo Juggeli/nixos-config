@@ -132,13 +132,6 @@
                 options.mountpoint = "legacy";
                 mountpoint = "/var/log";
               };
-              "nixos/swap" = {
-                type = "zfs_volume";
-                size = "64G";
-                content = {
-                  type = "swap";
-                };
-              };
               "nixos/reserved" = {
                 type = "zfs_fs";
                 options = {
