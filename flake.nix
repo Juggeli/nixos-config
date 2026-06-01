@@ -47,6 +47,11 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     comfyui-nix.url = "github:utensils/comfyui-nix";
   };
 
