@@ -78,6 +78,9 @@ describe("subagent extension registration", () => {
 			"Use the explore agent for read-only codebase search, architecture tracing, finding files, symbols, usages, and git history in the current repository.",
 		);
 		expect(registeredTool.promptGuidelines).toContain(
+			"Do not use explore to read known files/ranges or to relay complete file contents; use direct read calls for that.",
+		);
+		expect(registeredTool.promptGuidelines).toContain(
 			"Use direct tools instead of explore when you already know the exact file or exact command you need and delegation would add overhead.",
 		);
 		expect(registeredTool.promptGuidelines).toContain(
