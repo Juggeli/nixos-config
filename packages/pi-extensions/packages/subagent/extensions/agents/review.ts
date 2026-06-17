@@ -76,7 +76,6 @@ export const createReviewAgent: AgentFactory = () => ({
 		"- No emojis in output.",
 	].join("\n"),
 	tools: EXPLORE_RESTRICTIONS,
-	bashPolicy: "read-only",
 	compactLivePreview: true,
 	category: "review",
 });

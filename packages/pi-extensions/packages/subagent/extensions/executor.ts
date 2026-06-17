@@ -26,7 +26,7 @@ import {
 } from "./loop-detector.js";
 import { logSubagentDebug } from "./debug-log.js";
 import { getModelOverride } from "./model-config.js";
-import { resolveBuiltinToolNames, resolveCustomBashTool } from "./tool-restrictions.js";
+import { resolveBuiltinToolNames } from "./tool-restrictions.js";
 import type { AgentConfig, OnAgentEventCallback, SingleResult, TaskResult, UsageStats } from "./types.js";
 import { emptyUsage } from "./types.js";
 
@@ -110,23 +110,18 @@ export async function runAgent(
 		if (found) model = found;
 	}
 
-	const bashPolicy = agentConfig.bashPolicy ?? "default";
 	const systemPromptMode = agentConfig.systemPromptMode ?? "replace";
 	const inheritProjectContext = agentConfig.inheritProjectContext ?? false;
 	const subagentPrompt = buildSubagentPrompt(agentConfig);
-	const builtinToolNames = resolveBuiltinToolNames(agentConfig.tools, bashPolicy);
-	const customBash = resolveCustomBashTool(cwd, agentConfig.tools, bashPolicy);
-	const toolNames = customBash && !builtinToolNames.includes("bash") ? [...builtinToolNames, "bash"] : builtinToolNames;
+	const toolNames = resolveBuiltinToolNames(agentConfig.tools);
 	logSubagentDebug("run_start", {
 		runId,
 		agent: agentConfig.name,
 		cwd,
 		model: effectiveModelId || "parent",
-		bashPolicy,
 		systemPromptMode,
 		inheritProjectContext,
 		toolNames,
-		customBash: Boolean(customBash),
 		loadExtensions: Boolean(agentConfig.loadExtensions),
 		task,
 		systemPrompt: subagentPrompt,
@@ -151,7 +146,6 @@ export async function runAgent(
 		modelRegistry: ctx.modelRegistry,
 		model,
 		tools: toolNames,
-		customTools: customBash ? [customBash] : undefined,
 		resourceLoader,
 		sessionManager: SessionManager.inMemory(cwd),
 		settingsManager: SettingsManager.create(cwd),

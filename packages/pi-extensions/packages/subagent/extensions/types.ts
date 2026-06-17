@@ -13,8 +13,6 @@ import type { AgentSessionEvent } from "@earendil-works/pi-coding-agent";
 /** Agent execution mode — controls where the agent can be used */
 export type AgentMode = "primary" | "subagent" | "all";
 
-/** Bash execution policy for an agent */
-export type BashPolicy = "default" | "read-only" | "research";
 export type SystemPromptMode = "replace" | "append";
 
 /**
@@ -39,8 +37,6 @@ export interface AgentConfig {
 	category?: string;
 	/** When true, load extensions in the child session (gives access to exa_search, github_code_search, etc.) */
 	loadExtensions?: boolean;
-	/** Optional bash safety profile. Use "read-only" or "research" for allowlisted commands only. */
-	bashPolicy?: BashPolicy;
 	/** When true, live rendering collapses to a compact tool-focused preview. */
 	compactLivePreview?: boolean;
 }

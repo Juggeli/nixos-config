@@ -78,7 +78,6 @@ export const createExploreAgent: AgentFactory = () => ({
 		"- Keep answers concise, but not cryptic. Give enough detail that the caller can act on the result without unnecessary re-reading.",
 	].join("\n"),
 	tools: EXPLORE_RESTRICTIONS,
-	bashPolicy: "read-only",
 	compactLivePreview: true,
 	category: "search",
 });

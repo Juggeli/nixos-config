@@ -76,7 +76,6 @@ export const createLibrarianAgent: AgentFactory = () => ({
 		"- Always use `--depth=1` when cloning to minimize download size.",
 	].join("\n"),
 	tools: LIBRARIAN_RESTRICTIONS,
-	bashPolicy: "research",
 	compactLivePreview: true,
 	category: "research",
 	loadExtensions: true,

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { createReviewAgent } from "../extensions/agents/review.js";
-import { resolveCustomBashTool } from "../extensions/tool-restrictions.js";
 
 describe("createReviewAgent", () => {
 	it("configures a read-only compact subagent", () => {
@@ -8,7 +7,6 @@ describe("createReviewAgent", () => {
 
 		expect(agent.name).toBe("review");
 		expect(agent.mode).toBe("subagent");
-		expect(agent.bashPolicy).toBe("read-only");
 		expect(agent.compactLivePreview).toBe(true);
 		expect(agent.tools.write).toBe(false);
 		expect(agent.tools.edit).toBe(false);
@@ -24,15 +22,5 @@ describe("createReviewAgent", () => {
 		expect(agent.systemPrompt).toContain("No high-confidence findings.");
 		expect(agent.systemPrompt).toContain("Do not report:");
 		expect(agent.systemPrompt).toContain("Theoretical edge cases without a plausible path in this codebase");
-	});
-
-	it("blocks destructive bash commands", async () => {
-		const agent = createReviewAgent();
-		const bashTool = resolveCustomBashTool(process.cwd(), agent.tools, agent.bashPolicy);
-		if (!bashTool) throw new Error("bash tool was not resolved");
-
-		await expect(
-			bashTool.execute("test", { command: "touch /tmp/review-should-not-write" }, undefined, undefined, {} as never),
-		).rejects.toThrow("Command blocked by read-only bash policy");
 	});
 });
