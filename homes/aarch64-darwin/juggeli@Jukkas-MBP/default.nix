@@ -23,5 +23,7 @@ with lib.plusultra;
     "$HOME/.local/bin"
     "$HOME/Library/Android/sdk/platform-tools"
     "$HOME/Library/Android/sdk/emulator"
+    "/Applications/microchip/xc8/v2.50/bin"
+    "/Applications/microchip/mplabx/6.30/MPLAB X IDE v6.30.app/Contents/Resources/mplab_ide/bin"
   ];
 }
