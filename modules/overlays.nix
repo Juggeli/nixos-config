@@ -22,6 +22,7 @@
 
     bun = final.unstable.bun;
     cloudflared = final.unstable.cloudflared;
+    ghostty-bin = final.unstable.ghostty-bin;
     hydrus = final.unstable.hydrus.overrideAttrs (oldAttrs: {
       doCheck = false;
       doInstallCheck = false;

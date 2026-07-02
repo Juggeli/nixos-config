@@ -49,7 +49,6 @@
           }
           inputs.home-manager.darwinModules.home-manager
           inputs.agenix.darwinModules.default
-          inputs.catppuccin.darwinModules.catppuccin
         ]
         ++ modules;
       };

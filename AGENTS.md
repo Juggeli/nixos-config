@@ -13,17 +13,22 @@ namespace, and no `enabled`/`disabled` helpers.
 
 ### Building Configurations
 ```bash
-# Build a host's system closure
+# Build a NixOS host's system closure
 nix build .#nixosConfigurations.haruka.config.system.build.toplevel
 nix build .#nixosConfigurations.noel.config.system.build.toplevel
+
+# Build a nix-darwin host's system closure
+nix build .#darwinConfigurations.Jukkas-MBP.system
+nix build .#darwinConfigurations.kuro.system
 ```
 
 ### Rebuild / Deploy
 ```bash
 # Rebuild the current machine (run on the host itself)
 sudo nixos-rebuild switch --flake .#<hostname>   # haruka | noel
+darwin-rebuild switch --flake .#<hostname>       # Jukkas-MBP | kuro
 ```
-There is no deploy-rs setup; deployment is a plain `nixos-rebuild` on the target.
+There is no deploy-rs setup; deployment is a plain `nixos-rebuild` / `darwin-rebuild` on the target.
 
 ### Development
 ```bash
@@ -52,15 +57,28 @@ Each file under `modules/` is one of:
   `modules/formatter.nix`).
 - **NixOS module definitions** — `{ flake.nixosModules.<name> = { ... }; }`. These
   are only *registered* as outputs; they do nothing until a host composes them.
+- **nix-darwin module definitions** — `{ flake.darwinModules.<name> = { ... }; }`,
+  living under `modules/darwin/`.
+- **Home modules** — `{ flake.homeModules.<name> = { ... }; }`, living under
+  `modules/home/`. These configure `home-manager.users.juggeli.*` and are
+  *cross-platform*: both NixOS and nix-darwin hosts compose them. The
+  `flake.homeModules` / `flake.darwinModules` / `flake.darwinConfigurations`
+  output options are not provided by flake-parts core, so they are declared in
+  `modules/home-modules.nix` and `modules/darwin-outputs.nix`.
 - **Host definitions** — `modules/hosts/<host>/default.nix` sets
-  `flake.nixosConfigurations.<host>` via `self.lib.mkNixos`, selecting modules
-  with `with self.nixosModules; [ ... ]`.
+  `flake.nixosConfigurations.<host>` (via `self.lib.mkNixos`) or
+  `flake.darwinConfigurations.<host>` (via `self.lib.mkDarwin`), selecting modules
+  with `with self.nixosModules; [ ... ]` / `with self.darwinModules; [ ... ]` and
+  `with self.homeModules; [ ... ]`.
 
-`mkNixos` (and an unused `mkDarwin`) live in `modules/lib.nix`; they wire in
-home-manager, agenix, disko, impermanence, catppuccin, and neovim.
+`mkNixos` and `mkDarwin` live in `modules/lib.nix`. `mkNixos` wires in
+home-manager, agenix, disko, impermanence, catppuccin, and neovim; `mkDarwin`
+wires in home-manager and agenix.
 
 ### Directory Structure
 - `modules/nixos/` - reusable NixOS modules, each exporting `flake.nixosModules.<name>`
+- `modules/darwin/` - reusable nix-darwin modules, each exporting `flake.darwinModules.<name>`
+- `modules/home/` - cross-platform home modules, each exporting `flake.homeModules.<name>`
 - `modules/hosts/<host>/` - per-host config; `default.nix` assembles the host
 - `modules/lib.nix` - `mkNixos` / `mkDarwin` builders
 - `modules/systems.nix` - supported systems + `perSystem` pkgs
@@ -71,16 +89,19 @@ home-manager, agenix, disko, impermanence, catppuccin, and neovim.
 - `legacy/` - old Snowfall layout, not imported by the active flake
 
 ### Hosts
-Two NixOS hosts, both `x86_64-linux`: `haruka` (media/server) and `noel`. The
-`mkDarwin` helper and `aarch64-darwin` system exist, but no darwin host is
-currently defined.
+Two NixOS hosts, both `x86_64-linux`: `haruka` (media/server) and `noel`. Two
+nix-darwin hosts, both `aarch64-darwin`: `Jukkas-MBP` (work laptop) and `kuro`.
 
 ### Home Manager
-Home Manager is integrated into each NixOS system (not a separate output). The
-`home-manager` nixos module sets up the `juggeli` user, and per-feature
-`home-*` modules (e.g. `home-bat`, `home-neovim`) add to
-`home-manager.users.juggeli.*`. To add config to the home dir, use standard
-home-manager options (`home.file`, `xdg.configFile`, `programs.*`).
+Home Manager is integrated into each system (not a separate output). The
+`home-manager` nixos/darwin module sets up the `juggeli` user, and per-feature
+modules under `modules/home/` (e.g. `flake.homeModules.bat`,
+`flake.homeModules.neovim`) add to `home-manager.users.juggeli.*`. These modules
+are cross-platform — guard Linux-only bits with `lib.optionals/optionalString
+pkgs.stdenv.isLinux` (in option *values*, never in a module's top-level attrset
+keys, which would cause infinite recursion). Impermanence (`environment.persistence`)
+is a NixOS-only concern and must NOT live in cross-platform home modules; declare
+those paths in `modules/nixos/home-impermanence.nix` instead.
 
 ### Special Features
 - **Secrets**: agenix. Shared secrets in `modules/nixos/agenix-shared/_secrets/`,

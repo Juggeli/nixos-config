@@ -1,0 +1,117 @@
+{
+  flake.homeModules.fish =
+    { lib, pkgs, ... }:
+    {
+      home-manager.users.juggeli = {
+        home.packages =
+          (with pkgs; [
+            grc
+            eza
+            fzf
+            dust
+            gum
+            dua
+            neofetch
+            screen
+            ripgrep
+            zoxide
+          ])
+          ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.trashy ];
+
+        programs.fish = {
+          enable = true;
+          shellAliases = {
+            ".." = "cd ..";
+            "..." = "cd ../..";
+            "...." = "cd ../../..";
+            l = "eza -blF";
+            ls = "eza -blF";
+            ll = "eza -abghilmu";
+            llm = "ll --sort=modified";
+            la = "LC_COLLATE=C eza -ablF --group";
+            cat = "bat";
+            lg = "lazygit";
+            docker = "podman";
+            docker-compose = "podman-compose";
+          };
+          shellAbbrs = {
+            eza = "eza --group-directories-first --git";
+            tree = "eza --tree";
+            scs = "doas systemctl start";
+            scr = "doas systemctl restart";
+            sce = "doas systemctl stop";
+            scd = "doas systemctl status";
+          };
+          interactiveShellInit = ''
+            ${lib.optionalString pkgs.stdenv.isLinux ''
+              if status is-interactive; and not set -q TMUX; and test "$TERM_PROGRAM" != "vscode"
+                if tmux has-session -t main 2>/dev/null
+                  tmux new-session -t main
+                else
+                  tmux new-session -s main
+                end
+              end
+            ''}
+
+            function bind_bang
+              switch (commandline -t)
+              case "!"
+                commandline -t -- $history[1]
+                commandline -f repaint
+              case "*"
+                commandline -i !
+              end
+            end
+
+            function fish_user_key_bindings
+              bind ! bind_bang
+              bind \cY accept-autosuggestion execute
+            end
+
+            function ya
+              set tmp (mktemp -t "yazi-cwd.XXXXX")
+              yazi $argv --cwd-file="$tmp"
+              if set cwd (cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+                cd -- "$cwd"
+              end
+              rm -f -- "$tmp"
+            end
+          '';
+          plugins = [
+            {
+              name = "grc";
+              src = pkgs.fishPlugins.grc.src;
+            }
+            {
+              name = "autopair-fish";
+              src = pkgs.fishPlugins.autopair-fish.src;
+            }
+            {
+              name = "pure";
+              src = pkgs.fishPlugins.pure.src;
+            }
+            {
+              name = "fzf-fish";
+              src = pkgs.fishPlugins.fzf-fish.src;
+            }
+          ];
+        };
+
+        programs.zoxide = {
+          enable = true;
+          enableFishIntegration = true;
+        };
+
+        catppuccin.fish.enable = true;
+
+        xdg.configFile = {
+          "fish/functions/enc-all.fish".source = ./_assets/enc-all.fish;
+          "fish/functions/enc-anime-all.fish".source = ./_assets/enc-anime-all.fish;
+          "fish/functions/enc-anime.fish".source = ./_assets/enc-anime.fish;
+          "fish/functions/enc-auto.fish".source = ./_assets/enc-auto.fish;
+          "fish/functions/enc-crf.fish".source = ./_assets/enc-crf.fish;
+          "fish/functions/javrter.fish".source = ./_assets/javrter.fish;
+        };
+      };
+    };
+}
