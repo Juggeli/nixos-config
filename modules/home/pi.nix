@@ -11,7 +11,6 @@
       llm-agents = inputs.llm-agents.packages.${pkgs.system};
       homeDir = if pkgs.stdenv.isDarwin then "/Users/juggeli" else "/home/juggeli";
       agentDir = "${homeDir}/.pi/agent";
-      extensionsDir = "${agentDir}/extensions";
       filterTests =
         src:
         lib.cleanSourceWith {
@@ -39,17 +38,7 @@
             export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
             export ZAI_API_KEY=$(cat ${config.age.secrets.zai-api-key.path})
             export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
-            export OLLAMA_API_KEY=$(cat ${config.age.secrets.ollama-api-key.path})
-            ${pkgs.nodejs}/bin/node ${extensionsDir}/model-sync/sync-models.mjs --if-missing || true
             exec ${pi}/bin/pi "$@"
-          '')
-          (pkgs.writeShellScriptBin "pi-sync-models" ''
-            export PI_AGENT_DIR="${agentDir}"
-            export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
-            export ZAI_API_KEY=$(cat ${config.age.secrets.zai-api-key.path})
-            export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
-            export OLLAMA_API_KEY=$(cat ${config.age.secrets.ollama-api-key.path})
-            exec ${pkgs.nodejs}/bin/node ${extensionsDir}/model-sync/sync-models.mjs "$@"
           '')
           pkgs.nodejs
         ];
