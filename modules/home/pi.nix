@@ -11,12 +11,23 @@
       llm-agents = inputs.llm-agents.packages.${pkgs.system};
       homeDir = if pkgs.stdenv.isDarwin then "/Users/juggeli" else "/home/juggeli";
       agentDir = "${homeDir}/.pi/agent";
+      rtkOptimizer = pkgs.fetchFromGitHub {
+        owner = "MasuRii";
+        repo = "pi-rtk-optimizer";
+        rev = "v0.9.0";
+        hash = "sha256-Cw0oLzVv674vpC3g5oteCNZSkHpfBN+IdnYDbkai4q4=";
+      };
       filterTests =
         src:
         lib.cleanSourceWith {
           inherit src;
           filter = path: _type: !(builtins.baseNameOf path == "__tests__");
         };
+      extensionsSource = pkgs.runCommand "pi-agent-extensions" { } ''
+        mkdir -p $out
+        cp -R ${filterTests ../../packages/pi-extensions/packages}/. $out/
+        cp -R ${rtkOptimizer}/. $out/pi-rtk-optimizer
+      '';
       pi = llm-agents.pi.overrideAttrs (old: {
         postInstall = (old.postInstall or "") + ''
           substituteInPlace $out/lib/node_modules/@earendil-works/pi-coding-agent/dist/core/tools/read.js \
@@ -40,11 +51,12 @@
             export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
             exec ${pi}/bin/pi "$@"
           '')
+          pkgs.unstable.rtk
           pkgs.nodejs
         ];
 
         home.file.".pi/agent/extensions" = {
-          source = filterTests ../../packages/pi-extensions/packages;
+          source = extensionsSource;
           recursive = true;
         };
       };
