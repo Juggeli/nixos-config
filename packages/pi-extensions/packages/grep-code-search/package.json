@@ -9,8 +9,8 @@
 	},
 	"license": "MIT",
 	"peerDependencies": {
-		"@earendil-works/pi-coding-agent": ">=0.60.0",
-		"@earendil-works/pi-tui": ">=0.60.0",
+		"@earendil-works/pi-coding-agent": ">=0.80.3",
+		"@earendil-works/pi-tui": ">=0.80.3",
 		"@sinclair/typebox": ">=0.34.48"
 	}
 }
