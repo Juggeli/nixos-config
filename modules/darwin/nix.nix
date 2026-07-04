@@ -1,0 +1,48 @@
+{
+  flake.darwinModules.nix-settings =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = with pkgs; [
+        git
+        nixfmt-tree
+        nix-index
+        nix-prefetch-git
+      ];
+
+      system.primaryUser = "juggeli";
+
+      nix = {
+        settings =
+          let
+            users = [
+              "root"
+              "juggeli"
+            ];
+          in
+          {
+            experimental-features = "nix-command flakes";
+            http-connections = 50;
+            warn-dirty = false;
+            log-lines = 50;
+            sandbox = false;
+            trusted-users = users;
+            allowed-users = users;
+            extra-nix-path = "nixpkgs=flake:nixpkgs";
+            build-users-group = "nixbld";
+            download-buffer-size = 134217728;
+            substituters = [
+              "https://cache.numtide.com"
+              "https://comfyui.cachix.org"
+              "https://nix-community.cachix.org"
+            ];
+            trusted-public-keys = [
+              "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+              "comfyui.cachix.org-1:33mf9VzoIjzVbp0zwj+fT51HG0y31ZTK3nzYZAX0rec="
+              "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+            ];
+          };
+
+        package = pkgs.nixVersions.latest;
+      };
+    };
+}

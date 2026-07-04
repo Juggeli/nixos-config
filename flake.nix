@@ -5,10 +5,12 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    snowfall-lib = {
-      url = "github:snowfallorg/lib";
-      inputs.nixpkgs.follows = "nixpkgs";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+
+    import-tree.url = "github:vic/import-tree";
 
     darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
@@ -17,24 +19,12 @@
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
 
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nur = {
-      url = "github:nix-community/NUR";
-    };
-
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nur.url = "github:nix-community/NUR";
 
     agenix = {
       url = "github:ryantm/agenix";
@@ -55,55 +45,15 @@
 
     catppuccin.url = "github:catppuccin/nix/release-25.11";
 
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     comfyui-nix.url = "github:utensils/comfyui-nix";
   };
 
-  outputs =
-    inputs:
-    let
-      lib = inputs.snowfall-lib.mkLib {
-        inherit inputs;
-        src = ./.;
-
-        snowfall = {
-          meta = {
-            name = "plusultra";
-            title = "Plus Ultra";
-          };
-
-          namespace = "plusultra";
-        };
-      };
-    in
-    lib.mkFlake {
-      channels-config = {
-        allowUnfree = true;
-      };
-
-      overlays = with inputs; [
-      ];
-
-      systems.modules.nixos = with inputs; [
-        home-manager.nixosModules.home-manager
-        agenix.nixosModules.default
-        disko.nixosModules.disko
-        impermanence.nixosModules.impermanence
-        catppuccin.nixosModules.catppuccin
-        neovim.nixosModules.default
-      ];
-
-      homes.modules = with inputs; [
-        agenix.homeManagerModules.default
-      ];
-
-      deploy = lib.mkDeploy { inherit (inputs) self; };
-
-      checks = builtins.mapAttrs (
-        system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
-      ) inputs.deploy-rs.lib;
-    };
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }

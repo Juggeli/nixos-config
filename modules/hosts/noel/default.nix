@@ -1,0 +1,103 @@
+{ self, ... }:
+{
+  flake.nixosConfigurations.noel = self.lib.mkNixos {
+    system = "x86_64-linux";
+    hostName = "noel";
+    modules =
+      (with self.nixosModules; [
+        nix-settings
+        users-juggeli
+        home-manager
+        networking
+        boot
+        zfs
+        impermanence
+        tmpfs
+        openssh
+        tailscale
+        agenix
+        agenix-shared
+        doas
+        podman
+        tools-misc
+        hardware-audio
+        hardware-storage
+        hardware-logitech
+        system-fonts
+        system-locale
+        system-time
+        services-printing
+        theming
+        hyprland
+        hyprlock
+        hypridle
+        wlsunset
+        logitech-mouse-resume
+        desktop-gtk
+        desktop-qt
+        desktop-mako
+        desktop-rofi
+        desktop-electron
+        onepassword
+        avahi
+        flatpak
+        syncthing
+        earlyoom
+        gaming
+        kdeconnect
+        dev-rust
+        home-impermanence
+
+        noel-system
+        noel-disk
+        noel-hardware
+        noel-autologin
+        noel-borgmatic
+      ])
+      ++ (with self.homeModules; [
+        process-anime
+        ghostty
+        wezterm
+        fish
+        tmux
+        bat
+        btop
+        jq
+        yazi
+        lazygit
+        gh
+        nh
+        ai-agents
+        pi
+        opencode
+        claude-code
+        cw
+        ffmpeg
+        imv
+        sshfs
+        ab-av1
+        nushell
+        neovim
+        git
+        direnv
+        devtools
+        hdd-scraper
+        sorter
+        kitty
+        mpv
+        discord
+        firefox
+        chrome
+        via
+        pdf
+        crypto
+        hydrus
+        obsidian
+        anytype
+        vscode
+        comfyui
+        lmstudio
+        waybar
+      ]);
+  };
+}

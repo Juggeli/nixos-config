@@ -1,0 +1,82 @@
+{
+  flake.nixosModules.noel-hardware =
+    {
+      modulesPath,
+      inputs,
+      ...
+    }:
+    let
+      inherit (inputs) nixos-hardware;
+    in
+    {
+      imports = with nixos-hardware.nixosModules; [
+        (modulesPath + "/installer/scan/not-detected.nix")
+        common-cpu-intel
+        common-pc
+        common-pc-ssd
+      ];
+
+      hardware.graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
+
+      services.xserver.videoDrivers = [ "nvidia" ];
+
+      hardware.nvidia = {
+        modesetting.enable = true;
+        powerManagement.enable = true;
+        open = false;
+        nvidiaSettings = true;
+      };
+
+      boot = {
+        initrd.availableKernelModules = [
+          "xhci_pci"
+          "ahci"
+          "nvme"
+          "usbhid"
+          "aesni_intel"
+        ];
+
+        kernelModules = [ "kvm-intel" ];
+        kernelParams = [
+          "mitigations=off"
+        ];
+
+        loader.grub.mirroredBoots = [
+          {
+            devices = [ "nodev" ];
+            path = "/boot";
+          }
+          {
+            devices = [ "nodev" ];
+            path = "/boot-fallback";
+          }
+        ];
+      };
+
+      fileSystems."/boot" = {
+        device = "/dev/disk/by-uuid/E74E-4B34";
+        fsType = "vfat";
+        options = [ "nofail" ];
+      };
+
+      fileSystems."/boot-fallback" = {
+        device = "/dev/disk/by-uuid/ACD6-8BE8";
+        fsType = "vfat";
+        options = [ "nofail" ];
+      };
+
+      networking = {
+        interfaces.enp5s0.useDHCP = true;
+        hostId = "cc5b25a0";
+      };
+
+      zramSwap.enable = true;
+
+      hardware.enableRedistributableFirmware = true;
+
+      hardware.cpu.intel.updateMicrocode = true;
+    };
+}

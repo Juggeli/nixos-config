@@ -1,0 +1,19 @@
+{
+	"name": "@juggeli/pi-subagents-lite",
+	"version": "1.0.0",
+	"description": "Foreground-only subagent tool extension for pi",
+	"type": "module",
+	"main": "extensions/index.ts",
+	"pi": {
+		"extensions": ["extensions/index.ts"]
+	},
+	"license": "MIT",
+	"peerDependencies": {
+		"@earendil-works/pi-agent-core": ">=0.80.3",
+		"@earendil-works/pi-ai": ">=0.80.3",
+		"@earendil-works/pi-coding-agent": ">=0.80.3",
+		"@earendil-works/pi-tui": ">=0.80.3",
+		"jiti": ">=2.7.0",
+		"typebox": ">=1.1.0"
+	}
+}

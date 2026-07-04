@@ -12,6 +12,10 @@ from typing import List, Optional
 import qbittorrentapi
 
 
+def is_public(torrent) -> bool:
+    return not getattr(torrent, "private", False)
+
+
 @dataclass
 class QBittorrentConfig:
     host: str = "localhost"
@@ -98,14 +102,15 @@ class QBittorrentManager:
         if not self.client:
             raise RuntimeError("Client not connected")
         
-        public_torrents = self.client.torrents_info(category="Public")
-        
+        public_torrents = [t for t in self.client.torrents_info() if is_public(t)]
+
         if public_torrents and not self.config.dry_run:
             self.logger.debug(f"Setting share limits for {len(public_torrents)} public torrents")
             self.client.torrents_set_share_limits(
                 ratio_limit=self.config.public_ratio_limit,
                 inactive_seeding_time_limit=-1,
                 seeding_time_limit=-1,
+                share_limit_action="Stop",
                 torrent_hashes=[t.hash for t in public_torrents],
             )
 
@@ -113,21 +118,25 @@ class QBittorrentManager:
         if not self.client:
             raise RuntimeError("Client not connected")
         
-        downloading_public = self.client.torrents_info(
-            category="Public", status_filter="downloading"
-        )
-        
+        downloading_public = [
+            t
+            for t in self.client.torrents_info(status_filter="downloading")
+            if is_public(t)
+        ]
+
         if downloading_public and not self.config.dry_run:
             self.logger.debug(f"Setting upload limits for {len(downloading_public)} downloading public torrents")
             self.client.torrents_set_upload_limit(
                 limit=self.config.upload_limit_downloading,
                 torrent_hashes=[t.hash for t in downloading_public],
             )
-        
-        seeding_public = self.client.torrents_info(
-            category="Public", status_filter="seeding"
-        )
-        
+
+        seeding_public = [
+            t
+            for t in self.client.torrents_info(status_filter="seeding")
+            if is_public(t)
+        ]
+
         if seeding_public and not self.config.dry_run:
             self.logger.debug(f"Removing upload limits for {len(seeding_public)} seeding public torrents")
             self.client.torrents_set_upload_limit(
@@ -138,36 +147,41 @@ class QBittorrentManager:
         if not self.client:
             raise RuntimeError("Client not connected")
         
-        categories_to_clean = ["Public"] + self.config.arr_categories
-        total_removed = 0
-        
-        for category in categories_to_clean:
-            all_torrents = self.client.torrents_info(category=category)
-            
-            completed_states = ["stoppedUP"]
-            completed_torrents = [t for t in all_torrents if t.state in completed_states and t.progress == 1.0]
-            
-            if completed_torrents:
-                delete_files = category != "Public"
-                files_action = "files deleted" if delete_files else "files kept"
-                
-                self.logger.info(
-                    f"{'Would remove' if self.config.dry_run else 'Removing'} "
-                    f"{len(completed_torrents)} completed torrents from category '{category}' ({files_action})"
+        arr_categories = set(self.config.arr_categories)
+        completed_states = ["stoppedUP"]
+
+        delete_with_files = []
+        delete_keep_files = []
+
+        for t in self.client.torrents_info():
+            if t.state not in completed_states or t.progress != 1.0:
+                continue
+
+            if t.category in arr_categories:
+                delete_with_files.append(t)
+            elif is_public(t):
+                delete_keep_files.append(t)
+
+        for torrents, delete_files in ((delete_with_files, True), (delete_keep_files, False)):
+            if not torrents:
+                continue
+
+            files_action = "files deleted" if delete_files else "files kept"
+            self.logger.info(
+                f"{'Would remove' if self.config.dry_run else 'Removing'} "
+                f"{len(torrents)} completed torrents ({files_action})"
+            )
+
+            for t in torrents:
+                self.logger.info(f"  - {t.name[:80]}")
+
+            if not self.config.dry_run:
+                self.client.torrents_delete(
+                    delete_files=delete_files,
+                    torrent_hashes=[t.hash for t in torrents],
                 )
-                
-                for t in completed_torrents:
-                    self.logger.info(f"  - {t.name[:80]}...")
-                
-                if not self.config.dry_run:
-                    delete_files = category != "Public"
-                    self.client.torrents_delete(
-                        delete_files=delete_files,
-                        torrent_hashes=[t.hash for t in completed_torrents],
-                    )
-                
-                total_removed += len(completed_torrents)
-        
+
+        total_removed = len(delete_with_files) + len(delete_keep_files)
         if total_removed > 0:
             self.logger.info(f"Total completed torrents removed: {total_removed}")
         else:
@@ -177,11 +191,15 @@ class QBittorrentManager:
         if not self.client:
             raise RuntimeError("Client not connected")
         
-        private_torrents = self.client.torrents_info(category="Private")
-        
-        if private_torrents and not self.config.dry_run:
-            self.logger.debug(f"Setting high priority for {len(private_torrents)} private torrents")
-            self.client.torrents_top_priority([t.hash for t in private_torrents])
+        private_downloading = [
+            t
+            for t in self.client.torrents_info(status_filter="downloading")
+            if not is_public(t)
+        ]
+
+        if private_downloading and not self.config.dry_run:
+            self.logger.debug(f"Setting high priority for {len(private_downloading)} private torrents")
+            self.client.torrents_top_priority([t.hash for t in private_downloading])
 
     def run_management_cycle(self) -> None:
         if not self.connect():

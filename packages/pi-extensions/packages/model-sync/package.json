@@ -1,8 +1,0 @@
-{
-	"name": "@juggeli/pi-model-sync",
-	"version": "1.0.0",
-	"description": "Model sync command for pi provider packages",
-	"type": "module",
-	"main": "sync-models.mjs",
-	"license": "MIT"
-}
