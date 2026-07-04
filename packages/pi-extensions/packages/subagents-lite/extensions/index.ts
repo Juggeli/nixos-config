@@ -98,6 +98,7 @@ function executionParams(params: Static<typeof SubagentParams>): SubagentParamsL
 			context: "fresh",
 			async: false,
 			clarify: false,
+			acceptance: "attested",
 			agentScope: "both",
 			...(params.model ? { model: params.model } : {}),
 		};
@@ -108,6 +109,7 @@ function executionParams(params: Static<typeof SubagentParams>): SubagentParamsL
 		context: "fresh",
 		async: false,
 		clarify: false,
+		acceptance: "attested",
 		agentScope: "both",
 		...(params.model ? { model: params.model } : {}),
 	};
