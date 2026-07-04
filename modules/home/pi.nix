@@ -8,9 +8,66 @@
       ...
     }:
     let
+      hmLib = inputs.home-manager.lib;
       llm-agents = inputs.llm-agents.packages.${pkgs.system};
       homeDir = if pkgs.stdenv.isDarwin then "/Users/juggeli" else "/home/juggeli";
       agentDir = "${homeDir}/.pi/agent";
+      modelsConfigFile = "${agentDir}/models.json";
+      openRouterDeepSeekRouting = {
+        order = [ "deepseek" ];
+        allow_fallbacks = true;
+      };
+      openRouterDeepSeekModels = [
+        "deepseek/deepseek-chat"
+        "deepseek/deepseek-chat-v3-0324"
+        "deepseek/deepseek-chat-v3.1"
+        "deepseek/deepseek-r1"
+        "deepseek/deepseek-r1-0528"
+        "deepseek/deepseek-v3.1-terminus"
+        "deepseek/deepseek-v3.2"
+        "deepseek/deepseek-v3.2-exp"
+        "deepseek/deepseek-v4-flash"
+        "deepseek/deepseek-v4-pro"
+      ];
+      openRouterDeepSeekModelOverrides = builtins.listToAttrs (
+        map (id: {
+          name = id;
+          value.compat.openRouterRouting = openRouterDeepSeekRouting;
+        }) openRouterDeepSeekModels
+      );
+      patchPiModels = pkgs.writeShellScript "patch-pi-models" ''
+        CONFIG_FILE="${modelsConfigFile}"
+        MANAGED_OVERRIDES='${builtins.toJSON openRouterDeepSeekModelOverrides}'
+        OPENROUTER_DEEPSEEK_ROUTING='${builtins.toJSON openRouterDeepSeekRouting}'
+
+        mkdir -p "$(dirname "$CONFIG_FILE")"
+
+        if [ ! -f "$CONFIG_FILE" ]; then
+          echo '{"providers":{}}' > "$CONFIG_FILE"
+        fi
+
+        ${pkgs.jq}/bin/jq \
+          --argjson managedOverrides "$MANAGED_OVERRIDES" \
+          --argjson routing "$OPENROUTER_DEEPSEEK_ROUTING" \
+          '.providers //= {}
+            | .providers.openrouter //= {}
+            | .providers.openrouter.modelOverrides = ((.providers.openrouter.modelOverrides // {}) * $managedOverrides)
+            | reduce (if (.providers.openrouter.models | type) == "array" then .providers.openrouter.models[] else empty end | select(((.id // "") | startswith("deepseek/"))) | .id) as $id
+                (. ; .providers.openrouter.modelOverrides[$id].compat.openRouterRouting = $routing)
+            | if ((.providers.openrouter.models // null) | type) == "array" then
+                .providers.openrouter.models |= map(
+                  if ((.id // "") | startswith("deepseek/")) then
+                    .compat = ((.compat // {}) * { openRouterRouting: $routing })
+                  else
+                    .
+                  end
+                )
+              else
+                .
+              end' \
+          "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
+          && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+      '';
       rtkOptimizer = pkgs.fetchFromGitHub {
         owner = "MasuRii";
         repo = "pi-rtk-optimizer";
@@ -59,6 +116,10 @@
           source = extensionsSource;
           recursive = true;
         };
+
+        home.activation.patchPiModels = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          ${patchPiModels}
+        '';
       };
     };
 }
