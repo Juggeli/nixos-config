@@ -17,24 +17,17 @@
         cleanupPeriodDays = 99999;
         includeCoAuthoredBy = false;
         gitAttribution = false;
-        hooks = {
-          UserPromptSubmit = [
-            {
-              hooks = [
-                {
-                  type = "command";
-                  command = "~/.claude/hooks/user_prompt_context.sh";
-                  timeout = 5;
-                }
-              ];
-            }
-          ];
-        };
+      };
+      removedUserPromptContextHook = {
+        type = "command";
+        command = "~/.claude/hooks/user_prompt_context.sh";
+        timeout = 5;
       };
 
       patchClaudeSettings = pkgs.writeShellScript "patch-claude-settings" ''
         CONFIG_FILE="${configFile}"
         MANAGED_SETTINGS='${builtins.toJSON managedSettings}'
+        REMOVED_USER_PROMPT_CONTEXT_HOOK='${builtins.toJSON removedUserPromptContextHook}'
 
         mkdir -p "$(dirname "$CONFIG_FILE")"
 
@@ -42,7 +35,14 @@
           echo "{}" > "$CONFIG_FILE"
         fi
 
-        ${pkgs.jq}/bin/jq --argjson managed "$MANAGED_SETTINGS" '. * $managed' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
+        ${pkgs.jq}/bin/jq \
+          --argjson managed "$MANAGED_SETTINGS" \
+          --argjson removedHook "$REMOVED_USER_PROMPT_CONTEXT_HOOK" \
+          'del(.hooks.UserPromptSubmit[]? | select(.hooks == [$removedHook]))
+            | if (.hooks.UserPromptSubmit? == []) then del(.hooks.UserPromptSubmit) else . end
+            | if (.hooks? == {}) then del(.hooks) else . end
+            | . * $managed' \
+          "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
           && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
       '';
     in
@@ -60,16 +60,6 @@
         home.activation.patchClaudeSettings = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
           ${patchClaudeSettings}
         '';
-
-        home.file.".claude/hooks/user_prompt_context.sh" = {
-          text = ''
-            #!/usr/bin/env bash
-            cat <<'EOF'
-            {"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"Unless otherwise specified: DRY, YAGNI, KISS, Pragmatic. Ask questions for clarifications. When doing a plan or research-like request, present your findings and halt for confirmation. Speak the facts, don't sugar coat statements. Your opinion matters. All your code will be reviewed by another AI agent. Shortcuts, simplifications, placeholders, fallbacks are not allowed. It's wasting time doing those because another AI agent will review and you'll have to redo. End all responses with an emoji of an animal"}}
-            EOF
-          '';
-          executable = true;
-        };
       };
     };
 }
