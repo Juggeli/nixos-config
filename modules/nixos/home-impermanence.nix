@@ -34,6 +34,21 @@
         ".local/share/opencode"
         ".local/state/opencode"
         ".pi"
+
+        ".mozilla"
+        ".cache/mozilla"
+        ".config/chromium"
+        ".cache/chromium"
+        ".config/discord"
+        ".config/obsidian"
+        "obsidian"
+        ".var/app/md.obsidian.Obsidian"
+        ".config/anytype"
+        ".config/comfy-ui"
+        ".lmstudio"
+        ".cache/lm-studio"
+        ".config/LM Studio"
+        ".config/sorter"
       ];
       files = [
         ".claude.json"

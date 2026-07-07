@@ -1,6 +1,6 @@
 { inputs, ... }:
-{
-  flake.nixosModules.home-manager = {
+let
+  mkHomeManager = homeDirectory: {
     home-manager = {
       useUserPackages = true;
       useGlobalPkgs = true;
@@ -12,7 +12,7 @@
       users.juggeli = {
         home.stateVersion = "23.11";
         home.username = "juggeli";
-        home.homeDirectory = "/home/juggeli";
+        home.homeDirectory = homeDirectory;
         xdg.enable = true;
         catppuccin = {
           enable = true;
@@ -22,4 +22,8 @@
       };
     };
   };
+in
+{
+  flake.nixosModules.home-manager = mkHomeManager "/home/juggeli";
+  flake.darwinModules.home-manager = mkHomeManager "/Users/juggeli";
 }

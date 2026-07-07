@@ -121,12 +121,5 @@
           };
         };
       };
-
-      environment.persistence."/persist-home" = {
-        users.juggeli.directories = [
-          ".cache/mozilla"
-          ".mozilla"
-        ];
-      };
     };
 }

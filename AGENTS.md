@@ -47,8 +47,7 @@ outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.imp
 ```
 `import-tree` recursively imports every `.nix` file under `modules/`. Any path
 whose name starts with `_` is ignored (used for `_secrets/` and `_assets/` that
-hold non-module files). `legacy/` is the pre-migration Snowfall config and is
-**not** part of the flake.
+hold non-module files).
 
 ### Module kinds
 Each file under `modules/` is one of:
@@ -59,34 +58,45 @@ Each file under `modules/` is one of:
   are only *registered* as outputs; they do nothing until a host composes them.
 - **nix-darwin module definitions** — `{ flake.darwinModules.<name> = { ... }; }`,
   living under `modules/darwin/`.
+- **Cross-platform system modules** — files under `modules/common/` that export
+  the same definition as both a nixosModule and a darwinModule (e.g.
+  `nix-settings`, `home-manager`, `agenix-shared`).
 - **Home modules** — `{ flake.homeModules.<name> = { ... }; }`, living under
   `modules/home/`. These configure `home-manager.users.juggeli.*` and are
   *cross-platform*: both NixOS and nix-darwin hosts compose them. The
   `flake.homeModules` / `flake.darwinModules` / `flake.darwinConfigurations`
   output options are not provided by flake-parts core, so they are declared in
-  `modules/home-modules.nix` and `modules/darwin-outputs.nix`.
+  `modules/flake-outputs.nix`.
+- **Profile (aggregate) modules** — modules that only `imports` other modules to
+  form a shared baseline: `nixosModules.base` (`modules/nixos/base.nix`),
+  `darwinModules.base` (`modules/darwin/base.nix`, composes every shared darwin
+  module), `homeModules.base` (CLI tools used on all hosts) and
+  `homeModules.desktop` (base + terminal/GUI apps shared by noel and the Macs).
+  Host files list a profile plus their genuinely host-specific extras.
 - **Host definitions** — `modules/hosts/<host>/default.nix` sets
   `flake.nixosConfigurations.<host>` (via `self.lib.mkNixos`) or
   `flake.darwinConfigurations.<host>` (via `self.lib.mkDarwin`), selecting modules
   with `with self.nixosModules; [ ... ]` / `with self.darwinModules; [ ... ]` and
   `with self.homeModules; [ ... ]`.
 
-`mkNixos` and `mkDarwin` live in `modules/lib.nix`. `mkNixos` wires in
-home-manager, agenix, disko, impermanence, catppuccin, and neovim; `mkDarwin`
-wires in home-manager and agenix.
+`mkNixos` and `mkDarwin` live in `modules/lib.nix` and default `system` to
+`x86_64-linux` / `aarch64-darwin`. `mkNixos` wires in home-manager, agenix,
+disko, impermanence, catppuccin, and neovim; `mkDarwin` wires in home-manager
+and agenix.
 
 ### Directory Structure
 - `modules/nixos/` - reusable NixOS modules, each exporting `flake.nixosModules.<name>`
 - `modules/darwin/` - reusable nix-darwin modules, each exporting `flake.darwinModules.<name>`
+- `modules/common/` - cross-platform system modules exported to both nixosModules and darwinModules
 - `modules/home/` - cross-platform home modules, each exporting `flake.homeModules.<name>`
 - `modules/hosts/<host>/` - per-host config; `default.nix` assembles the host
-- `modules/lib.nix` - `mkNixos` / `mkDarwin` builders
+- `modules/lib.nix` - `mkNixos` / `mkDarwin` builders + shared nixpkgs overlay list (`flake.lib.overlays`)
 - `modules/systems.nix` - supported systems + `perSystem` pkgs
 - `modules/overlays.nix` - `overlays.default`, wiring `packages/` into nixpkgs
+- `modules/flake-outputs.nix` - declares the `homeModules` / `darwinModules` / `darwinConfigurations` output options
 - `modules/formatter.nix` - treefmt formatter (`nix fmt`)
 - `packages/` - custom package derivations exposed via the overlay
 - `tools/` - standalone scripts / sub-flakes (hdd-scraper, process-anime, sorter)
-- `legacy/` - old Snowfall layout, not imported by the active flake
 
 ### Hosts
 Two NixOS hosts, both `x86_64-linux`: `haruka` (media/server) and `noel`. Two
@@ -104,7 +114,7 @@ is a NixOS-only concern and must NOT live in cross-platform home modules; declar
 those paths in `modules/nixos/home-impermanence.nix` instead.
 
 ### Special Features
-- **Secrets**: agenix. Shared secrets in `modules/nixos/agenix-shared/_secrets/`,
+- **Secrets**: agenix. Shared secrets in `modules/common/agenix-shared/_secrets/`,
   per-host secrets in `modules/hosts/<host>/_secrets/`.
 - **Impermanence**: ephemeral root; modules declare persisted paths via
   `environment.persistence."/persist-home"`.

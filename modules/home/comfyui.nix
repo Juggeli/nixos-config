@@ -9,11 +9,5 @@
     in
     {
       home-manager.users.juggeli.home.packages = [ comfyuiWrapper ];
-
-      environment.persistence."/persist-home" = {
-        users.juggeli.directories = [
-          ".config/comfy-ui"
-        ];
-      };
     };
 }

@@ -1,48 +1,10 @@
 { self, ... }:
 {
   flake.darwinConfigurations."Jukkas-MBP" = self.lib.mkDarwin {
-    system = "aarch64-darwin";
     hostName = "Jukkas-MBP";
     modules =
-      (with self.darwinModules; [
-        base
-        home-manager
-        nix-settings
-        fonts
-        input
-        interface
-        user
-        homebrew
-        aerospace
-        raycast
-        agenix
-        agenix-shared
-      ])
-      ++ (with self.homeModules; [
-        kitty
-        wezterm
-        ghostty
-        mpv
-        fish
-        gh
-        nh
-        neovim
-        btop
-        lazygit
-        jq
-        yazi
-        bat
-        ai-agents
-        pi
-        opencode
-        claude-code
-        tmux
-        cw
-        git
-        direnv
-        devtools
-        hdd-scraper
-      ])
+      (with self.darwinModules; [ base ])
+      ++ (with self.homeModules; [ desktop ])
       ++ [
         {
           system.stateVersion = 4;

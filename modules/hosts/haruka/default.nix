@@ -1,26 +1,10 @@
 { self, ... }:
 {
   flake.nixosConfigurations.haruka = self.lib.mkNixos {
-    system = "x86_64-linux";
     hostName = "haruka";
     modules =
       (with self.nixosModules; [
-        nix-settings
-        users-juggeli
-        home-manager
-        boot
-        zfs
-        openssh
-        tailscale
-        agenix
-        agenix-shared
-        doas
-        podman
-        tools-misc
-        hardware-storage
-        system-fonts
-        system-locale
-        system-time
+        base
 
         haruka-no-impermanence
         haruka-system
@@ -41,26 +25,10 @@
         haruka-media-stack
       ])
       ++ (with self.homeModules; [
-        fish
-        nh
-        neovim
-        btop
+        base
         rclone
-        lazygit
         ffmpeg
         ab-av1
-        yazi
-        ai-agents
-        pi
-        opencode
-        claude-code
-        bat
-        tmux
-        gh
-        git
-        direnv
-        devtools
-        hdd-scraper
       ]);
   };
 }

@@ -1,31 +1,15 @@
 { self, ... }:
 {
   flake.nixosConfigurations.noel = self.lib.mkNixos {
-    system = "x86_64-linux";
     hostName = "noel";
     modules =
       (with self.nixosModules; [
-        nix-settings
-        users-juggeli
-        home-manager
+        base
         networking
-        boot
-        zfs
         impermanence
         tmpfs
-        openssh
-        tailscale
-        agenix
-        agenix-shared
-        doas
-        podman
-        tools-misc
         hardware-audio
-        hardware-storage
         hardware-logitech
-        system-fonts
-        system-locale
-        system-time
         services-printing
         theming
         hyprland
@@ -55,36 +39,14 @@
         noel-borgmatic
       ])
       ++ (with self.homeModules; [
+        desktop
         process-anime
-        ghostty
-        wezterm
-        fish
-        tmux
-        bat
-        btop
-        jq
-        yazi
-        lazygit
-        gh
-        nh
-        ai-agents
-        pi
-        opencode
-        claude-code
-        cw
         ffmpeg
         imv
         sshfs
         ab-av1
         nushell
-        neovim
-        git
-        direnv
-        devtools
-        hdd-scraper
         sorter
-        kitty
-        mpv
         discord
         firefox
         chrome
@@ -92,7 +54,6 @@
         pdf
         crypto
         hydrus
-        obsidian
         anytype
         vscode
         comfyui

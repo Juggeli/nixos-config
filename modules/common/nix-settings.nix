@@ -1,5 +1,10 @@
-{
-  flake.nixosModules.nix-settings =
+{ ... }:
+let
+  users = [
+    "root"
+    "juggeli"
+  ];
+  common =
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
@@ -15,15 +20,8 @@
           http-connections = 50;
           warn-dirty = false;
           log-lines = 50;
-          sandbox = "relaxed";
-          trusted-users = [
-            "root"
-            "juggeli"
-          ];
-          allowed-users = [
-            "root"
-            "juggeli"
-          ];
+          trusted-users = users;
+          allowed-users = users;
           download-buffer-size = 134217728;
           substituters = [
             "https://cache.numtide.com"
@@ -40,4 +38,20 @@
         package = pkgs.nixVersions.latest;
       };
     };
+in
+{
+  flake.nixosModules.nix-settings = {
+    imports = [ common ];
+    nix.settings.sandbox = "relaxed";
+  };
+
+  flake.darwinModules.nix-settings = {
+    imports = [ common ];
+    system.primaryUser = "juggeli";
+    nix.settings = {
+      sandbox = false;
+      extra-nix-path = "nixpkgs=flake:nixpkgs";
+      build-users-group = "nixbld";
+    };
+  };
 }

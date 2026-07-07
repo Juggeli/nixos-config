@@ -10,12 +10,5 @@
           ];
         })
       ];
-
-      environment.persistence."/persist-home" = {
-        users.juggeli.directories = [
-          ".config/chromium"
-          ".cache/chromium"
-        ];
-      };
     };
 }
