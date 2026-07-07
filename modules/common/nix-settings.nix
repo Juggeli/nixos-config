@@ -1,9 +1,5 @@
 { ... }:
 let
-  users = [
-    "root"
-    "juggeli"
-  ];
   common =
     { pkgs, ... }:
     {
@@ -20,8 +16,14 @@ let
           http-connections = 50;
           warn-dirty = false;
           log-lines = 50;
-          trusted-users = users;
-          allowed-users = users;
+          # root is already in trusted-users via the nixos/nix-darwin core
+          # modules, but allowed-users replaces its permissive default ("*"),
+          # so root must be listed there explicitly
+          trusted-users = [ "juggeli" ];
+          allowed-users = [
+            "root"
+            "juggeli"
+          ];
           download-buffer-size = 134217728;
           substituters = [
             "https://cache.numtide.com"
