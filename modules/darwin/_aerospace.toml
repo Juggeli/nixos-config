@@ -4,6 +4,8 @@
 # It's not necessary to copy all keys to your config.
 # If the key is missing in your config, "default-config.toml" will serve as a fallback
 
+config-version = 2
+
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
 # Available commands: https://nikitabobko.github.io/AeroSpace/commands
@@ -16,6 +18,9 @@ after-startup-command = []
 
 # Start AeroSpace at login
 start-at-login = true
+
+# Keep configured workspaces alive when they contain no windows
+persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "M", "N", "T", "X"]
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
@@ -217,4 +222,3 @@ run = 'move-node-to-workspace A'
 # X for xcode
 if.app-id = 'com.apple.dt.Xcode'
 run = 'move-node-to-workspace X'
-
