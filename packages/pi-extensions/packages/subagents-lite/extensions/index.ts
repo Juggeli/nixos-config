@@ -28,7 +28,6 @@ const RESEARCH_TOOLS = new Set(["exa_search", "exa_contents"]);
 const TaskSchema = Type.Object({
 	agent: Type.Optional(Type.String({ description: "Agent name: explore, review, or researcher. Defaults to explore." })),
 	task: Type.String({ description: "Task for this subagent." }),
-	model: Type.Optional(Type.String({ description: "Optional model override for this subagent." })),
 });
 
 const SubagentParams = Type.Object({
@@ -43,7 +42,6 @@ const SubagentParams = Type.Object({
 	concurrency: Type.Optional(
 		Type.Integer({ minimum: 1, maximum: 4, description: "Parallel concurrency. Defaults to 2." }),
 	),
-	model: Type.Optional(Type.String({ description: "Optional model override for all subagents in this call." })),
 });
 
 function getSubagentSessionRoot(parentSessionFile: string | null): string {
@@ -92,7 +90,6 @@ function executionParams(params: Static<typeof SubagentParams>): SubagentParamsL
 			tasks: params.tasks.map((task) => ({
 				agent: allowedAgentName(task.agent),
 				task: task.task,
-				...(task.model ? { model: task.model } : {}),
 			})),
 			concurrency: params.concurrency,
 			context: "fresh",
@@ -100,7 +97,6 @@ function executionParams(params: Static<typeof SubagentParams>): SubagentParamsL
 			clarify: false,
 			acceptance: "attested",
 			agentScope: "both",
-			...(params.model ? { model: params.model } : {}),
 		};
 	}
 	return {
@@ -111,7 +107,6 @@ function executionParams(params: Static<typeof SubagentParams>): SubagentParamsL
 		clarify: false,
 		acceptance: "attested",
 		agentScope: "both",
-		...(params.model ? { model: params.model } : {}),
 	};
 }
 
