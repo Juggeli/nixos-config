@@ -81,7 +81,12 @@ function createState(): SubagentState {
 }
 
 function allowedAgentName(name: string | undefined): string {
-	return name && ALLOWED_AGENTS.has(name) ? name : "explore";
+	return name ?? "explore";
+}
+
+function invalidAgentNames(params: Static<typeof SubagentParams>): string[] {
+	const requested = [params.agent, ...(params.tasks ?? []).map((task) => task.agent)];
+	return [...new Set(requested.filter((name) => name !== undefined && !ALLOWED_AGENTS.has(name)))];
 }
 
 function executionParams(params: Static<typeof SubagentParams>): SubagentParamsLike {
@@ -225,6 +230,19 @@ export default function registerSubagentsLite(pi: ExtensionAPI): void {
 			if (params.action === "list") {
 				return {
 					content: [{ type: "text", text: listAgentsText(ctx.cwd) }],
+					details: { mode: "management", context: "fresh", results: [] },
+				};
+			}
+			const unknownAgents = invalidAgentNames(params);
+			if (unknownAgents.length > 0) {
+				return {
+					content: [
+						{
+							type: "text",
+							text: `Error: unknown agent name(s): ${unknownAgents.join(", ")}. Available agents: ${[...ALLOWED_AGENTS].join(", ")}.`,
+						},
+					],
+					isError: true,
 					details: { mode: "management", context: "fresh", results: [] },
 				};
 			}
