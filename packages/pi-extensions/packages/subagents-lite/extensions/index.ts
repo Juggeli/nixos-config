@@ -22,18 +22,23 @@ import {
 	type SubagentState,
 } from "../src/shared/types.ts";
 
-const ALLOWED_AGENTS = new Set(["explore", "review", "researcher"]);
+const ALLOWED_AGENTS = new Set(["explore", "review", "researcher", "general-purpose"]);
 const RESEARCH_TOOLS = new Set(["exa_search", "exa_contents"]);
 
 const TaskSchema = Type.Object({
-	agent: Type.Optional(Type.String({ description: "Agent name: explore, review, or researcher. Defaults to explore." })),
+	agent: Type.Optional(
+		Type.String({ description: "Agent name: explore, review, researcher, or general-purpose. Defaults to explore." }),
+	),
 	task: Type.String({ description: "Task for this subagent." }),
 });
 
 const SubagentParams = Type.Object({
 	action: Type.Optional(Type.String({ enum: ["list"], description: "List available subagents." })),
 	agent: Type.Optional(
-		Type.String({ description: "Agent name for a single foreground run: explore, review, or researcher. Defaults to explore." }),
+		Type.String({
+			description:
+				"Agent name for a single foreground run: explore, review, researcher, or general-purpose. Defaults to explore.",
+		}),
 	),
 	task: Type.Optional(Type.String({ description: "Task for a single foreground run." })),
 	tasks: Type.Optional(
@@ -212,14 +217,15 @@ export default function registerSubagentsLite(pi: ExtensionAPI): void {
 		name: "subagent",
 		label: "Subagent",
 		description:
-			"Run foreground-only child Pi subagents with fresh context. Supports single and parallel runs. Available agents: explore, review, researcher. Use action=list to inspect agent descriptions and tool allowlists.",
+			"Run foreground-only child Pi subagents with fresh context. Supports single and parallel runs. Available agents: explore, review, researcher, general-purpose. Use action=list to inspect agent descriptions and tool allowlists.",
 		promptSnippet:
-			"subagent: run focused foreground child agents (explore/review/researcher) with fresh context; supports parallel tasks.",
+			"subagent: run focused foreground child agents (explore/review/researcher/general-purpose) with fresh context; supports parallel tasks.",
 		promptGuidelines: [
 			"Use subagent explore for broad read-only codebase sweeps when you need conclusions without pulling many files into the parent context: locating wiring, call sites, naming variants, related files, or independent search branches.",
 			"Do not use explore when you already know the exact file or symbol; use read/grep directly for simple lookups. Explore is read-only and should not edit or make final correctness judgments.",
 			"Use subagent review for review, audit, or judgment tasks: checking diffs/plans/solutions for correctness, tests, regressions, and unnecessary complexity. It is also read-only.",
 			"Use subagent researcher for external research: current docs, web sources, standards, release notes, ecosystem behavior, benchmarks, GitHub CLI searches, or cloning public repositories into /tmp for deeper inspection.",
+			"Use subagent general-purpose for self-contained multi-step tasks that need file modifications or command execution; it is the only agent that may edit files. Prefer doing edits yourself when they depend on the current conversation.",
 			"Do not use Exa directly in the parent; delegate that research to researcher so raw search output and cloned-repository digging stay out of the parent context.",
 			"For parallel subagents, launch independent questions together and wait for their results instead of duplicating the same search yourself. Relay only the conclusions that matter.",
 			"Subagents always run with fresh context. Give them enough task context, scope, and desired breadth, such as medium or very thorough, because they do not inherit the full conversation.",
