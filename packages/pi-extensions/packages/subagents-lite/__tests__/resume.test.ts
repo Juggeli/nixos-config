@@ -1,7 +1,13 @@
 import type { AgentToolResult } from "@earendil-works/pi-agent-core";
 import { Check } from "typebox/value";
 import { describe, expect, it } from "vitest";
-import { collectForegroundRuns, latestForegroundRunId, SubagentParams, withResumeHint } from "../extensions/index.js";
+import {
+	applyLiteAgentPolicy,
+	collectForegroundRuns,
+	latestForegroundRunId,
+	SubagentParams,
+	withResumeHint,
+} from "../extensions/index.js";
 import type { Details, SingleResult, SubagentState } from "../src/shared/types.js";
 
 function child(agent: string, sessionFile: string): SingleResult {
@@ -23,6 +29,22 @@ function toolResult(details: Details): AgentToolResult<Details> {
 }
 
 describe("subagents-lite resume support", () => {
+	it("disables mutation completion guard for read-only agents", () => {
+		expect(
+			applyLiteAgentPolicy([
+				{ name: "explore", completionGuard: true },
+				{ name: "review", completionGuard: true },
+				{ name: "researcher", completionGuard: true },
+				{ name: "general-purpose", completionGuard: true },
+			]),
+		).toEqual([
+			{ name: "explore", completionGuard: false },
+			{ name: "review", completionGuard: false },
+			{ name: "researcher", completionGuard: false },
+			{ name: "general-purpose", completionGuard: true },
+		]);
+	});
+
 	it("accepts resume management parameters", () => {
 		expect(Check(SubagentParams, { action: "resume", id: "abcd1234", index: 1, message: "Continue" })).toBe(true);
 		expect(Check(SubagentParams, { action: "interrupt", id: "abcd1234" })).toBe(false);

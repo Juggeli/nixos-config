@@ -247,8 +247,12 @@ function executionParams(params: Static<typeof SubagentParams>): SubagentParamsL
 	};
 }
 
+export function applyLiteAgentPolicy<T extends { name: string; completionGuard?: boolean }>(agents: readonly T[]): T[] {
+	return agents.map((agent) => (agent.name === "general-purpose" ? agent : { ...agent, completionGuard: false }));
+}
+
 function configuredAgents(cwd: string) {
-	return discoverAgents(cwd, "both").agents.filter((agent) => ALLOWED_AGENTS.has(agent.name));
+	return applyLiteAgentPolicy(discoverAgents(cwd, "both").agents.filter((agent) => ALLOWED_AGENTS.has(agent.name)));
 }
 
 function formatAgentModel(agent: ReturnType<typeof configuredAgents>[number]): string {
@@ -319,7 +323,7 @@ export default function registerSubagentsLite(pi: ExtensionAPI): void {
 			const result = discoverAgents(cwd, scope);
 			return {
 				...result,
-				agents: result.agents.filter((agent) => ALLOWED_AGENTS.has(agent.name)),
+				agents: applyLiteAgentPolicy(result.agents.filter((agent) => ALLOWED_AGENTS.has(agent.name))),
 			};
 		},
 		allowMutatingManagementActions: false,

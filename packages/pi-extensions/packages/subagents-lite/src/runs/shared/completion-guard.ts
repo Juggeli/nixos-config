@@ -19,10 +19,10 @@ const REVIEWER_REQUIRED_EDIT_PATTERNS = [
 ];
 
 const EXPLICIT_NO_EDIT_PATTERNS = [
-	/\bdo not edit\b/i,
-	/\bdon't edit\b/i,
-	/\bdo not modify\b/i,
-	/\bdo not change files\b/i,
+	/\bdo not\s+(?:(?:inspect|read|review)\s+(?:or|and)\s+)?(?:edit|modify|change)\b/i,
+	/\bdon't\s+(?:(?:inspect|read|review)\s+(?:or|and)\s+)?(?:edit|modify|change)\b/i,
+	/\bwithout\s+(?:editing|modifying|changing)\b/i,
+	/\bno\s+(?:file|code)\s+changes\b/i,
 ];
 
 const SCOPED_NO_EDIT_CONSTRAINT_PATTERNS = [
