@@ -2,8 +2,8 @@
 name: general-purpose
 description: General-purpose agent for multi-step tasks, complex searches, and code changes
 tools: read, grep, find, ls, bash, edit, write
-model: openrouter/deepseek/deepseek-v4-pro
-thinking: high
+model: zai/glm-5.2
+thinking: max
 systemPromptMode: replace
 inheritProjectContext: true
 inheritSkills: false
