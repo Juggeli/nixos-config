@@ -142,6 +142,7 @@
           source = extensionsSource;
           recursive = true;
         };
+        home.file.".pi/agent/sandbox.json".source = ./pi-sandbox.json;
 
         home.activation.patchPiModels = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
           ${patchPiModels}
