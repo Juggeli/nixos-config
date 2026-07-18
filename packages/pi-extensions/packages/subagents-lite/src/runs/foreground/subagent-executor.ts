@@ -165,6 +165,8 @@ export interface SubagentParamsLike {
 	acceptance?: AcceptanceInput;
 	schedule?: string;
 	scheduleName?: string;
+	/** Existing child session used only by foreground resume dispatch. */
+	resumeSessionFile?: string;
 }
 
 interface ExecutorDeps {
@@ -178,6 +180,7 @@ interface ExecutorDeps {
 	expandTilde: (p: string) => string;
 	discoverAgents: (cwd: string, scope: AgentScope) => { agents: AgentConfig[]; modelScope?: ModelScopeConfig };
 	allowMutatingManagementActions?: boolean;
+	resumeStrategy?: "async" | "foreground";
 	kill?: (pid: number, signal?: NodeJS.Signals | 0) => boolean;
 }
 
@@ -3190,6 +3193,58 @@ export function createSubagentExecutor(deps: ExecutorDeps): {
 				return inspectSubagentStatus(paramsWithResolvedCwd, { state: deps.state, nested: nestedScope, sessionRoots });
 			}
 			if (action === "resume") {
+				if (deps.resumeStrategy === "foreground") {
+					const followUp = (paramsWithResolvedCwd.message ?? paramsWithResolvedCwd.task ?? "").trim();
+					if (!followUp) {
+						return {
+							content: [{ type: "text", text: "action='resume' requires message." }],
+							isError: true,
+							details: { mode: "management", results: [] },
+						};
+					}
+					let target: NonNullable<ReturnType<typeof resolveForegroundResumeTarget>>;
+					try {
+						const resolved = resolveForegroundResumeTarget(paramsWithResolvedCwd, deps.state);
+						if (!resolved) throw new Error("Foreground run not found. Provide a run id or unique prefix from this session.");
+						target = resolved;
+					} catch (error) {
+						const message = error instanceof Error ? error.message : String(error);
+						return {
+							content: [{ type: "text", text: message }],
+							isError: true,
+							details: { mode: "management", results: [] },
+						};
+					}
+					return execute(
+						_id,
+						{
+							agent: target.agent,
+							task: followUp,
+							cwd: target.cwd,
+							context: "fresh",
+							async: false,
+							clarify: false,
+							resumeSessionFile: target.sessionFile,
+							timeoutMs: paramsWithResolvedCwd.timeoutMs,
+							maxRuntimeMs: paramsWithResolvedCwd.maxRuntimeMs,
+							turnBudget: paramsWithResolvedCwd.turnBudget,
+							toolBudget: paramsWithResolvedCwd.toolBudget,
+							agentScope: paramsWithResolvedCwd.agentScope,
+							artifacts: paramsWithResolvedCwd.artifacts,
+							includeProgress: paramsWithResolvedCwd.includeProgress,
+							share: paramsWithResolvedCwd.share,
+							control: paramsWithResolvedCwd.control,
+							model: paramsWithResolvedCwd.model,
+							skill: paramsWithResolvedCwd.skill,
+							output: paramsWithResolvedCwd.output,
+							outputMode: paramsWithResolvedCwd.outputMode,
+							acceptance: paramsWithResolvedCwd.acceptance,
+						},
+						signal,
+						onUpdate,
+						ctx,
+					);
+				}
 				return resumeAsyncRun({ params: paramsWithResolvedCwd, requestCwd, ctx, deps });
 			}
 			if (action === "steer") {
@@ -3416,7 +3471,9 @@ export function createSubagentExecutor(deps: ExecutorDeps): {
 		const forkThinkingOverrideForTask = (agentName: string, idx?: number) =>
 			shouldForkAgent(contextPolicy, agentName) ? forkThinkingOverrideForIndex(idx) : undefined;
 		const childSessionFileForTask = (agentName: string, idx?: number) =>
-			forkSessionFileForTask(agentName, idx) ?? path.join(sessionDirForIndex(idx), "session.jsonl");
+			effectiveParams.resumeSessionFile && hasSingle && (idx ?? 0) === 0
+				? effectiveParams.resumeSessionFile
+				: forkSessionFileForTask(agentName, idx) ?? path.join(sessionDirForIndex(idx), "session.jsonl");
 		const childSessionFileForIndex = (idx?: number) =>
 			path.join(sessionDirForIndex(idx), "session.jsonl");
 		try {

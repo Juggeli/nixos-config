@@ -1513,6 +1513,9 @@ export function renderSubagentResult(
 		c.addChild(new Text(fit(theme.fg("dim", formatUsage(r.usage, r.model))), 0, 0));
 		if (r.sessionFile) {
 			c.addChild(new Text(fit(theme.fg("dim", `Session: ${shortenPath(r.sessionFile)}`)), 0, 0));
+			if (!isRunning && d.runId) {
+				c.addChild(new Text(fit(theme.fg("accent", `Resume handle: ${d.runId}`)), 0, 0));
+			}
 		}
 
 		if (!isRunning && r.artifactPaths) {
@@ -1729,6 +1732,10 @@ export function renderSubagentResult(
 
 		if (!rRunning && r.artifactPaths) {
 			c.addChild(new Text(fit(theme.fg("dim", `    artifacts: ${shortenPath(r.artifactPaths.outputPath)}`)), 0, 0));
+		}
+		if (!rRunning && r.sessionFile) {
+			c.addChild(new Text(fit(theme.fg("dim", `    session: ${shortenPath(r.sessionFile)}`)), 0, 0));
+			if (d.runId) c.addChild(new Text(fit(theme.fg("accent", `    resume handle: ${d.runId}:${i}`)), 0, 0));
 		}
 
 		if (expanded && !rRunning) {
