@@ -80,6 +80,30 @@
         rev = "v0.9.0";
         hash = "sha256-Cw0oLzVv674vpC3g5oteCNZSkHpfBN+IdnYDbkai4q4=";
       };
+      piSandbox = pkgs.buildNpmPackage {
+        pname = "pi-sandbox";
+        version = "0.5.0";
+        src = pkgs.fetchFromGitHub {
+          owner = "carderne";
+          repo = "pi-sandbox";
+          rev = "v0.5.0";
+          hash = "sha256-P3AJObuhBe4mMNVeROFCsvnF0Eh67IsUhwCaOrsrJ0U=";
+        };
+        npmDepsHash = "sha256-8LA8k9Emsc1/OwfQt6KN7vPW/N3s8HxPIR/cWMPapwM=";
+        postPatch = ''
+          cp ${./pi-sandbox-package-lock.json} package-lock.json
+          ${pkgs.jq}/bin/jq 'del(.devDependencies, .peerDependencies, .peerDependenciesMeta)' \
+            package.json > package.json.tmp
+          mv package.json.tmp package.json
+        '';
+        dontNpmBuild = true;
+        installPhase = ''
+          runHook preInstall
+          mkdir -p $out
+          cp -R . $out/
+          runHook postInstall
+        '';
+      };
       filterTests =
         src:
         lib.cleanSourceWith {
@@ -91,6 +115,7 @@
         cp -R ${filterTests ../../packages/pi-extensions/packages}/. $out/
         cp -R ${caveman}/. $out/pi-caveman
         cp -R ${rtkOptimizer}/. $out/pi-rtk-optimizer
+        cp -R ${piSandbox}/. $out/pi-sandbox
       '';
       pi = llm-agents.pi;
     in
@@ -106,6 +131,11 @@
           '')
           pkgs.unstable.rtk
           pkgs.nodejs
+          pkgs.ripgrep
+        ]
+        ++ lib.optionals pkgs.stdenv.isLinux [
+          pkgs.bubblewrap
+          pkgs.socat
         ];
 
         home.file.".pi/agent/extensions" = {
