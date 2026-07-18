@@ -80,19 +80,17 @@
         rev = "v0.9.0";
         hash = "sha256-Cw0oLzVv674vpC3g5oteCNZSkHpfBN+IdnYDbkai4q4=";
       };
-      piSandbox = pkgs.buildNpmPackage {
-        pname = "pi-sandbox";
-        version = "0.5.0";
-        src = pkgs.fetchFromGitHub {
-          owner = "carderne";
-          repo = "pi-sandbox";
-          rev = "v0.5.0";
-          hash = "sha256-P3AJObuhBe4mMNVeROFCsvnF0Eh67IsUhwCaOrsrJ0U=";
+      ccSafetyNet = pkgs.buildNpmPackage {
+        pname = "cc-safety-net";
+        version = "1.0.6";
+        src = pkgs.fetchurl {
+          url = "https://registry.npmjs.org/cc-safety-net/-/cc-safety-net-1.0.6.tgz";
+          hash = "sha512-uc2EmRXPXb08cfN1eGnr+h3tWHqxA20fJGZoGBgW6wFl+Nubmmy6jug18vc7WrOW7dGBMPxz4VuU8srfjHtWlw==";
         };
-        npmDepsHash = "sha256-8LA8k9Emsc1/OwfQt6KN7vPW/N3s8HxPIR/cWMPapwM=";
+        npmDepsHash = "sha256-P5IJcI3d30vTiiCorROWTdv9QpEZb8gh+bl/8uAFK7E=";
         postPatch = ''
-          cp ${./pi-sandbox-package-lock.json} package-lock.json
-          ${pkgs.jq}/bin/jq 'del(.devDependencies, .peerDependencies, .peerDependenciesMeta)' \
+          cp ${./cc-safety-net-package-lock.json} package-lock.json
+          ${pkgs.jq}/bin/jq 'del(.devDependencies, .peerDependencies, .peerDependenciesMeta, .scripts.prepare)' \
             package.json > package.json.tmp
           mv package.json.tmp package.json
         '';
@@ -101,6 +99,9 @@
           runHook preInstall
           mkdir -p $out
           cp -R . $out/
+          cat > $out/index.ts <<'EOF'
+          export { default } from "./dist/pi/index.js";
+          EOF
           runHook postInstall
         '';
       };
@@ -115,7 +116,7 @@
         cp -R ${filterTests ../../packages/pi-extensions/packages}/. $out/
         cp -R ${caveman}/. $out/pi-caveman
         cp -R ${rtkOptimizer}/. $out/pi-rtk-optimizer
-        cp -R ${piSandbox}/. $out/pi-sandbox
+        cp -R ${ccSafetyNet}/. $out/cc-safety-net
       '';
       pi = llm-agents.pi;
     in
@@ -127,23 +128,18 @@
             export EXA_API_KEY=$(cat ${config.age.secrets.exa-api-key.path})
             export ZAI_API_KEY=$(cat ${config.age.secrets.zai-api-key.path})
             export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
+            export CC_SAFETY_NET_STRICT=1
+            export CC_SAFETY_NET_PARANOID_RM=1
             exec ${pi}/bin/pi "$@"
           '')
           pkgs.unstable.rtk
           pkgs.nodejs
-          pkgs.ripgrep
-        ]
-        ++ lib.optionals pkgs.stdenv.isLinux [
-          pkgs.bubblewrap
-          pkgs.socat
         ];
 
         home.file.".pi/agent/extensions" = {
           source = extensionsSource;
           recursive = true;
         };
-        home.file.".pi/agent/sandbox.json".source = ./pi-sandbox.json;
-
         home.activation.patchPiModels = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
           ${patchPiModels}
         '';
