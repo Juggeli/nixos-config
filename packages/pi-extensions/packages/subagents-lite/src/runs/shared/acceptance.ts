@@ -78,7 +78,7 @@ function inferLevel(input: {
 	const agent = input.agentName.toLowerCase();
 	const task = input.task?.toLowerCase() ?? "";
 	const reasons: string[] = [];
-	const readOnlyAgent = /\b(?:reviewer|scout|context-builder|researcher|analyst)\b/.test(agent);
+	const readOnlyAgent = /\b(?:explore|review(?:er)?|scout|context-builder|researcher|analyst)\b/.test(agent);
 	const readOnlyTask = /\b(?:read[- ]only|review[- ]only|do not edit|don't edit|no edits|without edits|inspect|summari[sz]e)\b/.test(task);
 	const writeTask = /\b(?:fix|implement|update|write|edit|modify|migrate|release|security|delete|remove|refactor|commit)\b/.test(task)
 		|| /\bworker\b/.test(agent);
@@ -87,6 +87,15 @@ function inferLevel(input: {
 		|| Boolean(input.dynamicGroup)
 		|| /\b(?:release|migration|migrate|security|data[- ]loss|destructive|post-review|fix pass)\b/.test(task);
 
+	if (readOnlyAgent) {
+		reasons.push("read-only/reviewer-style agent");
+		return {
+			level: "attested",
+			reasons,
+			criteria: ["Return concrete findings with file paths and severity when applicable"],
+			evidence: ["review-findings", "residual-risks"],
+		};
+	}
 	if (risky) {
 		reasons.push(input.async ? "async write-capable or risky run" : "risky write-capable run");
 		if (input.dynamic || input.dynamicGroup) reasons.push("dynamic fanout context");
@@ -107,8 +116,8 @@ function inferLevel(input: {
 			evidence: requiredEvidenceForLevel("checked"),
 		};
 	}
-	if (readOnlyAgent || readOnlyTask) {
-		reasons.push(readOnlyAgent ? "read-only/reviewer-style agent" : "read-only task wording");
+	if (readOnlyTask) {
+		reasons.push("read-only task wording");
 		return {
 			level: "attested",
 			reasons,
