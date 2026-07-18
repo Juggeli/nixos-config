@@ -68,6 +68,12 @@
           "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
           && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
       '';
+      caveman = pkgs.fetchFromGitHub {
+        owner = "jonjonrankin";
+        repo = "pi-caveman";
+        rev = "v1.0.7";
+        hash = "sha256-DhawjQ6tZvG5go4ayPdB+Yup77MjsLF2hFmjxgu9yTQ=";
+      };
       rtkOptimizer = pkgs.fetchFromGitHub {
         owner = "MasuRii";
         repo = "pi-rtk-optimizer";
@@ -83,6 +89,7 @@
       extensionsSource = pkgs.runCommand "pi-agent-extensions" { } ''
         mkdir -p $out
         cp -R ${filterTests ../../packages/pi-extensions/packages}/. $out/
+        cp -R ${caveman}/. $out/pi-caveman
         cp -R ${rtkOptimizer}/. $out/pi-rtk-optimizer
       '';
       pi = llm-agents.pi;
