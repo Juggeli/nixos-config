@@ -18,4 +18,5 @@ in
   "exa-api-key.age".publicKeys = keys;
   "openrouter-api-key.age".publicKeys = keys;
   "ollama-api-key.age".publicKeys = keys;
+  "opencode-api-key.age".publicKeys = keys;
 }
