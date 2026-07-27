@@ -3,10 +3,11 @@
     { config, ... }:
     let
       # hostUrl is fetched by the homepage service itself, so it targets the
-      # loopback bindings directly. tsUrl is what a browser opens, and has to go
-      # through Tailscale Serve since the containers no longer listen on the LAN.
+      # loopback bindings directly. tsUrl is what a browser opens: plain HTTP
+      # straight to the container port, which the firewall admits only from
+      # the tailnet (Tailscale Serve no longer fronts these ports).
       hostUrl = port: "http://127.0.0.1:${toString port}";
-      tsUrl = port: "https://haruka.tailac5b0.ts.net:${toString port}";
+      tsUrl = port: "http://haruka.tailac5b0.ts.net:${toString port}";
       lanUrl = port: "http://${config.networking.hostName}:${toString port}";
 
       mkWidget =
@@ -36,17 +37,18 @@
         ];
       };
 
-      # Next.js reads HOSTNAME as its bind address. Bound wide so plain
-      # http://haruka:3000 works from the LAN and the tailnet alike, matching
-      # how the container ports are reached; the Tailscale Serve entry on this
-      # port is gone for the same reason.
+      # Next.js reads HOSTNAME as its bind address. Still bound wide because
+      # the tailnet address may not exist yet when the service starts; the
+      # firewall admits the port from tailscale0 only.
       systemd.services.homepage-dashboard.environment.HOSTNAME = "0.0.0.0";
+
+      # haruka:3000 stays: MagicDNS resolves the bare hostname on the tailnet.
+      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 3000 ];
 
       services.homepage-dashboard = {
         enable = true;
-        openFirewall = true;
         listenPort = 3000;
-        allowedHosts = "localhost:3000,127.0.0.1:3000,haruka:3000,10.11.11.2:3000,haruka.tailac5b0.ts.net:3000";
+        allowedHosts = "localhost:3000,127.0.0.1:3000,haruka:3000,haruka.tailac5b0.ts.net:3000";
 
         customCSS = ''
           body, html {
