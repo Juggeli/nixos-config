@@ -381,22 +381,32 @@
       };
 
       # Rootless publishing binds real host sockets, so networking.firewall
-      # applies to container ports now. Deliberately open on every interface:
-      # LAN and tailnet clients resolve haruka to different addresses, and the
-      # web UIs are served directly rather than through Tailscale Serve.
-      networking.firewall.allowedTCPPorts = [
-        32400
-        8096
-        3333
-        6767
-        7878
-        7879
-        8000
-        8080
-        8989
-        8999
-        9696
-      ];
+      # applies to container ports. The web UIs are tailnet-only: enp1s0
+      # carries globally routable IPv6 alongside the LAN, so any port opened
+      # on it is open to the Internet, and every host-side consumer
+      # (cloudflared, recyclarr, homepage probes) uses loopback anyway. Plex
+      # and Jellyfin are the exception — LAN players direct-play against
+      # them — and are admitted by source subnet because interface scoping
+      # cannot separate the LAN from public IPv6 on the same interface.
+      networking.firewall = {
+        interfaces.tailscale0.allowedTCPPorts = [
+          32400
+          8096
+          3333
+          6767
+          7878
+          7879
+          8000
+          8080
+          8989
+          8999
+          9696
+        ];
+        extraCommands = ''
+          iptables -w -A nixos-fw -p tcp -s 10.11.11.0/24 --dport 32400 -j nixos-fw-accept
+          iptables -w -A nixos-fw -p tcp -s 10.11.11.0/24 --dport 8096 -j nixos-fw-accept
+        '';
+      };
 
       # doas keepenv would leak juggeli's XDG and D-Bus variables, pointing
       # podman at the wrong runtime dir and storage; -C / because the caller's
