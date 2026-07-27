@@ -1,35 +1,67 @@
 {
   flake.nixosModules.haruka-cloudflared =
-    { config, pkgs, ... }:
+    { config, ... }:
+    let
+      tunnelId = "2c4475e1-77e4-46bd-aabe-42a265cec5fd";
+    in
     {
-      users.users.cloudflared = {
-        group = "cloudflared";
-        isSystemUser = true;
-      };
-      users.groups.cloudflared = { };
+      services.cloudflared = {
+        enable = true;
 
-      age.secrets.cloudflared = {
-        owner = "cloudflared";
-        group = "cloudflared";
-        mode = "770";
-      };
+        tunnels.${tunnelId} = {
+          credentialsFile = config.age.secrets.cloudflared-credentials.path;
+          default = "http_status:404";
+          edgeIPVersion = "auto";
 
-      systemd.services.cloudflare-tunnel = {
-        wantedBy = [ "multi-user.target" ];
-        wants = [ "network-online.target" ];
-        after = [
-          "network-online.target"
-          "systemd-resolved.service"
-        ];
-        serviceConfig = {
-          Restart = "always";
-          User = "cloudflared";
-          Group = "cloudflared";
+          # Cloudflare still serves a remote configuration for this tunnel, and
+          # remote config wins over the local file. These rules therefore mirror
+          # the dashboard rather than drive it; they only become authoritative
+          # once the tunnel's remote configuration is cleared via the API
+          # (PUT /accounts/:account/cfd_tunnel/:tunnel/configurations), which
+          # leaves the DNS records intact.
+          ingress = {
+            "sonarr.jugi.cc" = "http://127.0.0.1:8989";
+            "sonarr-anime.jugi.cc" = "http://127.0.0.1:8999";
+            "radarr.jugi.cc" = "http://127.0.0.1:7878";
+            "radarr-anime.jugi.cc" = "http://127.0.0.1:7879";
+            "jelly.jugi.cc" = "http://127.0.0.1:8096";
+            "memos.jugi.cc" = "http://127.0.0.1:5230";
+          };
         };
-        script = ''
-          TOKEN=$(${pkgs.coreutils}/bin/cat ${config.age.secrets.cloudflared.path})
-          ${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token=$TOKEN
-        '';
+      };
+
+      # DynamicUser already implies NoNewPrivileges, RestrictSUIDSGID, PrivateTmp,
+      # ProtectSystem=strict and ProtectHome=read-only. AF_NETLINK is required for
+      # the interface enumeration cloudflared does to pick an ICMP proxy source.
+      systemd.services."cloudflared-tunnel-${tunnelId}".serviceConfig = {
+        CapabilityBoundingSet = "";
+        DevicePolicy = "closed";
+        LockPersonality = true;
+        MemoryDenyWriteExecute = true;
+        PrivateDevices = true;
+        ProcSubset = "pid";
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectProc = "invisible";
+        RestrictAddressFamilies = [
+          "AF_INET"
+          "AF_INET6"
+          "AF_NETLINK"
+          "AF_UNIX"
+        ];
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
+        SystemCallArchitectures = "native";
+        SystemCallFilter = [
+          "@system-service"
+          "~@privileged"
+          "~@obsolete"
+        ];
+        UMask = "0077";
       };
     };
 }

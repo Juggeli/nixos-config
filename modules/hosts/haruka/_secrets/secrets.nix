@@ -11,6 +11,7 @@ in
 {
   "borg-passkey.age".publicKeys = keys;
   "cloudflared.age".publicKeys = keys;
+  "cloudflared-credentials.age".publicKeys = keys;
   "syncthing-key.age".publicKeys = keys;
   "syncthing-cert.age".publicKeys = keys;
   "borg-healthcheck.age".publicKeys = keys;
