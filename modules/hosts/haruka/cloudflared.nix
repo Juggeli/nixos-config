@@ -2,7 +2,10 @@
   flake.nixosModules.haruka-cloudflared =
     { config, ... }:
     let
-      tunnelId = "2c4475e1-77e4-46bd-aabe-42a265cec5fd";
+      # Created with `cloudflared tunnel create`, so it carries no configuration
+      # on Cloudflare's side and the ingress below is the only source of truth.
+      # A dashboard-created tunnel would silently override all of this.
+      tunnelId = "03b1c5a5-383a-4096-b567-ac3e4f9430c6";
     in
     {
       services.cloudflared = {
@@ -13,12 +16,6 @@
           default = "http_status:404";
           edgeIPVersion = "auto";
 
-          # Cloudflare still serves a remote configuration for this tunnel, and
-          # remote config wins over the local file. These rules therefore mirror
-          # the dashboard rather than drive it; they only become authoritative
-          # once the tunnel's remote configuration is cleared via the API
-          # (PUT /accounts/:account/cfd_tunnel/:tunnel/configurations), which
-          # leaves the DNS records intact.
           ingress = {
             "sonarr.jugi.cc" = "http://127.0.0.1:8989";
             "sonarr-anime.jugi.cc" = "http://127.0.0.1:8999";
