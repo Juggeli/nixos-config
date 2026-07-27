@@ -2,7 +2,12 @@
   flake.nixosModules.haruka-homepage =
     { config, ... }:
     let
-      hostUrl = port: "http://${config.networking.hostName}:${toString port}";
+      # hostUrl is fetched by the homepage service itself, so it targets the
+      # loopback bindings directly. tsUrl is what a browser opens, and has to go
+      # through Tailscale Serve since the containers no longer listen on the LAN.
+      hostUrl = port: "http://127.0.0.1:${toString port}";
+      tsUrl = port: "https://haruka.tailac5b0.ts.net:${toString port}";
+      lanUrl = port: "http://${config.networking.hostName}:${toString port}";
 
       mkWidget =
         {
@@ -22,12 +27,25 @@
         // (if slug != null then { inherit slug; } else { });
     in
     {
-      services.glances.enable = true;
+      services.glances = {
+        enable = true;
+        extraArgs = [
+          "--webserver"
+          "--bind"
+          "127.0.0.1"
+        ];
+      };
+
+      # Next.js reads HOSTNAME as its bind address. Binding to loopback keeps
+      # the dashboard off the LAN and frees the tailnet address for the
+      # Tailscale Serve listener on the same port.
+      systemd.services.homepage-dashboard.environment.HOSTNAME = "127.0.0.1";
 
       services.homepage-dashboard = {
         enable = true;
-        openFirewall = true;
+        openFirewall = false;
         listenPort = 3000;
+        allowedHosts = "localhost:3000,127.0.0.1:3000,haruka.tailac5b0.ts.net:3000";
 
         customCSS = ''
           body, html {
@@ -108,7 +126,7 @@
                 SillyTavern = {
                   icon = "sillytavern.png";
                   description = "LLM frontend";
-                  href = hostUrl 8000;
+                  href = tsUrl 8000;
                   siteMonitor = hostUrl 8000;
                 };
               }
@@ -120,7 +138,7 @@
                 qBittorrent = {
                   icon = "qbittorrent.png";
                   description = "Torrent client";
-                  href = hostUrl 8080;
+                  href = tsUrl 8080;
                   siteMonitor = hostUrl 8080;
                   widget = mkWidget {
                     envKeyName = "QBITTORRENT";
@@ -143,7 +161,7 @@
                 Bazarr = {
                   icon = "bazarr.png";
                   description = "Subtitle management";
-                  href = hostUrl 6767;
+                  href = tsUrl 6767;
                   siteMonitor = hostUrl 6767;
                   widget = mkWidget {
                     envKeyName = "BAZARR";
@@ -180,7 +198,7 @@
                 LANraragi = {
                   icon = "lanraragi.png";
                   description = "Archive reader";
-                  href = hostUrl 3333;
+                  href = tsUrl 3333;
                   siteMonitor = hostUrl 3333;
                 };
               }
@@ -188,7 +206,7 @@
                 Plex = {
                   icon = "plex.png";
                   description = "Media server";
-                  href = hostUrl 32400;
+                  href = lanUrl 32400;
                   siteMonitor = hostUrl 32400;
                   widget = mkWidget {
                     envKeyName = "PLEX";
@@ -206,7 +224,7 @@
                 Prowlarr = {
                   icon = "prowlarr.png";
                   description = "Indexer manager";
-                  href = hostUrl 9696;
+                  href = tsUrl 9696;
                   siteMonitor = hostUrl 9696;
                   widget = mkWidget {
                     envKeyName = "PROWLARR";
@@ -303,7 +321,7 @@
                 "Uptime Kuma" = {
                   icon = "uptime-kuma.png";
                   description = "Status monitoring";
-                  href = hostUrl 3001;
+                  href = tsUrl 3001;
                   siteMonitor = hostUrl 3001;
                   widget = mkWidget {
                     envKeyName = "UPTIME_KUMA";
@@ -327,15 +345,17 @@
                 Koto = {
                   icon = "robot.png";
                   description = "Personal AI assistant";
-                  href = hostUrl 9847;
-                  siteMonitor = hostUrl 9847;
+                  # koto shares the tailscale-koto container's network namespace,
+                  # so it is only ever reachable under that node's tailnet name.
+                  href = "https://koto.tailac5b0.ts.net";
+                  siteMonitor = "https://koto.tailac5b0.ts.net";
                 };
               }
               {
                 Memos = {
                   icon = "memos.png";
                   description = "Privacy-first note-taking app";
-                  href = hostUrl 5230;
+                  href = "https://memos.jugi.cc";
                   siteMonitor = hostUrl 5230;
                 };
               }

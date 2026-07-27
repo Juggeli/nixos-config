@@ -17,10 +17,14 @@
         inherit dataDir;
         key = config.age.secrets.syncthing-key.path;
         cert = config.age.secrets.syncthing-cert.path;
-        guiAddress = "0.0.0.0:8384";
+        guiAddress = "127.0.0.1:8384";
         overrideDevices = true;
         overrideFolders = true;
         settings = {
+          # The GUI listens on loopback and is reached through Tailscale Serve,
+          # whose forwarded Host header syncthing's rebinding check rejects.
+          gui.insecureSkipHostcheck = true;
+
           devices = {
             "haruka".id = "45RLMRL-COTJJV7-QXRIMZC-E2UR3P5-X5DV62Q-X6EO5HY-I4RJISU-BTPXIAB";
             "noel".id = "7WH7YG3-7UCT4KC-R27XT6G-RC6C7OF-JFQJJEH-JNVDCZJ-ZUZFFK4-3O25GQT";
@@ -92,8 +96,9 @@
         wants = [ "local-fs.target" ];
       };
 
+      # 8384 is the unauthenticated web GUI, reached over Tailscale Serve.
+      # 22000/21027 carry the actual sync protocol and must stay open.
       networking.firewall.allowedTCPPorts = [
-        8384
         22000
       ];
       networking.firewall.allowedUDPPorts = [
