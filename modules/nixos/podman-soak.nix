@@ -79,22 +79,26 @@
               problems+=("$name: registry unreachable")
             fi
 
-            # Prefer the digest the tag points at now once it has soaked:
-            # registries keep serving digests a tag has moved away from, so a
-            # briefly published and then reverted release would otherwise
-            # still win as "newest soaked". Only when the current digest is
-            # too young does the newest soaked one win instead, which is what
-            # stops a fast-moving upstream from resetting the clock forever
-            # and freezing us on an old image.
-            target=$(jq -r --arg n "$name" --arg d "$digest" --argjson c "$cutoff" \
-              '(.[$n].seen // {}) as $seen
-               | if $d != "" and ($seen[$d] // infinite) <= $c then $d
-                 else $seen | to_entries | map(select(.value <= $c))
-                   | sort_by(.value) | last | .key // empty
-                 end' "$state")
-
             pinned="localhost/$name:pinned"
             promoted=$(jq -r --arg n "$name" '.[$n].promoted // empty' "$state")
+
+            # Promote only the digest the tag points at now, and only once it
+            # has soaked. A digest the tag has moved away from is never
+            # promoted: registries keep serving it, so any historical
+            # fallback would deploy a briefly published and then pulled
+            # release days after upstream replaced it. The cost is that a
+            # burst of quick releases holds the pinned image until upstream
+            # stays put for the soak period; these stable tags move slower
+            # than that, and the hold is logged so a stall stays visible.
+            target=""
+            if [ -n "$digest" ]; then
+              firstSeen=$(jq -r --arg n "$name" --arg d "$digest" '.[$n].seen[$d]' "$state")
+              if [ "$firstSeen" -le "$cutoff" ]; then
+                target="$digest"
+              elif [ "$digest" != "$promoted" ]; then
+                echo "holding $name: current digest is $(( (now - firstSeen) / 86400 ))d old, soak is ${toString cfg.soakDays}d"
+              fi
+            fi
 
             # First run has no soaked digest yet and no local tag, so the
             # containers would have nothing to start from. Adopt what the tag
