@@ -11,8 +11,25 @@
 
       # Every line needs its own terminator: `read` discards a trailing line that
       # is not newline-terminated, which would silently drop the last image.
+      # The third column lists the units running the pinned tag: several
+      # containers can share one image (sonarr-anime runs localhost/sonarr),
+      # so the image key alone does not name what to restart.
       imageList = pkgs.writeText "podman-soak-images.tsv" (
-        lib.concatStrings (lib.mapAttrsToList (name: ref: "${name}\t${ref}\n") cfg.images)
+        lib.concatStrings (
+          lib.mapAttrsToList (
+            name: ref:
+            let
+              units = map (n: "podman-${n}.service") (
+                lib.attrNames (
+                  lib.filterAttrs (
+                    _: container: container.image == "localhost/${name}:pinned"
+                  ) config.virtualisation.oci-containers.containers
+                )
+              );
+            in
+            "${name}\t${ref}\t${lib.concatStringsSep " " units}\n"
+          ) cfg.images
+        )
       );
 
       # Containers pinned to a local tag must not start before the tag exists,
@@ -42,7 +59,7 @@
           cutoff=$(( now - ${toString (cfg.soakDays * 86400)} ))
           problems=()
 
-          while IFS=$'\t' read -r name ref; do
+          while IFS=$'\t' read -r name ref units; do
             [ -n "$name" ] || continue
 
             # Reading the manifest costs a few KB and touches no layers, so the
@@ -107,11 +124,15 @@
             # Stopped units pick the new tag up on their next start; only
             # running ones are restarted. --no-block because this service is
             # ordered before the container units, so a synchronous restart
-            # issued from inside it would deadlock during boot.
-            unit="podman-$name.service"
-            if systemctl is-active --quiet "$unit"; then
-              systemctl restart --no-block "$unit"
-            fi
+            # issued from inside it would deadlock during boot. Restarts
+            # propagate through Requires=, so dependents like koto follow
+            # their tailscale sidecar without being listed here.
+            read -ra unitList <<< "$units"
+            for unit in "''${unitList[@]}"; do
+              if systemctl is-active --quiet "$unit"; then
+                systemctl restart --no-block "$unit"
+              fi
+            done
           done < ${imageList}
 
           # A promotion leaves the previously pinned image untagged, and nothing
