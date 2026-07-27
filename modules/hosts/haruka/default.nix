@@ -18,7 +18,6 @@
         haruka-acme
         haruka-cleanup
         haruka-qbittorrent-manager
-        haruka-markdown-viewer
         haruka-log-analyzer
         haruka-containers
         haruka-homepage
