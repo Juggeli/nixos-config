@@ -381,9 +381,9 @@
       };
 
       # Rootless publishing binds real host sockets, so networking.firewall
-      # applies to container ports now. These match the reachability the
-      # rootful DNAT provided (any interface: LAN and tailnet both resolve
-      # haruka to different addresses depending on the client).
+      # applies to container ports now. Deliberately open on every interface:
+      # LAN and tailnet clients resolve haruka to different addresses, and the
+      # web UIs are served directly rather than through Tailscale Serve.
       networking.firewall.allowedTCPPorts = [
         32400
         8096
