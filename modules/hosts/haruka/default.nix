@@ -14,6 +14,7 @@
         haruka-syncthing
         haruka-borgmatic
         haruka-cloudflared
+        haruka-tailscale-serve
         haruka-samba
         haruka-acme
         haruka-cleanup

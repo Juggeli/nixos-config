@@ -5,7 +5,7 @@
       configFile = pkgs.writeTextFile {
         name = "qbit-manager-config.json";
         text = builtins.toJSON {
-          host = "10.11.11.2";
+          host = "127.0.0.1";
           port = 8080;
           public_ratio_limit = 2.0;
           upload_limit_downloading = 200000;

@@ -46,10 +46,14 @@
         prowlarr = hotioBase // {
           image = "ghcr.io/hotio/prowlarr";
           autoStart = false;
-          ports = [ "9696:9696" ];
+          ports = [ "127.0.0.1:9696:9696" ];
           volumes = [ "/mnt/appdata/prowlarr:/config" ];
         };
 
+        # Plex and Jellyfin keep a LAN-wide binding: local players discover and
+        # direct-play against them, which an HTTPS proxy in front would break.
+        # Every other container publishes on loopback only, since podman's DNAT
+        # sidesteps networking.firewall entirely.
         plex = {
           image = "ghcr.io/hotio/plex";
           autoStart = false;
@@ -85,7 +89,7 @@
         qbittorrent = {
           image = "ghcr.io/hotio/qbittorrent";
           autoStart = true;
-          ports = [ "8080:8080" ];
+          ports = [ "127.0.0.1:8080:8080" ];
           labels."io.containers.autoupdate" = "registry";
           volumes = [
             "/mnt/appdata/qbittorrent:/config"
@@ -112,7 +116,7 @@
         sonarr = hotioBase // {
           image = "ghcr.io/hotio/sonarr";
           autoStart = false;
-          ports = [ "8989:8989" ];
+          ports = [ "127.0.0.1:8989:8989" ];
           volumes = [
             "/mnt/appdata/sonarr/:/config/"
             "/tank/media/:/data"
@@ -122,7 +126,7 @@
         sonarr-anime = hotioBase // {
           image = "ghcr.io/hotio/sonarr";
           autoStart = false;
-          ports = [ "8999:8989" ];
+          ports = [ "127.0.0.1:8999:8989" ];
           volumes = [
             "/mnt/appdata/sonarr-anime/:/config/"
             "/tank/media/:/data"
@@ -132,7 +136,7 @@
         radarr = hotioBase // {
           image = "ghcr.io/hotio/radarr";
           autoStart = false;
-          ports = [ "7878:7878" ];
+          ports = [ "127.0.0.1:7878:7878" ];
           volumes = [
             "/mnt/appdata/radarr/:/config"
             "/tank/media/:/data"
@@ -142,7 +146,7 @@
         radarr-anime = hotioBase // {
           image = "ghcr.io/hotio/radarr";
           autoStart = false;
-          ports = [ "7879:7878" ];
+          ports = [ "127.0.0.1:7879:7878" ];
           volumes = [
             "/mnt/appdata/radarr-anime/:/config"
             "/tank/media/:/data"
@@ -152,7 +156,7 @@
         bazarr = {
           image = "ghcr.io/hotio/bazarr";
           autoStart = false;
-          ports = [ "6767:6767" ];
+          ports = [ "127.0.0.1:6767:6767" ];
           labels."io.containers.autoupdate" = "registry";
           environment = {
             PUID = "1000";
@@ -168,7 +172,7 @@
         lanraragi = {
           image = "docker.io/difegue/lanraragi";
           autoStart = true;
-          ports = [ "3333:3000" ];
+          ports = [ "127.0.0.1:3333:3000" ];
           labels."io.containers.autoupdate" = "registry";
           volumes = [
             "/mnt/appdata/lanraragi:/home/koyomi/lanraragi/database"
@@ -180,7 +184,7 @@
         memos = {
           image = "docker.io/neosmemo/memos:stable";
           autoStart = true;
-          ports = [ "5230:5230" ];
+          ports = [ "127.0.0.1:5230:5230" ];
           labels."io.containers.autoupdate" = "registry";
           volumes = [ "/mnt/appdata/memos:/var/opt/memos" ];
         };
@@ -188,7 +192,7 @@
         sillytavern = {
           image = "ghcr.io/sillytavern/sillytavern:latest";
           autoStart = true;
-          ports = [ "8000:8000" ];
+          ports = [ "127.0.0.1:8000:8000" ];
           labels."io.containers.autoupdate" = "registry";
           volumes = [
             "/mnt/appdata/sillytavern/config:/home/node/app/config"
@@ -199,7 +203,7 @@
         uptime-kuma = {
           image = "ghcr.io/louislam/uptime-kuma:2-rootless";
           autoStart = true;
-          ports = [ "3001:3001" ];
+          ports = [ "127.0.0.1:3001:3001" ];
           labels."io.containers.autoupdate" = "registry";
           volumes = [ "/mnt/appdata/uptime-kuma:/app/data" ];
           environment = {
@@ -264,7 +268,7 @@
         configuration = {
           sonarr = {
             anime-sonarr-v4 = {
-              base_url = "http://haruka:8999";
+              base_url = "http://127.0.0.1:8999";
               api_key._secret = config.age.secrets.sonarr-anime-api.path;
 
               include = [
@@ -340,7 +344,7 @@
             };
 
             web-2160p-v4 = {
-              base_url = "http://haruka:8989/";
+              base_url = "http://127.0.0.1:8989/";
               api_key._secret = config.age.secrets.sonarr-api.path;
 
               include = [
