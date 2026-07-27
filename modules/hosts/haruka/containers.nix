@@ -13,6 +13,15 @@
       # drop to PUID: that drop is a setuid() call, which the flag does not block.
       hardened = [ "--security-opt=no-new-privileges" ];
 
+      # Shared XDG_RUNTIME_DIR for every podman invocation that touches the
+      # oci user's storage: containers/storage wants one run root per graph
+      # root, and the fallback it would otherwise pick (/tmp/storage-run-2000)
+      # is subject to the 10-day /tmp cleanup, which corrupts podman's state
+      # under a running stack. Podman pins the run root it first saw in its
+      # database and silently ignores a changed environment, so moving this
+      # path means stopping every container and deleting storage/db.sql.
+      ociRuntimeDir = "/run/oci-podman";
+
       # Upstream references the soak timer watches. Each is republished locally
       # as localhost/<name>:pinned once its digest has been public for the soak
       # period, and that local tag is what the containers below actually run.
@@ -323,6 +332,7 @@
         enable = true;
         soakDays = 3;
         user = "oci";
+        runtimeDir = ociRuntimeDir;
         images = soakedImages;
         notifyCommand = ''
           ${pkgs.curl}/bin/curl -s \
@@ -388,7 +398,12 @@
         9696
       ];
 
-      environment.shellAliases.podman-oci = "doas -u oci podman";
+      # doas keepenv would leak juggeli's XDG and D-Bus variables, pointing
+      # podman at the wrong runtime dir and storage; -C / because the caller's
+      # cwd may not be readable by oci.
+      environment.shellAliases.podman-oci = "doas -u oci env -C / -u XDG_CONFIG_HOME -u XDG_DATA_HOME -u XDG_CACHE_HOME -u XDG_STATE_HOME -u DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR=${ociRuntimeDir} podman";
+
+      systemd.tmpfiles.rules = [ "d ${ociRuntimeDir} 0700 oci media -" ];
 
       systemd.services = lib.mkMerge [
         # Rootless podman execs the setuid newuidmap/newgidmap wrappers, which
@@ -397,6 +412,7 @@
           (map (name: "podman-${name}") (lib.attrNames config.virtualisation.oci-containers.containers))
           (_: {
             path = [ "/run/wrappers" ];
+            environment.XDG_RUNTIME_DIR = ociRuntimeDir;
           })
         )
         (lib.genAttrs (map (name: "podman-${name}") mediaNetMembers) (_: {
@@ -412,7 +428,10 @@
               Type = "oneshot";
               RemainAfterExit = true;
               User = "oci";
-              Environment = [ "HOME=${config.users.users.oci.home}" ];
+              Environment = [
+                "HOME=${config.users.users.oci.home}"
+                "XDG_RUNTIME_DIR=${ociRuntimeDir}"
+              ];
               ExecStart = "${pkgs.podman}/bin/podman network create --ignore --disable-dns --subnet=10.90.0.0/24 media";
             };
           };
@@ -436,7 +455,10 @@
             serviceConfig = {
               Type = "oneshot";
               User = "oci";
-              Environment = [ "HOME=${config.users.users.oci.home}" ];
+              Environment = [
+                "HOME=${config.users.users.oci.home}"
+                "XDG_RUNTIME_DIR=${ociRuntimeDir}"
+              ];
             };
             script = ''
               new=$(podman pull --quiet ghcr.io/juggeli/koto:latest)

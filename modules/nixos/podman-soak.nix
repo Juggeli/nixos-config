@@ -147,6 +147,19 @@
           '';
         };
 
+        runtimeDir = lib.mkOption {
+          type = lib.types.str;
+          default = "/run/podman-image-soak";
+          description = ''
+            Directory used as XDG_RUNTIME_DIR, which podman derives its run
+            root from. containers/storage expects every process sharing a
+            graph root to also share its run root, so when the containers run
+            rootless point this at the same directory their units use. The
+            default is a private directory managed by the service; any other
+            value must exist already.
+          '';
+        };
+
         images = lib.mkOption {
           type = lib.types.attrsOf lib.types.str;
           default = { };
@@ -189,10 +202,10 @@
             User = cfg.user;
             # Without XDG_RUNTIME_DIR skopeo falls back to
             # /run/containers/$UID/auth.json, whose parent is root-only.
-            RuntimeDirectory = "podman-image-soak";
+            RuntimeDirectory = lib.mkIf (cfg.runtimeDir == "/run/podman-image-soak") "podman-image-soak";
             Environment = [
               "HOME=${config.users.users.${cfg.user}.home}"
-              "XDG_RUNTIME_DIR=/run/podman-image-soak"
+              "XDG_RUNTIME_DIR=${cfg.runtimeDir}"
             ];
             # Best effort: an unreachable registry must not hold up the
             # containers ordered after this, which keep their current image.
