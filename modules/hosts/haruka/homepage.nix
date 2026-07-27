@@ -36,16 +36,17 @@
         ];
       };
 
-      # Next.js reads HOSTNAME as its bind address. Binding to loopback keeps
-      # the dashboard off the LAN and frees the tailnet address for the
-      # Tailscale Serve listener on the same port.
-      systemd.services.homepage-dashboard.environment.HOSTNAME = "127.0.0.1";
+      # Next.js reads HOSTNAME as its bind address. Bound wide so plain
+      # http://haruka:3000 works from the LAN and the tailnet alike, matching
+      # how the container ports are reached; the Tailscale Serve entry on this
+      # port is gone for the same reason.
+      systemd.services.homepage-dashboard.environment.HOSTNAME = "0.0.0.0";
 
       services.homepage-dashboard = {
         enable = true;
-        openFirewall = false;
+        openFirewall = true;
         listenPort = 3000;
-        allowedHosts = "localhost:3000,127.0.0.1:3000,haruka.tailac5b0.ts.net:3000";
+        allowedHosts = "localhost:3000,127.0.0.1:3000,haruka:3000,10.11.11.2:3000,haruka.tailac5b0.ts.net:3000";
 
         customCSS = ''
           body, html {

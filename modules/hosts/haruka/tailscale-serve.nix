@@ -6,17 +6,12 @@
       ...
     }:
     let
-      # Containers publish on loopback only, so anything without a Cloudflare
-      # tunnel hostname needs a tailnet path to stay reachable. The *arrs and
-      # memos are omitted deliberately: the tunnel already serves them.
+      # Loopback-only services that need a tailnet path. The arr stack and
+      # qbittorrent are omitted: they bind wide and are admitted from
+      # tailscale0 by the firewall, and a serve listener on the same port
+      # would shadow the container's bind on the tailnet address.
       servedPorts = [
-        3000 # homepage
-        3333 # lanraragi
-        6767 # bazarr
-        8000 # sillytavern
-        8080 # qbittorrent
         8384 # syncthing gui
-        9696 # prowlarr
       ];
 
       tailscale = "${config.services.tailscale.package}/bin/tailscale";
