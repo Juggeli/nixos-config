@@ -403,6 +403,11 @@
       # cwd may not be readable by oci.
       environment.shellAliases.podman-oci = "doas -u oci env -C / -u XDG_CONFIG_HOME -u XDG_DATA_HOME -u XDG_CACHE_HOME -u XDG_STATE_HOME -u DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR=${ociRuntimeDir} podman";
 
+      # System units have no user session bus, so rootless podman cannot reach
+      # the systemd cgroup manager and warns before falling back on every
+      # invocation; pin the fallback to keep the logs quiet.
+      virtualisation.containers.containersConf.settings.engine.cgroup_manager = "cgroupfs";
+
       systemd.tmpfiles.rules = [ "d ${ociRuntimeDir} 0700 oci media -" ];
 
       systemd.services = lib.mkMerge [
