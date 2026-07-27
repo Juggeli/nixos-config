@@ -11,24 +11,29 @@
 
           environment.systemPath = [ "/opt/homebrew/bin" ];
 
-          home-manager.users.juggeli = {
-            ghostty.fontSize = 16;
+          home-manager.users.juggeli =
+            { pkgs, ... }:
+            {
+              ghostty.fontSize = 16;
 
-            home.sessionVariables = {
-              ANDROID_HOME = "$HOME/Library/Android/sdk";
+              home.packages = [ pkgs.jdk21 ];
+
+              home.sessionVariables = {
+                ANDROID_HOME = "$HOME/Library/Android/sdk";
+                JAVA_HOME = "${pkgs.jdk21.home}";
+              };
+
+              home.sessionPath = [
+                "/opt/homebrew/bin"
+                "$HOME/src/flutter/bin"
+                "$HOME/.pub-cache/bin"
+                "$HOME/.local/bin"
+                "$HOME/Library/Android/sdk/platform-tools"
+                "$HOME/Library/Android/sdk/emulator"
+                "/Applications/microchip/xc8/v2.50/bin"
+                "/Applications/microchip/mplabx/6.30/MPLAB X IDE v6.30.app/Contents/Resources/mplab_ide/bin"
+              ];
             };
-
-            home.sessionPath = [
-              "/opt/homebrew/bin"
-              "$HOME/src/flutter/bin"
-              "$HOME/.pub-cache/bin"
-              "$HOME/.local/bin"
-              "$HOME/Library/Android/sdk/platform-tools"
-              "$HOME/Library/Android/sdk/emulator"
-              "/Applications/microchip/xc8/v2.50/bin"
-              "/Applications/microchip/mplabx/6.30/MPLAB X IDE v6.30.app/Contents/Resources/mplab_ide/bin"
-            ];
-          };
         }
       ];
   };
