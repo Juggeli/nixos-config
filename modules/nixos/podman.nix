@@ -8,6 +8,13 @@
       ];
 
       virtualisation.oci-containers.backend = "podman";
+
+      # Podman keeps auto-detecting an existing BoltDB state forever, even though
+      # new installs default to SQLite. Pinning the backend makes podman refuse to
+      # start against a stray bolt_state.db instead of silently reviving the
+      # deprecated driver, which Podman 6.0 removes.
+      virtualisation.containers.containersConf.settings.engine.db_backend = "sqlite";
+
       virtualisation.podman = {
         enable = true;
         dockerSocket.enable = true;
