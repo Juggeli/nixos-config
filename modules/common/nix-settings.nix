@@ -45,6 +45,22 @@ in
   flake.nixosModules.nix-settings = {
     imports = [ common ];
     nix.settings.sandbox = "relaxed";
+
+    # Nothing reclaims the store otherwise: generations are GC roots, so every
+    # rebuild pins its whole closure until the generation itself is deleted.
+    nix.gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
+
+    # Hardlinks identical files between store paths. Kept as a periodic pass
+    # rather than settings.auto-optimise-store so it never sits in the critical
+    # path of a build.
+    nix.optimise = {
+      automatic = true;
+      dates = [ "weekly" ];
+    };
   };
 
   flake.darwinModules.nix-settings = {
