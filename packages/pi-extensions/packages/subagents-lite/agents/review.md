@@ -1,7 +1,7 @@
 ---
 name: review
 description: Review specialist for code diffs, plans, proposed solutions, and repository state
-tools: read, grep, find, ls, bash
+tools: read, grep, find, ls, bash, fd, rg
 model: openrouter/deepseek/deepseek-v4-pro
 thinking: high
 systemPromptMode: replace
