@@ -114,6 +114,11 @@
             fi
           done < ${imageList}
 
+          # A promotion leaves the previously pinned image untagged, and nothing
+          # else cleans this user's storage, so unattended updates would grow it
+          # without bound. Images still used by a running container are kept.
+          podman image prune -f > /dev/null
+
           if [ ''${#problems[@]} -gt 0 ]; then
             printf '%s\n' "''${problems[@]}"
             ${lib.optionalString (cfg.notifyCommand != null) ''
