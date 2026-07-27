@@ -261,9 +261,7 @@ Parameters:
 			}
 			if (params.end_published_date && !isValidISODate(params.end_published_date)) {
 				return {
-					content: [
-						{ type: "text" as const, text: "Error: end_published_date must be a valid ISO 8601 date string" },
-					],
+					content: [{ type: "text" as const, text: "Error: end_published_date must be a valid ISO 8601 date string" }],
 					details: { error: "Invalid date format" } as SearchDetails,
 				};
 			}
