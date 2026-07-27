@@ -16,7 +16,16 @@
       };
 
       users.users.juggeli.extraGroups = [ "podman" ];
-      networking.firewall.trustedInterfaces = [ "podman0" ];
+
+      # Containers only need the host for aardvark-dns on 10.88.0.1:53; they reach
+      # each other over the bridge and the outside world via masquerade, neither of
+      # which passes through INPUT. Trusting podman0 wholesale would instead expose
+      # every host service bound to 0.0.0.0 — sshd, Samba, Syncthing — to any
+      # container, which matters because container images update unattended.
+      networking.firewall.interfaces.podman0 = {
+        allowedTCPPorts = [ 53 ];
+        allowedUDPPorts = [ 53 ];
+      };
 
       systemd.timers.podman-auto-update = {
         timerConfig = {
