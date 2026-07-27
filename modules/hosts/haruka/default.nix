@@ -21,6 +21,7 @@
         haruka-qbittorrent-manager
         haruka-log-analyzer
         haruka-containers
+        haruka-arr-api-keys
         haruka-homepage
         haruka-media-stack
       ])

@@ -117,8 +117,6 @@
           hideVersion = true;
         };
 
-        environmentFile = config.age.secrets.homepage-env.path;
-
         services = [
           {
             Apps = [
