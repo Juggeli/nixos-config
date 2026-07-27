@@ -11,6 +11,7 @@
     agenix
     agenix-shared
     doas
+    journald
     podman
     tools-misc
     hardware-storage
