@@ -1,0 +1,180 @@
+{
+  flake.nixosModules.podman-soak =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      cfg = config.virtualisation.podmanImageSoak;
+
+      # Every line needs its own terminator: `read` discards a trailing line that
+      # is not newline-terminated, which would silently drop the last image.
+      imageList = pkgs.writeText "podman-soak-images.tsv" (
+        lib.concatStrings (lib.mapAttrsToList (name: ref: "${name}\t${ref}\n") cfg.images)
+      );
+
+      # Containers pinned to a local tag must not start before the tag exists,
+      # which on a fresh host is only true after the first soak run.
+      soakedUnits = map (name: "podman-${name}.service") (
+        lib.attrNames (
+          lib.filterAttrs (
+            _: container: lib.hasPrefix "localhost/" container.image
+          ) config.virtualisation.oci-containers.containers
+        )
+      );
+
+      soakScript = pkgs.writeShellApplication {
+        name = "podman-image-soak";
+        runtimeInputs = with pkgs; [
+          skopeo
+          jq
+          podman
+          coreutils
+        ];
+        text = ''
+          state="$STATE_DIRECTORY/digests.json"
+          [ -s "$state" ] || printf '{}' > "$state"
+
+          now=$(date +%s)
+          cutoff=$(( now - ${toString (cfg.soakDays * 86400)} ))
+          problems=()
+
+          while IFS=$'\t' read -r name ref; do
+            [ -n "$name" ] || continue
+
+            # Reading the manifest costs a few KB and touches no layers, so the
+            # digest history is free to keep for every tag we have ever seen.
+            digest=""
+            if manifest=$(skopeo inspect --no-tags "docker://$ref" 2>/dev/null); then
+              digest=$(printf '%s' "$manifest" | jq -r '.Digest // empty')
+            fi
+
+            if [ -n "$digest" ]; then
+              tmp=$(mktemp)
+              jq --arg n "$name" --arg r "$ref" --arg d "$digest" --argjson t "$now" \
+                '.[$n].ref = $r | .[$n].seen[$d] //= $t' "$state" > "$tmp"
+              mv "$tmp" "$state"
+            else
+              echo "warn: could not read manifest for $ref"
+              problems+=("$name: registry unreachable")
+            fi
+
+            # Newest digest that has finished soaking. Selecting on age rather
+            # than on "is still current" is what stops a fast-moving upstream
+            # from resetting the clock forever and freezing us on an old image.
+            target=$(jq -r --arg n "$name" --argjson c "$cutoff" \
+              '(.[$n].seen // {}) | to_entries | map(select(.value <= $c))
+               | sort_by(.value) | last | .key // empty' "$state")
+
+            pinned="localhost/$name:pinned"
+            promoted=$(jq -r --arg n "$name" '.[$n].promoted // empty' "$state")
+
+            # First run has no soaked digest yet and no local tag, so the
+            # containers would have nothing to start from. Adopt what the tag
+            # points at now; every later promotion goes through the soak.
+            if [ -z "$target" ] && ! podman image exists "$pinned"; then
+              target="$digest"
+              [ -n "$target" ] && echo "bootstrap: adopting current $ref as $pinned"
+            fi
+
+            [ -n "$target" ] || continue
+            if [ "$target" = "$promoted" ] && podman image exists "$pinned"; then
+              continue
+            fi
+
+            # Pulling by digest rather than by tag is the whole point: it is the
+            # image we soaked, not whatever the tag has moved on to since.
+            if ! podman pull --quiet "$ref@$target" >/dev/null 2>&1; then
+              echo "warn: could not pull $ref@$target"
+              problems+=("$name: soaked digest no longer served, staying on current image")
+              continue
+            fi
+
+            id=$(podman image inspect --format '{{.Id}}' "$ref@$target")
+            podman tag "$id" "$pinned"
+
+            tmp=$(mktemp)
+            jq --arg n "$name" --arg d "$target" --argjson t "$now" \
+              '.[$n].promoted = $d | .[$n].promotedAt = $t' "$state" > "$tmp"
+            mv "$tmp" "$state"
+
+            seen=$(jq -r --arg n "$name" --arg d "$target" '.[$n].seen[$d]' "$state")
+            echo "promoted $name to $target (first seen $(( (now - seen) / 86400 ))d ago)"
+          done < ${imageList}
+
+          if [ ''${#problems[@]} -gt 0 ]; then
+            printf '%s\n' "''${problems[@]}"
+            ${lib.optionalString (cfg.notifyCommand != null) ''
+              printf '%s\n' "''${problems[@]}" | ${pkgs.writeShellScript "podman-soak-notify" cfg.notifyCommand}
+            ''}
+          fi
+        '';
+      };
+    in
+    {
+      options.virtualisation.podmanImageSoak = {
+        enable = lib.mkEnableOption "delayed promotion of upstream container images";
+
+        soakDays = lib.mkOption {
+          type = lib.types.ints.positive;
+          default = 3;
+          description = ''
+            How long a digest must have been published upstream before it is
+            promoted. Trades timely security fixes against the window in which a
+            compromised upstream image is publicly reported.
+          '';
+        };
+
+        images = lib.mkOption {
+          type = lib.types.attrsOf lib.types.str;
+          default = { };
+          example = {
+            plex = "ghcr.io/hotio/plex:latest";
+          };
+          description = ''
+            Local tag name mapped to the upstream reference to track. Each entry
+            is published locally as `localhost/<name>:pinned`, which is what
+            containers should reference.
+          '';
+        };
+
+        notifyCommand = lib.mkOption {
+          type = lib.types.nullOr lib.types.lines;
+          default = null;
+          description = ''
+            Shell snippet run with a description of any problems on stdin. Only
+            invoked when a registry is unreachable or a soaked digest can no
+            longer be pulled.
+          '';
+        };
+      };
+
+      config = lib.mkIf cfg.enable {
+        systemd.services.podman-image-soak = {
+          description = "Promote container images that have soaked upstream";
+          after = [ "network-online.target" ];
+          wants = [ "network-online.target" ];
+          wantedBy = [ "multi-user.target" ];
+          before = soakedUnits;
+
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = lib.getExe soakScript;
+            StateDirectory = "podman-image-soak";
+            # Best effort: an unreachable registry must not hold up the
+            # containers ordered after this, which keep their current image.
+            SuccessExitStatus = [ 0 ];
+          };
+        };
+
+        # The 06:00 timer already exists for auto-update; promoting first means a
+        # single run observes, promotes, and restarts whatever changed.
+        systemd.services.podman-auto-update = {
+          wants = [ "podman-image-soak.service" ];
+          after = [ "podman-image-soak.service" ];
+        };
+      };
+    };
+}

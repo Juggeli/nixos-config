@@ -13,6 +13,7 @@
     doas
     journald
     podman
+    podman-soak
     tools-misc
     hardware-storage
     system-fonts

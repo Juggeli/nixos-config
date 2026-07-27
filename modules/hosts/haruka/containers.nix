@@ -8,8 +8,34 @@
       # drop to PUID: that drop is a setuid() call, which the flag does not block.
       hardened = [ "--security-opt=no-new-privileges" ];
 
+      # Upstream references the soak timer watches. Each is republished locally
+      # as localhost/<name>:pinned once its digest has been public for the soak
+      # period, and that local tag is what the containers below actually run.
+      # koto is absent on purpose: it is first-party, so there is no upstream to
+      # distrust and no reason to delay our own deploys by three days.
+      soakedImages = {
+        prowlarr = "ghcr.io/hotio/prowlarr:latest";
+        plex = "ghcr.io/hotio/plex:latest";
+        jellyfin = "ghcr.io/hotio/jellyfin:latest";
+        qbittorrent = "ghcr.io/hotio/qbittorrent:latest";
+        sonarr = "ghcr.io/hotio/sonarr:latest";
+        radarr = "ghcr.io/hotio/radarr:latest";
+        bazarr = "ghcr.io/hotio/bazarr:latest";
+        lanraragi = "docker.io/difegue/lanraragi:latest";
+        memos = "docker.io/neosmemo/memos:stable";
+        sillytavern = "ghcr.io/sillytavern/sillytavern:latest";
+        tailscale = "docker.io/tailscale/tailscale:latest";
+      };
+
+      # The registry policy would defeat the soak by pulling the tag itself, so
+      # these follow the local tag and let the soak service decide what it holds.
+      soaked = name: {
+        image = "localhost/${name}:pinned";
+        pull = "never";
+        labels."io.containers.autoupdate" = "local";
+      };
+
       hotioBase = {
-        labels."io.containers.autoupdate" = "registry";
         extraOptions = hardened;
         environment = {
           PUID = "1000";
@@ -50,22 +76,22 @@
     in
     {
       virtualisation.oci-containers.containers = {
-        prowlarr = hotioBase // {
-          image = "ghcr.io/hotio/prowlarr";
-          autoStart = false;
-          ports = [ "127.0.0.1:9696:9696" ];
-          volumes = [ "/mnt/appdata/prowlarr:/config" ];
-        };
+        prowlarr =
+          hotioBase
+          // soaked "prowlarr"
+          // {
+            autoStart = false;
+            ports = [ "127.0.0.1:9696:9696" ];
+            volumes = [ "/mnt/appdata/prowlarr:/config" ];
+          };
 
         # Plex and Jellyfin keep a LAN-wide binding: local players discover and
         # direct-play against them, which an HTTPS proxy in front would break.
         # Every other container publishes on loopback only, since podman's DNAT
         # sidesteps networking.firewall entirely.
-        plex = {
-          image = "ghcr.io/hotio/plex";
+        plex = soaked "plex" // {
           autoStart = false;
           ports = [ "32400:32400" ];
-          labels."io.containers.autoupdate" = "registry";
           extraOptions = hardened ++ [
             ''--group-add="303"''
             "--device=/dev/dri/renderD128"
@@ -77,11 +103,9 @@
           ];
         };
 
-        jellyfin = {
-          image = "ghcr.io/hotio/jellyfin";
+        jellyfin = soaked "jellyfin" // {
           autoStart = false;
           ports = [ "8096:8096" ];
-          labels."io.containers.autoupdate" = "registry";
           extraOptions = hardened ++ [
             ''--group-add="303"''
             "--device=/dev/dri/renderD128"
@@ -93,11 +117,9 @@
           ];
         };
 
-        qbittorrent = {
-          image = "ghcr.io/hotio/qbittorrent";
+        qbittorrent = soaked "qbittorrent" // {
           autoStart = true;
           ports = [ "127.0.0.1:8080:8080" ];
-          labels."io.containers.autoupdate" = "registry";
           volumes = [
             "/mnt/appdata/qbittorrent:/config"
             "/tank/media:/data"
@@ -120,51 +142,57 @@
           ];
         };
 
-        sonarr = hotioBase // {
-          image = "ghcr.io/hotio/sonarr";
-          autoStart = false;
-          ports = [ "127.0.0.1:8989:8989" ];
-          volumes = [
-            "/mnt/appdata/sonarr/:/config/"
-            "/tank/media/:/data"
-          ];
-        };
+        sonarr =
+          hotioBase
+          // soaked "sonarr"
+          // {
+            autoStart = false;
+            ports = [ "127.0.0.1:8989:8989" ];
+            volumes = [
+              "/mnt/appdata/sonarr/:/config/"
+              "/tank/media/:/data"
+            ];
+          };
 
-        sonarr-anime = hotioBase // {
-          image = "ghcr.io/hotio/sonarr";
-          autoStart = false;
-          ports = [ "127.0.0.1:8999:8989" ];
-          volumes = [
-            "/mnt/appdata/sonarr-anime/:/config/"
-            "/tank/media/:/data"
-          ];
-        };
+        sonarr-anime =
+          hotioBase
+          // soaked "sonarr"
+          // {
+            autoStart = false;
+            ports = [ "127.0.0.1:8999:8989" ];
+            volumes = [
+              "/mnt/appdata/sonarr-anime/:/config/"
+              "/tank/media/:/data"
+            ];
+          };
 
-        radarr = hotioBase // {
-          image = "ghcr.io/hotio/radarr";
-          autoStart = false;
-          ports = [ "127.0.0.1:7878:7878" ];
-          volumes = [
-            "/mnt/appdata/radarr/:/config"
-            "/tank/media/:/data"
-          ];
-        };
+        radarr =
+          hotioBase
+          // soaked "radarr"
+          // {
+            autoStart = false;
+            ports = [ "127.0.0.1:7878:7878" ];
+            volumes = [
+              "/mnt/appdata/radarr/:/config"
+              "/tank/media/:/data"
+            ];
+          };
 
-        radarr-anime = hotioBase // {
-          image = "ghcr.io/hotio/radarr";
-          autoStart = false;
-          ports = [ "127.0.0.1:7879:7878" ];
-          volumes = [
-            "/mnt/appdata/radarr-anime/:/config"
-            "/tank/media/:/data"
-          ];
-        };
+        radarr-anime =
+          hotioBase
+          // soaked "radarr"
+          // {
+            autoStart = false;
+            ports = [ "127.0.0.1:7879:7878" ];
+            volumes = [
+              "/mnt/appdata/radarr-anime/:/config"
+              "/tank/media/:/data"
+            ];
+          };
 
-        bazarr = {
-          image = "ghcr.io/hotio/bazarr";
+        bazarr = soaked "bazarr" // {
           autoStart = false;
           ports = [ "127.0.0.1:6767:6767" ];
-          labels."io.containers.autoupdate" = "registry";
           extraOptions = hardened;
           environment = {
             PUID = "1000";
@@ -177,11 +205,9 @@
           ];
         };
 
-        lanraragi = {
-          image = "docker.io/difegue/lanraragi";
+        lanraragi = soaked "lanraragi" // {
           autoStart = true;
           ports = [ "127.0.0.1:3333:3000" ];
-          labels."io.containers.autoupdate" = "registry";
           extraOptions = hardened;
           volumes = [
             "/mnt/appdata/lanraragi:/home/koyomi/lanraragi/database"
@@ -190,20 +216,16 @@
           ];
         };
 
-        memos = {
-          image = "docker.io/neosmemo/memos:stable";
+        memos = soaked "memos" // {
           autoStart = true;
           ports = [ "127.0.0.1:5230:5230" ];
-          labels."io.containers.autoupdate" = "registry";
           extraOptions = hardened;
           volumes = [ "/mnt/appdata/memos:/var/opt/memos" ];
         };
 
-        sillytavern = {
-          image = "ghcr.io/sillytavern/sillytavern:latest";
+        sillytavern = soaked "sillytavern" // {
           autoStart = true;
           ports = [ "127.0.0.1:8000:8000" ];
-          labels."io.containers.autoupdate" = "registry";
           extraOptions = hardened;
           volumes = [
             "/mnt/appdata/sillytavern/config:/home/node/app/config"
@@ -211,8 +233,7 @@
           ];
         };
 
-        tailscale-koto = {
-          image = "docker.io/tailscale/tailscale:latest";
+        tailscale-koto = soaked "tailscale" // {
           autoStart = true;
           environment = {
             TS_AUTHKEY = "file:/run/secrets/tailscale-authkey";
@@ -231,7 +252,6 @@
             "${config.age.secrets.tailscale-auth.path}:/run/secrets/tailscale-authkey:ro"
           ];
           extraOptions = hardened;
-          labels."io.containers.autoupdate" = "registry";
         };
 
         koto = {
@@ -246,6 +266,20 @@
           environmentFiles = [ config.age.secrets.koto-env.path ];
           dependsOn = [ "tailscale-koto" ];
         };
+      };
+
+      virtualisation.podmanImageSoak = {
+        enable = true;
+        soakDays = 3;
+        images = soakedImages;
+        notifyCommand = ''
+          ${pkgs.curl}/bin/curl -s \
+            -H "Title: Container image soak" \
+            -H "Priority: high" \
+            -H "Tags: warning,package" \
+            --data-binary @- \
+            "https://ntfy.sh/$(cat ${config.age.secrets.ntfy-topic.path})"
+        '';
       };
 
       systemd.services.podman-koto = {
