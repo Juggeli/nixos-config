@@ -2,8 +2,15 @@
   flake.nixosModules.haruka-containers =
     { config, pkgs, ... }:
     let
+      # Images update unattended, so a compromised upstream reaches the host with
+      # no review step. no-new-privileges is the one restriction that holds across
+      # every image here, including the s6-based hotio ones that start as root and
+      # drop to PUID: that drop is a setuid() call, which the flag does not block.
+      hardened = [ "--security-opt=no-new-privileges" ];
+
       hotioBase = {
         labels."io.containers.autoupdate" = "registry";
+        extraOptions = hardened;
         environment = {
           PUID = "1000";
           PGID = "983";
@@ -59,13 +66,13 @@
           autoStart = false;
           ports = [ "32400:32400" ];
           labels."io.containers.autoupdate" = "registry";
-          extraOptions = [
+          extraOptions = hardened ++ [
             ''--group-add="303"''
             "--device=/dev/dri/renderD128"
           ];
           volumes = [
             "/mnt/appdata/plex/:/config"
-            "/tank/media/:/mnt/pool/media"
+            "/tank/media/:/mnt/pool/media:ro"
             "/mnt/appdata/plex-transcode/:/transcode"
           ];
         };
@@ -75,13 +82,13 @@
           autoStart = false;
           ports = [ "8096:8096" ];
           labels."io.containers.autoupdate" = "registry";
-          extraOptions = [
+          extraOptions = hardened ++ [
             ''--group-add="303"''
             "--device=/dev/dri/renderD128"
           ];
           volumes = [
             "/mnt/appdata/jellyfin/:/config"
-            "/tank/media/:/media"
+            "/tank/media/:/media:ro"
             "/mnt/appdata/transcode/:/transcode"
           ];
         };
@@ -106,7 +113,7 @@
             PUID = "1000";
             PGID = "983";
           };
-          extraOptions = [
+          extraOptions = hardened ++ [
             "--cap-add=NET_ADMIN"
             "--cap-add=NET_RAW"
             ''--sysctl="net.ipv6.conf.all.disable_ipv6=1"''
@@ -158,6 +165,7 @@
           autoStart = false;
           ports = [ "127.0.0.1:6767:6767" ];
           labels."io.containers.autoupdate" = "registry";
+          extraOptions = hardened;
           environment = {
             PUID = "1000";
             PGID = "983";
@@ -174,6 +182,7 @@
           autoStart = true;
           ports = [ "127.0.0.1:3333:3000" ];
           labels."io.containers.autoupdate" = "registry";
+          extraOptions = hardened;
           volumes = [
             "/mnt/appdata/lanraragi:/home/koyomi/lanraragi/database"
             "/tank/documents/lanraragi:/home/koyomi/lanraragi/content"
@@ -186,6 +195,7 @@
           autoStart = true;
           ports = [ "127.0.0.1:5230:5230" ];
           labels."io.containers.autoupdate" = "registry";
+          extraOptions = hardened;
           volumes = [ "/mnt/appdata/memos:/var/opt/memos" ];
         };
 
@@ -194,6 +204,7 @@
           autoStart = true;
           ports = [ "127.0.0.1:8000:8000" ];
           labels."io.containers.autoupdate" = "registry";
+          extraOptions = hardened;
           volumes = [
             "/mnt/appdata/sillytavern/config:/home/node/app/config"
             "/mnt/appdata/sillytavern/data:/home/node/app/data"
@@ -221,25 +232,25 @@
             TS_HOSTNAME = "koto";
             TS_STATE_DIR = "/var/lib/tailscale";
             TS_SERVE_CONFIG = "/config/serve.json";
-            TS_USERSPACE = "false";
+            # Userspace netstack rather than a tun device: this sidecar only
+            # terminates tailnet connections and proxies them to koto over the
+            # shared loopback, which serve does entirely in userspace. That drops
+            # the tun device and both network capabilities.
+            TS_USERSPACE = "true";
           };
           volumes = [
             "/mnt/appdata/koto/tailscale:/var/lib/tailscale"
             "${kotoServeConfig}:/config/serve.json:ro"
             "${config.age.secrets.tailscale-auth.path}:/run/secrets/tailscale-authkey:ro"
           ];
-          extraOptions = [
-            "--cap-add=NET_ADMIN"
-            "--cap-add=NET_RAW"
-            "--device=/dev/net/tun:/dev/net/tun"
-          ];
+          extraOptions = hardened;
           labels."io.containers.autoupdate" = "registry";
         };
 
         koto = {
           image = "ghcr.io/juggeli/koto:latest";
           autoStart = true;
-          extraOptions = [ "--network=container:tailscale-koto" ];
+          extraOptions = hardened ++ [ "--network=container:tailscale-koto" ];
           labels."io.containers.autoupdate" = "registry";
           volumes = [
             "/mnt/appdata/koto:/mnt/appdata/koto"
