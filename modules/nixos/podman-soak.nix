@@ -32,6 +32,7 @@
           jq
           podman
           coreutils
+          systemd
         ];
         text = ''
           state="$STATE_DIRECTORY/digests.json"
@@ -102,6 +103,15 @@
 
             seen=$(jq -r --arg n "$name" --arg d "$target" '.[$n].seen[$d]' "$state")
             echo "promoted $name to $target (first seen $(( (now - seen) / 86400 ))d ago)"
+
+            # Stopped units pick the new tag up on their next start; only
+            # running ones are restarted. --no-block because this service is
+            # ordered before the container units, so a synchronous restart
+            # issued from inside it would deadlock during boot.
+            unit="podman-$name.service"
+            if systemctl is-active --quiet "$unit"; then
+              systemctl restart --no-block "$unit"
+            fi
           done < ${imageList}
 
           if [ ''${#problems[@]} -gt 0 ]; then
@@ -124,6 +134,16 @@
             How long a digest must have been published upstream before it is
             promoted. Trades timely security fixes against the window in which a
             compromised upstream image is publicly reported.
+          '';
+        };
+
+        user = lib.mkOption {
+          type = lib.types.str;
+          default = "root";
+          description = ''
+            User the soak runs as. Point this at the user that owns the
+            containers when they run rootless, so pulls and tags land in that
+            user's image storage.
           '';
         };
 
@@ -159,14 +179,42 @@
           wantedBy = [ "multi-user.target" ];
           before = soakedUnits;
 
+          # Rootless podman execs the setuid newuidmap/newgidmap wrappers.
+          path = [ "/run/wrappers" ];
+
           serviceConfig = {
             Type = "oneshot";
             ExecStart = lib.getExe soakScript;
             StateDirectory = "podman-image-soak";
+            User = cfg.user;
+            # Without XDG_RUNTIME_DIR skopeo falls back to
+            # /run/containers/$UID/auth.json, whose parent is root-only.
+            RuntimeDirectory = "podman-image-soak";
+            Environment = [
+              "HOME=${config.users.users.${cfg.user}.home}"
+              "XDG_RUNTIME_DIR=/run/podman-image-soak"
+            ];
             # Best effort: an unreachable registry must not hold up the
             # containers ordered after this, which keep their current image.
             SuccessExitStatus = [ 0 ];
           };
+        };
+
+        # Restarting the promoted units is the only root-side action a
+        # non-root soak needs; grant exactly that rather than widening the
+        # service itself.
+        security.polkit = lib.mkIf (cfg.user != "root") {
+          enable = true;
+          extraConfig = ''
+            polkit.addRule(function(action, subject) {
+              if (action.id == "org.freedesktop.systemd1.manage-units" &&
+                  subject.user == "${cfg.user}" &&
+                  action.lookup("verb") == "restart" &&
+                  /^podman-[0-9A-Za-z._:-]+\.service$/.test(action.lookup("unit"))) {
+                return polkit.Result.YES;
+              }
+            });
+          '';
         };
 
         # The 06:00 timer already exists for auto-update; promoting first means a
