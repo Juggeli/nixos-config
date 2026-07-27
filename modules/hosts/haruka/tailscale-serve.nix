@@ -11,7 +11,6 @@
       # memos are omitted deliberately: the tunnel already serves them.
       servedPorts = [
         3000 # homepage
-        3001 # uptime-kuma
         3333 # lanraragi
         6767 # bazarr
         8000 # sillytavern

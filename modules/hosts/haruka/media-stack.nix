@@ -11,7 +11,6 @@
         "podman-sonarr.service"
         "podman-sonarr-anime.service"
         "podman-bazarr.service"
-        "podman-uptime-kuma.service"
         "podman-prowlarr.service"
       ];
       after = [
@@ -23,7 +22,6 @@
         "podman-sonarr.service"
         "podman-sonarr-anime.service"
         "podman-bazarr.service"
-        "podman-uptime-kuma.service"
         "podman-prowlarr.service"
       ];
     };

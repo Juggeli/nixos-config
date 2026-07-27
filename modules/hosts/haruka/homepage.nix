@@ -100,12 +100,6 @@
               };
             }
             {
-              Monitoring = {
-                header = true;
-                style = "column";
-              };
-            }
-            {
               Other = {
                 header = true;
                 style = "column";
@@ -307,30 +301,6 @@
                       "wanted"
                       "queued"
                       "series"
-                    ];
-                  };
-                };
-              }
-            ];
-          }
-          {
-            Monitoring = [
-              {
-                "Uptime Kuma" = {
-                  icon = "uptime-kuma.png";
-                  description = "Status monitoring";
-                  href = tsUrl 3001;
-                  siteMonitor = hostUrl 3001;
-                  widget = mkWidget {
-                    envKeyName = "UPTIME_KUMA";
-                    type = "uptimekuma";
-                    url = hostUrl 3001;
-                    slug = "ultra";
-                    fields = [
-                      "up"
-                      "down"
-                      "uptime"
-                      "incident"
                     ];
                   };
                 };

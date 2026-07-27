@@ -211,19 +211,6 @@
           ];
         };
 
-        uptime-kuma = {
-          image = "ghcr.io/louislam/uptime-kuma:2-rootless";
-          autoStart = true;
-          ports = [ "127.0.0.1:3001:3001" ];
-          labels."io.containers.autoupdate" = "registry";
-          volumes = [ "/mnt/appdata/uptime-kuma:/app/data" ];
-          environment = {
-            PUID = "1000";
-            PGID = "100";
-          };
-          extraOptions = [ "--cap-add=NET_RAW" ];
-        };
-
         tailscale-koto = {
           image = "docker.io/tailscale/tailscale:latest";
           autoStart = true;
