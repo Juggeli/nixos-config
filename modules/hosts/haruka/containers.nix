@@ -408,10 +408,27 @@
         '';
       };
 
-      # doas keepenv would leak juggeli's XDG and D-Bus variables, pointing
-      # podman at the wrong runtime dir and storage; -C / because the caller's
-      # cwd may not be readable by oci.
-      environment.shellAliases.podman-oci = "doas -u oci env -C / -u XDG_CONFIG_HOME -u XDG_DATA_HOME -u XDG_CACHE_HOME -u XDG_STATE_HOME -u DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR=${ociRuntimeDir} podman";
+      # The blanket doas rule keeps juggeli's whole environment, which would
+      # point podman at the wrong HOME and storage and expose any exported
+      # credentials to processes running as oci — the exact account a
+      # container escape lands in. Last match wins in doas.conf, so this
+      # narrower rule must sort after the blanket one; without keepEnv doas
+      # resets HOME to oci's own, and only PATH (for the setuid newuidmap
+      # wrapper) and the runtime dir need passing explicitly.
+      security.doas.extraRules = lib.mkAfter [
+        {
+          users = [ "juggeli" ];
+          runAs = "oci";
+          noPass = true;
+          setEnv = [
+            "PATH=/run/wrappers/bin:/run/current-system/sw/bin"
+            "XDG_RUNTIME_DIR=${ociRuntimeDir}"
+          ];
+        }
+      ];
+
+      # -C / because the caller's cwd may not be readable by oci.
+      environment.shellAliases.podman-oci = "doas -u oci env -C / podman";
 
       # System units have no user session bus, so rootless podman cannot reach
       # the systemd cgroup manager and warns before falling back on every
