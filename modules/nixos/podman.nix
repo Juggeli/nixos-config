@@ -3,7 +3,6 @@
     { pkgs, ... }:
     {
       environment.systemPackages = [
-        pkgs.lazydocker
         pkgs.podman-compose
       ];
 
@@ -17,12 +16,9 @@
 
       virtualisation.podman = {
         enable = true;
-        dockerSocket.enable = true;
         defaultNetwork.settings.dns_enabled = true;
         autoPrune.enable = true;
       };
-
-      users.users.juggeli.extraGroups = [ "podman" ];
 
       # Containers only need the host for aardvark-dns on 10.88.0.1:53; they reach
       # each other over the bridge and the outside world via masquerade, neither of
