@@ -79,12 +79,19 @@
               problems+=("$name: registry unreachable")
             fi
 
-            # Newest digest that has finished soaking. Selecting on age rather
-            # than on "is still current" is what stops a fast-moving upstream
-            # from resetting the clock forever and freezing us on an old image.
-            target=$(jq -r --arg n "$name" --argjson c "$cutoff" \
-              '(.[$n].seen // {}) | to_entries | map(select(.value <= $c))
-               | sort_by(.value) | last | .key // empty' "$state")
+            # Prefer the digest the tag points at now once it has soaked:
+            # registries keep serving digests a tag has moved away from, so a
+            # briefly published and then reverted release would otherwise
+            # still win as "newest soaked". Only when the current digest is
+            # too young does the newest soaked one win instead, which is what
+            # stops a fast-moving upstream from resetting the clock forever
+            # and freezing us on an old image.
+            target=$(jq -r --arg n "$name" --arg d "$digest" --argjson c "$cutoff" \
+              '(.[$n].seen // {}) as $seen
+               | if $d != "" and ($seen[$d] // infinite) <= $c then $d
+                 else $seen | to_entries | map(select(.value <= $c))
+                   | sort_by(.value) | last | .key // empty
+                 end' "$state")
 
             pinned="localhost/$name:pinned"
             promoted=$(jq -r --arg n "$name" '.[$n].promoted // empty' "$state")
