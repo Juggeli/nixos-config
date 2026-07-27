@@ -1,6 +1,11 @@
 {
   flake.nixosModules.haruka-containers =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       # Images update unattended, so a compromised upstream reaches the host with
       # no review step. no-new-privileges is the one restriction that holds across
@@ -27,16 +32,52 @@
         tailscale = "docker.io/tailscale/tailscale:latest";
       };
 
-      # The registry policy would defeat the soak by pulling the tag itself, so
-      # these follow the local tag and let the soak service decide what it holds.
+      # A registry pull policy would defeat the soak by pulling the tag itself,
+      # so these follow the local tag and let the soak service decide what it
+      # holds. The soak also restarts running units after a promotion, so no
+      # autoupdate label is needed.
       soaked = name: {
         image = "localhost/${name}:pinned";
         pull = "never";
-        labels."io.containers.autoupdate" = "local";
+        podman.user = "oci";
       };
 
-      hotioBase = {
-        extraOptions = hardened;
+      # The app inside runs as a fixed non-root uid; mapping the oci user onto
+      # exactly that uid keeps host-side file ownership at oci:media instead of
+      # scattering it across the subuid range. keep-id would also default the
+      # container process to that mapped user, but these images must still
+      # start as container root (a subuid on the host) and drop privileges
+      # themselves, hence the explicit --user. Containers whose payload runs as
+      # container root need no mapping: rootless podman already maps container
+      # root onto the invoking user.
+      idmap = uid: gid: [
+        "--userns=keep-id:uid=${toString uid},gid=${toString gid}"
+        "--user=0:0"
+      ];
+
+      # The arr apps resolve each other and qbittorrent by container name.
+      # Rootless aardvark-dns needs a systemd user bus that system units do not
+      # have, so the shared network runs DNS-less with static addresses and
+      # /etc/hosts entries instead. Plex and Jellyfin deliberately stay off it:
+      # on the default pasta network inbound connections keep their LAN source
+      # addresses, which Plex uses to tell local players from remote.
+      mediaHosts = {
+        qbittorrent = "10.90.0.10";
+        prowlarr = "10.90.0.11";
+        sonarr = "10.90.0.12";
+        sonarr-anime = "10.90.0.13";
+        radarr = "10.90.0.14";
+        radarr-anime = "10.90.0.15";
+        bazarr = "10.90.0.16";
+      };
+      mediaNetMembers = lib.attrNames mediaHosts;
+      mediaNetOptions =
+        name:
+        [ "--network=media:ip=${mediaHosts.${name}}" ]
+        ++ lib.mapAttrsToList (n: ip: "--add-host=${n}:${ip}") mediaHosts;
+
+      hotioFor = name: {
+        extraOptions = hardened ++ idmap 1000 983 ++ mediaNetOptions name;
         environment = {
           PUID = "1000";
           PGID = "983";
@@ -77,25 +118,26 @@
     {
       virtualisation.oci-containers.containers = {
         prowlarr =
-          hotioBase
+          hotioFor "prowlarr"
           // soaked "prowlarr"
           // {
             autoStart = false;
-            ports = [ "127.0.0.1:9696:9696" ];
+            ports = [ "9696:9696" ];
             volumes = [ "/mnt/appdata/prowlarr:/config" ];
           };
 
         # Plex and Jellyfin keep a LAN-wide binding: local players discover and
         # direct-play against them, which an HTTPS proxy in front would break.
-        # Every other container publishes on loopback only, since podman's DNAT
-        # sidesteps networking.firewall entirely.
+        # renderD128 is world-rw, so the device works without a group-add
+        # (host groups are not mapped into the user namespace anyway).
         plex = soaked "plex" // {
           autoStart = false;
           ports = [ "32400:32400" ];
-          extraOptions = hardened ++ [
-            ''--group-add="303"''
-            "--device=/dev/dri/renderD128"
-          ];
+          environment = {
+            PUID = "1000";
+            PGID = "983";
+          };
+          extraOptions = hardened ++ idmap 1000 983 ++ [ "--device=/dev/dri/renderD128" ];
           volumes = [
             "/mnt/appdata/plex/:/config"
             "/tank/media/:/mnt/pool/media:ro"
@@ -106,10 +148,11 @@
         jellyfin = soaked "jellyfin" // {
           autoStart = false;
           ports = [ "8096:8096" ];
-          extraOptions = hardened ++ [
-            ''--group-add="303"''
-            "--device=/dev/dri/renderD128"
-          ];
+          environment = {
+            PUID = "1000";
+            PGID = "983";
+          };
+          extraOptions = hardened ++ idmap 1000 983 ++ [ "--device=/dev/dri/renderD128" ];
           volumes = [
             "/mnt/appdata/jellyfin/:/config"
             "/tank/media/:/media:ro"
@@ -119,7 +162,7 @@
 
         qbittorrent = soaked "qbittorrent" // {
           autoStart = true;
-          ports = [ "127.0.0.1:8080:8080" ];
+          ports = [ "8080:8080" ];
           volumes = [
             "/mnt/appdata/qbittorrent:/config"
             "/tank/media:/data"
@@ -135,19 +178,25 @@
             PUID = "1000";
             PGID = "983";
           };
-          extraOptions = hardened ++ [
-            "--cap-add=NET_ADMIN"
-            "--cap-add=NET_RAW"
-            ''--sysctl="net.ipv6.conf.all.disable_ipv6=1"''
-          ];
+          # The network capabilities and sysctl are scoped to the container's
+          # own user and network namespaces, so rootless can still grant them.
+          extraOptions =
+            hardened
+            ++ idmap 1000 983
+            ++ mediaNetOptions "qbittorrent"
+            ++ [
+              "--cap-add=NET_ADMIN"
+              "--cap-add=NET_RAW"
+              ''--sysctl="net.ipv6.conf.all.disable_ipv6=1"''
+            ];
         };
 
         sonarr =
-          hotioBase
+          hotioFor "sonarr"
           // soaked "sonarr"
           // {
             autoStart = false;
-            ports = [ "127.0.0.1:8989:8989" ];
+            ports = [ "8989:8989" ];
             volumes = [
               "/mnt/appdata/sonarr/:/config/"
               "/tank/media/:/data"
@@ -155,11 +204,11 @@
           };
 
         sonarr-anime =
-          hotioBase
+          hotioFor "sonarr-anime"
           // soaked "sonarr"
           // {
             autoStart = false;
-            ports = [ "127.0.0.1:8999:8989" ];
+            ports = [ "8999:8989" ];
             volumes = [
               "/mnt/appdata/sonarr-anime/:/config/"
               "/tank/media/:/data"
@@ -167,11 +216,11 @@
           };
 
         radarr =
-          hotioBase
+          hotioFor "radarr"
           // soaked "radarr"
           // {
             autoStart = false;
-            ports = [ "127.0.0.1:7878:7878" ];
+            ports = [ "7878:7878" ];
             volumes = [
               "/mnt/appdata/radarr/:/config"
               "/tank/media/:/data"
@@ -179,11 +228,11 @@
           };
 
         radarr-anime =
-          hotioBase
+          hotioFor "radarr-anime"
           // soaked "radarr"
           // {
             autoStart = false;
-            ports = [ "127.0.0.1:7879:7878" ];
+            ports = [ "7879:7878" ];
             volumes = [
               "/mnt/appdata/radarr-anime/:/config"
               "/tank/media/:/data"
@@ -192,8 +241,8 @@
 
         bazarr = soaked "bazarr" // {
           autoStart = false;
-          ports = [ "127.0.0.1:6767:6767" ];
-          extraOptions = hardened;
+          ports = [ "6767:6767" ];
+          extraOptions = hardened ++ idmap 1000 983 ++ mediaNetOptions "bazarr";
           environment = {
             PUID = "1000";
             PGID = "983";
@@ -207,8 +256,9 @@
 
         lanraragi = soaked "lanraragi" // {
           autoStart = true;
-          ports = [ "127.0.0.1:3333:3000" ];
-          extraOptions = hardened;
+          ports = [ "3333:3000" ];
+          # lanraragi drops to its koyomi user (9001) for the app
+          extraOptions = hardened ++ idmap 9001 9001;
           volumes = [
             "/mnt/appdata/lanraragi:/home/koyomi/lanraragi/database"
             "/tank/documents/lanraragi:/home/koyomi/lanraragi/content"
@@ -219,13 +269,14 @@
         memos = soaked "memos" // {
           autoStart = true;
           ports = [ "127.0.0.1:5230:5230" ];
-          extraOptions = hardened;
+          # memos runs as uid 10001 inside
+          extraOptions = hardened ++ idmap 10001 10001;
           volumes = [ "/mnt/appdata/memos:/var/opt/memos" ];
         };
 
         sillytavern = soaked "sillytavern" // {
           autoStart = true;
-          ports = [ "127.0.0.1:8000:8000" ];
+          ports = [ "8000:8000" ];
           extraOptions = hardened;
           volumes = [
             "/mnt/appdata/sillytavern/config:/home/node/app/config"
@@ -257,8 +308,8 @@
         koto = {
           image = "ghcr.io/juggeli/koto:latest";
           autoStart = true;
+          podman.user = "oci";
           extraOptions = hardened ++ [ "--network=container:tailscale-koto" ];
-          labels."io.containers.autoupdate" = "registry";
           volumes = [
             "/mnt/appdata/koto:/mnt/appdata/koto"
             "${kotoConfigFile}:/app/config.json:ro"
@@ -271,6 +322,7 @@
       virtualisation.podmanImageSoak = {
         enable = true;
         soakDays = 3;
+        user = "oci";
         images = soakedImages;
         notifyCommand = ''
           ${pkgs.curl}/bin/curl -s \
@@ -282,16 +334,128 @@
         '';
       };
 
-      systemd.services.podman-koto = {
-        after = [ "podman-tailscale-koto.service" ];
-        serviceConfig.ExecStartPre = [
-          "${pkgs.bash}/bin/bash -c 'for i in $(seq 1 30); do ${pkgs.libressl.nc}/bin/nc -z -w1 10.88.0.1 53 && exit 0; sleep 1; done; echo \"aardvark-dns not ready after 30s\"; exit 1'"
+      # The container escape surface is the auto-updated upstream images, so
+      # they run rootless under a dedicated user: an escape lands in an account
+      # that owns nothing but the container state, not root or the login user.
+      users.users.oci = {
+        isSystemUser = true;
+        # Static: file ownership on appdata and the keep-id mappings depend on it.
+        uid = 2000;
+        group = "media";
+        home = "/mnt/appdata/oci";
+        createHome = true;
+        # The containers are system units with User=oci, not user-session
+        # units, so no lingering user manager is needed (and the oci-containers
+        # module warns when it is combined with the default sdnotify=conmon).
+        linger = false;
+        # Must not overlap juggeli's subordinate range (100000+65536).
+        subUidRanges = [
+          {
+            startUid = 300000;
+            count = 65536;
+          }
+        ];
+        subGidRanges = [
+          {
+            startGid = 300000;
+            count = 65536;
+          }
         ];
       };
 
-      systemd.services.podman-qbittorrent.serviceConfig.ExecStartPre = [
-        "${pkgs.coreutils}/bin/rm -f /mnt/appdata/qbittorrent/config/ipc-socket /mnt/appdata/qbittorrent/config/lockfile"
+      # Read by podman itself (env files, mounted secret) as the oci user.
+      age.secrets = {
+        tailscale-auth.owner = "oci";
+        koto-env.owner = "oci";
+        ntfy-topic.owner = "oci";
+      };
+
+      # Rootless publishing binds real host sockets, so networking.firewall
+      # applies to container ports now. These match the reachability the
+      # rootful DNAT provided (any interface: LAN and tailnet both resolve
+      # haruka to different addresses depending on the client).
+      networking.firewall.allowedTCPPorts = [
+        32400
+        8096
+        3333
+        6767
+        7878
+        7879
+        8000
+        8080
+        8989
+        8999
+        9696
       ];
+
+      environment.shellAliases.podman-oci = "doas -u oci podman";
+
+      systemd.services = lib.mkMerge [
+        # Rootless podman execs the setuid newuidmap/newgidmap wrappers, which
+        # live outside the nix-store-only PATH the generated units get.
+        (lib.genAttrs
+          (map (name: "podman-${name}") (lib.attrNames config.virtualisation.oci-containers.containers))
+          (_: {
+            path = [ "/run/wrappers" ];
+          })
+        )
+        (lib.genAttrs (map (name: "podman-${name}") mediaNetMembers) (_: {
+          requires = [ "podman-media-network.service" ];
+          after = [ "podman-media-network.service" ];
+        }))
+        {
+          podman-media-network = {
+            description = "Shared container network for the arr stack";
+            wantedBy = [ "multi-user.target" ];
+            path = [ "/run/wrappers" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = "oci";
+              Environment = [ "HOME=${config.users.users.oci.home}" ];
+              ExecStart = "${pkgs.podman}/bin/podman network create --ignore --disable-dns --subnet=10.90.0.0/24 media";
+            };
+          };
+
+          podman-qbittorrent.serviceConfig.ExecStartPre = [
+            "${pkgs.coreutils}/bin/rm -f /mnt/appdata/qbittorrent/config/ipc-socket /mnt/appdata/qbittorrent/config/lockfile"
+          ];
+
+          # koto is first-party, so it follows the registry tag directly
+          # instead of going through the soak. The soak's polkit rule already
+          # lets the oci user restart podman-* units.
+          koto-update = {
+            description = "Update the koto container from its registry";
+            after = [ "network-online.target" ];
+            wants = [ "network-online.target" ];
+            path = [
+              pkgs.podman
+              pkgs.systemd
+              "/run/wrappers"
+            ];
+            serviceConfig = {
+              Type = "oneshot";
+              User = "oci";
+              Environment = [ "HOME=${config.users.users.oci.home}" ];
+            };
+            script = ''
+              new=$(podman pull --quiet ghcr.io/juggeli/koto:latest)
+              current=$(podman container inspect koto --format '{{.Image}}' 2>/dev/null || true)
+              if [ "$new" != "$current" ] && systemctl is-active --quiet podman-koto.service; then
+                systemctl restart podman-koto.service
+              fi
+            '';
+          };
+        }
+      ];
+
+      systemd.timers.koto-update = {
+        timerConfig = {
+          OnCalendar = "06:00";
+          Persistent = true;
+        };
+        wantedBy = [ "timers.target" ];
+      };
 
       boot.kernel.sysctl."net.ipv4.conf.all.src_valid_mark" = 1;
 

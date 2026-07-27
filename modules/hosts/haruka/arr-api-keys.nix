@@ -38,8 +38,10 @@
 
       secretPath = name: config.age.secrets.${services.${name}.secret}.path;
 
+      # The container env files are read by podman running as the oci user,
+      # so they are owned by it behind a traverse-only directory.
       renderService = name: svc: ''
-        install -m 0400 /dev/null ${runtimeDir}/${name}.env
+        install -m 0400 -o oci /dev/null ${runtimeDir}/${name}.env
         printf '%s=%s\n' ${svc.envVar} "$(cat ${secretPath name})" > ${runtimeDir}/${name}.env
       '';
 
@@ -61,7 +63,7 @@
             Type = "oneshot";
             RemainAfterExit = true;
             RuntimeDirectory = "arr-api-keys";
-            RuntimeDirectoryMode = "0700";
+            RuntimeDirectoryMode = "0711";
             RuntimeDirectoryPreserve = "yes";
             UMask = "0077";
           };
