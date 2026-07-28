@@ -3,7 +3,6 @@
     { config, pkgs, ... }:
     {
       networking.hostId = "cc5b25a0";
-      networking.hosts."10.11.11.2" = [ "haruka" ];
 
       boot.kernelParams = [ "zfs.zfs_arc_max=8589934592" ];
 
