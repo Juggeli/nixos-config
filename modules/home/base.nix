@@ -15,6 +15,7 @@
     tmux
     gh
     git
+    forgejo
     direnv
     devtools
     hdd-scraper
