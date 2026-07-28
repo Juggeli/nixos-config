@@ -30,7 +30,10 @@
               conflictstyle = "zdiff3";
             };
             safe = {
-              directory = "${homeDir}/src/dotfiles";
+              directory = [
+                "${homeDir}/src/dotfiles"
+                "/mnt/appdata/koto/yuki/workspace"
+              ];
             };
           };
           ignores = [ ".nvim.lua" ];
