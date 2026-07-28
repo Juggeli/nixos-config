@@ -22,6 +22,7 @@
         haruka-log-analyzer
         haruka-portion-calculator
         haruka-containers
+        haruka-forgejo
         haruka-arr-api-keys
         haruka-homepage
         haruka-media-stack

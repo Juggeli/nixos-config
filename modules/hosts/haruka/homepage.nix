@@ -313,6 +313,14 @@
           {
             Other = [
               {
+                Forgejo = {
+                  icon = "forgejo.png";
+                  description = "Software forge";
+                  href = tsUrl 3300;
+                  siteMonitor = hostUrl 3300;
+                };
+              }
+              {
                 Koto = {
                   icon = "robot.png";
                   description = "Personal AI assistant";
