@@ -1,9 +1,9 @@
 /**
  * File Search Extension for pi
  *
- * Provides fd (find files) and rg (search content) tools using the system
- * binaries. Patterns are always passed after `--` so user input can never be
- * parsed as a flag.
+ * Provides an fd (find files) tool using the system binary. Patterns are
+ * always passed after `--` so user input can never be parsed as a flag.
+ * Content search is handled by the hashline grep tool from pi-hashline-edit.
  */
 
 import { spawn } from "node:child_process";
@@ -19,9 +19,6 @@ import { Type } from "typebox";
 const FD_DEFAULT_LIMIT = 1000;
 const FD_MAX_LIMIT = 10_000;
 const FD_MAX_DEPTH = 64;
-const RG_DEFAULT_MAX_COUNT = 100;
-const RG_MAX_COUNT = 1000;
-const RG_MAX_CONTEXT = 20;
 const EXEC_TIMEOUT_MS = 60_000;
 const MAX_OUTPUT_LINES = 2000;
 const MAX_OUTPUT_BYTES = 50_000;
@@ -40,20 +37,7 @@ interface FdParams {
 	limit?: number;
 }
 
-/** rg tool parameters */
-interface RgParams {
-	pattern: string;
-	path?: string;
-	glob?: string;
-	file_type?: string;
-	case_sensitive?: boolean;
-	fixed_strings?: boolean;
-	hidden?: boolean;
-	context?: number;
-	limit?: number;
-}
-
-/** Unified details type for both tools */
+/** Details type for the fd tool */
 interface SearchDetails {
 	error?: string;
 	lineCount?: number;
@@ -88,25 +72,6 @@ export function buildFdArgs(params: FdParams): string[] {
 	args.push("--max-results", String(clamp(params.limit ?? FD_DEFAULT_LIMIT, 1, FD_MAX_LIMIT)));
 	// An empty pattern matches everything, which keeps `path` usable without a pattern.
 	args.push("--", params.pattern ?? "");
-	const path = params.path === undefined ? undefined : normalizeSearchPath(params.path);
-	if (path) args.push(path);
-	return args;
-}
-
-export function buildRgArgs(params: RgParams): string[] {
-	const args = ["--line-number", "--color=never", "--no-heading", "--with-filename"];
-	if (params.case_sensitive === true) args.push("--case-sensitive");
-	else if (params.case_sensitive === false) args.push("--ignore-case");
-	else args.push("--smart-case");
-	if (params.fixed_strings) args.push("--fixed-strings");
-	if (params.hidden) args.push("--hidden");
-	if (params.context !== undefined) {
-		args.push("--context", String(clamp(params.context, 0, RG_MAX_CONTEXT)));
-	}
-	if (params.glob) args.push("--glob", params.glob);
-	if (params.file_type) args.push("--type", params.file_type);
-	args.push("--max-count", String(clamp(params.limit ?? RG_DEFAULT_MAX_COUNT, 1, RG_MAX_COUNT)));
-	args.push("--", params.pattern);
 	const path = params.path === undefined ? undefined : normalizeSearchPath(params.path);
 	if (path) args.push(path);
 	return args;
@@ -230,7 +195,7 @@ interface SearchToolResult {
 }
 
 async function executeSearch(
-	tool: "fd" | "rg",
+	tool: "fd",
 	args: string[],
 	cwd: string,
 	signal: AbortSignal | undefined,
@@ -239,8 +204,7 @@ async function executeSearch(
 	try {
 		const result = await runProcess(tool, args, cwd, signal);
 
-		// ripgrep exits 1 for "no matches"; fd exits 0 even with no results.
-		const noMatches = result.stdout === "" && (result.code === 0 || (tool === "rg" && result.code === 1));
+		const noMatches = result.stdout === "" && result.code === 0;
 		if (noMatches) {
 			return {
 				content: [{ type: "text" as const, text: noMatchText }],
@@ -330,7 +294,7 @@ Parameters:
 		promptSnippet: "Find files and directories by name with fd (fast, gitignore-aware)",
 		promptGuidelines: [
 			"Use fd as the primary tool for discovering files and directories by name, extension, or glob instead of bash with find or ls -R",
-			"Use rg instead of fd when searching file contents rather than file names",
+			"Use grep instead of fd when searching file contents rather than file names",
 			"Keep using bash for complex multi-step workflows that pipe or post-process file listings",
 		],
 
@@ -383,82 +347,6 @@ Parameters:
 
 		renderResult(result, options, theme) {
 			return renderSearchResult(result, options, theme, "No files found", ["entry", "entries"]);
-		},
-	});
-
-	pi.registerTool({
-		name: "rg",
-		label: "Search Content",
-		description: `Search file contents with ripgrep. Uses smart-case matching and respects .gitignore by default.
-
-Parameters:
-- pattern: Regex to search for (literal text when fixed_strings is true)
-- path: File or directory to search (default: current working directory)
-- glob: Only search files matching this glob, e.g. '*.ts'
-- file_type: Only search files of this ripgrep type, e.g. 'ts', 'py', 'rust'
-- case_sensitive: true forces case-sensitive, false forces case-insensitive (default: smart-case)
-- fixed_strings: Treat pattern as a literal string
-- hidden: Search hidden files
-- context: Lines of context around each match (0-${RG_MAX_CONTEXT})
-- limit: Maximum matches per file (default: ${RG_DEFAULT_MAX_COUNT}, max: ${RG_MAX_COUNT})`,
-		promptSnippet: "Search file contents with ripgrep (fast regex content search)",
-		promptGuidelines: [
-			"Use rg as the primary tool for searching file contents instead of bash with grep",
-			"Use fd instead of rg when looking for files by name rather than content",
-			"Set fixed_strings on rg when searching for literal code snippets containing regex metacharacters",
-			"Keep using bash for complex multi-step workflows that combine searching with other commands",
-		],
-
-		parameters: Type.Object({
-			pattern: Type.String({ description: "Regex to search for" }),
-			path: Type.Optional(Type.String({ description: "File or directory to search" })),
-			glob: Type.Optional(Type.String({ description: "Only search files matching this glob" })),
-			file_type: Type.Optional(Type.String({ description: "Only search files of this ripgrep type" })),
-			case_sensitive: Type.Optional(
-				Type.Boolean({ description: "Force case-sensitive (true) or case-insensitive (false)" }),
-			),
-			fixed_strings: Type.Optional(Type.Boolean({ description: "Treat pattern as a literal string" })),
-			hidden: Type.Optional(Type.Boolean({ description: "Search hidden files" })),
-			context: Type.Optional(
-				Type.Integer({
-					description: "Lines of context around each match",
-					minimum: 0,
-					maximum: RG_MAX_CONTEXT,
-				}),
-			),
-			limit: Type.Optional(
-				Type.Integer({ description: "Maximum matches per file", minimum: 1, maximum: RG_MAX_COUNT }),
-			),
-		}),
-
-		async execute(
-			_toolCallId: string,
-			params: RgParams,
-			signal: AbortSignal | undefined,
-			_onUpdate: unknown,
-			ctx: { cwd?: string } | undefined,
-		) {
-			return executeSearch("rg", buildRgArgs(params), ctx?.cwd ?? process.cwd(), signal, "No matches found");
-		},
-
-		renderCall(args, theme) {
-			const params = args as unknown as RgParams;
-			let text = theme.bold("rg ");
-			text += `"${params.pattern}"`;
-			if (params.path) text += theme.fg("muted", ` in ${params.path}`);
-			const flags = [
-				params.glob && `glob=${params.glob}`,
-				params.file_type && `type=${params.file_type}`,
-				params.fixed_strings && "literal",
-				params.hidden && "hidden",
-				params.context !== undefined && `ctx=${params.context}`,
-			].filter((flag): flag is string => typeof flag === "string");
-			if (flags.length > 0) text += ` ${theme.fg("dim", flags.join(" "))}`;
-			return new Text(text, 0, 0);
-		},
-
-		renderResult(result, options, theme) {
-			return renderSearchResult(result, options, theme, "No matches found", ["line", "lines"]);
 		},
 	});
 }

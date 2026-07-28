@@ -2,7 +2,7 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import fileSearchExtension, { buildFdArgs, buildRgArgs } from "../extensions/index.js";
+import fileSearchExtension, { buildFdArgs } from "../extensions/index.js";
 
 // Mock dependencies
 vi.mock("@earendil-works/pi-tui", () => ({
@@ -67,10 +67,8 @@ describe("file-search extension", () => {
 			expect(tool?.label).toBe("Find Files");
 		});
 
-		it("registers rg tool", () => {
-			const tool = registeredTools.get("rg");
-			expect(tool).toBeDefined();
-			expect(tool?.label).toBe("Search Content");
+		it("does not register rg tool", () => {
+			expect(registeredTools.has("rg")).toBe(false);
 		});
 	});
 
@@ -126,65 +124,6 @@ describe("file-search extension", () => {
 		});
 	});
 
-	describe("buildRgArgs", () => {
-		it("defaults to smart-case with a max count", () => {
-			expect(buildRgArgs({ pattern: "foo" })).toEqual([
-				"--line-number",
-				"--color=never",
-				"--no-heading",
-				"--with-filename",
-				"--smart-case",
-				"--max-count",
-				"100",
-				"--",
-				"foo",
-			]);
-		});
-
-		it("maps case_sensitive true/false", () => {
-			expect(buildRgArgs({ pattern: "x", case_sensitive: true })).toContain("--case-sensitive");
-			expect(buildRgArgs({ pattern: "x", case_sensitive: false })).toContain("--ignore-case");
-		});
-
-		it("maps remaining parameters to flags", () => {
-			const args = buildRgArgs({
-				pattern: "foo",
-				path: "src",
-				glob: "*.ts",
-				file_type: "ts",
-				fixed_strings: true,
-				hidden: true,
-				context: 2,
-				limit: 10,
-			});
-			expect(args).toEqual([
-				"--line-number",
-				"--color=never",
-				"--no-heading",
-				"--with-filename",
-				"--smart-case",
-				"--fixed-strings",
-				"--hidden",
-				"--context",
-				"2",
-				"--glob",
-				"*.ts",
-				"--type",
-				"ts",
-				"--max-count",
-				"10",
-				"--",
-				"foo",
-				"src",
-			]);
-		});
-
-		it("keeps flag-like patterns behind the separator", () => {
-			const args = buildRgArgs({ pattern: "-rf" });
-			expect(args.slice(args.indexOf("--"))).toEqual(["--", "-rf"]);
-		});
-	});
-
 	describe("execute", () => {
 		let workDir: string;
 
@@ -217,39 +156,11 @@ describe("file-search extension", () => {
 			expect(result?.details?.lineCount).toBe(0);
 		});
 
-		it("rg finds content matches", async () => {
-			const tool = registeredTools.get("rg");
-			const result = await tool?.execute("t3", { pattern: "needle" }, undefined, undefined, {
-				cwd: workDir,
-			});
-			expect(result?.details?.error).toBeUndefined();
-			expect(result?.content[0]?.text).toContain("alpha.ts");
-			expect(result?.content[0]?.text).toContain("needle");
-		});
-
-		it("rg reports no matches without an error", async () => {
-			const tool = registeredTools.get("rg");
-			const result = await tool?.execute("t4", { pattern: "zzz_nothing" }, undefined, undefined, {
-				cwd: workDir,
-			});
-			expect(result?.content[0]?.text).toBe("No matches found");
-			expect(result?.details?.error).toBeUndefined();
-		});
-
-		it("rg surfaces regex errors", async () => {
-			const tool = registeredTools.get("rg");
-			const result = await tool?.execute("t5", { pattern: "(unclosed" }, undefined, undefined, {
-				cwd: workDir,
-			});
-			expect(result?.details?.error).toBeDefined();
-			expect(result?.content[0]?.text).toContain("Error");
-		});
-
 		it("aborts when the signal is already aborted", async () => {
-			const tool = registeredTools.get("rg");
+			const tool = registeredTools.get("fd");
 			const controller = new AbortController();
 			controller.abort();
-			const result = await tool?.execute("t6", { pattern: "needle" }, controller.signal, undefined, {
+			const result = await tool?.execute("t3", { pattern: "alpha" }, controller.signal, undefined, {
 				cwd: workDir,
 			});
 			expect(result?.details?.error).toBe("Search was cancelled");
@@ -288,7 +199,7 @@ describe("file-search extension", () => {
 		});
 
 		it("renderResult shows errors", () => {
-			const tool = registeredTools.get("rg");
+			const tool = registeredTools.get("fd");
 			const rendered = tool?.renderResult(
 				{ content: [{ type: "text", text: "Error: boom" }], details: { error: "boom" } },
 				{},

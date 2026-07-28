@@ -105,6 +105,28 @@
           runHook postInstall
         '';
       };
+      piHashlineEdit = pkgs.buildNpmPackage {
+        pname = "pi-hashline-edit";
+        version = "0.8.3";
+        src = pkgs.fetchurl {
+          url = "https://registry.npmjs.org/pi-hashline-edit/-/pi-hashline-edit-0.8.3.tgz";
+          hash = "sha512-eQWvwvR8aS7e/8CLTt8sdGhFXJguPTyFK+m9IB2muQQHsPnyMlF/cXKzEo5mQ898LxAM1jl7UVhPsmNXR8y/Mw==";
+        };
+        npmDepsHash = "sha256-bOND42nfLErqPELQ5SjC0ChqgEn1j8ySnDymR+LoJ4U=";
+        postPatch = ''
+          cp ${./pi-hashline-edit-package-lock.json} package-lock.json
+          ${pkgs.jq}/bin/jq 'del(.devDependencies, .peerDependencies, .scripts)' \
+            package.json > package.json.tmp
+          mv package.json.tmp package.json
+        '';
+        dontNpmBuild = true;
+        installPhase = ''
+          runHook preInstall
+          mkdir -p $out
+          cp -R . $out/
+          runHook postInstall
+        '';
+      };
       filterTests =
         src:
         lib.cleanSourceWith {
@@ -117,6 +139,7 @@
         cp -R ${caveman}/. $out/pi-caveman
         cp -R ${rtkOptimizer}/. $out/pi-rtk-optimizer
         cp -R ${ccSafetyNet}/. $out/cc-safety-net
+        cp -R ${piHashlineEdit}/. $out/pi-hashline-edit
       '';
       pi = llm-agents.pi;
     in
@@ -141,6 +164,9 @@
         home.file.".pi/agent/extensions" = {
           source = extensionsSource;
           recursive = true;
+        };
+        home.file.".pi/agent/hashline.json".text = builtins.toJSON {
+          grep = true;
         };
         home.activation.patchPiModels = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
           ${patchPiModels}

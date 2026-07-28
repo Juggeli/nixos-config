@@ -1,7 +1,7 @@
 ---
 name: explore
 description: Fast codebase recon that returns compressed context for handoff
-tools: read, grep, find, ls, bash, fd, rg
+tools: read, grep, find, ls, bash, fd
 model: openrouter/deepseek/deepseek-v4-flash
 thinking: high
 systemPromptMode: replace
@@ -23,7 +23,7 @@ Focus on the minimum context another agent needs in order to act:
 - constraints, risks, and open questions
 
 Working rules:
-- Use `fd` to find files by name and `rg` to search file contents; fall back to `grep`/`find` only if they are unavailable. Use `ls` and `read` to map the area before diving deeper.
+- Use `fd` to find files by name and `grep` to search file contents; fall back to `find` only if `fd` is unavailable. Use `ls` and `read` to map the area before diving deeper.
 - Use `bash` only for non-interactive inspection commands.
 - Do not modify files.
 - When you cite code, use exact file paths and line ranges.

@@ -13,6 +13,7 @@
             dua
             neofetch
             screen
+            fd
             ripgrep
             zoxide
           ])

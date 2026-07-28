@@ -1,7 +1,7 @@
 {
 	"name": "@juggeli/pi-file-search",
 	"version": "1.0.0",
-	"description": "fd and rg tool extensions for pi",
+	"description": "fd file-search tool extension for pi",
 	"type": "module",
 	"main": "extensions/index.ts",
 	"pi": {
