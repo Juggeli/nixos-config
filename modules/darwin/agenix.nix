@@ -1,7 +1,6 @@
 {
   flake.darwinModules.agenix =
     {
-      lib,
       options,
       pkgs,
       inputs,
@@ -12,10 +11,11 @@
         inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
 
-      age.identityPaths =
-        options.age.identityPaths.default
-        ++ lib.filter lib.pathExists [
-          "/Users/juggeli/.ssh/id_ed25519"
-        ];
+      # Not filtered by pathExists: under pure flake eval that always returns
+      # false for paths outside the store, which would drop the only identity
+      # that can actually decrypt (macOS has no /etc/ssh host keys by default).
+      age.identityPaths = options.age.identityPaths.default ++ [
+        "/Users/juggeli/.ssh/id_ed25519"
+      ];
     };
 }
