@@ -11,7 +11,7 @@
             dust
             gum
             dua
-            neofetch
+            fastfetch
             screen
             fd
             ripgrep
