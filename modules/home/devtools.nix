@@ -32,7 +32,8 @@
           pipx
           uv
           husky
-          typescript-go
+          # typescript-go ships a conflicting tsc alias; let typescript's win
+          (lib.lowPrio typescript-go)
         ]
         ++ [ bun' ];
     };
