@@ -103,6 +103,10 @@
       security.polkit.enable = true;
 
       home-manager.users.juggeli = {
+        # The catppuccin module emits a Lua theme reference, which is invalid
+        # in the hyprlang config that our pre-26.05 stateVersion still uses.
+        catppuccin.hyprland.enable = false;
+
         wayland.windowManager.hyprland = {
           enable = true;
           settings = {
@@ -153,14 +157,12 @@
             misc = {
               "disable_hyprland_logo" = "yes";
               "disable_splash_rendering" = "yes";
-              "vfr" = "true";
             };
             decoration = {
               "rounding" = 0;
               blur.enabled = "false";
             };
             dwindle = {
-              "pseudotile" = "true";
               "preserve_split" = "true";
               "force_split" = 2;
             };
@@ -172,8 +174,8 @@
               "Unknown-1,disable"
             ];
             windowrule = [
-              "float,class:mpv"
-              "suppressevent maximize,class:mpv"
+              "float on, match:class mpv"
+              "suppress_event maximize, match:class mpv"
             ];
             exec-once = [
               "uwsm app -- ${pkgs.hyprpaper}/bin/hyprpaper"
