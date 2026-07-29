@@ -1,6 +1,11 @@
 {
   flake.nixosModules.noel-system =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       networking.hostId = "cc5b25a0";
 
@@ -25,7 +30,7 @@
         serviceConfig = {
           Type = "oneshot";
           ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /home/juggeli/tank";
-          ExecStart = "${pkgs.cifs-utils}/bin/mount.cifs //10.11.11.2/tank /home/juggeli/tank -o credentials=${config.age.secrets.smb.path},uid=1000,gid=100,iocharset=utf8";
+          ExecStart = "${lib.getBin pkgs.cifs-utils}/bin/mount.cifs //10.11.11.2/tank /home/juggeli/tank -o credentials=${config.age.secrets.smb.path},uid=1000,gid=100,iocharset=utf8";
           ExecStop = "${pkgs.util-linux}/bin/umount /home/juggeli/tank";
           RemainAfterExit = true;
           Restart = "on-failure";
