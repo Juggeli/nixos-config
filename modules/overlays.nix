@@ -31,5 +31,7 @@
       ) oldAttrs.propagatedBuildInputs;
     });
     lmstudio = final.unstable.lmstudio;
+    # pipx tests fail against the newer packaging library's spec normalization
+    pipx = prev.pipx.overridePythonAttrs { doCheck = false; };
   };
 }
