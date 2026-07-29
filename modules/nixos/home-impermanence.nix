@@ -22,7 +22,6 @@
         ".local/share/uv"
         ".cache/uv"
         ".codex"
-        ".gemini"
         ".claude"
         ".config/claude"
         ".local/state/nvim"
