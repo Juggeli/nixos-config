@@ -435,7 +435,16 @@
       # invocation; pin the fallback to keep the logs quiet.
       virtualisation.containers.containersConf.settings.engine.cgroup_manager = "cgroupfs";
 
-      systemd.tmpfiles.rules = [ "d ${ociRuntimeDir} 0700 oci media -" ];
+      systemd.tmpfiles.rules = [
+        "d ${ociRuntimeDir} 0700 oci media -"
+        # Koto's appdata is edited from the host as juggeli, which leaves files
+        # the oci-mapped container cannot write; its task runner swallows the
+        # EACCES, so the breakage is silent. Repair ownership on every
+        # activation, and default ACLs make files created between activations
+        # group-writable at birth (default ACLs bypass the creator's umask).
+        "Z /mnt/appdata/koto - oci media -"
+        "A+ /mnt/appdata/koto - - - - g:media:rwX,d:g:media:rwX"
+      ];
 
       systemd.services = lib.mkMerge [
         # Rootless podman execs the setuid newuidmap/newgidmap wrappers, which
