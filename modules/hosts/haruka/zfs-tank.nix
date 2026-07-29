@@ -23,7 +23,6 @@
       boot.initrd = {
         luks.forceLuksSupportInInitrd = true;
         network.enable = true;
-        preLVMCommands = lib.mkOrder 400 "sleep 1";
         network.ssh = {
           enable = true;
           port = 22;
@@ -33,9 +32,8 @@
         secrets = {
           "/etc/ssh/ssh_host_ed25519_key" = /etc/ssh/ssh_host_ed25519_key;
         };
-        network.postCommands = ''
-          echo 'cryptsetup-askpass' >> /root/.profile
-        '';
+        # Prompt for LUKS passphrases immediately on SSH login.
+        systemd.users.root.shell = "/bin/systemd-tty-ask-password-agent";
       };
     };
 }
