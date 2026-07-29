@@ -22,6 +22,7 @@
             "radarr.jugi.cc" = "http://127.0.0.1:7878";
             "radarr-anime.jugi.cc" = "http://127.0.0.1:7879";
             "jelly.jugi.cc" = "http://127.0.0.1:8096";
+            "plex.jugi.cc" = "http://127.0.0.1:32400";
             "memos.jugi.cc" = "http://127.0.0.1:5230";
           };
         };
