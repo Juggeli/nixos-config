@@ -13,10 +13,12 @@
               position = "bottom";
               # Margins are relative to the monitor's reserved area since
               # Hyprland 0.55; 300px addreserved on each side + 900 = 1200.
-              margin-top = 6;
+              # Equal top/bottom margins center the bar between the tiled
+              # windows and the screen edge.
+              margin-top = 15;
               margin-left = 900;
               margin-right = 900;
-              margin-bottom = 6;
+              margin-bottom = 15;
               height = 40;
               modules-left = [
                 "custom/logo"
