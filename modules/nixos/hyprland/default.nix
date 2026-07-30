@@ -190,6 +190,11 @@
               "GBM_BACKEND,nvidia-drm"
               "__GLX_VENDOR_LIBRARY_NAME,nvidia"
               "WLR_NO_HARDWARE_CURSORS,1"
+              # Session variables are finalized after Hyprland starts under
+              # uwsm, so the cursor theme and size must be set here.
+              "XCURSOR_THEME,Banana-Catppuccin-Mocha"
+              "XCURSOR_SIZE,64"
+              "HYPRCURSOR_SIZE,64"
             ];
             animations = {
               "enabled" = "true";

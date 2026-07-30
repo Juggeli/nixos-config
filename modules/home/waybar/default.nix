@@ -11,9 +11,11 @@
             mainBar = {
               layer = "top";
               position = "bottom";
+              # Margins are relative to the monitor's reserved area since
+              # Hyprland 0.55; 300px addreserved on each side + 900 = 1200.
               margin-top = 6;
-              margin-left = 1200;
-              margin-right = 1200;
+              margin-left = 900;
+              margin-right = 900;
               margin-bottom = 6;
               height = 40;
               modules-left = [
