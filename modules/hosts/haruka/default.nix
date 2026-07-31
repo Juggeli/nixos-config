@@ -20,6 +20,7 @@
         haruka-cleanup
         haruka-qbittorrent-manager
         haruka-log-analyzer
+        haruka-portion-calculator
         haruka-containers
         haruka-arr-api-keys
         haruka-homepage

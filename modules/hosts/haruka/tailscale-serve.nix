@@ -12,6 +12,7 @@
       # would shadow the container's bind on the tailnet address.
       servedPorts = [
         8384 # syncthing gui
+        8091 # portion-calculator
       ];
 
       tailscale = "${config.services.tailscale.package}/bin/tailscale";

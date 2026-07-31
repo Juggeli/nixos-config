@@ -12,6 +12,7 @@
     list-iommu = prev.callPackage ../packages/list-iommu { };
     luks-backup = prev.callPackage ../packages/luks-backup { };
     pi-extensions = prev.callPackage ../packages/pi-extensions { };
+    portion-calculator = prev.callPackage ../packages/portion-calculator { };
     process-anime = prev.callPackage ../packages/process-anime { };
     prometheus-smartctl = prev.callPackage ../packages/prometheus-smartctl { };
     qbit-manager = prev.callPackage ../packages/qbit-manager { };
