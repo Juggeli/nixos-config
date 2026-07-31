@@ -37,6 +37,7 @@
         bazarr = "ghcr.io/hotio/bazarr:latest";
         lanraragi = "docker.io/difegue/lanraragi:latest";
         memos = "docker.io/neosmemo/memos:stable";
+        silverbullet = "ghcr.io/silverbulletmd/silverbullet:latest";
         sillytavern = "ghcr.io/sillytavern/sillytavern:latest";
         tailscale = "docker.io/tailscale/tailscale:latest";
       };
@@ -103,6 +104,23 @@
           webServer = {
             enabled = true;
             port = 9847;
+          };
+        }
+      );
+
+      silverbulletServeConfig = pkgs.writeText "silverbullet-tailscale-serve.json" (
+        builtins.toJSON {
+          TCP = {
+            "443" = {
+              HTTPS = true;
+            };
+          };
+          Web = {
+            "\${TS_CERT_DOMAIN}:443" = {
+              Handlers."/" = {
+                Proxy = "http://127.0.0.1:3000";
+              };
+            };
           };
         }
       );
@@ -283,6 +301,52 @@
           volumes = [ "/mnt/appdata/memos:/var/opt/memos" ];
         };
 
+        tailscale-notes = soaked "tailscale" // {
+          autoStart = true;
+          environment = {
+            TS_AUTHKEY = "file:/run/secrets/tailscale-authkey";
+            TS_HOSTNAME = "notes";
+            TS_STATE_DIR = "/var/lib/tailscale";
+            TS_SERVE_CONFIG = "/config/serve.json";
+            # Userspace netstack for the same reason as tailscale-koto: serve
+            # terminates tailnet TLS and proxies over the shared loopback, so
+            # no tun device or network capability is needed.
+            TS_USERSPACE = "true";
+          };
+          volumes = [
+            "/mnt/appdata/silverbullet/tailscale:/var/lib/tailscale"
+            "${silverbulletServeConfig}:/config/serve.json:ro"
+            "${config.age.secrets.tailscale-auth.path}:/run/secrets/tailscale-authkey:ro"
+          ];
+          extraOptions = hardened;
+        };
+
+        silverbullet = soaked "silverbullet" // {
+          autoStart = true;
+          # Shares the sidecar's network namespace, so the web UI is only
+          # reachable as https://notes.<tailnet>.ts.net — serve provides the
+          # HTTPS that the offline PWA's service worker requires.
+          extraOptions = hardened ++ [ "--network=container:tailscale-notes" ];
+          # The image runs as whatever uid owns /space — container root here,
+          # which rootless podman maps back onto oci — so no keep-id mapping
+          # is needed.
+          #
+          # The env file carries SB_USER (web login) and SB_AUTH_TOKEN (bearer
+          # token for the HTTP API). Shell command execution stays off: notes
+          # do not need it, and it would hand an exec primitive to anything
+          # holding the token.
+          environment = {
+            SB_SHELL_BACKEND = "off";
+            # The login lives behind the tailnet already, so a "remember me"
+            # session can outlast the 7-day default; a year keeps the phone
+            # PWA from asking again.
+            SB_REMEMBER_ME_HOURS = "8760";
+          };
+          environmentFiles = [ config.age.secrets.silverbullet-env.path ];
+          volumes = [ "/mnt/appdata/silverbullet/space:/space" ];
+          dependsOn = [ "tailscale-notes" ];
+        };
+
         sillytavern = soaked "sillytavern" // {
           autoStart = true;
           ports = [ "8000:8000" ];
@@ -377,6 +441,7 @@
       age.secrets = {
         tailscale-auth.owner = "oci";
         koto-env.owner = "oci";
+        silverbullet-env.owner = "oci";
         ntfy-topic.owner = "oci";
       };
 
@@ -437,6 +502,11 @@
 
       systemd.tmpfiles.rules = [
         "d ${ociRuntimeDir} 0700 oci media -"
+        # The tailscale sidecar state lives beside the space, not inside it,
+        # so it never shows up as pages.
+        "d /mnt/appdata/silverbullet 0750 oci media -"
+        "d /mnt/appdata/silverbullet/space 0750 oci media -"
+        "d /mnt/appdata/silverbullet/tailscale 0750 oci media -"
         # Koto's appdata is edited from the host as juggeli, which leaves files
         # the oci-mapped container cannot write; its task runner swallows the
         # EACCES, so the breakage is silent. Repair ownership on every

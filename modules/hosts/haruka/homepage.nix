@@ -338,6 +338,16 @@
                   siteMonitor = hostUrl 5230;
                 };
               }
+              {
+                Silverbullet = {
+                  icon = "silverbullet.png";
+                  description = "Markdown note wiki";
+                  # silverbullet shares the tailscale-notes container's network
+                  # namespace, so it is only reachable under that node's name.
+                  href = "https://notes.tailac5b0.ts.net";
+                  siteMonitor = "https://notes.tailac5b0.ts.net";
+                };
+              }
             ];
           }
           {

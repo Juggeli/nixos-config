@@ -32,4 +32,5 @@ in
   "radarr-anime-api.age".publicKeys = keys;
   "tailscale-auth.age".publicKeys = keys;
   "koto-env.age".publicKeys = keys;
+  "silverbullet-env.age".publicKeys = keys;
 }
