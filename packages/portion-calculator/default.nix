@@ -22,10 +22,7 @@ buildNpmPackage {
       && base != "data"
       && base != "app.js"
       && base != "result"
-      && base != ".gitignore"
-      && base != ".agents"
-      && base != ".claude"
-      && base != "skills-lock.json";
+      && base != ".gitignore";
   };
 
   npmDepsHash = "sha256-OTh4ULKxiSca3huQ4xRzlFQ8OkBqeY4c9+2qLcK9Y6I=";
