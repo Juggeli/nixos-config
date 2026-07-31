@@ -6,6 +6,9 @@ import { createApp } from "./server.ts";
 
 const dataFile = process.env.DATA_FILE ?? join(process.cwd(), "data", "data.json");
 const port = Number(process.env.PORT ?? 3000);
+if (!Number.isInteger(port) || port < 1 || port > 65535) {
+  throw new Error(`invalid PORT: ${JSON.stringify(process.env.PORT)}`);
+}
 const hostname = process.env.HOST ?? "127.0.0.1";
 const publicDir = join(dirname(fileURLToPath(import.meta.url)), "..", "public");
 

@@ -10,7 +10,7 @@ export interface CalcResult {
   warning: boolean;
 }
 
-/** Round to 2 decimal places, avoiding floating-point drift. */
+/** Round to 2 decimal places (EPSILON nudges half-way cases like 1.005 up). */
 export function round2(n: number): number {
   return Math.round((n + Number.EPSILON) * 100) / 100;
 }

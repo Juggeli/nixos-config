@@ -12,6 +12,7 @@ const CONTENT_TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
+  ".woff2": "font/woff2",
 };
 
 function byName(a: Vessel, b: Vessel): number {
@@ -89,32 +90,35 @@ export function createApp(store: Store, publicDir: string): Hono {
     const parsed = validateCalculation(await c.req.json().catch(() => null));
     if (!parsed.ok) return c.json({ error: parsed.error }, 400);
 
-    const current = await store.read();
-    const vessel = current.vessels.find((v) => v.id === parsed.value.vesselId);
-    if (!vessel) return c.json({ error: "vessel not found" }, 404);
+    // Look up the vessel inside the update so a concurrent delete can't
+    // slip between lookup and save.
+    const saved = await store.update((data) => {
+      const vessel = data.vessels.find((v) => v.id === parsed.value.vesselId);
+      if (!vessel) return undefined;
 
-    const { netWeight, portionWeight, warning } = calculate({
-      vesselWeight: vessel.weight,
-      totalWeight: parsed.value.totalWeight,
-      portions: parsed.value.portions,
-    });
+      const { netWeight, portionWeight, warning } = calculate({
+        vesselWeight: vessel.weight,
+        totalWeight: parsed.value.totalWeight,
+        portions: parsed.value.portions,
+      });
 
-    const calculation: Calculation = {
-      id: randomUUID(),
-      vesselId: vessel.id,
-      vesselName: vessel.name,
-      vesselWeight: vessel.weight,
-      totalWeight: parsed.value.totalWeight,
-      portions: parsed.value.portions,
-      portionWeight,
-      netWeight,
-      note: parsed.value.note,
-      createdAt: new Date().toISOString(),
-    };
-    await store.update((data) => {
+      const calculation: Calculation = {
+        id: randomUUID(),
+        vesselId: vessel.id,
+        vesselName: vessel.name,
+        vesselWeight: vessel.weight,
+        totalWeight: parsed.value.totalWeight,
+        portions: parsed.value.portions,
+        portionWeight,
+        netWeight,
+        note: parsed.value.note,
+        createdAt: new Date().toISOString(),
+      };
       data.calculations.push(calculation);
+      return { calculation, warning };
     });
-    return c.json({ ...calculation, warning }, 201);
+    if (!saved) return c.json({ error: "vessel not found" }, 404);
+    return c.json({ ...saved.calculation, warning: saved.warning }, 201);
   });
 
   // --- Static frontend ---

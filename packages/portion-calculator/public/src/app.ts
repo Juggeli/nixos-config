@@ -186,6 +186,7 @@ async function renderCalculator(): Promise<void> {
     if (v.id === prefill.vesselId) opt.selected = true;
     vesselSelect.append(opt);
   }
+  const prefillVesselGone = prefill.vesselId != null && !vessels.some((v) => v.id === prefill.vesselId);
 
   const totalInput = el("input", {
     id: "total",
@@ -230,6 +231,9 @@ async function renderCalculator(): Promise<void> {
     { class: "card" },
     el("label", { for: "vessel" }, "Vessel"),
     vesselSelect,
+    ...(prefillVesselGone
+      ? [el("div", { class: "warning" }, "The vessel from that calculation was deleted — check the tare before saving.")]
+      : []),
     el("label", { for: "total" }, "Total weight (food + vessel)"),
     totalWrap,
     el("label", { for: "portions" }, "Portions"),
@@ -297,6 +301,7 @@ async function renderCalculator(): Promise<void> {
 
   saveBtn.addEventListener("click", async () => {
     errorBox.textContent = "";
+    saveBtn.disabled = true;
     try {
       await api("/api/calculations", {
         method: "POST",
@@ -309,9 +314,9 @@ async function renderCalculator(): Promise<void> {
       });
       saveBtn.classList.add("success");
       saveBtn.textContent = "Saved ✓";
-      saveBtn.disabled = true;
       setTimeout(() => setView("history"), 550);
     } catch (err) {
+      saveBtn.disabled = false;
       errorBox.textContent = (err as Error).message;
     }
   });
@@ -350,6 +355,7 @@ async function renderVessels(): Promise<void> {
 
   addBtn.addEventListener("click", async () => {
     formError.textContent = "";
+    addBtn.disabled = true;
     try {
       await api("/api/vessels", {
         method: "POST",
@@ -357,6 +363,7 @@ async function renderVessels(): Promise<void> {
       });
       await render();
     } catch (err) {
+      addBtn.disabled = false;
       formError.textContent = (err as Error).message;
     }
   });
@@ -407,6 +414,7 @@ function startEdit(li: HTMLLIElement, v: Vessel) {
 
   saveBtn.addEventListener("click", async () => {
     errBox.textContent = "";
+    saveBtn.disabled = true;
     try {
       await api(`/api/vessels/${v.id}`, {
         method: "PUT",
@@ -414,6 +422,7 @@ function startEdit(li: HTMLLIElement, v: Vessel) {
       });
       await render();
     } catch (err) {
+      saveBtn.disabled = false;
       errBox.textContent = (err as Error).message;
     }
   });

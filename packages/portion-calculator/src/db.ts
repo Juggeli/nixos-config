@@ -45,12 +45,13 @@ export class Store {
     }
   }
 
-  /** Run `fn` against the current data and persist whatever it returns. */
+  /** Run `fn` against the current data; persist only if `fn` changed it. */
   update<T>(fn: (data: Data) => T | Promise<T>): Promise<T> {
     const run = this.queue.then(async () => {
       const data = await this.read();
+      const before = JSON.stringify(data);
       const result = await fn(data);
-      await this.writeRaw(data);
+      if (JSON.stringify(data) !== before) await this.writeRaw(data);
       return result;
     });
     // Keep the chain alive even if a step throws.
