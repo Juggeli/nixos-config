@@ -40,13 +40,14 @@
             device = "/dev/disk/by-uuid/e62e2d61-7a84-48a6-b130-3b0b8f8bc365";
             allowDiscards = true;
           };
-          appdata = {
-            preLVM = true;
-            device = "/dev/disk/by-uuid/5f527a43-bef3-4a80-9465-9dfb13be9831";
-            allowDiscards = true;
-          };
         };
       };
+
+      # Unlock appdata in stage 2 with a keyfile stored on the encrypted root,
+      # so remote unlock only prompts for the root passphrase.
+      environment.etc.crypttab.text = ''
+        appdata /dev/disk/by-uuid/5f527a43-bef3-4a80-9465-9dfb13be9831 /etc/luks/appdata.key luks,discard
+      '';
 
       boot.kernelModules = [ "kvm-intel" ];
       boot.kernelParams = [ "mitigations=off" ];
