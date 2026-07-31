@@ -1,0 +1,27 @@
+{
+  "name": "portion-calculator",
+  "version": "1.0.0",
+  "description": "Mobile-first web app for calculating food portion weights from batch cooking",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "esbuild public/src/app.ts --bundle --minify --outfile=public/app.js",
+    "watch": "esbuild public/src/app.ts --bundle --outfile=public/app.js --watch",
+    "start": "node src/main.ts",
+    "dev": "node --watch src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.0",
+    "hono": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0"
+  },
+  "allowScripts": {
+    "esbuild@0.24.2": true
+  }
+}
