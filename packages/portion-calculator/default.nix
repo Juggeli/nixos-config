@@ -25,8 +25,7 @@ buildNpmPackage {
       && base != ".gitignore"
       && base != ".agents"
       && base != ".claude"
-      && base != "skills-lock.json"
-      && base != "REBUILD_PROMPT.md";
+      && base != "skills-lock.json";
   };
 
   npmDepsHash = "sha256-OTh4ULKxiSca3huQ4xRzlFQ8OkBqeY4c9+2qLcK9Y6I=";
@@ -42,10 +41,14 @@ buildNpmPackage {
   installPhase = ''
     runHook preInstall
 
+    # esbuild and typescript are only needed at build time.
+    npm prune --omit=dev
+
     mkdir -p $out/libexec
     cp -r src package.json node_modules $out/libexec/
     mkdir -p $out/libexec/public
     cp public/index.html public/styles.css public/app.js $out/libexec/public/
+    cp -r public/fonts $out/libexec/public/
 
     mkdir -p $out/bin
     makeWrapper "${lib.getExe nodejs}" "$out/bin/portion-calculator" \

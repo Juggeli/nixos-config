@@ -30,7 +30,9 @@ but still lets you save.
 - Frontend: vanilla HTML/CSS/TypeScript, bundled with esbuild.
 - Storage: a single JSON file.
 - Tests: `node:test`.
-- UI: dark, [Catppuccin Mocha](https://catppuccin.com) palette.
+- UI: dark, [Catppuccin Mocha](https://catppuccin.com) palette. Fonts
+  (Fraunces, Karla) are self-hosted in `public/fonts`, so the app has no
+  external dependencies at runtime.
 
 ## Run locally
 

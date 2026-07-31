@@ -3,6 +3,31 @@
    Display: Fraunces · Body: Karla
 --------------------------------------------------------------------------- */
 
+/* Self-hosted variable fonts (latin subset, OFL-licensed). */
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/fraunces-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/fraunces-italic-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Karla";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/karla-latin.woff2") format("woff2");
+}
+
 :root {
   /* Catppuccin Mocha */
   --base: #1e1e2e;
