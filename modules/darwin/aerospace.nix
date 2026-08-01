@@ -32,9 +32,6 @@
         "app.zen-browser.zen")
           switch_to_finnish
           ;;
-        "md.obsidian")
-          switch_to_finnish
-          ;;
         "com.microsoft.teams2")
           switch_to_finnish
           ;;

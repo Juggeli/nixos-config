@@ -14,7 +14,6 @@
         inherit taps;
         casks = [
           "cmux"
-          "obsidian"
           "zen"
           "1password"
           "discord"

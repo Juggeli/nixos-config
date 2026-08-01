@@ -54,7 +54,6 @@
         pdf
         crypto
         hydrus
-        anytype
         vscode
         comfyui
         lmstudio
