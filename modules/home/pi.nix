@@ -153,6 +153,7 @@
             export OPENROUTER_API_KEY=$(cat ${config.age.secrets.openrouter-api-key.path})
             export OPENCODE_API_KEY=$(cat ${config.age.secrets.opencode-api-key.path})
             export ALIBABA_TOKEN_PLAN_API_KEY=$(cat ${config.age.secrets.alibaba-api-key.path})
+            export DEEPSEEK_API_KEY=$(cat ${config.age.secrets.deepseek-api-key.path})
             export CC_SAFETY_NET_STRICT=1
             export CC_SAFETY_NET_PARANOID_RM=1
             exec ${pi}/bin/pi "$@"

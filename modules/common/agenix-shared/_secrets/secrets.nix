@@ -21,4 +21,5 @@ in
   "opencode-api-key.age".publicKeys = keys;
   "alibaba-api-key.age".publicKeys = keys;
   "forgejo-fj-keys.age".publicKeys = keys;
+  "deepseek-api-key.age".publicKeys = keys;
 }
