@@ -159,6 +159,13 @@
           pkgs.nodejs
         ];
 
+        home.file.".pi/agent/AGENTS.md".text = ''
+          ## Secrets
+
+          Never print secret values (API keys, tokens, passwords, decrypted
+          secrets) into the session; inspect them indirectly and keep them
+          out of diffs and commits.
+        '';
         home.file.".pi/agent/extensions" = {
           source = extensionsSource;
           recursive = true;
