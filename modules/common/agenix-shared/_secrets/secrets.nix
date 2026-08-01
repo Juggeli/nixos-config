@@ -13,13 +13,8 @@ let
   ];
 in
 {
-  "zai-api-key.age".publicKeys = keys;
+  "agent-env.age".publicKeys = keys;
   "brave-api-key.age".publicKeys = keys;
-  "exa-api-key.age".publicKeys = keys;
-  "openrouter-api-key.age".publicKeys = keys;
-  "ollama-api-key.age".publicKeys = keys;
-  "opencode-api-key.age".publicKeys = keys;
-  "alibaba-api-key.age".publicKeys = keys;
   "forgejo-fj-keys.age".publicKeys = keys;
-  "deepseek-api-key.age".publicKeys = keys;
+  "ollama-api-key.age".publicKeys = keys;
 }
