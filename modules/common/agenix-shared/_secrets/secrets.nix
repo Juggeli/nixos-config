@@ -14,7 +14,5 @@ let
 in
 {
   "agent-env.age".publicKeys = keys;
-  "brave-api-key.age".publicKeys = keys;
   "forgejo-fj-keys.age".publicKeys = keys;
-  "ollama-api-key.age".publicKeys = keys;
 }
