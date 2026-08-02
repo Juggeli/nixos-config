@@ -1,13 +1,37 @@
 {
-  "cleanupPeriodDays": 99999,
-  "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1"
+  "permissions": {
+    "deny": [
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "DesignSync",
+      "NotebookEdit",
+      "SendMessage",
+      "PushNotification",
+      "RemoteTrigger",
+      "ReportFindings",
+      "ScheduleWakeup",
+      "AskUserQuestion",
+      "CronCreate",
+      "CronDelete",
+      "CronList"
+    ]
   },
-  "includeCoAuthoredBy": false,
-  "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "disableBundledSkills": true,
+  "disableWorkflows": true,
+  "disableRemoteControl": true,
+  "disableClaudeAiConnectors": true,
+  "disableArtifact": true,
+  "autoMemoryEnabled": false,
+  "awaySummaryEnabled": false,
+  "feedbackSurveyRate": 0,
+  "spinnerTipsEnabled": false,
+  "cleanupPeriodDays": 99999,
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "gitAttribution": false,
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
   "model": "claude-fable-5[1m]"
 }
