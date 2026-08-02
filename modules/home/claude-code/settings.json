@@ -1,9 +1,5 @@
 {
   "cleanupPeriodDays": 99999,
-  "env": {
-    "CC_SAFETY_NET_STRICT": "1",
-    "CC_SAFETY_NET_PARANOID_RM": "1"
-  },
   "attribution": {
     "commit": "",
     "pr": "",
