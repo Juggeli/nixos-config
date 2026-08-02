@@ -1,4 +1,14 @@
 {
+  "cleanupPeriodDays": 99999,
+  "env": {
+    "CC_SAFETY_NET_STRICT": "1",
+    "CC_SAFETY_NET_PARANOID_RM": "1"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
   "permissions": {
     "deny": [
       "EnterPlanMode",
@@ -16,22 +26,27 @@
       "CronList"
     ]
   },
-  "disableBundledSkills": true,
-  "disableWorkflows": true,
-  "disableRemoteControl": true,
+  "model": "claude-fable-5[1m]",
   "disableClaudeAiConnectors": true,
+  "disableBundledSkills": true,
+  "disableRemoteControl": true,
+  "disableWorkflows": true,
   "disableArtifact": true,
-  "autoMemoryEnabled": false,
-  "awaySummaryEnabled": false,
+  "enabledPlugins": {
+    "safety-net@cc-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "cc-marketplace": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/kenryu42/cc-marketplace.git"
+      }
+    }
+  },
   "feedbackSurveyRate": 0,
   "spinnerTipsEnabled": false,
-  "cleanupPeriodDays": 99999,
+  "awaySummaryEnabled": false,
   "tui": "fullscreen",
-  "skipDangerousModePermissionPrompt": true,
-  "attribution": {
-    "commit": "",
-    "pr": "",
-    "sessionUrl": false
-  },
-  "model": "claude-fable-5[1m]"
+  "autoMemoryEnabled": false,
+  "skipDangerousModePermissionPrompt": true
 }
