@@ -68,76 +68,45 @@
           "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
           && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
       '';
-      rtkOptimizer = pkgs.fetchFromGitHub {
-        owner = "MasuRii";
-        repo = "pi-rtk-optimizer";
-        rev = "v0.9.0";
-        hash = "sha256-Cw0oLzVv674vpC3g5oteCNZSkHpfBN+IdnYDbkai4q4=";
-      };
-      ccSafetyNet = pkgs.buildNpmPackage {
-        pname = "cc-safety-net";
-        version = "1.0.6";
-        src = pkgs.fetchurl {
-          url = "https://registry.npmjs.org/cc-safety-net/-/cc-safety-net-1.0.6.tgz";
-          hash = "sha512-uc2EmRXPXb08cfN1eGnr+h3tWHqxA20fJGZoGBgW6wFl+Nubmmy6jug18vc7WrOW7dGBMPxz4VuU8srfjHtWlw==";
-        };
-        npmDepsHash = "sha256-P5IJcI3d30vTiiCorROWTdv9QpEZb8gh+bl/8uAFK7E=";
-        postPatch = ''
-          cp ${./cc-safety-net-package-lock.json} package-lock.json
-          ${pkgs.jq}/bin/jq 'del(.devDependencies, .peerDependencies, .peerDependenciesMeta, .scripts.prepare)' \
-            package.json > package.json.tmp
-          mv package.json.tmp package.json
-        '';
-        dontNpmBuild = true;
-        installPhase = ''
-          runHook preInstall
-          mkdir -p $out
-          cp -R . $out/
-          cat > $out/index.ts <<'EOF'
-          export { default } from "./dist/pi/index.js";
-          EOF
-          runHook postInstall
-        '';
-      };
-      piHashlineEdit = pkgs.buildNpmPackage {
-        pname = "pi-hashline-edit";
-        version = "0.8.3";
-        src = pkgs.fetchurl {
-          url = "https://registry.npmjs.org/pi-hashline-edit/-/pi-hashline-edit-0.8.3.tgz";
-          hash = "sha512-eQWvwvR8aS7e/8CLTt8sdGhFXJguPTyFK+m9IB2muQQHsPnyMlF/cXKzEo5mQ898LxAM1jl7UVhPsmNXR8y/Mw==";
-        };
-        npmDepsHash = "sha256-bOND42nfLErqPELQ5SjC0ChqgEn1j8ySnDymR+LoJ4U=";
-        postPatch = ''
-          cp ${./pi-hashline-edit-package-lock.json} package-lock.json
-          ${pkgs.jq}/bin/jq 'del(.devDependencies, .peerDependencies, .scripts)' \
-            package.json > package.json.tmp
-          mv package.json.tmp package.json
-        '';
-        dontNpmBuild = true;
-        installPhase = ''
-          runHook preInstall
-          mkdir -p $out
-          cp -R . $out/
-          runHook postInstall
-        '';
-      };
-      filterTests =
-        src:
-        lib.cleanSourceWith {
-          inherit src;
-          filter = path: _type: !(builtins.baseNameOf path == "__tests__");
-        };
-      extensionsSource = pkgs.runCommand "pi-agent-extensions" { } ''
-        mkdir -p $out
-        cp -R ${filterTests ../../packages/pi-extensions/packages}/. $out/
-        cp -R ${rtkOptimizer}/. $out/pi-rtk-optimizer
-        cp -R ${ccSafetyNet}/. $out/cc-safety-net
-        cp -R ${piHashlineEdit}/. $out/pi-hashline-edit
+      # The default bun-compiled binary lacks node:sqlite, which
+      # pi-hashline-edit-pro's hash store needs; the npm package's official
+      # Node entry point (Node >= 22.5) provides it.
+      pi = llm-agents.pi.override { useBun = false; };
+      configDir = "${homeDir}/src/dotfiles/modules/home/pi";
+      localExtensionsDir = "${homeDir}/src/dotfiles/packages/pi-extensions/packages";
+      # Third-party extensions are installed imperatively via `pi install`,
+      # which resolves node_modules itself under ~/.pi/agent/npm. Pinned here;
+      # the resulting settings.json entries land in the repo-tracked file.
+      npmExtensions = [
+        {
+          name = "pi-hashline-edit-pro";
+          version = "1.0.0";
+        }
+        {
+          name = "cc-safety-net";
+          version = "1.0.6";
+        }
+        {
+          name = "pi-rtk-optimizer";
+          version = "0.9.0";
+        }
+      ];
+      installPiExtensions = pkgs.writeShellScript "install-pi-extensions" ''
+        export PATH="${pkgs.nodejs}/bin:$PATH"
+        ensure() {
+          local name="$1" version="$2"
+          local pkgJson="${agentDir}/npm/node_modules/$name/package.json"
+          if [ "$(${pkgs.jq}/bin/jq -r .version "$pkgJson" 2>/dev/null)" != "$version" ]; then
+            ${pi}/bin/pi install "npm:$name@$version" || true
+          fi
+        }
+        ${lib.concatMapStringsSep "\n" (e: ''ensure "${e.name}" "${e.version}"'') npmExtensions}
       '';
-      pi = llm-agents.pi;
     in
     {
-      home-manager.users.juggeli = {
+      # Locally authored extensions are symlinked out of the store so edits in
+      # the repo take effect on the next pi session without a rebuild.
+      home-manager.users.juggeli = hmArgs: {
         home.packages = [
           (pkgs.writeShellScriptBin "pi" ''
             export PI_AGENT_DIR="${agentDir}"
@@ -169,15 +138,25 @@
           secrets) into the session; inspect them indirectly and keep them
           out of diffs and commits.
         '';
-        home.file.".pi/agent/extensions" = {
-          source = extensionsSource;
-          recursive = true;
-        };
-        home.file.".pi/agent/hashline.json".text = builtins.toJSON {
-          grep = true;
-        };
+        home.file.".pi/agent/extensions/exa-tools".source =
+          hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/exa-tools";
+        home.file.".pi/agent/extensions/file-search".source =
+          hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/file-search";
+        home.file.".pi/agent/extensions/subagents-lite".source =
+          hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/subagents-lite";
         home.activation.patchPiModels = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
           ${patchPiModels}
+        '';
+        # Settings are symlinked into the repo so pi can write to them at
+        # runtime (theme, default model, installed packages) while the file
+        # stays tracked. Pi's settings writer follows symlinks, so no
+        # single-hop workaround is needed; plain ln keeps it simple.
+        home.activation.linkPiSettings = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p "${agentDir}"
+          ln -sfn "${configDir}/settings.json" "${agentDir}/settings.json"
+        '';
+        home.activation.installPiExtensions = hmLib.hm.dag.entryAfter [ "linkPiSettings" ] ''
+          ${installPiExtensions}
         '';
       };
     };
