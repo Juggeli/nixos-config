@@ -1,13 +1,16 @@
 { self, ... }:
 {
-  flake.darwinConfigurations."Jukkas-MBP" = self.lib.mkDarwin {
-    hostName = "Jukkas-MBP";
+  flake.darwinConfigurations."monday-chan" = self.lib.mkDarwin {
+    hostName = "monday-chan";
     modules =
       (with self.darwinModules; [ base ])
       ++ (with self.homeModules; [ desktop ])
       ++ [
         {
           system.stateVersion = 4;
+
+          networking.localHostName = "monday-chan";
+          networking.computerName = "monday-chan";
 
           environment.systemPath = [ "/opt/homebrew/bin" ];
 
