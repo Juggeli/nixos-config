@@ -25,6 +25,7 @@
           mkdir -p "${homeDir}/.claude"
           ln -sfn "${configDir}/settings.json" "${homeDir}/.claude/settings.json"
           ln -sfn "${configDir}/CLAUDE.md" "${homeDir}/.claude/CLAUDE.md"
+          ln -sfn "${configDir}/statusline-command.sh" "${homeDir}/.claude/statusline-command.sh"
         '';
 
         # enabledPlugins in settings.json only marks intent; fetching the
