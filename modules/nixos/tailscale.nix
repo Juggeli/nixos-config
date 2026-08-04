@@ -7,6 +7,7 @@
       services.tailscale = {
         enable = true;
         port = 41641;
+        extraSetFlags = [ "--ssh" ];
       };
 
       systemd.services.tailscaled.serviceConfig.StandardOutput = "null";
