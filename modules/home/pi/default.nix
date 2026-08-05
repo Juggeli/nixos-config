@@ -147,6 +147,12 @@
         home.activation.patchPiModels = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
           ${patchPiModels}
         '';
+        # Home-manager renames in-the-way files to *.hm-backup when linking;
+        # pi would load those copies as duplicate extensions and refuse the
+        # real ones, so drop them.
+        home.activation.cleanPiExtensionBackups = hmLib.hm.dag.entryAfter [ "linkGeneration" ] ''
+          rm -rf "${agentDir}/extensions/"*.hm-backup
+        '';
         # Settings are symlinked into the repo so pi can write to them at
         # runtime (theme, default model, installed packages) while the file
         # stays tracked. Pi's settings writer follows symlinks, so no
