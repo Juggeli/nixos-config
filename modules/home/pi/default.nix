@@ -68,6 +68,15 @@
           "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
           && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
       '';
+      patchPiSyntheticConfig = pkgs.writeShellScript "patch-pi-synthetic-config" ''
+        CONFIG_FILE="${agentDir}/extensions/synthetic.json"
+        mkdir -p "$(dirname "$CONFIG_FILE")"
+        if [ ! -f "$CONFIG_FILE" ]; then
+          echo '{}' > "$CONFIG_FILE"
+        fi
+        ${pkgs.jq}/bin/jq '.webSearch = false' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
+          && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+      '';
       # The default bun-compiled binary lacks node:sqlite, which
       # pi-hashline-edit-pro's hash store needs; the npm package's official
       # Node entry point (Node >= 22.5) provides it.
@@ -152,6 +161,9 @@
         # real ones, so drop them.
         home.activation.cleanPiExtensionBackups = hmLib.hm.dag.entryAfter [ "linkGeneration" ] ''
           rm -rf "${agentDir}/extensions/"*.hm-backup
+        '';
+        home.activation.patchPiSyntheticConfig = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          ${patchPiSyntheticConfig}
         '';
         # Settings are symlinked into the repo so pi can write to them at
         # runtime (theme, default model, installed packages) while the file
