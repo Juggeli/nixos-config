@@ -99,6 +99,10 @@
           name = "pi-rtk-optimizer";
           version = "0.9.0";
         }
+        {
+          name = "@aliou/pi-synthetic";
+          version = "0.24.2";
+        }
       ];
       installPiExtensions = pkgs.writeShellScript "install-pi-extensions" ''
         export PATH="${pkgs.nodejs}/bin:$PATH"
