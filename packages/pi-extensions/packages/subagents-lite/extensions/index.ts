@@ -442,14 +442,18 @@ export default function registerSubagentsLite(pi: ExtensionAPI): void {
 			);
 			return withResumeHint(result);
 		},
-		renderCall(args, theme) {
+		renderCall(args, theme, context) {
 			if (args.action === "list") return new Text(`${theme.bold("subagent")} list`, 0, 0);
 			if (args.action === "resume") {
 				const target = args.id ? ` ${args.id}${args.index !== undefined ? `:${args.index}` : ""}` : " latest";
 				return new Text(`${theme.bold("subagent")} resume${target}`, 0, 0);
 			}
 			if (args.tasks?.length) return new Text(`${theme.bold("subagent")} parallel (${args.tasks.length})`, 0, 0);
-			return new Text(`${theme.bold("subagent")} ${args.agent ?? "explore"}`, 0, 0);
+			if (args.agent) return new Text(`${theme.bold("subagent")} ${args.agent}`, 0, 0);
+			// Args stream in key by key; defaulting to "explore" before `agent` arrives
+			// would show a name the run never uses.
+			if (!context.argsComplete) return new Text(`${theme.bold("subagent")} …`, 0, 0);
+			return new Text(`${theme.bold("subagent")} explore`, 0, 0);
 		},
 		renderResult(result, options, theme, context) {
 			if (hasRunningSubagent(result)) ensureSubagentResultAnimation(context);
