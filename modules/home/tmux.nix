@@ -40,6 +40,12 @@
           set -g extended-keys on
           set -g extended-keys-format csi-u
 
+          # kitty ignores xterm modifyOtherKeys (tmux's extkeys default);
+          # request kitty's native keyboard protocol instead
+          set -as terminal-features ',xterm-kitty:extkeys'
+          set -as terminal-overrides ',xterm-kitty:Eneks=\E[>1u'
+          set -as terminal-overrides ',xterm-kitty:Dseks=\E[<u'
+
           set-option -sa terminal-overrides ",xterm*:Tc"
 
           bind h select-pane -L
