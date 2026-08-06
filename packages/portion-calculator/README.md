@@ -31,7 +31,7 @@ but still lets you save.
 - Storage: a single JSON file.
 - Tests: `node:test`.
 - UI: dark, [Catppuccin Mocha](https://catppuccin.com) palette. Fonts
-  (Fraunces, Karla) are self-hosted in `public/fonts`, so the app has no
+  (Bitter, Karla) are self-hosted in `public/fonts`, so the app has no
   external dependencies at runtime.
 
 ## Run locally

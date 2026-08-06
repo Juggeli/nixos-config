@@ -1,23 +1,23 @@
 /* ---------------------------------------------------------------------------
    Portion Calculator — Catppuccin Mocha
-   Display: Fraunces · Body: Karla
+   Display: Bitter · Body: Karla
 --------------------------------------------------------------------------- */
 
 /* Self-hosted variable fonts (latin subset, OFL-licensed). */
 @font-face {
-  font-family: "Fraunces";
+  font-family: "Bitter";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/fraunces-latin.woff2") format("woff2");
+  src: url("/fonts/bitter-latin.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: "Fraunces";
+  font-family: "Bitter";
   font-style: italic;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/fraunces-italic-latin.woff2") format("woff2");
+  src: url("/fonts/bitter-italic-latin.woff2") format("woff2");
 }
 
 @font-face {
@@ -55,7 +55,7 @@
   --pink: #f5c2e7;
   --rosewater: #f5e0dc;
 
-  --font-display: "Fraunces", "Georgia", serif;
+  --font-display: "Bitter", "Georgia", serif;
   --font-body: "Karla", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --r-sm: 9px;
