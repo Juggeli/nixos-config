@@ -89,7 +89,7 @@
       npmExtensions = [
         {
           name = "pi-hashline-edit-pro";
-          version = "1.0.0";
+          version = "1.1.0";
         }
         {
           name = "cc-safety-net";

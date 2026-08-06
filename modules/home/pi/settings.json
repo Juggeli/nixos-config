@@ -2,13 +2,13 @@
   "lastChangelogVersion": "0.83.0",
   "defaultProvider": "qwen-token-plan",
   "defaultModel": "qwen3.8-max",
-  "defaultThinkingLevel": "max",
+  "defaultThinkingLevel": "high",
   "theme": "dark",
   "editorPaddingX": 1,
   "packages": [
     "npm:cc-safety-net@1.0.6",
     "npm:pi-rtk-optimizer@0.9.0",
-    "npm:pi-hashline-edit-pro@1.0.0",
+    "npm:pi-hashline-edit-pro@1.1.0",
     "npm:@aliou/pi-synthetic@0.24.2"
   ]
 }
