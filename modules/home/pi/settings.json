@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.83.0",
-  "defaultProvider": "synthetic",
-  "defaultModel": "hf:zai-org/GLM-5.2",
+  "defaultProvider": "qwen-token-plan",
+  "defaultModel": "qwen3.8-max",
   "defaultThinkingLevel": "max",
   "theme": "dark",
   "editorPaddingX": 1,
