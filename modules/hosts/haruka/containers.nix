@@ -816,11 +816,13 @@
                   trash_id = "722b624f9af1e492284c4bc842153a38"; # [Anime] Remux-1080p
                   name = "Remux-1080p - Anime";
                   reset_unmatched_scores.enabled = true;
-                  # Bluray-1080p replaces the guide's Remux group at the top of
-                  # the ladder; remuxes are excluded entirely.
+                  # 2160p rungs extend the guide's 1080p ladder so movies with a
+                  # real 4K HDR release upgrade to it (SDR 2160p is rejected via
+                  # custom format, so only genuine HDR makes the jump); remuxes
+                  # stay excluded entirely.
                   upgrade = {
                     allowed = true;
-                    until_quality = "Bluray-1080p";
+                    until_quality = "Bluray-2160p";
                     until_score = 10000;
                   };
                   # Blocks same-quality group swaps (tier differences are a few
@@ -828,6 +830,14 @@
                   min_upgrade_format_score = 1000;
                   quality_sort = "top";
                   qualities = [
+                    { name = "Bluray-2160p"; }
+                    {
+                      name = "WEB 2160p";
+                      qualities = [
+                        "WEBDL-2160p"
+                        "WEBRip-2160p"
+                      ];
+                    }
                     { name = "Bluray-1080p"; }
                     {
                       name = "WEB 1080p";
@@ -865,6 +875,104 @@
                 {
                   # Uncensored releases always win and upgrade over censored.
                   trash_ids = [ "064af5f084a0a24458cc8ecd3220f93f" ]; # Uncensored
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 2000;
+                    }
+                  ];
+                }
+                {
+                  # Matches every HDR flavor incl. DV with HDR10 fallback; also
+                  # lets 4K HDR rips from groups outside the anime tiers pass
+                  # the profile's min format score of 100.
+                  trash_ids = [ "493b6d1dbec3c3364c59d7607f7e3405" ]; # HDR
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 500;
+                    }
+                  ];
+                }
+                {
+                  # SDR only matches 2160p releases: 1080p grabs are unaffected
+                  # and the 4K rung is reserved for real HDR. DV without an HDR
+                  # fallback plays wrong on non-DV displays.
+                  trash_ids = [
+                    "9c38ebb7384dada637be8899efa68e6f" # SDR
+                    "923b6abef9b17f937fab56cfcf89e1f1" # DV (w/o HDR fallback)
+                  ];
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = -10000;
+                    }
+                  ];
+                }
+                # Lossless/Atmos audio at the guide's UHD scores; lossy formats
+                # stay unscored so everyday web grabs are unaffected.
+                {
+                  trash_ids = [ "496f355514737f7d83bf7aa4d24f8169" ]; # TrueHD ATMOS
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 5000;
+                    }
+                  ];
+                }
+                {
+                  trash_ids = [ "2f22d89048b01681dde8afe203bf2e95" ]; # DTS X
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 4500;
+                    }
+                  ];
+                }
+                {
+                  trash_ids = [
+                    "1af239278386be2919e1bcee0bde047e" # DD+ ATMOS
+                    "417804f7f2c4308c1f4c5d380d4c4475" # ATMOS (undefined)
+                  ];
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 3000;
+                    }
+                  ];
+                }
+                {
+                  trash_ids = [ "3cafb66171b47f226146a0770576870f" ]; # TrueHD
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 2750;
+                    }
+                  ];
+                }
+                {
+                  trash_ids = [ "dcf3ec6938fa32445f590a4da84256cd" ]; # DTS-HD MA
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 2500;
+                    }
+                  ];
+                }
+                {
+                  trash_ids = [
+                    "a570d4a0e56a2874b64e5bfa55202a1b" # FLAC
+                    "e7c2fcae07cbada050a0af3357491d7b" # PCM
+                  ];
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 2250;
+                    }
+                  ];
+                }
+                {
+                  trash_ids = [ "8e109e50e0a0b83a5098b056e13bf6db" ]; # DTS-HD HRA
                   assign_scores_to = [
                     {
                       name = "Remux-1080p - Anime";
