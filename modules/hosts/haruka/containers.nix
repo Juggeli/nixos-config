@@ -609,20 +609,23 @@
                   trash_id = "20e0fc959f1f1704bed501f23bdae76f"; # [Anime] Remux-1080p
                   name = "Remux-1080p - Anime";
                   reset_unmatched_scores.enabled = true;
-                  # The guide ladder cutoff is Bluray-1080p with remuxes
-                  # enabled above it; cap upgrades at the 1080p group instead.
+                  # Bluray-1080p sits above the WEB group so the BD upgrade is
+                  # a quality upgrade; remuxes stay excluded from the ladder.
                   upgrade = {
                     allowed = true;
-                    until_quality = "1080p";
+                    until_quality = "Bluray-1080p";
                     until_score = 10000;
                   };
                   min_format_score = 100;
+                  # Blocks same-quality group swaps (tier differences are a few
+                  # hundred points); only Uncensored (+2000) passes.
+                  min_upgrade_format_score = 1000;
                   quality_sort = "top";
                   qualities = [
+                    { name = "Bluray-1080p"; }
                     {
-                      name = "1080p";
+                      name = "WEB 1080p";
                       qualities = [
-                        "Bluray-1080p"
                         "WEBDL-1080p"
                         "WEBRip-1080p"
                         "HDTV-1080p"
@@ -651,9 +654,9 @@
                 }
               ];
 
-              # Personal score overrides for formats the guide leaves at 0.
               custom_formats = [
                 {
+                  # Uncensored releases always win and upgrade over censored.
                   trash_ids = [ "026d5aadd1a6b4e550b134cb6c72b3ca" ]; # Uncensored
                   assign_scores_to = [
                     {
@@ -671,6 +674,34 @@
                     }
                   ];
                 }
+                {
+                  # Untouched CR rips (SubsPlease & co): the only web tier that
+                  # reaches min_format_score, so ongoing episodes always come
+                  # from the same stable source instead of racing muxer groups.
+                  trash_ids = [ "29c2a13d091144f63307e4a8ce963a39" ]; # Anime Web Tier 05
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 100;
+                    }
+                  ];
+                }
+                {
+                  # Muxer/fansub web tiers: kept below min_format_score.
+                  trash_ids = [
+                    "e0014372773c8f0e1bef8824f00c7dc4" # Anime Web Tier 01
+                    "19180499de5ef2b84b6ec59aae444696" # Anime Web Tier 02
+                    "c27f2ae6a4e82373b0f1da094e2489ad" # Anime Web Tier 03
+                    "4fd5528a3a8024e6b49f9c67053ea5f3" # Anime Web Tier 04
+                    "dc262f88d74c651b12e9d90b39f6c753" # Anime Web Tier 06
+                  ];
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 0;
+                    }
+                  ];
+                }
               ];
             };
 
@@ -685,6 +716,10 @@
                   trash_id = "d1498e7d189fbe6c7110ceaabb7473e6"; # WEB-2160p
                   name = "WEB-2160p";
                   reset_unmatched_scores.enabled = true;
+                  # Blocks same-quality release-group swaps (tier differences
+                  # are ~100 points); the 1080p -> 2160p quality upgrade is
+                  # unaffected.
+                  min_upgrade_format_score = 400;
                   # The guide ladder is 2160p-only; keep WEB 1080p allowed as a
                   # fallback when no 2160p release exists.
                   upgrade = {
@@ -705,6 +740,38 @@
                       qualities = [
                         "WEBDL-1080p"
                         "WEBRip-1080p"
+                      ];
+                    }
+                  ];
+                }
+                {
+                  # For series deliberately kept at 1080p to save space.
+                  trash_id = "72dae194fc92bf828f32cde7744e51a1"; # WEB-1080p
+                  name = "WEB-1080p";
+                  reset_unmatched_scores.enabled = true;
+                  min_upgrade_format_score = 400;
+                  # 720p rungs below the guide's WEB 1080p cutoff so series
+                  # with no 1080p release still grab and upgrade later.
+                  upgrade = {
+                    allowed = true;
+                    until_quality = "WEB 1080p";
+                    until_score = 10000;
+                  };
+                  qualities = [
+                    {
+                      name = "WEB 1080p";
+                      qualities = [
+                        "WEBDL-1080p"
+                        "WEBRip-1080p"
+                      ];
+                    }
+                    { name = "Bluray-720p"; }
+                    {
+                      name = "WEB 720p";
+                      qualities = [
+                        "WEBDL-720p"
+                        "WEBRip-720p"
+                        "HDTV-720p"
                       ];
                     }
                   ];
