@@ -600,22 +600,23 @@
               base_url = "http://127.0.0.1:8999";
               api_key._secret = config.age.secrets.sonarr-anime-api.path;
 
-              include = [
-                { template = "sonarr-quality-definition-anime"; }
-                { template = "sonarr-v4-custom-formats-anime"; }
-              ];
+              quality_definition.type = "anime";
 
               quality_profiles = [
                 {
+                  # Guide-managed profile; recyclarr syncs the anime custom
+                  # formats and their scores from this trash_id.
+                  trash_id = "20e0fc959f1f1704bed501f23bdae76f"; # [Anime] Remux-1080p
                   name = "Remux-1080p - Anime";
                   reset_unmatched_scores.enabled = true;
+                  # The guide ladder cutoff is Bluray-1080p with remuxes
+                  # enabled above it; cap upgrades at the 1080p group instead.
                   upgrade = {
                     allowed = true;
                     until_quality = "1080p";
                     until_score = 10000;
                   };
                   min_format_score = 100;
-                  score_set = "anime-sonarr";
                   quality_sort = "top";
                   qualities = [
                     {
@@ -650,9 +651,10 @@
                 }
               ];
 
+              # Personal score overrides for formats the guide leaves at 0.
               custom_formats = [
                 {
-                  trash_ids = [ "026d5aadd1a6b4e550b134cb6c72b3ca" ];
+                  trash_ids = [ "026d5aadd1a6b4e550b134cb6c72b3ca" ]; # Uncensored
                   assign_scores_to = [
                     {
                       name = "Remux-1080p - Anime";
@@ -661,7 +663,7 @@
                   ];
                 }
                 {
-                  trash_ids = [ "b2550eb333d27b75833e25b8c2557b38" ];
+                  trash_ids = [ "b2550eb333d27b75833e25b8c2557b38" ]; # 10bit
                   assign_scores_to = [
                     {
                       name = "Remux-1080p - Anime";
@@ -676,22 +678,20 @@
               base_url = "http://127.0.0.1:8989/";
               api_key._secret = config.age.secrets.sonarr-api.path;
 
-              include = [
-                { template = "sonarr-quality-definition-series"; }
-                { template = "sonarr-v4-quality-profile-web-2160p"; }
-                { template = "sonarr-v4-custom-formats-web-2160p"; }
-              ];
+              quality_definition.type = "series";
 
               quality_profiles = [
                 {
+                  trash_id = "d1498e7d189fbe6c7110ceaabb7473e6"; # WEB-2160p
                   name = "WEB-2160p";
+                  reset_unmatched_scores.enabled = true;
+                  # The guide ladder is 2160p-only; keep WEB 1080p allowed as a
+                  # fallback when no 2160p release exists.
                   upgrade = {
                     allowed = true;
                     until_quality = "WEB 2160p";
                     until_score = 10000;
                   };
-                  min_format_score = 0;
-                  quality_sort = "top";
                   qualities = [
                     {
                       name = "WEB 2160p";
@@ -711,36 +711,24 @@
                 }
               ];
 
-              custom_formats = [
+              # Default groups (HDR, Streaming General, Unwanted, Golden Rule
+              # UHD, HD/UHD boost, Language Profiles) sync automatically; these
+              # entries only opt into non-default formats.
+              custom_format_groups.add = [
                 {
-                  trash_ids = [ "9b27ab6498ec0f31a3353992e19434ca" ];
-                  assign_scores_to = [ { name = "WEB-2160p"; } ];
-                }
-                {
-                  trash_ids = [
-                    "32b367365729d530ca1c124a0b180c64"
-                    "82d40da2bc6923f41e14394075dd4b03"
-                    "e1a997ddb54e3ecbfe06341ad323c458"
-                    "06d66ab109d4d2eddb2794d21526d140"
-                  ];
-                  assign_scores_to = [ { name = "WEB-2160p"; } ];
-                }
-                {
-                  trash_ids = [ "47435ece6b99a0b477caf360e79ba0bb" ];
-                  assign_scores_to = [
-                    {
-                      name = "WEB-2160p";
-                      score = 0;
-                    }
+                  trash_id = "59c3af66780d08332fdc64e68297098f"; # [Unwanted] Unwanted Formats
+                  select = [
+                    "82d40da2bc6923f41e14394075dd4b03" # No-RlsGroup
+                    "e1a997ddb54e3ecbfe06341ad323c458" # Obfuscated
+                    "06d66ab109d4d2eddb2794d21526d140" # Retags
                   ];
                 }
                 {
-                  trash_ids = [ "9b64dff695c2115facf1b6ea59c9bd07" ];
-                  assign_scores_to = [ { name = "WEB-2160p"; } ];
+                  trash_id = "d776a1ea912a117d66d83b880ff2055d"; # [HDR Formats] DV (w/o HDR fallback)
                 }
                 {
-                  trash_ids = [ "83304f261cf516bb208c18c54c0adf97" ];
-                  assign_scores_to = [ { name = "WEB-2160p"; } ];
+                  trash_id = "e1053c0ef622df3749fa43c22865663a"; # [Optional] SDR
+                  select = [ "83304f261cf516bb208c18c54c0adf97" ]; # SDR (no WEBDL)
                 }
               ];
             };
