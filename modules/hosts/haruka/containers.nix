@@ -800,6 +800,161 @@
               ];
             };
           };
+
+          radarr = {
+            anime-radarr-v5 = {
+              base_url = "http://127.0.0.1:7879";
+              api_key._secret = config.age.secrets.radarr-anime-api.path;
+
+              quality_definition.type = "anime";
+
+              quality_profiles = [
+                {
+                  # Guide-managed profile; movies are one-off grabs so the
+                  # guide's BD/web tier scores stay as-is (the per-episode
+                  # group-stability concern from sonarr-anime doesn't apply).
+                  trash_id = "722b624f9af1e492284c4bc842153a38"; # [Anime] Remux-1080p
+                  name = "Remux-1080p - Anime";
+                  reset_unmatched_scores.enabled = true;
+                  # Bluray-1080p replaces the guide's Remux group at the top of
+                  # the ladder; remuxes are excluded entirely.
+                  upgrade = {
+                    allowed = true;
+                    until_quality = "Bluray-1080p";
+                    until_score = 10000;
+                  };
+                  # Blocks same-quality group swaps (tier differences are a few
+                  # hundred points); only Uncensored (+2000) passes.
+                  min_upgrade_format_score = 1000;
+                  quality_sort = "top";
+                  qualities = [
+                    { name = "Bluray-1080p"; }
+                    {
+                      name = "WEB 1080p";
+                      qualities = [
+                        "WEBDL-1080p"
+                        "WEBRip-1080p"
+                        "HDTV-1080p"
+                      ];
+                    }
+                    { name = "Bluray-720p"; }
+                    {
+                      name = "WEB 720p";
+                      qualities = [
+                        "WEBDL-720p"
+                        "WEBRip-720p"
+                        "HDTV-720p"
+                      ];
+                    }
+                    { name = "Bluray-576p"; }
+                    { name = "Bluray-480p"; }
+                    {
+                      name = "WEB 480p";
+                      qualities = [
+                        "WEBDL-480p"
+                        "WEBRip-480p"
+                      ];
+                    }
+                    { name = "DVD"; }
+                    { name = "SDTV"; }
+                  ];
+                }
+              ];
+
+              custom_formats = [
+                {
+                  # Uncensored releases always win and upgrade over censored.
+                  trash_ids = [ "064af5f084a0a24458cc8ecd3220f93f" ]; # Uncensored
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 2000;
+                    }
+                  ];
+                }
+              ];
+            };
+
+            movies-radarr-v5 = {
+              base_url = "http://127.0.0.1:7878";
+              api_key._secret = config.age.secrets.radarr-api.path;
+
+              quality_definition.type = "movie";
+
+              quality_profiles = [
+                {
+                  trash_id = "64fb5f9858489bdac2af690e27c8f42f"; # UHD Bluray + WEB
+                  name = "UHD Bluray + WEB";
+                  reset_unmatched_scores.enabled = true;
+                  # Blocks same-quality release-group swaps (tier differences
+                  # are ~100 points); quality upgrades are unaffected.
+                  min_upgrade_format_score = 400;
+                  upgrade = {
+                    allowed = true;
+                    until_quality = "Bluray-2160p";
+                    until_score = 10000;
+                  };
+                  # The guide ladder is 2160p-only; keep 1080p/720p rungs as
+                  # fallbacks when no 2160p release exists.
+                  qualities = [
+                    { name = "Bluray-2160p"; }
+                    {
+                      name = "WEB 2160p";
+                      qualities = [
+                        "WEBDL-2160p"
+                        "WEBRip-2160p"
+                      ];
+                    }
+                    { name = "Bluray-1080p"; }
+                    {
+                      name = "WEB 1080p";
+                      qualities = [
+                        "WEBDL-1080p"
+                        "WEBRip-1080p"
+                      ];
+                    }
+                    { name = "Bluray-720p"; }
+                  ];
+                }
+              ];
+
+              # Default groups (HDR, Streaming General, Unwanted, Golden Rule,
+              # Audio Formats, Repack/Proper) sync automatically; these entries
+              # only opt into non-default formats.
+              custom_format_groups.add = [
+                {
+                  trash_id = "a3ac6af01d78e4f21fcb75f601ac96df"; # [Unwanted] Unwanted Formats
+                  select = [
+                    "ae9b7c9ebde1f3bd336a8cbd1ec4c5e5" # No-RlsGroup
+                    "7357cf5161efbf8c4d5d0c30b4815ee2" # Obfuscated
+                    "5c44f52a8714fdd79bb4d98e2673be1f" # Retags
+                    "f537cf427b64c38c8e36298f657e4828" # Scene
+                  ];
+                }
+                {
+                  trash_id = "7fc2751eef7e6bdc70b74136e5e35c76"; # [HDR Formats] DV (w/o HDR fallback)
+                }
+                {
+                  # Full SDR block: 2160p SDR releases are never wanted.
+                  trash_id = "47f0d69750de9e16855915fa73bb7b08"; # [HDR Formats] SDR
+                  select = [ "9c38ebb7384dada637be8899efa68e6f" ]; # SDR
+                }
+                {
+                  trash_id = "f4f1474b963b24cf983455743aa9906c"; # [Optional] Movie Versions
+                  select = [
+                    "eca37840c13c6ef2dd0262b141a5482f" # 4K Remaster
+                    "e0c07d59beb37348e975a930d5e50319" # Criterion Collection
+                    "eecf3a857724171f968a66cb5719e152" # IMAX
+                    "9f6cbff8cfe4ebbc1bde14c7b7bec0de" # IMAX Enhanced
+                    "9d27d9d2181838f76dee150882bdc58c" # Masters of Cinema
+                    "570bc9ebecd92723d2d21500f4be314c" # Remaster
+                    "957d0f44b592285f26449575e8b1167e" # Special Edition
+                    "db9b4c4b53d312a3ca5f1378f6440fc9" # Vinegar Syndrome
+                  ];
+                }
+              ];
+            };
+          };
         };
       };
     };
