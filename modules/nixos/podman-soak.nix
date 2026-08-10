@@ -64,10 +64,17 @@
 
             # Reading the manifest costs a few KB and touches no layers, so the
             # digest history is free to keep for every tag we have ever seen.
+            # Registries occasionally reject a single anonymous request; that is
+            # far more common than a real outage, so retry before treating the
+            # registry as unreachable.
             digest=""
-            if manifest=$(skopeo inspect --no-tags "docker://$ref" 2>/dev/null); then
-              digest=$(printf '%s' "$manifest" | jq -r '.Digest // empty')
-            fi
+            for attempt in 1 2 3; do
+              if manifest=$(skopeo inspect --no-tags "docker://$ref" 2>/dev/null); then
+                digest=$(printf '%s' "$manifest" | jq -r '.Digest // empty')
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then sleep 5; fi
+            done
 
             if [ -n "$digest" ]; then
               tmp=$(mktemp)
@@ -153,10 +160,24 @@
 
           if [ ''${#problems[@]} -gt 0 ]; then
             printf '%s\n' "''${problems[@]}"
-            ${lib.optionalString (cfg.notifyCommand != null) ''
-              printf '%s\n' "''${problems[@]}" | ${pkgs.writeShellScript "podman-soak-notify" cfg.notifyCommand}
-            ''}
           fi
+          ${lib.optionalString (cfg.notifyCommand != null) ''
+            # The service also runs on every nixos-rebuild switch, so a problem
+            # that persists across runs would re-notify on each switch. Notify
+            # only when the problem set changes; recovery clears the record so
+            # the next occurrence notifies again.
+            problemState="$STATE_DIRECTORY/problems.json"
+            previous='[]'
+            if [ -s "$problemState" ]; then previous=$(cat "$problemState"); fi
+            current='[]'
+            if [ ''${#problems[@]} -gt 0 ]; then
+              current=$(printf '%s\n' "''${problems[@]}" | jq -Rnc '[inputs] | sort')
+            fi
+            if [ "$current" != "$previous" ] && [ "$current" != "[]" ]; then
+              printf '%s\n' "''${problems[@]}" | ${pkgs.writeShellScript "podman-soak-notify" cfg.notifyCommand}
+            fi
+            printf '%s' "$current" > "$problemState"
+          ''}
         '';
       };
     in
@@ -216,7 +237,8 @@
           description = ''
             Shell snippet run with a description of any problems on stdin. Only
             invoked when a registry is unreachable or a soaked digest can no
-            longer be pulled.
+            longer be pulled, and only when the set of problems differs from
+            the previous run.
           '';
         };
       };
