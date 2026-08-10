@@ -89,11 +89,11 @@
       npmExtensions = [
         {
           name = "pi-hashline-edit-pro";
-          version = "1.1.0";
+          version = "2.4.1";
         }
         {
           name = "cc-safety-net";
-          version = "1.0.6";
+          version = "2.0.1";
         }
         {
           name = "pi-rtk-optimizer";
@@ -101,7 +101,7 @@
         }
         {
           name = "@aliou/pi-synthetic";
-          version = "0.24.2";
+          version = "0.24.3";
         }
       ];
       installPiExtensions = pkgs.writeShellScript "install-pi-extensions" ''
