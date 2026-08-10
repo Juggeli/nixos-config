@@ -126,8 +126,6 @@
             set -a
             source ${config.age.secrets.agent-env.path}
             set +a
-            export CC_SAFETY_NET_STRICT=1
-            export CC_SAFETY_NET_PARANOID_RM=1
             exec ${pi}/bin/pi "$@"
           '')
           pkgs.unstable.rtk
