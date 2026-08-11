@@ -702,6 +702,26 @@
                     }
                   ];
                 }
+                {
+                  # Non-CR streaming rips reach min_format_score: shows
+                  # exclusive to these services have no SubsPlease/CR rip, so
+                  # without this nothing would ever grab. CR stays unscored so
+                  # muxer re-rips of CR shows keep losing to Tier 05.
+                  trash_ids = [
+                    "d34870697c9db575f17700212167be23" # NF
+                    "d660701077794679fd59e8bdf4ce3a29" # AMZN
+                    "89358767a60cc28783cdc3d0be9388a4" # DSNP
+                    "a370d974bc7b80374de1d9ba7519760b" # ABEMA
+                    "7dd31f3dee6d2ef8eeaa156e23c3857e" # B-Global
+                    "4c67ff059210182b59cdd41697b8cb08" # Bilibili
+                  ];
+                  assign_scores_to = [
+                    {
+                      name = "Remux-1080p - Anime";
+                      score = 100;
+                    }
+                  ];
+                }
               ];
             };
 
