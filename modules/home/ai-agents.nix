@@ -8,6 +8,7 @@
       home-manager.users.juggeli.home.packages = [
         llm-agents.codex
         llm-agents.agent-browser
+        pkgs.unstable.herdr
         pkgs.uv
       ];
     };
