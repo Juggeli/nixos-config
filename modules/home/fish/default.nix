@@ -46,16 +46,6 @@
           interactiveShellInit = ''
             set -g fish_greeting
 
-            ${lib.optionalString pkgs.stdenv.isLinux ''
-              if status is-interactive; and not set -q TMUX; and test "$TERM_PROGRAM" != "vscode"
-                if tmux has-session -t main 2>/dev/null
-                  tmux new-session -t main
-                else
-                  tmux new-session -s main
-                end
-              end
-            ''}
-
             function bind_bang
               switch (commandline -t)
               case "!"
