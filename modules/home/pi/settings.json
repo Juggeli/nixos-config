@@ -11,5 +11,10 @@
     "npm:pi-hashline-edit-pro@2.4.1",
     "npm:@aliou/pi-synthetic@0.24.3",
     "npm:@charmland/pi-hyper-provider@0.2.2"
-  ]
+  ],
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "collapseChangelog": true,
+  "tuiMode": "fullscreen"
 }
