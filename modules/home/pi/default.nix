@@ -103,6 +103,10 @@
           name = "@aliou/pi-synthetic";
           version = "0.24.3";
         }
+        {
+          name = "@charmland/pi-hyper-provider";
+          version = "0.2.2";
+        }
       ];
       installPiExtensions = pkgs.writeShellScript "install-pi-extensions" ''
         export PATH="${pkgs.nodejs}/bin:$PATH"

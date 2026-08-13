@@ -9,6 +9,7 @@
     "npm:cc-safety-net@2.0.1",
     "npm:pi-rtk-optimizer@0.9.0",
     "npm:pi-hashline-edit-pro@2.4.1",
-    "npm:@aliou/pi-synthetic@0.24.3"
+    "npm:@aliou/pi-synthetic@0.24.3",
+    "npm:@charmland/pi-hyper-provider@0.2.2"
   ]
 }
