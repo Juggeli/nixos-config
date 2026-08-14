@@ -30,6 +30,7 @@
         gaming
         kdeconnect
         dev-rust
+        unsloth-studio
         home-impermanence
 
         noel-system
