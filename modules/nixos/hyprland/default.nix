@@ -167,8 +167,10 @@
               "force_split" = 2;
             };
             monitor = [
-              "DP-3,3840x2160@120,0x0,1"
-              "DP-3,addreserved,200,0,300,300"
+              # Match by description; connector names like DP-3/DP-5 change
+              # between GPUs.
+              "desc:GIGA-BYTE TECHNOLOGY CO. LTD. AORUS FO48U 21300B005941,3840x2160@120,0x0,1"
+              "desc:GIGA-BYTE TECHNOLOGY CO. LTD. AORUS FO48U 21300B005941,addreserved,200,0,300,300"
               "HDMI-A-1,disable"
               "HDMI-A-5,disable"
               "Unknown-1,disable"
