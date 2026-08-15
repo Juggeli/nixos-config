@@ -26,6 +26,10 @@
       hardware.nvidia = {
         modesetting.enable = true;
         powerManagement.enable = true;
+        # The default kernel-suspend-notifier path (open driver >= 595) has no
+        # nvidia-suspend/resume services and deadlocked in nvidia_uvm when a
+        # CUDA process was alive at suspend; use the systemd services instead.
+        powerManagement.kernelSuspendNotifier = false;
         open = true;
         nvidiaSettings = true;
       };
