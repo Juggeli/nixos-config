@@ -153,10 +153,11 @@
             volumes = [ "/mnt/appdata/prowlarr:/config" ];
           };
 
-        # Plex and Jellyfin keep a LAN-wide binding: local players discover and
-        # direct-play against them, which an HTTPS proxy in front would break.
-        # renderD128 is world-rw, so the device works without a group-add
-        # (host groups are not mapped into the user namespace anyway).
+        # Plex keeps a LAN-wide pasta binding: inbound connections keep their
+        # LAN source addresses, which it uses to tell local players from
+        # remote. renderD128 is world-rw, so the device works without a
+        # group-add (host groups are not mapped into the user namespace
+        # anyway).
         plex = soaked "plex" // {
           autoStart = false;
           ports = [ "32400:32400" ];
@@ -172,9 +173,15 @@
           ];
         };
 
+        # Published on loopback only: the jellyfin-proxy socket below owns the
+        # LAN/tailnet-facing 8096. pasta's TCP emulation collapses to tens of
+        # KiB/s when the client's MSS is small (Tailscale's 1280 tunnel MTU,
+        # 1500 on the LAN), which stalled remote playback; loopback carries a
+        # ~64k MSS and is unaffected, so the proxy terminates outside clients
+        # with kernel TCP and crosses into pasta over loopback.
         jellyfin = soaked "jellyfin" // {
           autoStart = false;
-          ports = [ "8096:8096" ];
+          ports = [ "127.0.0.1:18096:8096" ];
           environment = {
             PUID = "1000";
             PGID = "983";
@@ -495,6 +502,15 @@
       # -C / because the caller's cwd may not be readable by oci.
       environment.shellAliases.podman-oci = "doas -u oci env -C / podman";
 
+      # LAN/tailnet-facing listener for Jellyfin (see the container's ports
+      # comment for why pasta cannot serve these clients directly). Loopback
+      # consumers pointing at 127.0.0.1:8096 land here too and get forwarded,
+      # so their URLs did not change.
+      systemd.sockets.jellyfin-proxy = {
+        wantedBy = [ "sockets.target" ];
+        listenStreams = [ "8096" ];
+      };
+
       # System units have no user session bus, so rootless podman cannot reach
       # the systemd cgroup manager and warns before falling back on every
       # invocation; pin the fallback to keep the logs quiet.
@@ -544,6 +560,15 @@
                 "XDG_RUNTIME_DIR=${ociRuntimeDir}"
               ];
               ExecStart = "${pkgs.podman}/bin/podman network create --ignore --disable-dns --subnet=10.90.0.0/24 media";
+            };
+          };
+
+          jellyfin-proxy = {
+            description = "Forward LAN/tailnet Jellyfin clients to the pasta loopback port";
+            serviceConfig = {
+              ExecStart = "${config.systemd.package}/lib/systemd/systemd-socket-proxyd --exit-idle-time=1min 127.0.0.1:18096";
+              DynamicUser = true;
+              PrivateTmp = true;
             };
           };
 
