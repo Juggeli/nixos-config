@@ -17,6 +17,7 @@ import {
 	type SubagentState,
 } from "../src/shared/types.ts";
 import { clearLegacyResultAnimationTimer, renderSubagentResult } from "../src/tui/render.ts";
+import { registerSubagentsPickerCommand } from "./subagents-picker.ts";
 
 const ALLOWED_AGENTS = new Set(["explore", "review", "researcher", "general-purpose"]);
 const RESEARCH_TOOLS = new Set(["exa_search", "exa_contents"]);
@@ -464,4 +465,9 @@ export default function registerSubagentsLite(pi: ExtensionAPI): void {
 	};
 
 	pi.registerTool(tool);
+
+	registerSubagentsPickerCommand(pi, {
+		listAgents: (cwd) => configuredAgents(cwd).map((agent) => ({ name: agent.name, model: agent.model })),
+		summaryFor: (cwd) => configuredAgentsSummary(cwd),
+	});
 }

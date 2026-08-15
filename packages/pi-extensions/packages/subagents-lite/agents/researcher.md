@@ -2,8 +2,6 @@
 name: researcher
 description: External researcher — searches web/docs/GitHub, can clone repos to /tmp, and returns a compact sourced brief
 tools: read, grep, find, ls, bash, exa_search, exa_contents, fd
-model: deepseek/deepseek-v4-flash
-thinking: high
 systemPromptMode: replace
 inheritProjectContext: true
 inheritSkills: false

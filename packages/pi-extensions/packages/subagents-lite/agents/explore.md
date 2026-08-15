@@ -2,8 +2,6 @@
 name: explore
 description: Fast codebase recon that returns compressed context for handoff
 tools: read, grep, find, ls, bash, fd
-model: deepseek/deepseek-v4-flash
-thinking: high
 systemPromptMode: replace
 inheritProjectContext: true
 inheritSkills: false
