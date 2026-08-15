@@ -403,7 +403,7 @@ export function registerSubagentsPickerCommand(pi: ExtensionAPI, deps: PickerDep
 				ctx.ui.notify(`Failed to update settings: ${writeError}`, "error");
 				return;
 			}
-			if (committed) ctx.ui.notify(`Subagents: ${deps.summaryFor(ctx.cwd)}`, "info");
+			if (committed) ctx.ui.notify(`Subagents:\n${deps.summaryFor(ctx.cwd)}`, "info");
 		},
 	});
 }

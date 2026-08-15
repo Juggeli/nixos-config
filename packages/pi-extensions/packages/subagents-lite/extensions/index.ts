@@ -257,14 +257,14 @@ function configuredAgents(cwd: string) {
 }
 
 function formatAgentModel(agent: ReturnType<typeof configuredAgents>[number]): string {
-	const model = agent.model ?? "default";
-	return agent.thinking ? `${model}:${agent.thinking}` : model;
+	if (!agent.model) return "inherit";
+	return agent.thinking ? `${agent.model}:${agent.thinking}` : agent.model;
 }
 
 function configuredAgentsSummary(cwd: string): string {
 	return configuredAgents(cwd)
 		.map((agent) => `${agent.name}=${formatAgentModel(agent)}`)
-		.join(", ");
+		.join("\n");
 }
 
 function listAgentsText(cwd: string): string {
@@ -337,7 +337,7 @@ export default function registerSubagentsLite(pi: ExtensionAPI): void {
 		state.lastUiContext = ctx;
 		state.foregroundRuns = collectForegroundRuns(ctx.sessionManager.getBranch(), ctx.cwd);
 		disableParentResearchTools(pi);
-		if (ctx.hasUI) ctx.ui.notify(`Subagents: ${configuredAgentsSummary(ctx.cwd)}`, "info");
+		if (ctx.hasUI) ctx.ui.notify(`Subagents:\n${configuredAgentsSummary(ctx.cwd)}`, "info");
 	});
 
 	pi.on("session_shutdown", () => {
