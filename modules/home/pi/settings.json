@@ -16,5 +16,15 @@
     "showTerminalProgress": true
   },
   "collapseChangelog": true,
-  "tuiMode": "fullscreen"
+  "tuiMode": "fullscreen",
+  "subagents": {
+    "agentOverrides": {
+      "explore": {
+        "model": "deepseek/deepseek-v4-flash:high"
+      },
+      "researcher": {
+        "model": "deepseek/deepseek-v4-flash:high"
+      }
+    }
+  }
 }
