@@ -23,15 +23,15 @@
     ]
   },
   "model": "claude-fable-5[1m]",
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline-command.sh"
-  },
   "disableClaudeAiConnectors": true,
   "disableBundledSkills": true,
   "disableRemoteControl": true,
   "disableWorkflows": true,
   "disableArtifact": true,
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "safety-net@cc-marketplace": true
   },
