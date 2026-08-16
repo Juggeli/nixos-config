@@ -104,6 +104,48 @@
         ) backups;
       };
 
+      # Forcing the machine to sleep bypasses borgmatic's sleep inhibitor
+      # and severs the ssh connection mid-backup, so the run errors out on
+      # wake. Stop the service cleanly before sleeping and start it again
+      # after resume; borg reuses the already-transferred chunks.
+      systemd.services.borgmatic-sleep-stop = {
+        description = "stop borgmatic before sleep";
+        before = [ "sleep.target" ];
+        wantedBy = [ "sleep.target" ];
+        path = [ pkgs.systemd ];
+        serviceConfig.Type = "oneshot";
+        script = ''
+          if systemctl is-active --quiet borgmatic.service; then
+            touch /run/borgmatic-interrupted-by-sleep
+            systemctl stop borgmatic.service
+          fi
+        '';
+      };
+
+      systemd.services.borgmatic-resume = {
+        description = "restart borgmatic interrupted by sleep";
+        after = [
+          "suspend.target"
+          "hibernate.target"
+          "hybrid-sleep.target"
+          "suspend-then-hibernate.target"
+        ];
+        wantedBy = [
+          "suspend.target"
+          "hibernate.target"
+          "hybrid-sleep.target"
+          "suspend-then-hibernate.target"
+        ];
+        path = [ pkgs.systemd ];
+        serviceConfig.Type = "oneshot";
+        script = ''
+          if [ -e /run/borgmatic-interrupted-by-sleep ]; then
+            rm /run/borgmatic-interrupted-by-sleep
+            systemctl start --no-block borgmatic.service
+          fi
+        '';
+      };
+
       environment.persistence."/persist".files = [
         "/root/.ssh/known_hosts"
       ];
