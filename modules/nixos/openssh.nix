@@ -26,6 +26,26 @@
         Port 2222
     '';
 
+    # ssh records non-default ports under a separate known_hosts name
+    # ("[host]:2222"), so pin the host keys globally to keep the first
+    # connection non-interactive for root services like borgmatic.
+    programs.ssh.knownHosts = {
+      haruka = {
+        hostNames = [
+          "haruka"
+          "[haruka]:2222"
+        ];
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKiEGRIqO6CX4uzbHi2Qzja8gX+oxm93AOm8Q62VreSc";
+      };
+      noel = {
+        hostNames = [
+          "noel"
+          "[noel]:2222"
+        ];
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHRcPjReo8vFNgTRYYaJ6Q+wYdOxF414AFJuF3utHyd2";
+      };
+    };
+
     users.users.juggeli.openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBPwDXLTCnNPVKSLHgbzlcgdbb6Ra+L2jZJfOJaSgom9"
