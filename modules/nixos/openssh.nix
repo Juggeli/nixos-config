@@ -17,6 +17,15 @@
 
     programs.ssh.startAgent = true;
 
+    # Tailscale SSH captures port 22 on tailnet addresses, and the ACL's
+    # check action demands a browser login for each session. Port 2222
+    # bypasses the capture and reaches sshd directly for key auth, while
+    # Tailscale SSH stays available on 22 as a fallback.
+    programs.ssh.extraConfig = ''
+      Host haruka noel
+        Port 2222
+    '';
+
     users.users.juggeli.openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBpvXZ6hWXrKgvX1ce+v+tmjYO2EuW9YjS8o5N7vmfRO"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBPwDXLTCnNPVKSLHgbzlcgdbb6Ra+L2jZJfOJaSgom9"
