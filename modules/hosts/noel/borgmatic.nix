@@ -104,6 +104,13 @@
         ) backups;
       };
 
+      # Run while the machine is normally in use instead of upstream's
+      # midnight default; the empty entry clears the inherited OnCalendar.
+      systemd.timers.borgmatic.timerConfig.OnCalendar = [
+        ""
+        "18:00"
+      ];
+
       # Forcing the machine to sleep bypasses borgmatic's sleep inhibitor
       # and severs the ssh connection mid-backup, so the run errors out on
       # wake. Stop the service cleanly before sleeping and start it again
