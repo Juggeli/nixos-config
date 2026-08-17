@@ -10,6 +10,7 @@
         tmpfs
         hardware-audio
         hardware-logitech
+        bluetooth
         services-printing
         theming
         hyprland
