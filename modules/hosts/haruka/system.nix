@@ -14,6 +14,14 @@
     {
       networking.hostId = "37bf5335";
 
+      # dhcpcd's default teardown deconfigures every interface, so anything
+      # that restarts dhcpcd (a nixos-rebuild switch) drops the host's IPv4
+      # for the seconds the lease takes to come back. Rootless pasta
+      # containers restarted in the same window snapshot that IPv4-less
+      # state into their netns permanently (see containers.nix). Keep
+      # addresses configured across dhcpcd restarts instead.
+      networking.dhcpcd.persistent = true;
+
       programs.nix-ld.enable = true;
 
       services.tailscale.authKeyFile = config.age.secrets.tailscale-auth.path;

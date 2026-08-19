@@ -22,6 +22,25 @@
       # path means stopping every container and deleting storage/db.sql.
       ociRuntimeDir = "/run/oci-podman";
 
+      # pasta copies the host interface's addresses into the container netns
+      # once, at container creation, and never updates them. A container
+      # started while the host has no IPv4 (dhcpcd mid-restart, DHCP not yet
+      # answered at boot) gets an IPv6-only netns and keeps it until the
+      # container is recreated. Gate every container start on the IPv4
+      # default route being present; on timeout fail the start so
+      # Restart=on-failure retries instead of running broken.
+      waitForIpv4Route = pkgs.writeShellScript "wait-ipv4-default-route" ''
+        i=0
+        until [ -n "$(${pkgs.iproute2}/bin/ip -4 route list default)" ]; do
+          i=$((i + 1))
+          if [ "$i" -gt 60 ]; then
+            echo "no IPv4 default route on the host after 60s" >&2
+            exit 1
+          fi
+          ${pkgs.coreutils}/bin/sleep 1
+        done
+      '';
+
       # Upstream references the soak timer watches. Each is republished locally
       # as localhost/<name>:pinned once its digest has been public for the soak
       # period, and that local tag is what the containers below actually run.
@@ -540,6 +559,7 @@
           (_: {
             path = [ "/run/wrappers" ];
             environment.XDG_RUNTIME_DIR = ociRuntimeDir;
+            serviceConfig.ExecStartPre = [ "${waitForIpv4Route}" ];
           })
         )
         (lib.genAttrs (map (name: "podman-${name}") mediaNetMembers) (_: {
