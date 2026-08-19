@@ -148,17 +148,10 @@ test("discovers project, global and system agents with precedence", () => {
       agents.filter((item) => item.name === "agent-session-reviewer").length,
       1,
     );
+    // This fork ships no bundled system agents.
     assert.equal(
-      agents.find((item) => item.name === "agent-architect")?.source,
-      "system",
-    );
-    assert.equal(
-      agents.find((item) => item.name === "agent-architect")?.model,
+      agents.find((item) => item.name === "agent-architect"),
       undefined,
-    );
-    assert.equal(
-      agents.find((item) => item.name === "agent-architect-web")?.source,
-      "system",
     );
   } finally {
     if (previousDir === undefined) delete process.env.PI_CODING_AGENT_DIR;
