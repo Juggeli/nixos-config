@@ -1,0 +1,456 @@
+/* Nerd Fonts Symbols 1.0.1, ISC. Vendored from https://cdn.jsdelivr.net/npm/nerdfonts-web@1.0.1/ */
+@font-face {
+  font-family: "Pi Nerd Font Symbols";
+  src: url("../assets/nerd-fonts-symbols.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+:root {
+  /* ── 8 source colours (overridden by JS for custom themes) ── */
+  --canvas: #fafafc;
+  --surface: #ffffff;
+  --ink: #1d2924;
+  --accent: #23776d;
+  --secondary: #6851a4;
+  --success: #28734b;
+  --warning: #b8860b;
+  --danger: #a13f37;
+
+  /* ── Derived neutrals ── */
+  --surface-raised: color-mix(in srgb, var(--surface) 92%, var(--canvas));
+  --sidebar: color-mix(in srgb, var(--canvas) 96%, var(--ink));
+  --muted: color-mix(in srgb, var(--ink) 55%, var(--canvas));
+  --subtle: color-mix(in srgb, var(--ink) 42%, var(--canvas));
+  --line: color-mix(in srgb, var(--ink) 12%, var(--canvas));
+  --panel-line: color-mix(in srgb, var(--ink) 4%, var(--canvas));
+  --line-strong: color-mix(in srgb, var(--ink) 20%, var(--canvas));
+
+  /* ── Derived accent variants ── */
+  --accent-hover: color-mix(in srgb, var(--accent) 78%, var(--ink));
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--surface));
+
+  /* ── Derived secondary ── */
+  --secondary-soft: color-mix(in srgb, var(--secondary) 10%, var(--surface));
+
+  /* ── Derived status variants ── */
+  --success-soft: color-mix(in srgb, var(--success) 13%, var(--surface));
+  --warning-strong: color-mix(in srgb, var(--warning) 65%, var(--ink));
+  --danger-soft: color-mix(in srgb, var(--danger) 10%, var(--surface));
+
+  /* ── File icon colours ── */
+  --file-icon-blue: #498ba7;
+  --file-icon-green: #7fae42;
+  --file-icon-yellow: #b7b73b;
+  --file-icon-orange: #cc6d2e;
+  --file-icon-red: #b8383d;
+  --file-icon-purple: #9068b0;
+  --file-icon-pink: #dd4b78;
+  --file-icon-slate: #627379;
+
+  /* ── Contrast colours (overridden by JS) ── */
+  --on-accent: #ffffff;
+  --on-danger: #ffffff;
+
+  color-scheme: light;
+  --shadow: 0 12px 30px rgb(0 0 0 / 7%);
+  --shadow-soft: 0 4px 14px rgb(0 0 0 / 5%);
+}
+
+[data-theme="dark"] {
+  --canvas: #171c1a;
+  --surface: #1e2422;
+  --ink: #dde3e0;
+  --accent: #4fb9ab;
+  --secondary: #9d91d4;
+  --success: #59ba7c;
+  --warning: #d6aa45;
+  --danger: #e26e63;
+  --file-icon-blue: #519aba;
+  --file-icon-green: #8dc149;
+  --file-icon-yellow: #cbcb41;
+  --file-icon-orange: #e37933;
+  --file-icon-red: #cc3e44;
+  --file-icon-purple: #a074c4;
+  --file-icon-pink: #f55385;
+  --file-icon-slate: #6d8086;
+  --sidebar: color-mix(in srgb, var(--canvas) 90%, var(--ink));
+  --on-accent: #000000;
+  --on-danger: #ffffff;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-color: color-mix(in srgb, var(--accent) 30%, var(--surface))
+    transparent;
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track, *::-webkit-scrollbar-corner {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 30%, var(--surface)) content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted);
+}
+button, input, select, textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled, select:disabled {
+  cursor: not-allowed;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--workspace-sidebar-width, 272px) minmax(0, 1fr);
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--canvas);
+  color: var(--ink);
+}
+.app-shell.right-sidebar-visible {
+  grid-template-columns:
+    var(--workspace-sidebar-width, 272px) minmax(0, 1fr)
+    calc(var(--right-sidebar-width, 300px) + 48px);
+}
+.app-shell.right-sidebar-collapsed {
+  grid-template-columns:
+    var(--workspace-sidebar-width, 272px) minmax(0, 1fr) 48px;
+}
+.app-shell.workspace-sidebar-collapsed {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+.app-shell.workspace-sidebar-collapsed.right-sidebar-visible {
+  grid-template-columns:
+    0 minmax(0, 1fr) calc(var(--right-sidebar-width, 300px) + 48px);
+}
+.app-shell.workspace-sidebar-collapsed.right-sidebar-collapsed {
+  grid-template-columns: 0 minmax(0, 1fr) 48px;
+}
+
+.workspace {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-width: 0;
+  min-height: 0;
+  background: var(--surface);
+}
+
+/* ── Dark mode overrides (colour values derived from palette variables) ── */
+
+[data-theme="dark"] {
+  --shadow: 0 8px 24px rgb(0 0 0 / 24%);
+  --shadow-soft: 0 3px 10px rgb(0 0 0 / 18%);
+
+  /* ── sidebar / workspace ── */
+  .sidebar-action:hover,
+  .sidebar-action:focus-visible {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+  .session-item:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  .session-item.selected {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .new-session:not(:disabled) {
+    box-shadow:
+      0 2px 0 color-mix(in srgb, var(--accent-hover) 35%, black),
+      0 5px 10px rgb(0 0 0 / 18%);
+  }
+  .new-session:hover:not(:disabled) {
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--accent-hover) 25%, black),
+      0 4px 8px rgb(0 0 0 / 20%);
+  }
+
+  /* ── composer ── */
+  .composer:focus-within {
+    border-color: transparent;
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent),
+      var(--shadow-soft);
+  }
+  .composer-image {
+    background: color-mix(in srgb, var(--surface) 70%, var(--canvas));
+  }
+  .composer textarea::placeholder {
+    color: var(--muted);
+  }
+  .composer-footer {
+    background: var(--surface-raised);
+  }
+  .composer-select:hover,
+  .icon-button:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--line-strong) 70%, var(--canvas));
+  }
+  .composer-select.agent:hover,
+  .composer-select.agent[data-state="open"] {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--canvas));
+  }
+  .composer-select.model:hover,
+  .composer-select.model[data-state="open"] {
+    border-color: color-mix(in srgb, var(--secondary) 40%, var(--canvas));
+  }
+  .composer-select.thinking:hover,
+  .composer-select.thinking[data-state="open"] {
+    border-color: color-mix(in srgb, var(--warning) 50%, var(--canvas));
+  }
+  .composer-toggle:hover {
+    border-color: color-mix(in srgb, var(--line-strong) 70%, var(--canvas));
+  }
+  .composer-toggle.active {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--canvas));
+    color: var(--accent-hover);
+  }
+  .composer-select.command .composer-select-icon {
+    color: var(--accent);
+  }
+  .composer-select.behavior .composer-select-icon {
+    color: var(--secondary);
+  }
+  .composer-select-content {
+    box-shadow: var(--shadow-soft);
+  }
+  .composer-select-content.model {
+    border-color: color-mix(in srgb, var(--secondary) 40%, var(--canvas));
+  }
+  .composer-select-content.thinking {
+    border-color: color-mix(in srgb, var(--warning) 50%, var(--canvas));
+  }
+  .composer-select-content.agent {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--canvas));
+  }
+  .composer-select-option[data-highlighted] {
+    background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+  }
+  .composer-select-option[data-state="checked"] {
+    color: var(--accent-hover);
+  }
+  .composer-select-option[data-state="checked"][data-highlighted] {
+    background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  }
+  .icon-button.send {
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--accent-hover) 35%, black);
+  }
+
+  /* ── conversation ── */
+  .chat-detail-toggle.active {
+    border-color: var(--accent);
+    color: var(--accent-hover);
+  }
+  .slash-command-item:hover,
+  .slash-command-item.selected {
+    color: var(--accent-hover);
+  }
+  .content pre {
+    background: var(--surface);
+  }
+  .reasoning pre {
+    background: var(--surface);
+  }
+  .content :not(pre) > code {
+    background: var(--surface-raised);
+  }
+  .user .content pre {
+    background: color-mix(in srgb, var(--canvas) 80%, var(--ink));
+  }
+  .tool-call {
+    border-color: var(--line-strong);
+    background: color-mix(in srgb, var(--surface) 60%, var(--canvas));
+    color: color-mix(in srgb, var(--ink) 80%, var(--muted));
+  }
+  .tool-call.error {
+    border-color: color-mix(in srgb, var(--danger) 40%, var(--canvas));
+    color: color-mix(in srgb, var(--danger) 80%, var(--surface));
+  }
+  .tool-call-heading:not(:disabled):hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  .tool-call-content {
+    border-top-color: color-mix(in srgb, var(--ink) 14%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--accent) 2%,
+      color-mix(in srgb, var(--surface) 95%, var(--canvas))
+    );
+  }
+  .tool-call-raw-args {
+    border-top-color: color-mix(in srgb, var(--ink) 14%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--accent) 2%,
+      color-mix(in srgb, var(--surface) 95%, var(--canvas))
+    );
+  }
+  .tool-call-writing {
+    border-top-color: color-mix(in srgb, var(--ink) 10%, transparent);
+    background: color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+  .tool-call-preview {
+    background: color-mix(
+      in srgb,
+      var(--accent) 2%,
+      color-mix(in srgb, var(--surface) 95%, var(--canvas))
+    );
+  }
+  .tool-call-preview:hover {
+    background: color-mix(
+      in srgb,
+      var(--accent) 4%,
+      color-mix(in srgb, var(--surface) 91%, var(--canvas))
+    );
+  }
+  .tool-call-edit-change {
+    border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+  }
+  .tool-call-edit-change h4 {
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .tool-call-edit-line > span,
+  .tool-call-edit-line > i {
+    color: var(--subtle);
+  }
+  .tool-call-edit-line.removed {
+    background: var(--danger-soft);
+    color: color-mix(in srgb, var(--danger) 80%, var(--surface));
+  }
+  .tool-call-edit-line.removed > span,
+  .tool-call-edit-line.removed > i {
+    color: color-mix(in srgb, var(--danger) 60%, var(--surface));
+  }
+  .tool-call-edit-line.added {
+    background: color-mix(in srgb, var(--success) 13%, var(--canvas));
+    color: color-mix(in srgb, var(--success) 80%, var(--surface));
+  }
+  .tool-call-edit-line.added > span,
+  .tool-call-edit-line.added > i {
+    color: var(--success);
+  }
+  .tool-call-markdown-preview :not(pre) > code {
+    background: color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+  .tool-call-markdown-preview pre {
+    background: color-mix(in srgb, var(--ink) 14%, transparent);
+    border-color: color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .tool-call-markdown :not(pre) > code {
+    background: color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+  .tool-call-markdown pre {
+    background: color-mix(in srgb, var(--ink) 14%, transparent);
+    border-color: color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .spinner {
+    border-color: color-mix(in srgb, var(--line-strong) 70%, var(--canvas));
+  }
+  .message.system.error {
+    background: var(--danger-soft);
+  }
+
+  /* ── dialogs ── */
+  .ask-user-question-heading {
+    background: var(--sidebar);
+  }
+  .ask-user-question-tabs button:hover {
+    background: color-mix(in srgb, var(--surface) 70%, var(--canvas));
+  }
+  .ask-user-question-tabs button.active {
+    border-color: var(--accent);
+    color: var(--accent-hover);
+  }
+  .ask-user-question-tabs button.answered:not(.active) {
+    color: var(--accent-hover);
+  }
+  .ask-user-question-tabs b {
+    background: color-mix(in srgb, var(--success) 13%, var(--canvas));
+    color: var(--success);
+  }
+  .ask-user-question-actions {
+    background: var(--sidebar);
+  }
+  .ask-user-question textarea,
+  .modal textarea {
+    background: var(--surface);
+  }
+  .ask-user-question-backdrop {
+    background: rgb(0 0 0 / 40%);
+  }
+  .modal-backdrop {
+    background: rgb(0 0 0 / 55%);
+  }
+
+  /* ── git sidebar ── */
+  .git-refresh:hover,
+  .git-back:hover {
+    background: color-mix(in srgb, var(--surface) 70%, var(--canvas));
+  }
+  .git-file-item:hover {
+    background: var(--surface-raised);
+  }
+  .git-diff-line > span,
+  .git-diff-line > i {
+    color: var(--subtle);
+  }
+  .git-diff-line.added {
+    background: color-mix(in srgb, var(--success) 13%, var(--canvas));
+    color: var(--success);
+  }
+  .git-diff-line.added > span,
+  .git-diff-line.added > i {
+    color: var(--success);
+  }
+  .git-diff-line.removed {
+    background: var(--danger-soft);
+    color: color-mix(in srgb, var(--danger) 80%, var(--surface));
+  }
+  .git-diff-line.removed > span,
+  .git-diff-line.removed > i {
+    color: color-mix(in srgb, var(--danger) 60%, var(--surface));
+  }
+  .git-diff-line.hunk {
+    background: color-mix(in srgb, var(--accent) 10%, var(--canvas));
+    color: var(--accent-hover);
+  }
+  .git-commits h2 small {
+    color: var(--accent-hover);
+  }
+  .git-commits summary:hover {
+    background: var(--surface-raised);
+  }
+  .git-commit-action:hover:not(:disabled) {
+    background: var(--surface-raised);
+  }
+  .git-reset:hover:not(:disabled) {
+    background: var(--danger-soft);
+  }
+  .git-actions button:hover {
+    background: var(--accent-hover);
+  }
+  .rail-tab:hover:not(:disabled) {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .rail-tab small {
+    color: var(--accent-hover);
+  }
+}
+
+@keyframes compact-gear-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

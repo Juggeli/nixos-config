@@ -1,0 +1,384 @@
+import { memo, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import { resolveFileIcon } from '../../../shared/file-icon.ts'
+import { Tooltip } from '../../components/Tooltip.tsx'
+import { CopyButton } from './CopyButton.tsx'
+import { canHighlightFile } from './file-preview.ts'
+import { formatDuration } from './message-usage.ts'
+import { OpenFileButton } from './OpenFileButton.tsx'
+import {
+  formatToolCallTooltip,
+  formatToolData,
+  provisionalToolName,
+  readContentDisplay,
+  toolCallPresentation,
+  toolDataLength,
+  toolFilePath,
+  toolTextPreview,
+  toolWriteContent,
+} from './tool-presentation.ts'
+import { ToolCallContent, ToolCallPreview } from './ToolCallOutput.tsx'
+import { toolContentText } from './tool-protocol.ts'
+
+export { Markdown } from './Markdown.tsx'
+
+/** Reports whether an element is in the viewport plus a vertical rendering margin. */
+function useInView(ref: RefObject<HTMLElement | null>, enabled: boolean): boolean {
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    if (!enabled) return
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry) setInView(entry.isIntersecting)
+      },
+      { rootMargin: '800px' },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [enabled, ref])
+  return inView
+}
+
+interface ToolCallCardProps {
+  animateLiveChanges?: boolean
+  args: unknown
+  hasResult: boolean
+  id: string
+  durationMs?: number
+  interrupted?: boolean
+  name: string
+  onError: (cause: unknown) => void
+  repositoryRoot?: string | null
+  partialResultContent?: unknown
+  resultContent?: unknown
+  resultDetails?: unknown
+  resultError?: boolean
+  semiDetailed?: boolean
+  streaming?: boolean
+  streamingArguments?: string
+  targeted?: boolean
+  workingDirectory: string
+}
+
+/** Displays the official card whose full result replaces the preview when expanded. */
+export const ToolCallCard = memo(function ToolCallCard({
+  animateLiveChanges = false,
+  args,
+  hasResult,
+  id,
+  durationMs,
+  interrupted = false,
+  name,
+  onError,
+  partialResultContent,
+  repositoryRoot,
+  resultContent,
+  resultDetails,
+  resultError,
+  semiDetailed = false,
+  streaming = false,
+  streamingArguments,
+  targeted = false,
+  workingDirectory,
+}: ToolCallCardProps) {
+  const toolName = name || provisionalToolName(args, streamingArguments) || ''
+  const pending = !hasResult
+  const active = pending && !interrupted
+  const filePath = toolName === 'read' || toolName === 'write' || toolName === 'edit'
+    ? toolFilePath(args)
+    : null
+  const display = filePath && toolName !== 'edit'
+    ? readContentDisplay({ path: filePath })
+    : { kind: 'text' as const }
+  const [expanded, setExpanded] = useState(toolName === 'edit')
+  const [semiExpanded, setSemiExpanded] = useState(false)
+  const [partialOutputExpanded, setPartialOutputExpanded] = useState(false)
+  const [codeRendered, setCodeRendered] = useState(false)
+  const [argsExpanded, setArgsExpanded] = useState(false)
+  const cardRef = useRef<HTMLElement>(null)
+  const input = formatToolData(args)
+  const inputLength = toolDataLength(args)
+  const maxPreviewChars = 400
+  const output = hasResult ? toolContentText(resultContent) : ''
+  const partialOutput = !hasResult && partialResultContent !== undefined
+    ? toolContentText(partialResultContent)
+    : ''
+  const partialOutputLength = partialOutput.length
+  const partialOutputTruncated = partialOutputLength > maxPreviewChars
+  const partialOutputPreviewText = partialOutputTruncated
+    ? `${partialOutput.slice(0, maxPreviewChars)}…`
+    : partialOutput
+  const outputLength = output.length
+  const durationLabel = durationMs === undefined ? undefined : formatDuration(durationMs)
+  const displayedOutput = output || 'No output.'
+  const presentation = toolCallPresentation(
+    { id, name: toolName, args },
+    repositoryRoot,
+    streamingArguments,
+  )
+  const fileIcon = (toolName === 'read' || toolName === 'write' || toolName === 'edit')
+      && presentation.headerDetail
+    ? resolveFileIcon(presentation.headerDetail.title)
+    : null
+  const commandText = presentation.headerDetail?.text
+  const bashCommandMatch = toolName === 'bash' ? commandText?.match(/^\s*(\S+)/) : undefined
+  const bashCommandName = bashCommandMatch?.[1]
+  const headingName = bashCommandName ?? (toolName || 'tool')
+  const displayedCommand = bashCommandMatch && commandText
+    ? commandText.slice(bashCommandMatch[0].length).trimStart()
+    : commandText
+  const tooltip = formatToolCallTooltip(
+    presentation.headerDetail?.title ?? input,
+    inputLength,
+    hasResult ? outputLength : undefined,
+  )
+  const resolvedSizeLabel = `Input: ${inputLength} characters. Output: ${outputLength} characters.${
+    durationLabel ? ` Duration: ${durationLabel}.` : ''
+  }`
+  const writeContent = toolName === 'write' ? toolWriteContent(args) : null
+  const content = toolName === 'write' && !resultError && writeContent
+    ? writeContent
+    : displayedOutput
+  const isRenderable = display.kind === 'csv' || display.kind === 'markdown'
+    || display.kind === 'html' || display.kind === 'svg'
+  const hasRenderedPreview = isRenderable && hasResult && !expanded && !resultError
+  const hasCodePreview = display.kind === 'code' && hasResult && !expanded
+    && canHighlightFile(content)
+  const isNearViewport = useInView(cardRef, hasCodePreview || hasRenderedPreview)
+  const contentError = resultError
+  const preview = useMemo(
+    () =>
+      display.kind === 'csv'
+        ? {
+          text: content.length > maxPreviewChars
+            ? `${content.slice(0, maxPreviewChars)}…`
+            : content,
+          remainingLineCount: 0,
+        }
+        : toolTextPreview(content),
+    [content, display.kind],
+  )
+  const streamingArgs = streaming || interrupted ? streamingArguments ?? input : undefined
+  const streamingTruncated = Boolean(streamingArgs && streamingArgs.length > maxPreviewChars)
+  const streamingPreviewText = streamingArgs && streamingArgs.length > maxPreviewChars
+    ? `${streamingArgs.slice(0, maxPreviewChars)}…`
+    : streamingArgs
+  const renderingCode = display.kind === 'code' && canHighlightFile(content) && expanded
+    && !codeRendered
+
+  useEffect(() => {
+    if (!expanded || display.kind !== 'code' || codeRendered) return
+    const timeout = window.setTimeout(() => setCodeRendered(true), 0)
+    return () => window.clearTimeout(timeout)
+  }, [codeRendered, display.kind, expanded])
+
+  useEffect(() => {
+    if (semiDetailed) setSemiExpanded(false)
+  }, [semiDetailed])
+
+  /** Expands the call from its header-only presentation or toggles its full result. */
+  const activate = () => {
+    if (semiDetailed) {
+      if (!semiExpanded) setExpanded(true)
+      setSemiExpanded((isExpanded) => !isExpanded)
+      return
+    }
+    setExpanded((isExpanded) => !isExpanded)
+  }
+
+  const showDetails = !semiDetailed || semiExpanded
+  const hasBody = streaming || interrupted || hasResult || Boolean(partialOutput)
+
+  return (
+    <article
+      className={`tool-call${animateLiveChanges && streaming ? ' entering' : ''}${
+        contentError ? ' error' : ''
+      }${interrupted ? ' interrupted' : ''}${semiDetailed ? ' semi-detailed' : ''}${
+        targeted ? ' conversation-target' : ''
+      }`}
+      data-tool-call-id={id}
+      ref={cardRef}
+    >
+      <Tooltip label={tooltip}>
+        <button
+          aria-expanded={semiDetailed ? semiExpanded : hasResult ? expanded : undefined}
+          className='tool-call-heading'
+          disabled={!hasResult && !semiDetailed}
+          onClick={activate}
+          type='button'
+        >
+          <span aria-hidden='true'>⌘</span>
+          <span>
+            <strong aria-label={tooltip}>{headingName}</strong>
+          </span>
+          {presentation.headerDetail && displayedCommand && (
+            <span className='tool-call-command'>
+              <code aria-label={`Full command: ${presentation.headerDetail.title}`}>
+                {displayedCommand}
+              </code>
+              {fileIcon && (
+                <span
+                  aria-hidden='true'
+                  className='tool-call-file-icon'
+                  data-color={fileIcon.color}
+                >
+                  {fileIcon.glyph}
+                </span>
+              )}
+            </span>
+          )}
+          {presentation.headerDetail?.suffix && (
+            <span className='tool-call-range'>
+              <code aria-label={`Read range: ${presentation.headerDetail.suffix}`}>
+                {presentation.headerDetail.suffix}
+              </code>
+            </span>
+          )}
+          <small
+            aria-label={hasResult && !contentError
+              ? resolvedSizeLabel
+              : partialOutput
+              ? `Output: ${partialOutputLength} characters so far`
+              : undefined}
+          >
+            {active && presentation.pendingDetail && `${presentation.pendingDetail} · `}
+            {hasResult
+              ? contentError
+                ? 'Failed'
+                : (
+                  <span aria-hidden='true'>
+                    ↘ {inputLength} car. · ↗ {outputLength} car.
+                    {durationLabel && ` · ⏱ ${durationLabel}`}
+                  </span>
+                )
+              : interrupted
+              ? 'Generation interrupted'
+              : streaming
+              ? 'Generating…'
+              : partialOutput
+              ? <span aria-hidden='true'>↗ {partialOutputLength} car.</span>
+              : 'In progress…'}
+            {active && (
+              <span
+                aria-label={streaming ? 'Arguments are being generated' : 'Tool in progress'}
+                className='spinner tool-call-spinner'
+                role='status'
+              />
+            )}
+          </small>
+        </button>
+      </Tooltip>
+      <div className='conversation-actions tool-call-actions'>
+        <CopyButton direction='input' label='Copy tool input' onError={onError} value={input} />
+        {hasResult && (
+          <CopyButton
+            direction='output'
+            label='Copy tool output'
+            onError={onError}
+            value={output}
+          />
+        )}
+        {hasResult && !contentError && filePath && (
+          <OpenFileButton cwd={workingDirectory} onError={onError} path={filePath} />
+        )}
+      </div>
+      <div className={`tool-call-body${hasBody && showDetails ? ' visible' : ''}`}>
+        <div>
+          {(streaming || interrupted) && (
+            <>
+              {argsExpanded
+                ? (
+                  <button
+                    aria-expanded={true}
+                    className='tool-call-raw-args'
+                    onClick={() => setArgsExpanded(false)}
+                    type='button'
+                  >
+                    {streamingArgs || 'Waiting for arguments…'}
+                  </button>
+                )
+                : (
+                  <button
+                    aria-expanded={false}
+                    className='tool-call-preview'
+                    onClick={() => setArgsExpanded(true)}
+                    type='button'
+                  >
+                    <pre>{streamingPreviewText ?? 'Waiting for arguments…'}</pre>
+                    {streamingTruncated && (
+                      <span>Click to view full arguments ({streamingArgs?.length ?? 0} chars)</span>
+                    )}
+                  </button>
+                )}
+            </>
+          )}
+          {active && partialOutput && (
+            <>
+              {partialOutputExpanded
+                ? (
+                  <button
+                    aria-expanded={true}
+                    className='tool-call-raw-args'
+                    onClick={() => setPartialOutputExpanded(false)}
+                    type='button'
+                  >
+                    {partialOutput || 'Waiting for output…'}
+                  </button>
+                )
+                : (
+                  <button
+                    aria-expanded={false}
+                    className='tool-call-preview'
+                    onClick={() => setPartialOutputExpanded(true)}
+                    type='button'
+                  >
+                    <pre>{partialOutputPreviewText || 'Waiting for output…'}</pre>
+                    {partialOutputTruncated && (
+                      <span>Click to view full output ({partialOutputLength} chars)</span>
+                    )}
+                  </button>
+                )}
+            </>
+          )}
+          {hasResult && (
+            <div className={animateLiveChanges ? 'tool-call-result entering' : 'tool-call-result'}>
+              {expanded
+                ? (
+                  <ToolCallContent
+                    call={{ name: toolName, args }}
+                    content={content}
+                    onCollapse={() => setExpanded(false)}
+                    renderingCode={renderingCode}
+                    resultDetails={resultDetails}
+                    showEditDiff={!contentError}
+                  />
+                )
+                : (
+                  <ToolCallPreview
+                    call={{ name: toolName, args }}
+                    content={display.kind === 'csv' || display
+                          .kind === 'svg'
+                        || display
+                            .kind === 'html'
+                        || display
+                            .kind === 'markdown'
+                      ? content
+                      : preview
+                        .text}
+                    isNearViewport={isNearViewport}
+                    onClick={activate}
+                    previewText={preview
+                      .text}
+                    showHtmlPreview={!contentError}
+                    remainingLineCount={preview
+                      .remainingLineCount}
+                  />
+                )}
+            </div>
+          )}
+        </div>
+      </div>
+    </article>
+  )
+})
