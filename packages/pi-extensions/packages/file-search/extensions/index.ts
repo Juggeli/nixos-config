@@ -3,7 +3,6 @@
  *
  * Provides an fd (find files) tool using the system binary. Patterns are
  * always passed after `--` so user input can never be parsed as a flag.
- * Content search is handled by the hashline grep tool from pi-hashline-edit.
  */
 
 import { spawn } from "node:child_process";

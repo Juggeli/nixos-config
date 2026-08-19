@@ -77,20 +77,13 @@
         ${pkgs.jq}/bin/jq '.webSearch = false' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" \
           && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
       '';
-      # The default bun-compiled binary lacks node:sqlite, which
-      # pi-hashline-edit-pro's hash store needs; the npm package's official
-      # Node entry point (Node >= 22.5) provides it.
-      pi = llm-agents.pi.override { useBun = false; };
+      pi = llm-agents.pi;
       configDir = "${homeDir}/src/dotfiles/modules/home/pi";
       localExtensionsDir = "${homeDir}/src/dotfiles/packages/pi-extensions/packages";
       # Third-party extensions are installed imperatively via `pi install`,
       # which resolves node_modules itself under ~/.pi/agent/npm. Pinned here;
       # the resulting settings.json entries land in the repo-tracked file.
       npmExtensions = [
-        {
-          name = "pi-hashline-edit-pro";
-          version = "2.5.3";
-        }
         {
           name = "cc-safety-net";
           version = "2.0.4";
