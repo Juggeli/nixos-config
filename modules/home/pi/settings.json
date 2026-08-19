@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.84.1",
-  "defaultProvider": "zai",
-  "defaultModel": "glm-5.3",
+  "defaultProvider": "synthetic",
+  "defaultModel": "hf:moonshotai/Kimi-K3",
   "defaultThinkingLevel": "high",
   "theme": "dark",
   "editorPaddingX": 1,
@@ -10,21 +10,13 @@
     "npm:pi-rtk-optimizer@0.9.0",
     "npm:pi-hashline-edit-pro@2.5.3",
     "npm:@aliou/pi-synthetic@0.24.3",
-    "npm:@charmland/pi-hyper-provider@0.2.2"
+    "npm:@charmland/pi-hyper-provider@0.2.2",
+    "npm:@nerisma/pi-auto-title@1.0.1",
+    "../../src/dotfiles/vendor/pi-agents"
   ],
   "terminal": {
     "showTerminalProgress": true
   },
   "collapseChangelog": true,
-  "tuiMode": "fullscreen",
-  "subagents": {
-    "agentOverrides": {
-      "explore": {
-        "model": "deepseek/deepseek-v4-flash:high"
-      },
-      "researcher": {
-        "model": "deepseek/deepseek-v4-flash:high"
-      }
-    }
-  }
+  "tuiMode": "fullscreen"
 }

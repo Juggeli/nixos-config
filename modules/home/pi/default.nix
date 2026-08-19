@@ -107,6 +107,13 @@
           name = "@charmland/pi-hyper-provider";
           version = "0.2.2";
         }
+        # Vendored fork with persistent delegated sessions, resume, and
+        # artifact output; installed from the local path.
+        { source = "${homeDir}/src/dotfiles/vendor/pi-agents"; }
+        {
+          name = "@nerisma/pi-auto-title";
+          version = "1.0.1";
+        }
       ];
       installPiExtensions = pkgs.writeShellScript "install-pi-extensions" ''
         export PATH="${pkgs.nodejs}/bin:$PATH"
@@ -117,7 +124,14 @@
             ${pi}/bin/pi install "npm:$name@$version" || true
           fi
         }
-        ${lib.concatMapStringsSep "\n" (e: ''ensure "${e.name}" "${e.version}"'') npmExtensions}
+        ensureLocal() {
+          local source="$1"
+          ${pi}/bin/pi list 2>/dev/null | grep -qF "$source" \
+            || ${pi}/bin/pi install "$source" || true
+        }
+        ${lib.concatMapStringsSep "\n" (
+          e: if e ? source then ''ensureLocal "${e.source}"'' else ''ensure "${e.name}" "${e.version}"''
+        ) npmExtensions}
       '';
     in
     {
@@ -134,6 +148,13 @@
           '')
           pkgs.unstable.rtk
           pkgs.nodejs
+          (pkgs.writeShellScriptBin "pi-livecraft" ''
+            cd "${homeDir}/src/dotfiles/vendor/pi-livecraft"
+            if [ ! -d node_modules ]; then
+              ${pkgs.nodejs}/bin/npm install
+            fi
+            exec ${pkgs.nodejs}/bin/npm run dev
+          '')
         ];
 
         home.file.".pi/agent/AGENTS.md".text = ''
@@ -157,8 +178,10 @@
           hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/exa-tools";
         home.file.".pi/agent/extensions/file-search".source =
           hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/file-search";
-        home.file.".pi/agent/extensions/subagents-lite".source =
-          hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/subagents-lite";
+        # Global pi-agents definitions; pi writes new/edited agents through
+        # the symlink so the directory stays repo-tracked.
+        home.file.".pi/agent/agents".source =
+          hmArgs.config.lib.file.mkOutOfStoreSymlink "${configDir}/agents";
         home.activation.patchPiModels = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
           ${patchPiModels}
         '';

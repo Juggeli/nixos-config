@@ -1,0 +1,51 @@
+{
+  "name": "@nerisma/pi-agents",
+  "version": "1.4.0",
+  "description": "Specialized agent system for pi: task delegation, activation/deactivation, and system prompt injection via .md files.",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "agents",
+    "delegation",
+    "orchestration"
+  ],
+  "license": "MIT",
+  "author": "Sébastien SERVOUZE <sebastien.servouze@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebastienservouze/pi-agents.git"
+  },
+  "files": [
+    "extensions",
+    "agents",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON test/*.test.ts",
+    "lint": "prettier --check \"extensions/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"extensions/**/*.ts\" \"test/**/*.ts\""
+  },
+  "pi": {
+    "extensions": [
+      "./extensions"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.80.8",
+    "@earendil-works/pi-tui": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-agent-core": "^0.82.1",
+    "@earendil-works/pi-coding-agent": "^0.82.1",
+    "@earendil-works/pi-tui": "^0.82.1",
+    "@types/node": "^25.9.1",
+    "prettier": "^3.9.6",
+    "typebox": "^1.1.38",
+    "typescript": "^6.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
