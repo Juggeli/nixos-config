@@ -156,6 +156,13 @@
           - Technical terms stay exact. Code blocks unchanged.
           - Pattern: [thing] [action] [reason]. [next step].
 
+          ## Search
+
+          Prefer `fd` over `find` or `ls -R` when discovering files or
+          directories by name, extension, or glob; fd is fast and respects
+          .gitignore. Prefer `rg` over `grep` when searching file contents.
+          Run both through bash.
+
           ## Secrets
 
           Never print secret values (API keys, tokens, passwords, decrypted
@@ -164,8 +171,6 @@
         '';
         home.file.".pi/agent/extensions/exa-tools".source =
           hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/exa-tools";
-        home.file.".pi/agent/extensions/file-search".source =
-          hmArgs.config.lib.file.mkOutOfStoreSymlink "${localExtensionsDir}/file-search";
         # Global pi-agents definitions; pi writes new/edited agents through
         # the symlink so the directory stays repo-tracked.
         home.file.".pi/agent/agents".source =
