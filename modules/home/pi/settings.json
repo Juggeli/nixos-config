@@ -7,7 +7,6 @@
   "editorPaddingX": 1,
   "packages": [
     "npm:cc-safety-net@2.0.4",
-    "npm:pi-rtk-optimizer@0.9.0",
     "npm:@aliou/pi-synthetic@0.24.3",
     "npm:@charmland/pi-hyper-provider@0.2.2",
     "npm:@nerisma/pi-auto-title@1.0.1",

@@ -89,10 +89,6 @@
           version = "2.0.4";
         }
         {
-          name = "pi-rtk-optimizer";
-          version = "0.9.0";
-        }
-        {
           name = "@aliou/pi-synthetic";
           version = "0.24.3";
         }
@@ -139,7 +135,6 @@
             set +a
             exec ${pi}/bin/pi "$@"
           '')
-          pkgs.unstable.rtk
           pkgs.nodejs
           (pkgs.writeShellScriptBin "pi-livecraft" ''
             cd "${homeDir}/src/dotfiles/vendor/pi-livecraft"
