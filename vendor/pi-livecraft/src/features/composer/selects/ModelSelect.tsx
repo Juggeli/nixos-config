@@ -30,7 +30,7 @@ export const ModelSelect = memo(function ModelSelect(
             .catch(onError)
       }}
       options={models.map((item) => ({
-        label: String(item.name ?? item.id),
+        label: `${String(item.provider)} / ${String(item.name ?? item.id)}`,
         value: `${item.provider}/${item.id}`,
       }))}
       placeholder='Choose a model'
