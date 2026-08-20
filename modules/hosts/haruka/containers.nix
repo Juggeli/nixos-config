@@ -116,10 +116,6 @@
       kotoConfigFile = pkgs.writeText "config.json" (
         builtins.toJSON {
           dataDir = "/mnt/appdata/koto";
-          embedding = {
-            baseUrl = "https://api.synthetic.new/openai";
-            model = "hf:nomic-ai/nomic-embed-text-v1.5";
-          };
           webServer = {
             enabled = true;
             port = 9847;
