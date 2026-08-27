@@ -1,6 +1,6 @@
 ---
 name: general-purpose
-description: General-purpose agent for multi-step tasks, complex searches, and code changes
+description: General-purpose agent for multi-step tasks, complex searches, code changes, reviews, and verification
 tools: read, grep, find, ls, bash, fd, write, replace, undo_last_replace
 useAgentFile: true
 ---
