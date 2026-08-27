@@ -69,7 +69,13 @@ export function registerDelegateTool(
   pi: ExtensionAPI,
   getActiveAgentName: () => string | null,
 ): void {
-  let cachedGuidelines: string[] | null = null;
+  // Prompt guidelines are read when pi builds the system prompt, before any
+  // tool executes — so they must list the agents at registration time, not
+  // lazily inside execute. Refreshed in place when the tool runs so later
+  // prompt builds (and sub-session prompt harvesting) see current agents.
+  const guidelines: string[] = buildPromptGuidelines(
+    discoverAgents(process.cwd()),
+  );
 
   pi.registerTool({
     name: "delegate",
@@ -81,10 +87,7 @@ export function registerDelegateTool(
     ].join(" "),
     promptSnippet:
       "Delegate a task to a specialized agent that works in isolation and returns a targeted summary",
-    promptGuidelines: (() =>
-      cachedGuidelines || [
-        "Use delegate to hand off to specialized agents. Describe the CONCEPT or TASK to solve.",
-      ]) as unknown as string[],
+    promptGuidelines: guidelines,
     parameters: DelegateParams,
 
     async execute(_toolCallId, params, signal, onUpdate, ctx) {
@@ -105,7 +108,13 @@ export function registerDelegateTool(
             agent: "list",
             task: "",
             exitCode: 0,
-            usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 },
+            usage: {
+              input: 0,
+              output: 0,
+              cacheRead: 0,
+              cacheWrite: 0,
+              cost: 0,
+            },
           } as DelegateDetails,
         };
       }
@@ -116,14 +125,20 @@ export function registerDelegateTool(
             content: [
               {
                 type: "text",
-                text: 'action=resume requires both id (session id or prefix) and message (follow-up).',
+                text: "action=resume requires both id (session id or prefix) and message (follow-up).",
               },
             ],
             details: {
               agent: params.id ?? "resume",
               task: params.message ?? "",
               exitCode: 1,
-              usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 },
+              usage: {
+                input: 0,
+                output: 0,
+                cacheRead: 0,
+                cacheWrite: 0,
+                cost: 0,
+              },
               errorMessage: "Missing id or message for action=resume.",
             } as DelegateDetails,
           };
@@ -145,7 +160,13 @@ export function registerDelegateTool(
               agent: params.id,
               task: params.message,
               exitCode: 1,
-              usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 },
+              usage: {
+                input: 0,
+                output: 0,
+                cacheRead: 0,
+                cacheWrite: 0,
+                cost: 0,
+              },
               errorMessage: `No delegated session matches "${params.id}".`,
             } as DelegateDetails,
           };
@@ -163,7 +184,13 @@ export function registerDelegateTool(
               agent: ref.meta.agent,
               task: params.message,
               exitCode: 1,
-              usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 },
+              usage: {
+                input: 0,
+                output: 0,
+                cacheRead: 0,
+                cacheWrite: 0,
+                cost: 0,
+              },
               errorMessage: `Agent "${ref.meta.agent}" not found for resume.`,
             } as DelegateDetails,
           };
@@ -195,7 +222,11 @@ export function registerDelegateTool(
                 });
               }
             : undefined,
-          { manager: ref.manager, sessionId: ref.sessionId, sessionPath: ref.sessionPath },
+          {
+            manager: ref.manager,
+            sessionId: ref.sessionId,
+            sessionPath: ref.sessionPath,
+          },
         );
         return {
           content: [
@@ -241,14 +272,22 @@ export function registerDelegateTool(
             agent: params.agent ?? "?",
             task: params.task ?? "",
             exitCode: 1,
-            usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 },
+            usage: {
+              input: 0,
+              output: 0,
+              cacheRead: 0,
+              cacheWrite: 0,
+              cost: 0,
+            },
             errorMessage: "Missing agent or task.",
           } as DelegateDetails,
         };
       }
       const agents = discoverAgents(ctx.cwd);
-      if (!cachedGuidelines) {
-        cachedGuidelines = buildPromptGuidelines(agents);
+      const fresh = buildPromptGuidelines(agents);
+      if (fresh.join("\n") !== guidelines.join("\n")) {
+        guidelines.length = 0;
+        guidelines.push(...fresh);
       }
 
       // ── Enforcement: if an active agent has a `delegate:` allow-list,
@@ -346,6 +385,8 @@ export function registerDelegateTool(
               });
             }
           : undefined,
+        undefined,
+        ctx.model ?? undefined,
       );
 
       const details: DelegateDetails = {

@@ -398,7 +398,9 @@ export function delegatedSessionDir(): string {
 
 /** Strips the `<timestamp>_` prefix pi puts in session file names. */
 function bareSessionId(fileName: string): string {
-  return fileName.replace(/\.jsonl$/, "").replace(/^\d{4}-\d{2}-\d{2}T[\d-]+Z_/, "");
+  return fileName
+    .replace(/\.jsonl$/, "")
+    .replace(/^\d{4}-\d{2}-\d{2}T[\d-]+Z_/, "");
 }
 
 interface DelegationMeta {
@@ -459,9 +461,14 @@ export function listDelegatedSessions(): DelegatedSessionSummary[] {
  * Finds a delegated session by id or unique prefix.
  * Returns the opened SessionManager plus its metadata.
  */
-export function findDelegatedSession(
-  idOrPrefix: string,
-): { manager: SessionManager; meta: DelegationMeta; sessionId: string; sessionPath: string } | undefined {
+export function findDelegatedSession(idOrPrefix: string):
+  | {
+      manager: SessionManager;
+      meta: DelegationMeta;
+      sessionId: string;
+      sessionPath: string;
+    }
+  | undefined {
   const dir = delegatedSessionDir();
   let files: string[];
   try {
@@ -532,6 +539,7 @@ export async function runAgent(
   signal?: AbortSignal,
   onUpdate?: AgentProgressCallback,
   resume?: { manager: SessionManager; sessionId: string; sessionPath: string },
+  parentModel?: NonNullable<ReturnType<typeof resolveModel>>,
 ): Promise<AgentResult> {
   const startTime = Date.now();
   const agentDir = getAgentDir();
@@ -621,7 +629,25 @@ export async function runAgent(
       authPath: path.join(agentDir, "auth.json"),
       modelsPath: path.join(agentDir, "models.json"),
     });
-    const resolvedModel = resolveModel(modelRuntime, agent.model);
+    // Agent with no `model:` inherits the parent session's model. Never
+    // let pi's default-model fallback pick one — it can silently route
+    // work to an arbitrary expensive provider.
+    let resolvedModel: NonNullable<ReturnType<typeof resolveModel>>;
+    if (agent.model) {
+      const pinned = resolveModel(modelRuntime, agent.model);
+      if (!pinned) {
+        throw new Error(
+          `Agent "${agent.name}" model "${agent.model}" did not resolve against the model runtime.`,
+        );
+      }
+      resolvedModel = pinned;
+    } else if (parentModel) {
+      resolvedModel = parentModel;
+    } else {
+      throw new Error(
+        `Agent "${agent.name}" has no \`model:\` frontmatter and the parent session model is unavailable.`,
+      );
+    }
 
     const { session: createdSession } = await createAgentSession({
       cwd,
@@ -696,7 +722,8 @@ export async function runAgent(
     result.thinkingPhases = state.thinkingPhases;
     result.thinkingText = state.thinkingText;
     if (!result.sessionId) result.sessionId = sessionManager.getSessionId();
-    if (!result.sessionPath) result.sessionPath = sessionManager.getSessionFile();
+    if (!result.sessionPath)
+      result.sessionPath = sessionManager.getSessionFile();
     result.artifactPath = writeDelegationArtifact(result);
 
     if (wasAborted) {
