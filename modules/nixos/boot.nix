@@ -12,6 +12,7 @@
           useOSProber = lib.mkDefault false;
           efiInstallAsRemovable = true;
           memtest86.enable = true;
+          configurationLimit = 5;
         };
       };
     };
