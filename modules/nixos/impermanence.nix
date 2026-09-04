@@ -88,6 +88,9 @@
           "/var/lib/systemd/coredump"
           "/var/lib/NetworkManager/"
         ];
+        # Stable id keeps /var/log/journal/<machine-id> continuous across
+        # reboots so journalctl sees all boots by default.
+        files = [ "/etc/machine-id" ];
       };
 
       fileSystems = {
