@@ -2,7 +2,7 @@
 name: explore
 description: Fast codebase recon that returns compressed context for handoff. Mapping and context gathering only — not for review, verification, evaluation, or any judgement task; use general-purpose for those
 tools: read, grep, find, ls, bash, fd
-model: deepseek/deepseek-v4-flash
+model: deepseek/deepseek-v4-flash-vision-exp
 thinkingLevel: high
 useAgentFile: true
 ---
