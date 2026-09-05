@@ -8,6 +8,7 @@
     lazygit
     yazi
     ai-agents
+    publish-plan
     pi
     opencode
     claude-code

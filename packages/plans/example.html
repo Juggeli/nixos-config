@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your plans have a home</title>
+    <style>
+      :root { color-scheme: dark; font: 18px/1.65 system-ui, sans-serif; background: #111916; color: #e9f0e8; }
+      body { max-width: 760px; margin: 9vh auto; padding: 28px; }
+      .eyebrow { color: #a9c0ad; letter-spacing: .18em; font-size: 12px; }
+      h1 { font-size: clamp(40px, 8vw, 72px); line-height: 1.05; letter-spacing: -.05em; max-width: 620px; }
+      p { color: #b9c6bb; max-width: 580px; }
+      section { border-top: 1px solid #35483b; padding: 20px 0; margin-top: 32px; }
+      h2 { font-size: 22px; }
+      button { border: 0; border-radius: 8px; background: #cbf5ac; color: #142110; padding: 14px 20px; font: inherit; cursor: pointer; }
+      button:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+      output { display: block; margin-top: 16px; color: #cbf5ac; }
+      footer { margin-top: 60px; color: #839688; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <span class="eyebrow">JUGI.CC / FIRST DRAFT</span>
+      <h1>Your plans<br>have a home.</h1>
+      <p>A small place for big ideas. Publish a plan, report, or interactive draft from your agent, then share the link.</p>
+      <section>
+        <h2>Write. Publish. Share.</h2>
+        <p>Ask Claude Code, Pi, or Codex: “Publish this plan and give me a link.” Anyone with the link can open it, without an account.</p>
+      </section>
+      <section>
+        <h2>Room to explore.</h2>
+        <p>Drafts can include interactive explanations, calculators, and diagrams. Try this small example.</p>
+        <button id="try" type="button">Try an interaction</button>
+        <output id="result" aria-live="polite">Ready when you are.</output>
+      </section>
+      <footer>Hosted on Haruka · Shared through plans.jugi.cc</footer>
+    </main>
+    <script>
+      let count = 0;
+      document.querySelector('#try').addEventListener('click', () => {
+        count += 1;
+        document.querySelector('#result').textContent = `It works. ${count} idea${count === 1 ? '' : 's'} explored.`;
+      });
+    </script>
+  </body>
+</html>

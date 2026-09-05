@@ -17,6 +17,7 @@
           edgeIPVersion = "auto";
 
           ingress = {
+            "plans.jugi.cc" = "http://127.0.0.1:8092";
             "sonarr.jugi.cc" = "http://127.0.0.1:8989";
             "sonarr-anime.jugi.cc" = "http://127.0.0.1:8999";
             "radarr.jugi.cc" = "http://127.0.0.1:7878";

@@ -17,4 +17,5 @@ in
 {
   "agent-env.age".publicKeys = keys;
   "forgejo-fj-keys.age".publicKeys = keys;
+  "plans-publish-key.age".publicKeys = keys;
 }
