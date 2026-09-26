@@ -8,13 +8,22 @@
         hdparm
       ];
 
-      powerManagement.powerUpCommands = with pkgs; ''
-        for dev in /dev/sd[a-z]; do
-          if [ -b "$dev" ]; then
-            ${hdparm}/bin/hdparm -S 242 -B 127 "$dev" || true
-          fi
-        done
-      '';
+      systemd.services.hdparm = {
+        description = "Set HDD spindown and APM levels";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "local-fs.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        script = ''
+          for dev in /dev/sd[a-z]; do
+            if [ -b "$dev" ]; then
+              ${pkgs.hdparm}/bin/hdparm -S 242 -B 127 "$dev" || true
+            fi
+          done
+        '';
+      };
 
       services.smartd = {
         enable = true;
