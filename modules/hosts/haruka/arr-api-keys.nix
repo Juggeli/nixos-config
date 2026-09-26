@@ -86,7 +86,7 @@
         requires = [ "arr-api-keys.service" ];
       }) consumers;
 
-      services.homepage-dashboard.environmentFile = "${runtimeDir}/homepage.env";
+      services.homepage-dashboard.environmentFiles = [ "${runtimeDir}/homepage.env" ];
 
       virtualisation.oci-containers.containers = lib.mapAttrs (name: _: {
         environmentFiles = [ "${runtimeDir}/${name}.env" ];
