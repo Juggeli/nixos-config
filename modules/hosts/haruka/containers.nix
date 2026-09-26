@@ -440,10 +440,10 @@
         group = "media";
         home = "/mnt/appdata/oci";
         createHome = true;
-        # The containers are system units with User=oci, not user-session
-        # units, so no lingering user manager is needed (and the oci-containers
-        # module warns when it is combined with the default sdnotify=conmon).
-        linger = false;
+        # The containers are system units with User=oci and do not use the
+        # user manager this starts; lingering only satisfies the oci-containers
+        # module, which warns for every rootless container when it is off.
+        linger = true;
         # Must not overlap juggeli's subordinate range (100000+65536).
         subUidRanges = [
           {
