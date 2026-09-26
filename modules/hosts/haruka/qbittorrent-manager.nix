@@ -28,11 +28,19 @@
 
       systemd.services.qbittorrent-manager = {
         description = "qBittorrent management service";
-        after = [ "network.target" ];
+        after = [
+          "network.target"
+          "podman-qbittorrent.service"
+        ];
         serviceConfig = {
           Type = "oneshot";
           User = "qbit-manager";
           Group = "qbit-manager";
+          # The timer fires every few minutes, so a run regularly lands while
+          # qbittorrent is restarting (switch, image promotion). Skip the run
+          # instead of failing it when the WebUI is not accepting connections;
+          # curl exits 0 on any HTTP response, including an auth error.
+          ExecCondition = "${pkgs.curl}/bin/curl -s -o /dev/null --max-time 5 http://127.0.0.1:8080/";
           ExecStart = "${pkgs.qbit-manager}/bin/qbit-manager --config ${configFile}";
           EnvironmentFile = config.age.secrets.qbittorrent-credentials.path;
 
