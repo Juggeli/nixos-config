@@ -3,9 +3,9 @@
     { lib, pkgs, ... }:
     {
       home-manager.users.juggeli = {
-        home.packages = lib.optionals pkgs.stdenv.isLinux [ pkgs.wl-clipboard ];
+        home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.wl-clipboard ];
 
-        xdg.configFile."kitty/clip2path" = lib.mkIf pkgs.stdenv.isLinux {
+        xdg.configFile."kitty/clip2path" = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
           executable = true;
           text = ''
             #!/usr/bin/env bash
@@ -45,7 +45,7 @@
             "cursor_trail" = "3";
             "cursor_trail_decay" = "0.1 0.4";
           }
-          // lib.optionalAttrs pkgs.stdenv.isLinux {
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             "allow_remote_control" = "yes";
           };
           keybindings = {
@@ -56,7 +56,7 @@
             "ctrl+shift+t" = "no_op";
             "ctrl+shift+w" = "no_op";
           }
-          // lib.optionalAttrs pkgs.stdenv.isLinux {
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             "ctrl+v" = "launch --type=background --allow-remote-control --keep-focus ~/.config/kitty/clip2path";
           };
         };

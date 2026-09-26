@@ -9,8 +9,8 @@
     }:
     let
       hmLib = inputs.home-manager.lib;
-      llm-agents = inputs.llm-agents.packages.${pkgs.system};
-      homeDir = if pkgs.stdenv.isDarwin then "/Users/juggeli" else "/home/juggeli";
+      llm-agents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+      homeDir = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/juggeli" else "/home/juggeli";
       agentDir = "${homeDir}/.pi/agent";
       modelsConfigFile = "${agentDir}/models.json";
       openRouterDeepSeekRouting = {

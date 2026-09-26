@@ -2,12 +2,12 @@
   flake.homeModules.syncthing =
     { lib, pkgs, ... }:
     let
-      homeDir = if pkgs.stdenv.isDarwin then "/Users/juggeli" else "/home/juggeli";
+      homeDir = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/juggeli" else "/home/juggeli";
     in
     {
       home-manager.users.juggeli.services.syncthing = {
         enable = true;
-        tray = lib.mkIf pkgs.stdenv.isLinux {
+        tray = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
           enable = true;
         };
         overrideDevices = true;
@@ -52,7 +52,7 @@
             };
             "orcaslicer" = {
               path =
-                if pkgs.stdenv.isDarwin then
+                if pkgs.stdenv.hostPlatform.isDarwin then
                   "${homeDir}/Library/Application Support/OrcaSlicer"
                 else
                   "${homeDir}/.var/app/io.github.softfever.OrcaSlicer/config/OrcaSlicer";
@@ -64,7 +64,7 @@
             };
             "superslicer" = {
               path =
-                if pkgs.stdenv.isDarwin then
+                if pkgs.stdenv.hostPlatform.isDarwin then
                   "${homeDir}/Library/Application Support/SuperSlicer"
                 else
                   "${homeDir}/.config/SuperSlicer";

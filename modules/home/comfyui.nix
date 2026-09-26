@@ -2,7 +2,7 @@
   flake.homeModules.comfyui =
     { inputs, pkgs, ... }:
     let
-      comfyuiPkg = inputs.comfyui-nix.packages.${pkgs.system}.cuda;
+      comfyuiPkg = inputs.comfyui-nix.packages.${pkgs.stdenv.hostPlatform.system}.cuda;
       comfyuiWrapper = pkgs.writeShellScriptBin "comfyui" ''
         exec ${comfyuiPkg}/bin/comfyui --enable-cors-header --enable-manager --lowvram "$@"
       '';

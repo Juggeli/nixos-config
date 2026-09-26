@@ -17,7 +17,7 @@
             ripgrep
             zoxide
           ])
-          ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.trashy ];
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.trashy ];
 
         programs.fish = {
           enable = true;

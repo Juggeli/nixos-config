@@ -7,8 +7,8 @@
     }:
     let
       hmLib = inputs.home-manager.lib;
-      claude-code = inputs.llm-agents.packages.${pkgs.system}.claude-code;
-      homeDir = if pkgs.stdenv.isDarwin then "/Users/juggeli" else "/home/juggeli";
+      claude-code = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
+      homeDir = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/juggeli" else "/home/juggeli";
       configDir = "${homeDir}/src/dotfiles/modules/home/claude-code";
     in
     {
