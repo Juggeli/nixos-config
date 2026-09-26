@@ -104,11 +104,12 @@
 
       home-manager.users.juggeli = {
         # The catppuccin module emits a Lua theme reference, which is invalid
-        # in the hyprlang config that our pre-26.05 stateVersion still uses.
+        # in the hyprlang config used here.
         catppuccin.hyprland.enable = false;
 
         wayland.windowManager.hyprland = {
           enable = true;
+          configType = "hyprlang";
           settings = {
             "$mod" = "SUPER";
             bind = [

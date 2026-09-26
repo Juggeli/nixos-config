@@ -96,6 +96,7 @@
         programs.firefox = {
           enable = true;
           package = pkgs.firefox-bin;
+          configPath = ".mozilla/firefox";
 
           profiles.juggeli = {
             extraConfig = "";

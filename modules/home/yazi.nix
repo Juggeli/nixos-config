@@ -6,6 +6,7 @@
         programs.yazi = {
           enable = true;
           enableFishIntegration = false;
+          shellWrapperName = "yy";
           settings = {
             preview = {
               image_delay = 0;

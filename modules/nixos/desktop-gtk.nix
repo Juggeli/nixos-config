@@ -1,6 +1,12 @@
 {
   flake.nixosModules.desktop-gtk =
     { pkgs, ... }:
+    let
+      theme = {
+        name = "Adwaita-dark";
+        package = pkgs.gnome-themes-extra;
+      };
+    in
     {
       home-manager.users.juggeli = {
         dconf.settings = {
@@ -10,10 +16,8 @@
         };
         gtk = {
           enable = true;
-          theme = {
-            name = "Adwaita-dark";
-            package = pkgs.gnome-themes-extra;
-          };
+          inherit theme;
+          gtk4.theme = theme;
         };
         home.pointerCursor = {
           x11.enable = true;
