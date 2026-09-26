@@ -39,9 +39,11 @@
           repositoryUrl ? null,
           repositoryLabel,
           excludePatterns ? defaultExcludePatterns,
+          patterns ? [ ],
         }:
         {
           source_directories = directories;
+          inherit patterns;
           repositories = [
             {
               path = if repositoryUrl != null then repositoryUrl else "@${repositoryLabel}-repository-url@";
@@ -71,6 +73,24 @@
           repositoryLabel = "storagebox";
           repositoryUrlPath = config.age.secrets.storagebox-url.path;
           healthcheckUrlPath = config.age.secrets.borg-healthcheck.path;
+          # Only save games and generated output are worth keeping offsite;
+          # models, game installs, package caches and flatpaks are all
+          # re-downloadable and dominate the repository size otherwise.
+          excludePatterns = defaultExcludePatterns ++ [
+            "*/.config/comfy-ui/models/"
+            "*/.lmstudio/models/"
+            "*/.lmstudio/extensions/"
+            "*/.unsloth/"
+            "*/.npm/"
+            "/persist/var/lib/flatpak/"
+          ];
+          # Heroic keeps wine prefixes (and thus saves) next to the game
+          # installs; include the prefixes first so the exclude below only
+          # drops the installs.
+          patterns = [
+            "+ /persist-home/home/juggeli/games/Heroic/Prefixes"
+            "- /persist-home/home/juggeli/games/Heroic"
+          ];
         };
         hydrus = {
           directories = [ "/hydrus" ];
@@ -100,6 +120,7 @@
             inherit (backup) directories repositoryLabel;
             repositoryUrl = backup.repositoryUrl or null;
             excludePatterns = backup.excludePatterns or defaultExcludePatterns;
+            patterns = backup.patterns or [ ];
           }
         ) backups;
       };
