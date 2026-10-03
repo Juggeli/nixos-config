@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.87.1",
-  "defaultProvider": "zai",
-  "defaultModel": "glm-5.3",
+  "lastChangelogVersion": "1.0.1",
+  "defaultProvider": "synthetic",
+  "defaultModel": "hf:moonshotai/Kimi-K3",
   "defaultThinkingLevel": "high",
   "theme": "dark",
   "editorPaddingX": 1,
