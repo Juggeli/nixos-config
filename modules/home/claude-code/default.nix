@@ -14,7 +14,7 @@
     {
       home-manager.users.juggeli = {
         home.packages = [ claude-code ];
-        home.shellAliases.cc = "claude --dangerously-skip-permissions";
+        home.shellAliases.cc = "claude --permission-mode auto";
 
         # Symlink config directly into the repo so Claude Code can edit it at
         # runtime while the files stay tracked. Must be a single-hop symlink
