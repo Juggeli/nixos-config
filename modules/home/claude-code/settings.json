@@ -23,6 +23,7 @@
       "SendFeedback"
     ]
   },
+  "model": "opus",
   "disableClaudeAiConnectors": true,
   "disableBundledSkills": true,
   "hooks": {
@@ -65,10 +66,10 @@
       "effortLevel": "high"
     }
   },
+  "advisorModel": "fable",
   "awaySummaryEnabled": false,
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
-  "theme": "dark",
-  "advisorModel": "fable"
+  "theme": "dark"
 }
