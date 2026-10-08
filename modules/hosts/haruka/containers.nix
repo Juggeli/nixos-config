@@ -595,7 +595,7 @@
           # koto is first-party, so it follows the registry tag directly
           # instead of going through the soak. The soak's polkit rule already
           # lets the oci user restart podman-* units.
-          koto-update = {
+          podman-koto-update = {
             description = "Update the koto container from its registry";
             after = [ "network-online.target" ];
             wants = [ "network-online.target" ];
@@ -623,7 +623,7 @@
         }
       ];
 
-      systemd.timers.koto-update = {
+      systemd.timers.podman-koto-update = {
         timerConfig = {
           OnCalendar = "06:00";
           Persistent = true;
