@@ -27,16 +27,6 @@
           ln -sfn "${configDir}/CLAUDE.md" "${homeDir}/.claude/CLAUDE.md"
           ln -sfn "${configDir}/statusline-command.sh" "${homeDir}/.claude/statusline-command.sh"
         '';
-
-        # enabledPlugins in settings.json only marks intent; fetching the
-        # plugin still needs a one-time install per machine. The activation
-        # unit's PATH lacks git, which claude needs to clone the marketplace.
-        home.activation.installClaudePlugins = hmLib.hm.dag.entryAfter [ "linkClaudeConfig" ] ''
-          if ! grep -q "safety-net@cc-marketplace" "${homeDir}/.claude/plugins/installed_plugins.json" 2>/dev/null; then
-            PATH="${pkgs.git}/bin:$PATH" ${claude-code}/bin/claude plugin marketplace add https://github.com/kenryu42/cc-marketplace || true
-            PATH="${pkgs.git}/bin:$PATH" ${claude-code}/bin/claude plugin install safety-net@cc-marketplace || true
-          fi
-        '';
       };
     };
 }

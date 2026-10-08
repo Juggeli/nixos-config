@@ -47,17 +47,6 @@
     "type": "command",
     "command": "~/.claude/statusline-command.sh"
   },
-  "enabledPlugins": {
-    "safety-net@cc-marketplace": true
-  },
-  "extraKnownMarketplaces": {
-    "cc-marketplace": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/kenryu42/cc-marketplace.git"
-      }
-    }
-  },
   "feedbackSurveyRate": 0,
   "feedbackDrafts": "off",
   "spinnerTipsEnabled": false,
