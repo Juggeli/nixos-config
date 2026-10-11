@@ -17,6 +17,15 @@
 
       programs.nix-ld.enable = true;
 
+      # The ComfyUI CUDA Python stack is never cached and compiles locally.
+      # nvcc spawns one ~600 MiB worker per core and the ZFS ARC holds 8 GiB
+      # that earlyoom does not count as available, so unlimited builds get
+      # the desktop killed. Bound both jobs and per-job cores.
+      nix.settings = {
+        max-jobs = 1;
+        cores = 8;
+      };
+
       systemd.tmpfiles.rules = [
         "Z /hydrus 0755 juggeli users -"
       ];
