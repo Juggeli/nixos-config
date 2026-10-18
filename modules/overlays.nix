@@ -34,5 +34,12 @@
     lmstudio = final.unstable.lmstudio;
     # pipx tests fail against the newer packaging library's spec normalization
     pipx = prev.pipx.overridePythonAttrs { doCheck = false; };
+    # glib 2.88's libnotify needs a D-Bus machine-id, which the build sandbox lacks
+    solaar = prev.solaar.overridePythonAttrs (oldAttrs: {
+      disabledTestPaths = (oldAttrs.disabledTestPaths or [ ]) ++ [
+        "tests/logitech_receiver/test_desktop_notifications.py::test_show"
+        "tests/solaar/ui/test_desktop_notifications.py::test_show"
+      ];
+    });
   };
 }
