@@ -47,6 +47,9 @@
           }
           // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             "allow_remote_control" = "yes";
+            # The tiling compositor manages size; a remembered "maximized"
+            # state would make every new window open maximized.
+            "remember_window_size" = "no";
           };
           keybindings = {
             "super+shift+t" = "no_op";
