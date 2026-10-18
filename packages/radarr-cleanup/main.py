@@ -89,7 +89,7 @@ class JellyfinClient:
         self.url = url.rstrip("/")
         self.api_key = api_key
         self.session = requests.Session()
-        self.session.headers["X-Emby-Token"] = api_key
+        self.session.headers["Authorization"] = f'MediaBrowser Token="{api_key}"'
         self.logger = logging.getLogger("jellyfin")
 
     def get_users(self) -> list[dict]:

@@ -94,7 +94,7 @@ class JellyfinClient:
         self.api_key = api_key
         self.username = username
         self.session = requests.Session()
-        self.session.headers["X-Emby-Token"] = api_key
+        self.session.headers["Authorization"] = f'MediaBrowser Token="{api_key}"'
         self.logger = logging.getLogger("jellyfin")
         self._user_id: Optional[str] = None
 
