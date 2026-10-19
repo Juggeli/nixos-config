@@ -33,4 +33,5 @@ in
   "tailscale-auth.age".publicKeys = keys;
   "koto-env.age".publicKeys = keys;
   "silverbullet-env.age".publicKeys = keys;
+  "vinted-ntfy-topic.age".publicKeys = keys;
 }

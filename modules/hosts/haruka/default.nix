@@ -27,6 +27,7 @@
         haruka-arr-api-keys
         haruka-homepage
         haruka-media-stack
+        haruka-vinted-monitor
       ])
       ++ (with self.homeModules; [
         base

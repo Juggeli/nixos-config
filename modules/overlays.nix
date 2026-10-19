@@ -20,6 +20,7 @@
     sonarr-anime-cleanup = prev.callPackage ../packages/sonarr-anime-cleanup { };
     sonarr-cleanup = prev.callPackage ../packages/sonarr-cleanup { };
     sorter = prev.callPackage ../packages/sorter { };
+    vinted-monitor = prev.callPackage ../packages/vinted-monitor { };
 
     bun = final.unstable.bun;
     cloudflared = final.unstable.cloudflared;
