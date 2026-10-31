@@ -50,7 +50,10 @@
         prowlarr = "ghcr.io/hotio/prowlarr:latest";
         plex = "ghcr.io/hotio/plex:latest";
         jellyfin = "ghcr.io/hotio/jellyfin:latest";
-        qbittorrent = "ghcr.io/hotio/qbittorrent:latest";
+        # AnimeBytes only accepts whitelisted client versions and rejects 5.3.
+        # 5.3 moves WebUI settings from [Preferences] to its own [WebUI]
+        # section, so the config keeps both copies for 5.2 to read.
+        qbittorrent = "ghcr.io/hotio/qbittorrent:release-5.2.4";
         sonarr = "ghcr.io/hotio/sonarr:latest";
         radarr = "ghcr.io/hotio/radarr:latest";
         bazarr = "ghcr.io/hotio/bazarr:latest";
