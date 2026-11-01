@@ -1,17 +1,20 @@
 {
   flake.nixosModules.hypridle =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     let
+      hyprctl = "${config.programs.hyprland.package}/bin/hyprctl";
+      mediaPlaying = "${pkgs.playerctl}/bin/playerctl --all-players status 2>/dev/null | grep -q Playing";
+
       waitLock = pkgs.writeShellScriptBin "wait-lock" ''
         #!/usr/bin/env bash
         CHECK_INTERVAL=5
         trap 'exit 0' INT TERM
 
-        while ${pkgs.playerctl}/bin/playerctl status 2>/dev/null | grep -q Playing; do
+        while ${mediaPlaying}; do
             sleep "$CHECK_INTERVAL"
         done
 
-        pidof hyprlock || hyprlock -q
+        loginctl lock-session
       '';
 
       waitDpmsOff = pkgs.writeShellScriptBin "wait-dpms-off" ''
@@ -19,11 +22,11 @@
         CHECK_INTERVAL=5
         trap 'exit 0' INT TERM
 
-        while ${pkgs.playerctl}/bin/playerctl status 2>/dev/null | grep -q Playing; do
+        while ${mediaPlaying}; do
             sleep "$CHECK_INTERVAL"
         done
 
-        hyprctl dispatch dpms off
+        ${hyprctl} dispatch dpms off
       '';
 
       waitSuspend = pkgs.writeShellScriptBin "wait-suspend" ''
@@ -38,7 +41,7 @@
             sleep "$CHECK_INTERVAL"
         done
 
-        while ${pkgs.playerctl}/bin/playerctl status 2>/dev/null | grep -q Playing; do
+        while ${mediaPlaying}; do
             sleep "$CHECK_INTERVAL"
         done
 
@@ -91,20 +94,27 @@
             lock_cmd = "pidof hyprlock || hyprlock -q";
           };
           listener = [
+            # hypridle drops resume events for listeners while a D-Bus or
+            # systemd inhibitor (e.g. a playing video) is held, which would
+            # leave the pending idle actions armed. This listener ignores
+            # inhibitors so any input always cancels them; its timeout only
+            # needs to be shorter than the action timeouts below.
+            {
+              timeout = 60;
+              ignore_inhibit = true;
+              on-resume = "systemctl --user stop idle-wait-lock.service idle-wait-dpms-off.service idle-wait-suspend.service; ${hyprctl} dispatch dpms on";
+            }
             {
               timeout = 300;
               on-timeout = "systemctl --user start idle-wait-lock.service";
-              on-resume = "systemctl --user stop idle-wait-lock.service";
             }
             {
               timeout = 360;
               on-timeout = "systemctl --user start idle-wait-dpms-off.service";
-              on-resume = "systemctl --user stop idle-wait-dpms-off.service && hyprctl dispatch dpms on";
             }
             {
               timeout = 1800;
               on-timeout = "systemctl --user start idle-wait-suspend.service";
-              on-resume = "systemctl --user stop idle-wait-suspend.service";
             }
           ];
         };
