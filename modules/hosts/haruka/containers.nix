@@ -229,6 +229,11 @@
             PRIVOXY_ENABLED = "false";
             PUID = "1000";
             PGID = "983";
+            # qBittorrent writes resume data for every torrent on shutdown. If
+            # it is killed before finishing, the torrents are rechecked on the
+            # next start. s6 and podman would otherwise kill it after seconds.
+            S6_SERVICES_GRACETIME = "240000";
+            S6_KILL_GRACETIME = "30000";
           };
           # The network capabilities and sysctl are scoped to the container's
           # own user and network namespaces, so rootless can still grant them.
@@ -237,6 +242,7 @@
             ++ idmap 1000 983
             ++ mediaNetOptions "qbittorrent"
             ++ [
+              "--stop-timeout=300"
               "--cap-add=NET_ADMIN"
               "--cap-add=NET_RAW"
               ''--sysctl="net.ipv6.conf.all.disable_ipv6=1"''
@@ -591,9 +597,14 @@
             };
           };
 
-          podman-qbittorrent.serviceConfig.ExecStartPre = [
-            "${pkgs.coreutils}/bin/rm -f /mnt/appdata/qbittorrent/config/ipc-socket /mnt/appdata/qbittorrent/config/lockfile"
-          ];
+          podman-qbittorrent.serviceConfig = {
+            ExecStartPre = [
+              "${pkgs.coreutils}/bin/rm -f /mnt/appdata/qbittorrent/config/ipc-socket /mnt/appdata/qbittorrent/config/lockfile"
+            ];
+            # Outlasts the container's --stop-timeout so podman, not systemd,
+            # decides when to give up.
+            TimeoutStopSec = lib.mkForce 330;
+          };
 
           # koto is first-party, so it follows the registry tag directly
           # instead of going through the soak. The soak's polkit rule already
