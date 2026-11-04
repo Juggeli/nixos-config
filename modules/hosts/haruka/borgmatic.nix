@@ -2,6 +2,10 @@
   flake.nixosModules.haruka-borgmatic =
     { config, pkgs, ... }:
     {
+      # noel pushes its hydrus backups to /tank/backup/hydrus over ssh, which
+      # runs `borg serve` from the login shell's PATH.
+      environment.systemPackages = [ pkgs.borgbackup ];
+
       services.borgmatic = {
         enable = true;
         configurations.storagebox = {
