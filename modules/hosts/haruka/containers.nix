@@ -672,9 +672,11 @@
                     until_score = 10000;
                   };
                   min_format_score = 100;
-                  # Blocks same-quality group swaps (tier differences are a few
-                  # hundred points); only Uncensored (+2000) passes.
-                  min_upgrade_format_score = 1000;
+                  # Blocks same-quality swaps except censored -> uncensored.
+                  # Files from groups outside the guide tiers score 0, so this
+                  # has to exceed the top BD tier (1400 + 10bit + revision),
+                  # not just the gap between tiers.
+                  min_upgrade_format_score = 1500;
                   quality_sort = "top";
                   qualities = [
                     { name = "Bluray-1080p"; }
@@ -711,12 +713,14 @@
 
               custom_formats = [
                 {
-                  # Uncensored releases always win and upgrade over censored.
+                  # Uncensored releases always win and upgrade over censored:
+                  # an untiered uncensored release still clears
+                  # min_upgrade_format_score over a top-tier censored BD file.
                   trash_ids = [ "026d5aadd1a6b4e550b134cb6c72b3ca" ]; # Uncensored
                   assign_scores_to = [
                     {
                       name = "Remux-1080p - Anime";
-                      score = 2000;
+                      score = 3500;
                     }
                   ];
                 }
