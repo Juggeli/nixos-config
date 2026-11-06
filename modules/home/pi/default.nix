@@ -29,15 +29,19 @@
         "deepseek/deepseek-v4-flash"
         "deepseek/deepseek-v4-pro"
       ];
-      openRouterDeepSeekModelOverrides = builtins.listToAttrs (
-        map (id: {
-          name = id;
-          value.compat.openRouterRouting = openRouterDeepSeekRouting;
-        }) openRouterDeepSeekModels
-      );
+      openRouterModelOverrides =
+        builtins.listToAttrs (
+          map (id: {
+            name = id;
+            value.compat.openRouterRouting = openRouterDeepSeekRouting;
+          }) openRouterDeepSeekModels
+        )
+        // {
+          "google/gemini-4-argon".maxTokens = 32768;
+        };
       patchPiModels = pkgs.writeShellScript "patch-pi-models" ''
         CONFIG_FILE="${modelsConfigFile}"
-        MANAGED_OVERRIDES='${builtins.toJSON openRouterDeepSeekModelOverrides}'
+        MANAGED_OVERRIDES='${builtins.toJSON openRouterModelOverrides}'
         OPENROUTER_DEEPSEEK_ROUTING='${builtins.toJSON openRouterDeepSeekRouting}'
 
         mkdir -p "$(dirname "$CONFIG_FILE")"
