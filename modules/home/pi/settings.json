@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.4.0",
+  "lastChangelogVersion": "1.5.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "high",
@@ -16,5 +16,9 @@
     "showTerminalProgress": true
   },
   "collapseChangelog": true,
-  "tuiMode": "fullscreen"
+  "tuiMode": "fullscreen",
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:@nerisma/pi-auto-title@1.0.1\",\"scope\":\"user\"}": "1.0.1",
+    "{\"source\":\"../../src/dotfiles/vendor/pi-agents\",\"scope\":\"user\"}": "1.4.0"
+  }
 }
