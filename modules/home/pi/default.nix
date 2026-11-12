@@ -38,6 +38,7 @@
         )
         // {
           "google/gemini-4-argon".maxTokens = 32768;
+          "google/gemini-4-carbon".maxTokens = 32768;
         };
       patchPiModels = pkgs.writeShellScript "patch-pi-models" ''
         CONFIG_FILE="${modelsConfigFile}"
